@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <title>Title</title>
+
+    <!-- CSS -->
+    <style type="text/css">
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      .status {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        border: 1px solid black;
+        border-radius: 8px;
+        padding: 4px;
+        background-color: rgba(255,255,255,0.5);
+        backdrop-filter: blur(3px);
+        z-index: 1;
+        user-select: none;
+      }
+    </style>
+
+    <!-- JS -->
+    <script src="main.js"></script>
+  </head>
+  <body>
+    <div style="width:100%; height:100%; overflow:hidden">
+      <canvas id="mycanvas" style="display:block; cursor:crosshair"></canvas>
+    </div>
+    <div class="status">
+      <div>Epsilon <input id="epsilon-text" type="text" size="8" value="1.0"></div>
+      <div><input id="epsilon-slider" type="range" style="width:100%;"></div>
+      <div><input id="info" type="text" readonly onFocus="this.blur()"></div>
+      <div>
+        <span style="float:left"><input id="show-point" type="checkbox" checked><label for="show-point">Point</label></span>
+        <input id="clear" type="button" value="Clear" style="float:right"></input>
+      </div>
+    </div>
+  </body>
+</html>

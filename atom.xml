@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Kludge Factory</title>
+  
+  <subtitle>tyfkda&#39;s blog</subtitle>
+  <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://tyfkda.github.io/"/>
+  <updated>2021-05-05T11:05:28.376Z</updated>
+  <id>https://tyfkda.github.io/</id>
+  
+  <author>
+    <name>tyfkda</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>「ディープラーニングの最も重要なアイディア」</title>
+    <link href="https://tyfkda.github.io/blog/2021/05/05/dl-brief-historical-review.html"/>
+    <id>https://tyfkda.github.io/blog/2021/05/05/dl-brief-historical-review.html</id>
+    <published>2021-05-05T09:01:34.000Z</published>
+    <updated>2021-05-05T11:05:28.376Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;ディープラーニングとやらにまったく詳しくなくてなにをしたらいいかわからない…という中
+&lt;a href=&quot;https://dennybritz.com/blog/deep-learning-most-important-ideas/&quot;&gt;Deep Learning’s Most Important Ideas - A Brief Historical Review&lt;/a&gt;
+という記事を読んだ。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="machine learning" scheme="https://tyfkda.github.io/tags/machine-learning/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>階段三角波と聞き比べ</title>
+    <link href="https://tyfkda.github.io/blog/2021/05/03/quantized-tri-wave.html"/>
+    <id>https://tyfkda.github.io/blog/2021/05/03/quantized-tri-wave.html</id>
+    <published>2021-05-03T01:38:38.000Z</published>
+    <updated>2021-05-03T11:02:54.562Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;ファミコンで鳴らせる波形として三角波があるが、実際には純粋な三角波ではなくて16段階の階段状になっている
+（&lt;a href=&quot;https://wiki.nesdev.com/w/index.php/APU_Triangle&quot;&gt;Nesdev wiki&lt;/a&gt;）。
+その場合に純粋な三角波とどういう違いになるのか聞き比べてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
+    
+    <category term="audio" scheme="https://tyfkda.github.io/tags/audio/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Alpine.jsを触ってみた</title>
+    <link href="https://tyfkda.github.io/blog/2021/05/02/alpine-js.html"/>
+    <id>https://tyfkda.github.io/blog/2021/05/02/alpine-js.html</id>
+    <published>2021-05-02T09:02:32.000Z</published>
+    <updated>2021-05-03T11:02:54.543Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;ウェブページ上でUI操作できるようなページの作成でJavaScriptのフレームワークである&lt;a href=&quot;https://github.com/alpinejs/alpine&quot;&gt;Alpine.js&lt;/a&gt;というものを触ってみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="web" scheme="https://tyfkda.github.io/tags/web/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ファミコンのノイズチャンネルの再現方法</title>
+    <link href="https://tyfkda.github.io/blog/2021/03/07/nes-apu-noise.html"/>
+    <id>https://tyfkda.github.io/blog/2021/03/07/nes-apu-noise.html</id>
+    <published>2021-03-07T01:23:49.000Z</published>
+    <updated>2021-03-18T10:41:58.543Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/nesemu&quot;&gt;ファミコンエミュレータ&lt;/a&gt;で音を鳴らす際にノイズチャンネルはどうやって鳴らせばいいのか分からなくて、ひとまず適当に
+&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/API/BaseAudioContext/createPeriodicWave&quot;&gt;createPeriodicWave()&lt;/a&gt;
+をランダムで埋めてホワイトノイズみたいなものを鳴らしていただけだった。
+しかし&lt;a href=&quot;https://github.com/mame/optcarrot&quot;&gt;Optcarrot&lt;/a&gt;のソースを読んでるうちに少し分かってきた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
+    
+    <category term="audio" scheme="https://tyfkda.github.io/tags/audio/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【WASM】Cコンパイラをブラウザ上で動かす</title>
+    <link href="https://tyfkda.github.io/blog/2021/02/04/c-on-browser.html"/>
+    <id>https://tyfkda.github.io/blog/2021/02/04/c-on-browser.html</id>
+    <published>2021-02-04T10:00:00.000Z</published>
+    <updated>2021-02-13T09:03:17.417Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作のCコンパイラ&lt;/a&gt;はx86-64用となっていて、ELF64バイナリを出力する。
+x86-64上で実行できるコードを出力できれば自宅のパソコン上で実行できるし、今後10年くらいはやっていけるだろうという目論見だった。
+ところがいろんなプロセッサが出てきたりして、x86が主流で居続けるとはいえないかもという気がしてきた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+    <category term="wasm" scheme="https://tyfkda.github.io/tags/wasm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>コンパイラを浮動小数点数に対応させる（それと数学関数を実装）</title>
+    <link href="https://tyfkda.github.io/blog/2020/12/30/fp-compiler.html"/>
+    <id>https://tyfkda.github.io/blog/2020/12/30/fp-compiler.html</id>
+    <published>2020-12-30T06:23:32.000Z</published>
+    <updated>2021-02-13T01:36:14.804Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Cコンパイラの実装を始めた際の興味が制御構造や関数定義・呼び出しをどう実装するかということに向いていたため &lt;code&gt;int&lt;/code&gt; などの固定長の整数型（ポインタ含む）のみの実装にとどまっていて、
+浮動小数点数は煩雑になるんじゃないかという懸念から未実装だった。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>整数の絶対値を得るビットトリック</title>
+    <link href="https://tyfkda.github.io/blog/2020/12/19/abs-bit-trick.html"/>
+    <id>https://tyfkda.github.io/blog/2020/12/19/abs-bit-trick.html</id>
+    <published>2020-12-19T00:51:38.000Z</published>
+    <updated>2021-02-13T01:36:14.774Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;WASMで負の数を得る命令ってどうやるんだろうか？とC言語からコンパイルしてみたら、条件分岐のないイカしたビット操作のコードを出力してきた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+    <category term="optimization" scheme="https://tyfkda.github.io/tags/optimization/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【WASM】WASMのバイナリフォーマット</title>
+    <link href="https://tyfkda.github.io/blog/2020/11/22/wasm-bin-format.html"/>
+    <id>https://tyfkda.github.io/blog/2020/11/22/wasm-bin-format.html</id>
+    <published>2020-11-22T06:00:00.000Z</published>
+    <updated>2021-02-13T01:36:14.891Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;WASMを自前で生成してブラウザ上で動かせるようになったら面白いかと思って、まずはWASMのバイナリフォーマットを調べてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="wasm" scheme="https://tyfkda.github.io/tags/wasm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Xv6-RISCVを試してみた</title>
+    <link href="https://tyfkda.github.io/blog/2020/11/13/xv6-riscv.html"/>
+    <id>https://tyfkda.github.io/blog/2020/11/13/xv6-riscv.html</id>
+    <published>2020-11-13T12:00:00.000Z</published>
+    <updated>2021-02-13T01:36:14.898Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以前MITのOS教材として使われているという&lt;a href=&quot;https://github.com/mit-pdos/xv6-public&quot;&gt;xv6&lt;/a&gt;というOSを動かしてみた。
+これは普段使っているパソコンのCPU（Intel x86）がターゲットとなっていて動かして試せるので、非常にモチベがあがる。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="os" scheme="https://tyfkda.github.io/tags/os/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>折れ線を簡略化する方法(Ramer-Douglas-Peucker法)</title>
+    <link href="https://tyfkda.github.io/blog/2020/10/26/simplify-line-segments.html"/>
+    <id>https://tyfkda.github.io/blog/2020/10/26/simplify-line-segments.html</id>
+    <published>2020-10-26T01:52:54.000Z</published>
+    <updated>2021-02-13T01:36:14.874Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;マウスやタッチで描いた軌跡を扱う際にすべての頂点を用いるのは煩雑なので点群を簡略化したい、といった時にどうしたらいいか調べてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
+    
+  </entry>
+  
+</feed>
