@@ -217,7 +217,7 @@
 
 <p>参考にしたのは<a href="http://d.hatena.ne.jp/nitar/20080121/p1">HaskellとSATソルバーで数独を解く - メタサブカル病</a>のページ。このページのプログラムを実行すると、数独を解くための制約を標準出力に出力する。それを<a href="http://minisat.se/">MiniSat</a>というオープンソースのSATソルバに与えて、その出力をパースして結果をわかりやすく9x9に表示している。Haskellだけで閉じてるわけじゃなくて、SATソルバは外部プログラムになっている。</p>
 <p>MiniSatに与える制約は、乗法標準形(Conjunctive Normal Form、orでつないだ命題を、andでつないだもの)という形式で与える必要がある。論理変数を正の数で表して、そのまま正の数を使えばその論理変数が真の時、符号反転して負の数を使えば偽を表す。プログラムが出力する制約は次のようなファイルになる：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">p cnf 729 17607</span><br><span class="line">5 0</span><br><span class="line">...</span><br><span class="line">9 8 7 6 5 4 3 2 1 0</span><br><span class="line">90 89 88 87 86 85 84 83 82 0</span><br><span class="line">171 170 169 168 167 166 165 164 163 0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">p cnf 729 17607</span><br><span class="line">5 0</span><br><span class="line">...</span><br><span class="line">9 8 7 6 5 4 3 2 1 0</span><br><span class="line">90 89 88 87 86 85 84 83 82 0</span><br><span class="line">171 170 169 168 167 166 165 164 163 0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>最初の行で変数の数と節の数を明示していて、続く各行がorでつないだ命題で、全体をandでつないだものが制約となる（各行最後の0は行の終わりを示しているだけで、意味はない）。1つの論理変数は真か偽かしか持てないので、数独では各マスに対して変数を9個用意して、変数1が真なら1が入る、変数2が真なら2が入る、…というように用いている。なので9x9マスx9変数 = 729個変数がある。節は17577+問題に埋め込まれている数字の個数となる。</p>
 <p>で、外部プログラムを使わずにHaskellでSATを解くライブラリがないか調べたところいろいろあるらしく、どれがいいのかよくわからなかった。<a href="https://gist.github.com/gatlin/1755736">gatlin / sat.hs - gist</a>はファイル1つだけでソースも短いので、これを試してみたところ、速いかどうかは他と比べてないのでわからないが、ちゃんと動いて問題が解けた。うーむ便利。</p>

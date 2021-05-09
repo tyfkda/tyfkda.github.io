@@ -220,10 +220,10 @@
 <p>ブロック内の(A)の<code>self</code>は、<code>Foo</code>インスタンスを指すはず。<code>initialize</code>メソッドが戻り値を戻さない場合、そのように動く。しかし(B)で整数やnilなどのシンプルな値以外のオブジェクトを返すと、(A)の<code>self</code>がその値に置き換わってしまう。</p>
 <p>CRuby (2.0.0p195) でも試したが、そちらはどちらも<code>Foo</code>インスタンスを指していて、意図通り動く。</p>
 <h3 id="追記"><a href="#追記" class="headerlink" title="追記"></a>追記</h3><p><code>return []</code> とした場合の、<code>initialize</code>メソッドのダンプ：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">irep 2 nregs&#x3D;3 nlocals&#x3D;2 pools&#x3D;0 syms&#x3D;1</span><br><span class="line">000 OP_ENTER 0:0:0:0:0:0:0</span><br><span class="line">001 OP_LAMBDA R2 I(+1) 3</span><br><span class="line">002 OP_SETGLOBAL :＄block R2</span><br><span class="line">003 OP_ARRAY R0 R2 0</span><br><span class="line">004 OP_RETURN R0</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">irep 2 nregs=3 nlocals=2 pools=0 syms=1</span><br><span class="line">000 OP_ENTER 0:0:0:0:0:0:0</span><br><span class="line">001 OP_LAMBDA R2 I(+1) 3</span><br><span class="line">002 OP_SETGLOBAL :＄block R2</span><br><span class="line">003 OP_ARRAY R0 R2 0</span><br><span class="line">004 OP_RETURN R0</span><br></pre></td></tr></table></figure>
 
 <p><code>return</code>をコメントアウトした場合：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">irep 2 nregs&#x3D;3 nlocals&#x3D;2 pools&#x3D;0 syms&#x3D;1</span><br><span class="line">000 OP_ENTER 0:0:0:0:0:0:0</span><br><span class="line">001 OP_LAMBDA R2 I(+1) 3</span><br><span class="line">002 OP_SETGLOBAL :＄block R2</span><br><span class="line">003 OP_RETURN R2</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">irep 2 nregs=3 nlocals=2 pools=0 syms=1</span><br><span class="line">000 OP_ENTER 0:0:0:0:0:0:0</span><br><span class="line">001 OP_LAMBDA R2 I(+1) 3</span><br><span class="line">002 OP_SETGLOBAL :＄block R2</span><br><span class="line">003 OP_RETURN R2</span><br></pre></td></tr></table></figure>
 
 <p>コード生成が間違ってるっぽい？</p>
 <h3 id="追記２"><a href="#追記２" class="headerlink" title="追記２"></a>追記２</h3><p>レジスタ<code>R0</code>は常に<code>self</code>を保持している？が、<code>return []</code>としたときに<code>R0</code>に代入してしまっている？</p>

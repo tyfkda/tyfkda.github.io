@@ -218,12 +218,12 @@
 <ul>
 <li><a href="http://practical-scheme.net/gauche/man/gauche-refj_52.html#g_t_00e6_0096_0087_00e5_00ad_0097_00e5_0088_0097_00e3_0081_00ae_00e8_00a3_009c_00e9_0096_0093">Gauche ユーザリファレンス: 6.12 文字列</a>: <code>#&quot;~a&quot;</code> で埋め込み可能</li>
 </ul>
-<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">&gt; (<span class="name">let</span> ((<span class="name">a</span> <span class="number">123</span>))</span><br><span class="line">    #&quot;a = ~a&quot;))</span><br><span class="line"><span class="string">&quot;a = 123&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">&gt; (<span class="name">let</span> ((<span class="name">a</span> <span class="number">123</span>))</span><br><span class="line">    #<span class="string">&quot;a = ~a&quot;</span>))</span><br><span class="line"><span class="string">&quot;a = 123&quot;</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>後ろにすぐ文字を繋げたい場合には、<code>|</code>で囲う</li>
 </ul>
-<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">&gt; (<span class="name">let</span> ((<span class="name">a</span> <span class="number">123</span>))</span><br><span class="line">    #&quot;a = ~|a|aaa&quot;))</span><br><span class="line"><span class="string">&quot;a = 123aaa&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">&gt; (<span class="name">let</span> ((<span class="name">a</span> <span class="number">123</span>))</span><br><span class="line">    #<span class="string">&quot;a = ~|a|aaa&quot;</span>))</span><br><span class="line"><span class="string">&quot;a = 123aaa&quot;</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>リーダーマクロで実装されているということで、<code>#</code>の前にクォートをつけると展開した形がわかる</li>

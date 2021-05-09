@@ -216,12 +216,12 @@
 <span id="more"></span>
 
 <p><code>register-macro</code> というマクロを定義する関数があったとして、それを使ってマクロを定義するマクロ<code>defmacro</code>を定義するコードは</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(register-macro &#39;defmacro</span><br><span class="line">  (lambda (name params &amp;body body)</span><br><span class="line">    &#96;(register-macro &#39;,name</span><br><span class="line">       (lambda ,params ,@body))))</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(register-macro &#x27;defmacro</span><br><span class="line">  (lambda (name params &amp;body body)</span><br><span class="line">    `(register-macro &#x27;,name</span><br><span class="line">       (lambda ,params ,@body))))</span><br></pre></td></tr></table></figure>
 
 <p><a href="https://github.com/tyfkda/lisp2js/blob/master/src%2Fbasic.lisp#L1-L4">https://github.com/tyfkda/lisp2js/blob/master/src%2Fbasic.lisp#L1-L4</a></p>
 <p>同じことを２度書いてるようで面白いと思った。</p>
 <h3 id="追記"><a href="#追記" class="headerlink" title="追記"></a>追記</h3><p>いったん <code>defmacro</code> を定義すると、それを使って <code>defmacro</code> を定義するというわけのわからんことができるようになる：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(defmacro defmacro (name params &amp;body body)</span><br><span class="line">  &#96;(register-macro &#39;,name</span><br><span class="line">     (lambda ,params ,@body)))</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(defmacro defmacro (name params &amp;body body)</span><br><span class="line">  `(register-macro &#x27;,name</span><br><span class="line">     (lambda ,params ,@body)))</span><br></pre></td></tr></table></figure>
 
 
                 

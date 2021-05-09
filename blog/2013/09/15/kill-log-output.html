@@ -215,7 +215,7 @@
                 <p>iOSのCocos2dxでReleaseでビルドした状態でもログ出力をするものがいる。</p>
 <span id="more"></span>
 
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2013-09-15 09:40:13.609 AppName[57588:1a603] cocos2d: surface size: 320x480</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">2013-09-15 09:40:13.609 AppName[57588:1a603] cocos2d: surface size: 320x480</span><br></pre></td></tr></table></figure>
 
 <p>犯人はlibs/cocos2dx/platform/ios/CCES2Renderer.mの中で、<code>NSLog()</code>を使っている。<code>COCOS2D_DEBUG</code>のマクロ定義を見てオフったった。 </p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> !defined(COCOS2D_DEBUG) || COCOS2D_DEBUG == 0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NSLog(...)       do &#123;&#125; while (0)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>

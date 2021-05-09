@@ -248,14 +248,14 @@
 <h4 id="コンポーネントの追加、削除"><a href="#コンポーネントの追加、削除" class="headerlink" title="コンポーネントの追加、削除"></a>コンポーネントの追加、削除</h4><figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 追加</span></span><br><span class="line">commands.add_component(entity, Position&#123;x:<span class="number">0</span>, y:<span class="number">0</span>&#125;);</span><br><span class="line"><span class="comment">// 削除</span></span><br><span class="line">commands.remove_component::&lt;Position&gt;(entity);</span><br></pre></td></tr></table></figure>
 
 <h4 id="システム（for-each）"><a href="#システム（for-each）" class="headerlink" title="システム（for_each）"></a>システム（for_each）</h4><p><code>#[system(for_each)]</code> で、関数の引数に指定した型のコンポーネントを持つエンティティが自動的に列挙されて呼び出される：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#[system(for_each)]</span><br><span class="line">pub fn move_pos(pos: &amp;mut Position, vel: &amp;Velocity, entity: &amp;Entity) &#123;</span><br><span class="line">    pos.x +&#x3D; vel.vx;</span><br><span class="line">    pos.y +&#x3D; vel.vy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#[system(for_each)]</span><br><span class="line">pub fn move_pos(pos: &amp;mut Position, vel: &amp;Velocity, entity: &amp;Entity) &#123;</span><br><span class="line">    pos.x += vel.vx;</span><br><span class="line">    pos.y += vel.vy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><code>&amp;Entity</code> で対応するエンティティを受け取れる</li>
 <li>その他、リソースやサブワールドやコマンドバッファも受け取れる</li>
 </ul>
 <h4 id="コンポーネントの列挙"><a href="#コンポーネントの列挙" class="headerlink" title="コンポーネントの列挙"></a>コンポーネントの列挙</h4><p>単純なループでは済まないような場合（二重ループなど）、システムでサブワールドを受け取って自分でループさせる：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#[system]</span><br><span class="line">#[read_component(Position)]</span><br><span class="line">#[read_component(Player)]</span><br><span class="line">#[read_component(Enemy)]</span><br><span class="line">pub fn check_collision(world: &amp;mut SubWorld) &#123;</span><br><span class="line">    for (_player, player_pos, player_entity) in &lt;(&amp;Player, &amp;Position, Entity)&gt;::query().iter(world) &#123;</span><br><span class="line">        for (_enemy, enemy_pos, enemy_entity) in &lt;(&amp;Enemy, &amp;Position, Entity)&gt;::query().iter(world) &#123;</span><br><span class="line">            ....</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#[system]</span><br><span class="line">#[read_component(Position)]</span><br><span class="line">#[read_component(Player)]</span><br><span class="line">#[read_component(Enemy)]</span><br><span class="line">pub fn check_collision(world: &amp;mut SubWorld) &#123;</span><br><span class="line">    for (_player, player_pos, player_entity) in &lt;(&amp;Player, &amp;Position, Entity)&gt;::query().iter(world) &#123;</span><br><span class="line">        for (_enemy, enemy_pos, enemy_entity) in &lt;(&amp;Enemy, &amp;Position, Entity)&gt;::query().iter(world) &#123;</span><br><span class="line">            ....</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><code>#[read_component(型)]</code> または <code>#[write_component(型)]</code> アトリビュートを指定すると、それらを含む <code>SubWorld</code> として受け取れる</li>
@@ -271,7 +271,7 @@
 <li>イミュータブルの場合には２番目のサブワールドでも参照可能</li>
 </ul>
 <h4 id="エンティティのコンポーネント取得"><a href="#エンティティのコンポーネント取得" class="headerlink" title="エンティティのコンポーネント取得"></a>エンティティのコンポーネント取得</h4><p>他のエンティティのコンポーネントを参照したい場合、クエリしてゲット</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">let (pos, vel) &#x3D; &lt;(&amp;mut Position, &amp;mut Velocity)&gt;::query().get_mut(world, entity).unwrap();</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let (pos, vel) = &lt;(&amp;mut Position, &amp;mut Velocity)&gt;::query().get_mut(world, entity).unwrap();</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>エントリ経由だと１つのコンポーネントにしか触れなかった…</li>

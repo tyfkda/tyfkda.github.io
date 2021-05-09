@@ -202,10 +202,10 @@
 <span id="more"></span>
 
 <p>例えば以下のような設定ファイルがあったとして</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SomeSettings:</span><br><span class="line">  name: hoge</span><br><span class="line">  passwd: fuga</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SomeSettings:</span><br><span class="line">  name: hoge</span><br><span class="line">  passwd: fuga</span><br></pre></td></tr></table></figure>
 
 <p>次のようにする：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sed -En &#39;s&#x2F; *name: (.*)&#x2F;\1&#x2F;g p&#39;  &lt; test.yaml</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sed -En &#x27;s/ *name: (.*)/\1/g p&#x27;  &lt; test.yaml</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><code>sed -E</code> で拡張正規表現（括弧をエスケープしなくてよい）</li>

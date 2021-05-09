@@ -219,7 +219,7 @@
 <h3 id="EclipseでJavaのプロジェクトを作成"><a href="#EclipseでJavaのプロジェクトを作成" class="headerlink" title="EclipseでJavaのプロジェクトを作成"></a>EclipseでJavaのプロジェクトを作成</h3><p>これは普通に File &gt; New &gt; Java Project で作る。</p>
 <h3 id="joglのjarをプロジェクトに追加"><a href="#joglのjarをプロジェクトに追加" class="headerlink" title="joglのjarをプロジェクトに追加"></a>joglのjarをプロジェクトに追加</h3><p>プロジェクトを選択して、メニューから Project &gt; Properties &gt; Java Build Path &gt; Libraries &gt; Add External JARs… で、上で展開してできた2つのjarファイル、jogl.jarとgluegen-rt.jarを追加する。</p>
 <p>それぞれのjarファイルの設定で、 Native library location というのがあるので、ダブルクリックしてそのjarファイルが置いてあるディレクトリを指定する。これによってダイナミックライブラリがちゃんと読み込まれるようになる。これを指定しないと、実行した時に</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.UnsatisfiedLinkError: no jogl in java.library.path</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.UnsatisfiedLinkError: no jogl in java.library.path</span><br></pre></td></tr></table></figure>
 
 <p>というエラーが出る（<a href="http://okwave.jp/qa/q4657157.html">eclipseでのjogl利用について | OKWave</a>）</p>
 <h3 id="サンプルプログラム"><a href="#サンプルプログラム" class="headerlink" title="サンプルプログラム"></a>サンプルプログラム</h3><p>適当にググって出てきたページ<a href="https://sites.google.com/site/justinscsstuff/jogl-tutorial-3">JOGL Tutorial 3 - Creating a Render Loop - Justin’s Home</a>を参考にした。このページではjogl-2.0を使ってるらしく、少し変更が必要：</p>

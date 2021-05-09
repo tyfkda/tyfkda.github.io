@@ -216,14 +216,14 @@
 <span id="more"></span>
 
 <p>レイアウトで<code>ImageView</code>の代わりに<a href="http://afzaln.com/volley/com/android/volley/toolbox/NetworkImageView.html">NetworkImageView</a>を配置して：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;com.android.volley.toolbox.NetworkImageView</span><br><span class="line">        android:id&#x3D;&quot;@+id&#x2F;hoge&quot;</span><br><span class="line">        ...&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;com.android.volley.toolbox.NetworkImageView</span><br><span class="line">        android:id=&quot;@+id/hoge&quot;</span><br><span class="line">        ...&gt;</span><br></pre></td></tr></table></figure>
 
 <p><a href="http://afzaln.com/volley/com/android/volley/toolbox/NetworkImageView.html#setImageUrl%28java.lang.String,%20com.android.volley.toolbox.ImageLoader%29">setImageUrl</a>を呼び出せばそれだけでOK：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">NetworkImageView imageView &#x3D; (NetworkImageView) convertView.findViewById(R.id.hoge);</span><br><span class="line">imageView.setImageUrl(url, imageLoader);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NetworkImageView imageView = (NetworkImageView) convertView.findViewById(R.id.hoge);</span><br><span class="line">imageView.setImageUrl(url, imageLoader);</span><br></pre></td></tr></table></figure>
 
 <p>ListViewのAdapterなどでViewを使いまわされる場合にも自分でキャンセルする必要がない。またアクティビティだかフラグメントが非アクティブになる時にも自動的にキャンセルされる（らしい）。</p>
 <p><code>getImageListener</code>で指定していた第２，第３引数の<code>defaultImageResId</code>と<code>errorImageResId</code>も設定できる：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">imageView.setDefaultImageResId(defaultImageResId);</span><br><span class="line">imageView.setErrorImageResId(errorImageResId);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">imageView.setDefaultImageResId(defaultImageResId);</span><br><span class="line">imageView.setErrorImageResId(errorImageResId);</span><br></pre></td></tr></table></figure>
 
 <p>普段はネットワークのURLから読み込むけど、ある条件ではリソース中のnoimageを表示したい、という場合には上記の<code>defaultImageResId</code>を設定して、<code>imageView.setImageUrl(null)</code>とすればよい。</p>
 <p>この簡単さ、いや逆になんで最初からこういうのなかったんだ、という気にさえなってくる。</p>

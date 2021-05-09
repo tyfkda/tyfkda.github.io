@@ -232,10 +232,10 @@
 </li>
 </ul>
 <p>gradle.properties:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">JAR_NAME&#x3D;yourpluginname.jar</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">JAR_NAME=yourpluginname.jar</span><br></pre></td></tr></table></figure>
 
 <p>build.gradle:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">task clearJar(type: Delete) &#123;</span><br><span class="line">    delete &#39;build&#x2F;libs&#x2F;&#39; + JAR_NAME</span><br><span class="line">&#125;</span><br><span class="line">task makeJar(type: Copy) &#123;</span><br><span class="line">    from(&#39;build&#x2F;intermediates&#x2F;bundles&#x2F;release&#x2F;&#39;)</span><br><span class="line">    into(&#39;release&#x2F;&#39;)</span><br><span class="line">    include(&#39;classes.jar&#39;)</span><br><span class="line">    rename(&#39;classes.jar&#39;, JAR_NAME)</span><br><span class="line">&#125;</span><br><span class="line">makeJar.dependsOn(clearJar, build)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">task clearJar(type: Delete) &#123;</span><br><span class="line">    delete &#x27;build/libs/&#x27; + JAR_NAME</span><br><span class="line">&#125;</span><br><span class="line">task makeJar(type: Copy) &#123;</span><br><span class="line">    from(&#x27;build/intermediates/bundles/release/&#x27;)</span><br><span class="line">    into(&#x27;release/&#x27;)</span><br><span class="line">    include(&#x27;classes.jar&#x27;)</span><br><span class="line">    rename(&#x27;classes.jar&#x27;, JAR_NAME)</span><br><span class="line">&#125;</span><br><span class="line">makeJar.dependsOn(clearJar, build)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>ビルド：<ul>

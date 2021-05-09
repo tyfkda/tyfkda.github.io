@@ -210,19 +210,19 @@
 <p>ということなので、MC68000のアドレス0x000000からはファイルの0x010000からが見えることになる。</p>
 <h3 id="MC68000の起動シーケンス"><a href="#MC68000の起動シーケンス" class="headerlink" title="MC68000の起動シーケンス"></a>MC68000の起動シーケンス</h3><p><a href="http://www.easy68k.com/EASy68Kforum/viewtopic.php?t=210">EASy68K • View topic - M68000 Startup Code Question (Newbie)</a> によれば、MC68000は起動時に0x000000から４バイトをA7(SP)に、次の４バイトをPCに取り出して実行を開始するらしい。</p>
 <p>IPLROM.DATを<code>xxd</code>コマンドでダンプした内容：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0010000: 0000 2000 00ff 0010 203c 1087 0507 4e75  .. ..... &lt;....Nu</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0010000: 0000 2000 00ff 0010 203c 1087 0507 4e75  .. ..... &lt;....Nu</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>SP=0x002000, PC=0xff0010となる</li>
 </ul>
 <h3 id="IPLプログラムの解析"><a href="#IPLプログラムの解析" class="headerlink" title="IPLプログラムの解析"></a>IPLプログラムの解析</h3><p><code>PC=0xff0010</code>から実行開始ということで、コードをダンプしてみてみる（ファイルでは0x010010から）：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ff0010: 46fc 2700 4ff9 0000 2000 4e70 91c8 203c  F.&#39;.O... .Np.. &lt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ff0010: 46fc 2700 4ff9 0000 2000 4e70 91c8 203c  F.&#x27;.O... .Np.. &lt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>MC68000の命令セットは16bit単位で、最初の２バイトによって命令が決まり、何バイトの命令か決まる</li>
 </ul>
 <p>逆アセすると</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ff0010: 46 fc 27 00        move    #$2700, SR</span><br><span class="line">ff0014: 4f f9 00 00 20 00  lea     $2000.l, A7</span><br><span class="line">ff001a: 4e 70              reset</span><br><span class="line">ff001c: 91 c8              suba.l  A0, A0</span><br><span class="line">ff001e: 20 3c 00 ff 05 40  move.l  #$ff0540, D0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ff0010: 46 fc 27 00        move    #$2700, SR</span><br><span class="line">ff0014: 4f f9 00 00 20 00  lea     $2000.l, A7</span><br><span class="line">ff001a: 4e 70              reset</span><br><span class="line">ff001c: 91 c8              suba.l  A0, A0</span><br><span class="line">ff001e: 20 3c 00 ff 05 40  move.l  #$ff0540, D0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><code>SR</code>: ステータスレジスタ。上位８ビットのシステムコントロールエリアの初期化</li>

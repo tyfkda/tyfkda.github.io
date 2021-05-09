@@ -210,7 +210,7 @@
 
 <p>最新のNodejs、というわけではないらしく、アロー関数とかは使えなかった。</p>
 <h3 id="初期化"><a href="#初期化" class="headerlink" title="初期化"></a>初期化</h3><p>以下JSのコード。<code>require</code>した<code>casper</code>を<code>create</code>してやる：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> casper = <span class="built_in">require</span>(<span class="string">&#x27;casper&#x27;</span>).create(&#123;</span><br><span class="line">  viewportSize: &#123;</span><br><span class="line">    width: <span class="number">1280</span>,</span><br><span class="line">    height: <span class="number">768</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> casper = <span class="built_in">require</span>(<span class="string">&#x27;casper&#x27;</span>).create(&#123;</span><br><span class="line">  <span class="attr">viewportSize</span>: &#123;</span><br><span class="line">    <span class="attr">width</span>: <span class="number">1280</span>,</span><br><span class="line">    <span class="attr">height</span>: <span class="number">768</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <p><code>viewportSize</code>の指定は必須じゃないけど、スクリーンショットを撮るときなどに。</p>
 <p>メソッドは<a href="https://en.wikipedia.org/wiki/Fluent_interface#JavaScript">Fluent Interface</a>になっている。</p>
@@ -233,7 +233,7 @@
 
 <p>読み込みが遅延したときなど、自動的に待ってくれる。</p>
 <h3 id="フォームに入力、Submit"><a href="#フォームに入力、Submit" class="headerlink" title="フォームに入力、Submit"></a>フォームに入力、Submit</h3><p><a href="http://docs.casperjs.org/en/latest/modules/casper.html#fill">fill</a>メソッドを使う：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.fill(<span class="string">&#x27;form[name=&quot;login&quot;]&#x27;</span>, &#123;</span><br><span class="line">  email: <span class="string">&#x27;foo@example.com&#x27;</span>,</span><br><span class="line">  password: <span class="string">&#x27;blahblahblah&#x27;</span>,</span><br><span class="line">&#125;, <span class="literal">true</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.fill(<span class="string">&#x27;form[name=&quot;login&quot;]&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">email</span>: <span class="string">&#x27;foo@example.com&#x27;</span>,</span><br><span class="line">  <span class="attr">password</span>: <span class="string">&#x27;blahblahblah&#x27;</span>,</span><br><span class="line">&#125;, <span class="literal">true</span>)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>第3引数でSubmit</li>
@@ -248,7 +248,7 @@
 <li>リンクやボタンだけじゃなく、XPathで「これこれのテキストの要素」に対してクリック、ということもできる</li>
 </ul>
 <h3 id="ページ側でJavaScriptを実行する"><a href="#ページ側でJavaScriptを実行する" class="headerlink" title="ページ側でJavaScriptを実行する"></a>ページ側でJavaScriptを実行する</h3><p>DOM操作をしたい場合などに<a href="http://docs.casperjs.org/en/latest/modules/casper.html#evaluate">evaluate</a>で呼び出せる。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.evaluate(<span class="function"><span class="keyword">function</span>(<span class="params">message</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">&#x27;textarea&#x27;</span>).value = message</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  message: MESSAGE,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.evaluate(<span class="function"><span class="keyword">function</span>(<span class="params">message</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">&#x27;textarea&#x27;</span>).value = message</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">message</span>: MESSAGE,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>テキストエリアに文章を設定したかったけどAPIでのやり方がわからなかったので、<code>evaluate</code>を使った</li>

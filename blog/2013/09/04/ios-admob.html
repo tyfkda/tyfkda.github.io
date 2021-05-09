@@ -220,7 +220,7 @@
 <p>まずXcodeでプロジェクトを作るときに、上記のページのようにEmpty Applicationテンプレートから作ったプロジェクトだと<code>GADBannerView</code>が表示されないという現象が起こった。<code>setDelegate</code>で<code>adViewDidReceiveAd</code>は受け取っているので、読み込み自体はできてるんだけど表示されなくて、これは結局原因が分からなかった。</p>
 <p><code>GLKViewController</code>を使ったアプリにAdmobを組み込めないのかと思ったが、プロジェクトをEmpty Applicationからじゃなくて、OpenGL Gameテンプレートから作ると表示されることがわかった。原因は不明。</p>
 <p>で自分のアプリに組み込んでいったところ、<code>GADBannerView</code>の<code>loadRequest</code>を呼び出すと<code>EXC_BAD_ACCESS</code>で停止するという現象が出た。エラーの出る位置としては、</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[GADCachedFile fileModificationDate] at GADCachedFile.m:86:</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[GADCachedFile fileModificationDate] at GADCachedFile.m:86:</span><br></pre></td></tr></table></figure>
 
 
 <p>というところで止まる。これが必ず止まる訳ではなくて、Cleanしたら一時的に動くけど、なんか変更するとやっぱり発生する、とかいう謎の状態だった。</p>
@@ -249,7 +249,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/08/bounces-false.html" title="iOSのWebViewでバウンスを禁止する、をSwiftで" rel="bookmark">iOSのWebViewでバウンスを禁止する、をSwiftで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/21/bubble-shooter.html" title="Bubble shooter作成中" rel="bookmark">Bubble shooter作成中</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-pass-values.html" title="iOSガワネイティブでSwiftにでかいデータを受け渡す" rel="bookmark">iOSガワネイティブでSwiftにでかいデータを受け渡す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-swift-result.html" title="iOSガワネイティブでSwiftから値を受け取る" rel="bookmark">iOSガワネイティブでSwiftから値を受け取る</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/08/bounces-false.html" title="iOSのWebViewでバウンスを禁止する、をSwiftで" rel="bookmark">iOSのWebViewでバウンスを禁止する、をSwiftで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/21/bubble-shooter.html" title="Bubble shooter作成中" rel="bookmark">Bubble shooter作成中</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-swift-result.html" title="iOSガワネイティブでSwiftから値を受け取る" rel="bookmark">iOSガワネイティブでSwiftから値を受け取る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-pass-values.html" title="iOSガワネイティブでSwiftにでかいデータを受け渡す" rel="bookmark">iOSガワネイティブでSwiftにでかいデータを受け渡す</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

@@ -227,7 +227,7 @@
 <li><code>%s</code> : コミットのサマリ</li>
 </ul>
 <p>これを実行すると</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Thu Jul 17 15:59:52 2014 +0900,hogehoge</span><br><span class="line">Thu Jul 17 15:22:53 2014 +0900,fugafuga</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Thu Jul 17 15:59:52 2014 +0900,hogehoge</span><br><span class="line">Thu Jul 17 15:22:53 2014 +0900,fugafuga</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>みたいな形で出力される。あとはパイプ先でカンマでぶった切ってゴニョゴニョすればよい。</p>
 <p>日時のフォーマットが煩雑で嫌な場合には（デフォルトは何フォーマット？） <code>--date=iso(YYYY-mm-dd HH:MM:SS +0900)</code> とか <code>--date=raw(エポック秒 +0900)</code> とかすればよい（<code>strftime</code>できないのが残念）。</p>

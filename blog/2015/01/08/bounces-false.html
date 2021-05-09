@@ -215,12 +215,12 @@
                 <p>iOSでWebViewを使う時に、上下の端でさらにスワイプするとビヨーンてスクロールするのを防止したい。</p>
 <span id="more"></span>
 
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">webView.scrollView.bounces = <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">webView.scrollView.bounces <span class="operator">=</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
 
 <p>以下は旧方式。</p>
 <hr>
 <p><a href="http://blog.goo.ne.jp/kunibu/e/93349c80e39ba77109d1e9c925ee0088">UIWebViewのバウンスをさせない方法 - まーのすけRoom</a>を参考に、Swiftでやるには</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> subview = webView.subviews[<span class="number">0</span>] <span class="keyword">as</span> <span class="type">NSObject</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> scrollView = subview <span class="keyword">as</span>? <span class="type">UIScrollView</span> &#123;</span><br><span class="line">  scrollView.bounces = <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> subview <span class="operator">=</span> webView.subviews[<span class="number">0</span>] <span class="keyword">as</span> <span class="type">NSObject</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> scrollView <span class="operator">=</span> subview <span class="keyword">as?</span> <span class="type">UIScrollView</span> &#123;</span><br><span class="line">  scrollView.bounces <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>Objective-Cでは<code>isSubclassOfClass</code>を使っているようですがSwiftでの使い方がわからなかったので、キャストしてみて、という形にしてみました。他には<code>isKindOfClass</code>や<code>subview is UIScrollView</code>という方法で調べられるようです。</p>
 <p>実際には<code>subview</code>は<code>UIWebScrollView</code>クラスのインスタンスのようです。</p>
@@ -247,7 +247,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/21/bubble-shooter.html" title="Bubble shooter作成中" rel="bookmark">Bubble shooter作成中</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-pass-values.html" title="iOSガワネイティブでSwiftにでかいデータを受け渡す" rel="bookmark">iOSガワネイティブでSwiftにでかいデータを受け渡す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-swift-result.html" title="iOSガワネイティブでSwiftから値を受け取る" rel="bookmark">iOSガワネイティブでSwiftから値を受け取る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/22/html-audio.html" title="iOSアプリ内ブラウザでのオーディオ再生の制限解除" rel="bookmark">iOSアプリ内ブラウザでのオーディオ再生の制限解除</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/21/bubble-shooter.html" title="Bubble shooter作成中" rel="bookmark">Bubble shooter作成中</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-swift-result.html" title="iOSガワネイティブでSwiftから値を受け取る" rel="bookmark">iOSガワネイティブでSwiftから値を受け取る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-pass-values.html" title="iOSガワネイティブでSwiftにでかいデータを受け渡す" rel="bookmark">iOSガワネイティブでSwiftにでかいデータを受け渡す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/22/html-audio.html" title="iOSアプリ内ブラウザでのオーディオ再生の制限解除" rel="bookmark">iOSアプリ内ブラウザでのオーディオ再生の制限解除</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

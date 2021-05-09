@@ -231,10 +231,10 @@
 <p>VirtualBox上のゲストOSとホストOSで通信するにはネットワーク設定で、NAT+ホストオンリーアダプタを使う方法と、ブリッジ接続を使う方法がある。ブリッジ接続にすればホストOSのネットワーク接続と同じ設定を使うので外部のネットワークにつなげるのも簡単なんだけど、ネットワークを使えない環境だとホスト−ゲスト間も通信できなくなってしまうという問題がある。まあお好みで。</p>
 <h3 id="gas"><a href="#gas" class="headerlink" title="gas"></a>gas</h3><p>OS自作本では<a href="http://hrb.osask.jp/wiki/?tools/nask">nask</a>という、著者が作ったアセンブラを使用している。しかしできればそういう独自ツールに依存したくないので、GCCのアセンブラ(gas)を利用することにした。gasはnaskとはアセンブラの文法が違っている。nask(nasm)はインテルシンタックス、gasはAT&amp;Tシンタックスとのこと。</p>
 <p>文法の違いで一番大きいのはオペランドの順番で、インテルシンタックスでは</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MOV DST, SRC  ; DST ← SRC</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MOV DST, SRC  ; DST ← SRC</span><br></pre></td></tr></table></figure>
 
 <p>に対して、AT&amp;Tシンタックスでは逆に</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MOV SRC, DST  # SRC → DST</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MOV SRC, DST  # SRC → DST</span><br></pre></td></tr></table></figure>
 
 <p>となる。またレジスタには%を前につける。直値には＄を前につける。
 他にもいろいろ、間接インデックスを丸括弧にするとか、コメントが#で始まるとか、擬似命令が違うとか。</p>

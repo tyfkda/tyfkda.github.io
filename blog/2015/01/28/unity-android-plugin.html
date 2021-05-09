@@ -15,7 +15,7 @@
 C# からJavaコードの呼び出し
 AndroidJavaClassでJavaのクラスを参照して使う：
 
-public class HogeClass &amp;#123;  private static string JAVA_CLASS_NAME &amp;#x3D; &amp;quot;com.h">
+public class HogeClass &amp;#123;  private static string JAVA_CLASS_NAME = &amp;quot;com.hoge.J">
     
 
     <!--Author-->
@@ -223,12 +223,12 @@ public class HogeClass &amp;#123;  private static string JAVA_CLASS_NAME &amp;#x
 <h2 id="C-からJavaコードの呼び出し"><a href="#C-からJavaコードの呼び出し" class="headerlink" title="C# からJavaコードの呼び出し"></a>C# からJavaコードの呼び出し</h2><ul>
 <li><a href="http://docs.unity3d.com/ScriptReference/AndroidJavaClass.html">AndroidJavaClass</a>でJavaのクラスを参照して使う：</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class HogeClass &#123;</span><br><span class="line">  private static string JAVA_CLASS_NAME &#x3D; &quot;com.hoge.JHogeClass&quot;;</span><br><span class="line"></span><br><span class="line">  public void Hoge() &#123;</span><br><span class="line">    using (AndroidJavaClass plugin &#x3D; new AndroidJavaClass(JAVA_CLASS_NAME)) &#123;</span><br><span class="line">      plugin.CallStatic(&quot;hogeNative&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class HogeClass &#123;</span><br><span class="line">  private static string JAVA_CLASS_NAME = &quot;com.hoge.JHogeClass&quot;;</span><br><span class="line"></span><br><span class="line">  public void Hoge() &#123;</span><br><span class="line">    using (AndroidJavaClass plugin = new AndroidJavaClass(JAVA_CLASS_NAME)) &#123;</span><br><span class="line">      plugin.CallStatic(&quot;hogeNative&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><a href="https://msdn.microsoft.com/en-us/library/yh598w02.aspx">using</a>はC#の文法で、ガベコレ対策（ガベコレが走るまでJava側のリソースを保持し続けてしまうのを防止するため）</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">package com.hoge;</span><br><span class="line"></span><br><span class="line">public class JHogeClass &#123;</span><br><span class="line">  public static void hogeNative() &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">package com.hoge;</span><br><span class="line"></span><br><span class="line">public class JHogeClass &#123;</span><br><span class="line">  public static void hogeNative() &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><p>Javaのコードはコンパイルして.jarを作り、Assets/Plugins/Android/以下に配置すると、Buildでリンクされる。</p>
@@ -239,7 +239,7 @@ public class HogeClass &amp;#123;  private static string JAVA_CLASS_NAME &amp;#x
 <h2 id="コールバック"><a href="#コールバック" class="headerlink" title="コールバック"></a>コールバック</h2><ul>
 <li>C#からJavaにメソッドを渡して呼び返してもらう、ということはできないようで、<code>UnityPlayer.UnitySendMessage</code>というのを使う：</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">package com.hoge;</span><br><span class="line"></span><br><span class="line">import com.unity3d.player.UnityPlayer;</span><br><span class="line"></span><br><span class="line">public class JHogeClass &#123;</span><br><span class="line">  public static void hogeNative() &#123;</span><br><span class="line">    UnityPlayer.UnitySendMessage(&quot;オブジェクト名&quot;, &quot;HogeCallback&quot;, &quot;message&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">package com.hoge;</span><br><span class="line"></span><br><span class="line">import com.unity3d.player.UnityPlayer;</span><br><span class="line"></span><br><span class="line">public class JHogeClass &#123;</span><br><span class="line">  public static void hogeNative() &#123;</span><br><span class="line">    UnityPlayer.UnitySendMessage(&quot;オブジェクト名&quot;, &quot;HogeCallback&quot;, &quot;message&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>シーンに存在する「オブジェクト名」のGameObjectにメソッドを送ることができる<ul>
@@ -251,7 +251,7 @@ public class HogeClass &amp;#123;  private static string JAVA_CLASS_NAME &amp;#x
 <li>コンパイルするにはUnityのクラス情報が入った.jarファイルが必要（Macの場合<code>/Applications/Unity/Unity.app/Contents/PlaybackEngines/AndroidPlayer/release/bin/classes.jar</code>にある)</li>
 </ul>
 <h2 id="アクティビティの取得"><a href="#アクティビティの取得" class="headerlink" title="アクティビティの取得"></a>アクティビティの取得</h2><p>Java側でAndroidのAPIを呼び出す場合、ActivityやContextが欲しい時が多い。それを取得するにはC#で、</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class HogeClass &#123;</span><br><span class="line">  public void fuga() &#123;</span><br><span class="line">    using (AndroidJavaClass unityPlayer &#x3D; new AndroidJavaClass(&quot;com.unity3d.player.UnityPlayer&quot;)) &#123;</span><br><span class="line">      using (AndroidJavaObject activity &#x3D; unityPlayer.GetStatic&lt;AndroidJavaObject&gt;(&quot;currentActivity&quot;)) &#123;</span><br><span class="line">        ...</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class HogeClass &#123;</span><br><span class="line">  public void fuga() &#123;</span><br><span class="line">    using (AndroidJavaClass unityPlayer = new AndroidJavaClass(&quot;com.unity3d.player.UnityPlayer&quot;)) &#123;</span><br><span class="line">      using (AndroidJavaObject activity = unityPlayer.GetStatic&lt;AndroidJavaObject&gt;(&quot;currentActivity&quot;)) &#123;</span><br><span class="line">        ...</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>Unityから起動されるアプリのActivityは<code>UnityPlayer</code>か、カスタマイズしている場合その派生クラスだと思うけど、そのstaticな<code>currentActivity</code>フィールドに格納されているらしい。</li>
