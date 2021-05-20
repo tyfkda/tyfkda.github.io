@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex">
     <title>階段三角波</title>
     <script src="//cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.js" defer></script>
     <script src="quantized-tri-wave.js"></script>
@@ -15,7 +16,7 @@
     </style>
   </head>
   <body>
-    <div x-data="initialData" x-init="init() /*$watch('div', onDivChanged)*/">
+    <div x-data="initialData" x-init="init()">
       <div>
         <select x-model="wave">
           <option :value="'quantized'">階段三角波</option>
