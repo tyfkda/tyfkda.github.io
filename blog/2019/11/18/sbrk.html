@@ -11,10 +11,9 @@
     <!--Description-->
     
         <meta name="description" content="C言語での malloc のお手本実装がK&amp;amp;Rの本に載っていて（リンク）、
-その中で実際にヒープとして使える領域を
-OSにメモリを要求するシステムコールとして sbrk というものを使っている。
+その中で実際にヒープとして使えるメモリ領域をOSに要求するシステムコールとして sbrk というものを使っている。
 これをlibcを使わずにシステムコールの直接呼び出しで同様のことを行いたい。
-libc関数を調べ">
+libc関数を調べるま">
     
 
     <!--Author-->
@@ -217,8 +216,7 @@ libc関数を調べ">
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
                 <p>C言語での <code>malloc</code> のお手本実装がK&amp;Rの本に載っていて（<a href="https://stackoverflow.com/q/13159564/6667631">リンク</a>）、
-その中で実際にヒープとして使える領域を
-OSにメモリを要求するシステムコールとして <code>sbrk</code> というものを使っている。</p>
+その中で実際にヒープとして使えるメモリ領域をOSに要求するシステムコールとして <code>sbrk</code> というものを使っている。</p>
 <p>これをlibcを使わずにシステムコールの直接呼び出しで同様のことを行いたい。</p>
 <h3 id="libc関数を調べる"><a href="#libc関数を調べる" class="headerlink" title="libc関数を調べる"></a>libc関数を調べる</h3><p>まずはlibcの <code>brk</code>、<code>sbrk</code> 関数がどんなものかを調べると以下の通り：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">brk</span><span class="params">(<span class="keyword">void</span> *addr)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">sbrk</span><span class="params">(<span class="keyword">intptr_t</span> increment)</span></span>;</span><br></pre></td></tr></table></figure>
