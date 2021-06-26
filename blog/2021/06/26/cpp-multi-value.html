@@ -10,11 +10,9 @@
 
     <!--Description-->
     
-        <meta name="description" content="Neural networks and deep learningの３章、Improving the way neural networks learn
-で、ニューラルネットワークの学習を改善する手法がいろいろ述べられている。
-クロスエントロピー、
-ソフトマックスや
-正則化以外の話について。">
+        <meta name="description" content="C++で関数から複数の値を返したい場合にどうするか。
+結論：std::tuple を使うとよい。
+#include &amp;lt;tuple&amp;gt;std::tuple&amp;lt;int, double&amp;gt; func1(int x, double y) &amp;#123;  return &amp;#123;x, y&amp;#125;;&amp;#125;">
     
 
     <!--Author-->
@@ -24,7 +22,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="ニューラルネットワークのその他の改良"/>
+        <meta property="og:title" content="【C++】関数から多値を返す"/>
     
 
     <!--Open Graph Description-->
@@ -46,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>ニューラルネットワークのその他の改良 - Kludge Factory</title>
+    <title>【C++】関数から多値を返す - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -71,7 +69,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/01/13/other_nn_improvement.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2021/06/26/cpp-multi-value.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -174,13 +172,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>ニューラルネットワークのその他の改良</h1>
+                    <h1>【C++】関数から多値を返す</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2016-01-13
+                            2021-06-26
                         
                     </span>
                 </div>
@@ -201,7 +199,7 @@
                         
 
 
-<a href="/tags/machine-learning/">#machine learning</a>
+<a href="/tags/cplusplus/">#cplusplus</a>
 
 
                     
@@ -216,34 +214,34 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>Neural networks and deep learningの３章、<a href="http://neuralnetworksanddeeplearning.com/chap3.html">Improving the way neural networks learn</a>
-で、ニューラルネットワークの学習を改善する手法がいろいろ述べられている。</p>
-<a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー">クロスエントロピー</a>、
-<a href="/blog/2015/12/20/softmax.html" title="ソフトマックス">ソフトマックス</a>や
-<a href="/blog/2016/01/03/regularization.html" title="正則化">正則化</a>以外の話について。
+                <p>C++で関数から複数の値を返したい場合にどうするか。</p>
+<p>結論：<code>std::tuple</code> を使うとよい。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tuple&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">std::tuple&lt;<span class="keyword">int</span>, <span class="keyword">double</span>&gt; <span class="title">func1</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;x, y&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
-<h3 id="ウェイトとバイアスの初期値"><a href="#ウェイトとバイアスの初期値" class="headerlink" title="ウェイトとバイアスの初期値"></a>ウェイトとバイアスの初期値</h3><ul>
-<li>Chapter1では単にすべてのウェイトとバイアスを平均値0、標準偏差1の正規分布の乱数で初期化していた</li>
-<li>ウェイトに前の層の入力を掛けて足し合わせたニューロンへの入力は、
-シグモイド関数の飽和する範囲になってしまうと、学習が遅くなる問題が発生する</li>
-<li><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピーコスト関数">クロスエントロピーコスト関数</a>
-を用いて解消できるのは出力層だけで、隠れ層には対処できない。</li>
-<li>ウェイトを標準偏差<script type="math/tex">1 / \sqrt{n_l}</script>の乱数で初期化すると飽和する範囲を避けることができ、
-学習が遅くなる問題を解消できる。</li>
-<li>バイアスの初期値はそれほどこだわらない。</li>
-</ul>
-<h3 id="ドロップアウト"><a href="#ドロップアウト" class="headerlink" title="ドロップアウト"></a>ドロップアウト</h3><ul>
-<li>ドロップアウトの元の論文：<a href="http://arxiv.org/pdf/1207.0580.pdf">Improving neural networks by preventing co-adaptation of feature detectors</a></li>
-</ul>
-<p>隠れ層のニューロンの半分を（一時的に）無効にする。</p>
-<h3 id="モメンタム"><a href="#モメンタム" class="headerlink" title="モメンタム"></a>モメンタム</h3><p>ウェイトやバイアスを直接いじるんじゃなく、傾きによって<em>速度</em>を変化させて
-速度によってウェイトやバイアスを変化させる。</p>
-<ul>
-<li>簡単に実装に追加できる</li>
-<li>学習をスピードアップさせる</li>
-</ul>
+<p>C言語では戻り値の型は1つしか指定できないので、
+複数の値を返したい場合には渡したポインタ先に書き込んでもらうのが常套手段だった。</p>
+<p>C++でも1つしか指定できないけど、
+<a href="https://cpprefjp.github.io/reference/tuple/tuple.html"><code>std::tuple</code></a> でまとめて返すことができる。</p>
+<h3 id="呼び出し側"><a href="#呼び出し側" class="headerlink" title="呼び出し側"></a>呼び出し側</h3><p>呼び出し側では <a href="https://cpprefjp.github.io/reference/tuple/tuple/get.html"><code>std::get</code></a> で取り出せる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> res = <span class="built_in">func1</span>(<span class="number">1</span>, <span class="number">2.3</span>);</span><br><span class="line">  <span class="keyword">int</span> x = std::get&lt;<span class="number">0</span>&gt;(res);</span><br><span class="line">  <span class="keyword">double</span> y = std::get&lt;<span class="number">1</span>&gt;(res);</span><br><span class="line">  std::cout &lt;&lt; x &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; y &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>C++14では <code>std::get&lt;型&gt;(tuple)</code> と取り出す型で指定することもできる。</p>
+<p>タプル以外にも <code>std::pair</code> や戻り値用の構造体を定義しても実現できる。
+<code>pair</code> の場合は要素が2つだけと決まっているのがわかりやすいのと、<code>first</code>や<code>second</code>で取り出せるのが便利。
+構造体はわざわざ定義する必要があるという手間は増えるが、メンバ名をつけることでわかりやすくなるかもしれない。</p>
+<h3 id="余分なコピーは発生しないか？"><a href="#余分なコピーは発生しないか？" class="headerlink" title="余分なコピーは発生しないか？"></a>余分なコピーは発生しないか？</h3><p>クラスを自作してコンストラクタ、デストラクタ、代入演算子にログを仕込んで確認したところ、
+戻り値最適化(RVO)が効く場合には余分なコピーは発生しておらずムーブされている模様：
+<a href="https://wandbox.org/permlink/ax8LxqlNcoSgiA5V">Wandboxで確認</a></p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">Foo::ctor()</span><br><span class="line">Foo::move()</span><br><span class="line">Foo::dtor()</span><br><span class="line">Foo, 3</span><br><span class="line">Foo::dtor()</span><br></pre></td></tr></table></figure>
+
+<p>なので安心して使える。</p>
+<h3 id="構造化束縛による取り出し"><a href="#構造化束縛による取り出し" class="headerlink" title="構造化束縛による取り出し"></a>構造化束縛による取り出し</h3><p>C++17では呼び出し側で<a href="https://cpprefjp.github.io/lang/cpp17/structured_bindings.html">構造化束縛</a>(structured bindings)というものが使える：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> [x, y] = <span class="built_in">func1</span>(<span class="number">1</span>, <span class="number">2.3</span>);</span><br><span class="line">  std::cout &lt;&lt; x &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; y &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>コンパイルオプションに <code>-std=c++17</code> を指定してやる。</p>
+<p>構造化束縛を使用しても、さらに余分なムーブが発生するわけではないようなので、安心して使える。</p>
 
 
                 
@@ -267,7 +265,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/08/cpp-lambda.html" title="【C++】ラムダ関数" rel="bookmark">【C++】ラムダ関数</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/12/lambda-is-a-functor.html" title="【C++】C++のラムダ式はファンクタだったのか…" rel="bookmark">【C++】C++のラムダ式はファンクタだったのか…</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/04/std-function-runtime.html" title="【C++】std::function のコスト" rel="bookmark">【C++】std::function のコスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/06/15/unique_ptr-forward-decl.html" title="【C++】クラスの前方参照とunique_ptr" rel="bookmark">【C++】クラスの前方参照とunique_ptr</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
