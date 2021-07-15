@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="「わかりやすいパターン認識」の2.3節「パーセプトロンの学習規則」(p.18)を１次元・2クラスの学習パターンに適用する例(p.23)を試してみた。">
+        <meta name="description" content="Unityを使う際、編集するシーンを切り替えるためにProjectビューから探してダブルクリックするのが大変なので、簡単に切り替えられるエディタ拡張を作った。">
     
 
     <!--Author-->
@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="パーセプトロンの学習規則を1次元のデータに対して試してみる"/>
+        <meta property="og:title" content="【Unity】シーンを簡単に切り替えるエディタ拡張"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>パーセプトロンの学習規則を1次元のデータに対して試してみる - Kludge Factory</title>
+    <title>【Unity】シーンを簡単に切り替えるエディタ拡張 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +67,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/10/13/perceptron-learning-1d.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2021/07/15/unity-scene-switcher.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -170,13 +170,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>パーセプトロンの学習規則を1次元のデータに対して試してみる</h1>
+                    <h1>【Unity】シーンを簡単に切り替えるエディタ拡張</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2015-10-13
+                            2021-07-15
                         
                     </span>
                 </div>
@@ -197,7 +197,7 @@
                         
 
 
-<a href="/tags/machine-learning/">#machine learning</a>
+<a href="/tags/unity/">#unity</a>
 
 
                     
@@ -212,51 +212,22 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>「わかりやすいパターン認識」の2.3節「パーセプトロンの学習規則」(p.18)を１次元・2クラスの学習パターンに適用する例(p.23)を試してみた。</p>
+                <p>Unityを使う際、編集するシーンを切り替えるためにProjectビューから探してダブルクリックするのが大変なので、簡単に切り替えられるエディタ拡張を作った。</p>
+<p><img src="/assets/unity-scene-switcher.png" alt="SceneSwitcherWindow"></p>
 <span id="more"></span>
 
-<h3 id="動作デモ"><a href="#動作デモ" class="headerlink" title="動作デモ"></a>動作デモ</h3><p><a href="https://jsfiddle.net/gs93texd/10/embedded/result/">PerceptronLearning1D - JsFiddle</a></p>
-<iframe width="100%" height="700" src="//jsfiddle.net/gs93texd/10/embedded/result,js,html,css/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+<p>プロジェクトに存在するシーン全てだと多すぎて選び辛くなるので、任意のシーンを手動で追加できるようにした。
+Projectビューからシーンをドラッグドロップ、または現在開いているシーンを追加できる。</p>
+<p>追加したシーンが行ごとに表示されて、シーン名のボタン一発で開く。
+また「X」で削除、「O」でProjectビューでフォーカス、「↑」で順番入れができる。</p>
+<p>リストの内容は保存されていて次回起動時にも利用できる。
+ローカルマシンに保存されるので多人数での開発でも他の人に影響を与えずにすむ。</p>
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><p>下記のソースをAssets以下のEditorフォルダ内に入れて、メニューの「Tools &gt; Foo &gt; Scene Switcher」でウィンドウが開くので任意の場所に配置して使用できる：</p>
+<script src="//gist.github.com/6fd2a4de6de7d3ea3f2766c705eae61b.js"></script>
 
 <ul>
-<li>緑の丸が拡張重みベクトルを表していて、「step」のボタンを押すごとに学習で赤い線と青い線を分離するパラメータを探す<ul>
-<li>適用するパターンの順序は、本の記述とは違い、ランダムにしている</li>
+<li>マルチシーンエディティングは考えてない。</li>
 </ul>
-</li>
-<li>「reset」ボタンで、拡張重みベクトルをランダムの位置からやり直す</li>
-</ul>
-<h3 id="パーセプトロンの学習規則"><a href="#パーセプトロンの学習規則" class="headerlink" title="パーセプトロンの学習規則"></a>パーセプトロンの学習規則</h3><ol>
-<li>重みベクトル $\mathbf{w}$ の初期値を適当に設定する。</li>
-<li>$\chi$ の中から学習パターンを一つ選ぶ。</li>
-<li>識別関数 $g(x) = \mathbf{w}^t \mathbf{x}$ によって識別を行い、正しく判定できなかった場合のみ次のように重みベクトル $\mathbf{w}$ を修正し、新しい重みベクトル $\mathbf{w}^\prime$ を作る。<script type="math/tex; mode=display">% <![CDATA[</li>
-</ol>
-<p>\left{
-\begin{align}
-\mathbf{w}^\prime &amp;= \mathbf{w} + \rho \cdot \mathbf{x} 　（\omega_1 のパターンに対して g(\mathbf{x}) \le 0 となったとき）　\tag{2.25} \
-\mathbf{w}^\prime &amp;= \mathbf{w} - \rho \cdot \mathbf{x} 　（\omega_2 のパターンに対して g(\mathbf{x}) \ge 0 となったとき）　\tag{2.26}
-\end{align}
-\right.
-%]]&gt;</script>
-4. 上の処理(2), (3)を <script type="math/tex">\chi</script> の全パターンに対して繰り返す。
-5. <script type="math/tex">\chi</script> の全パターンを正しく識別できたら終了。誤りがあるときは2に戻る。</p>
-<h3 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h3><p>上記の学習規則をJavaScriptで書くとこんな感じ：</p>
-<p>perceptron_learning.js</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 学習パターンを識別関数に適用して誤識別した場合、パーセプトロンの学習規則に基づき重みを調整する</span></span><br><span class="line"><span class="comment">//   ws : 拡張重みベクトル</span></span><br><span class="line"><span class="comment">//   xs : 拡張特徴ベクトル</span></span><br><span class="line"><span class="comment">//   c  : クラス (0 or 1)</span></span><br><span class="line"><span class="comment">//   rho: 学習係数ρ</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">learn</span>(<span class="params">ws, xs, c, rho</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> g = dot(ws, xs);  <span class="comment">// 識別関数gを計算</span></span><br><span class="line">  <span class="keyword">if</span> (c == <span class="number">0</span> &amp;&amp; g &lt;= <span class="number">0</span>) &#123;  <span class="comment">// クラスω1を誤識別</span></span><br><span class="line">    madd(ws, rho, xs);  <span class="comment">// w&#x27; = w + ρx</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c != <span class="number">0</span> &amp;&amp; g &gt;= <span class="number">0</span>) &#123;  <span class="comment">// クラスω2を誤識別</span></span><br><span class="line">    madd(ws, -rho, xs);  <span class="comment">// w&#x27; = w - ρx</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内積</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dot</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> l = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; a.length; ++i)</span><br><span class="line">    l += a[i] * b[i];</span><br><span class="line">  <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 係数付き加算</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">madd</span>(<span class="params">a, p, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; a.length; ++i)</span><br><span class="line">    a[i] += p * b[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="多クラスの場合"><a href="#多クラスの場合" class="headerlink" title="多クラスの場合"></a>多クラスの場合</h3><blockquote>
-<p>多クラス（<script type="math/tex">c > 2</script>）への拡張は、<script type="math/tex">\omega_i</script>に属するパターンを<script type="math/tex">\omega_j</script>と誤ったとき、もしくは識別結果として<script type="math/tex">\omega_i</script>と<script type="math/tex">\omega_j</script>の双方が候補となったとき（<script type="math/tex">i \ne j</script>）、重みベクトルの修正を</p>
-</blockquote>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\left\{
-\begin{align}
-\mathbf{w_i}^\prime &= \mathbf{w_i} + \rho \cdot \mathbf{x} \\
-\mathbf{w_j}^\prime &= \mathbf{w_j} - \rho \cdot \mathbf{x}  \tag{2.27}
-\end{align}
-\right.
-%]]></script>
-
-<p>とのこと。</p>
 
 
                 
@@ -280,7 +251,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/19/cache-http.html" title="Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する" rel="bookmark">Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/14/fixed-font.html" title="【Unity】固定幅ビットマップフォントを使う" rel="bookmark">【Unity】固定幅ビットマップフォントを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/11/generate-prefabs.html" title="【Unity】スクリプトでプレハブを大量生産する" rel="bookmark">【Unity】スクリプトでプレハブを大量生産する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/23/interior-mapping.html" title="【Unity】Shader Graphでインテリアマッピング" rel="bookmark">【Unity】Shader Graphでインテリアマッピング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/09/modify-xcproj.html" title="【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する" rel="bookmark">【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
