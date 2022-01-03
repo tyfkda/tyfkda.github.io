@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="AI for Robotics - Lesson 4: Motion Planning (pdf) (動画)">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="モーション計画"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>モーション計画 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/05/08/motion-planning.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>モーション計画</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-05-08
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://www.udacity.com/course/viewer#!/c-cs373/l-48646841/m-48683762">AI for Robotics - Lesson 4: Motion Planning</a> (<a href="https://www.udacity.com/file?file_key=agpzfnVkYWNpdHl1ckcLEgZDb3Vyc2UiBWNzMzczDAsSCUNvdXJzZVJldiIHZmViMjAxMgwLEgRVbml0GIHQDwwLEgxBdHRhY2hlZEZpbGUYwYUTDA">pdf</a>) (<a href="http://www.youtube.com/playlist?list=PLAADAB4F235FE8D65">動画</a>)</p>
+<span id="more"></span>
+
+<p>ゴールまでの最短経路探索。A*とかDynamic Programmingのざっくりとした説明。まあこのあたりは一応知っていたからわかったけど、動画だけで理解するのは大変そう。</p>
+<p>グリッドベースの最短経路探索ならわかるけど、クルマの自動運転のようにグリッドベースじゃない場合はどうしたらいいんだろう？</p>
+<p>問題：確率によって直進しないことがある場合のコストの計算</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># --------------</span></span><br><span class="line"><span class="comment"># USER INSTRUCTIONS</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Write a function called stochastic_value that </span></span><br><span class="line"><span class="comment"># takes no input and RETURNS two grids. The</span></span><br><span class="line"><span class="comment"># first grid, value, should contain the computed</span></span><br><span class="line"><span class="comment"># value of each cell as shown in the video. The</span></span><br><span class="line"><span class="comment"># second grid, policy, should contain the optimum</span></span><br><span class="line"><span class="comment"># policy for each cell.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Stay tuned for a homework help video! This should</span></span><br><span class="line"><span class="comment"># be available by Thursday and will be visible</span></span><br><span class="line"><span class="comment"># in the course content tab.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Good luck! Keep learning!</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># --------------</span></span><br><span class="line"><span class="comment"># GRADING NOTES</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># We will be calling your stochastic_value function</span></span><br><span class="line"><span class="comment"># with several different grids and different values</span></span><br><span class="line"><span class="comment"># of success_prob, collision_cost, and cost_step.</span></span><br><span class="line"><span class="comment"># In order to be marked correct, your function must</span></span><br><span class="line"><span class="comment"># RETURN (it does not have to print) two grids,</span></span><br><span class="line"><span class="comment"># value and policy.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># When grading your value grid, we will compare the</span></span><br><span class="line"><span class="comment"># value of each cell with the true value according</span></span><br><span class="line"><span class="comment"># to this model. If your answer for each cell</span></span><br><span class="line"><span class="comment"># is sufficiently close to the correct answer</span></span><br><span class="line"><span class="comment"># (within 0.001), you will be marked as correct.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># <span class="doctag">NOTE:</span> Please do not modify the values of grid,</span></span><br><span class="line"><span class="comment"># success_prob, collision_cost, or cost_step inside</span></span><br><span class="line"><span class="comment"># your function. Doing so could result in your</span></span><br><span class="line"><span class="comment"># submission being inappropriately marked as incorrect.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -------------</span></span><br><span class="line"><span class="comment"># GLOBAL VARIABLES</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># You may modify these variables for testing</span></span><br><span class="line"><span class="comment"># purposes, but you should only modify them here.</span></span><br><span class="line"><span class="comment"># Do NOT modify them inside your stochastic_value</span></span><br><span class="line"><span class="comment"># function.</span></span><br><span class="line"></span><br><span class="line">grid = [[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>]]</span><br><span class="line">       </span><br><span class="line">goal = [<span class="number">0</span>, <span class="built_in">len</span>(grid[<span class="number">0</span>])-<span class="number">1</span>] <span class="comment"># Goal is in top right corner</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">delta = [[-<span class="number">1</span>, <span class="number">0</span> ], <span class="comment"># go up</span></span><br><span class="line">         [ <span class="number">0</span>, -<span class="number">1</span>], <span class="comment"># go left</span></span><br><span class="line">         [ <span class="number">1</span>, <span class="number">0</span> ], <span class="comment"># go down</span></span><br><span class="line">         [ <span class="number">0</span>, <span class="number">1</span> ]] <span class="comment"># go right</span></span><br><span class="line"></span><br><span class="line">delta_name = [<span class="string">&#x27;^&#x27;</span>, <span class="string">&#x27;&lt;&#x27;</span>, <span class="string">&#x27;v&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>] <span class="comment"># Use these when creating your policy grid.</span></span><br><span class="line"></span><br><span class="line">success_prob = <span class="number">0.5</span></span><br><span class="line">failure_prob = (<span class="number">1.0</span> - success_prob)/<span class="number">2.0</span> <span class="comment"># Probability(stepping left) = prob(stepping right) = failure_prob</span></span><br><span class="line">collision_cost = <span class="number">100</span></span><br><span class="line">cost_step = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">############## INSERT/MODIFY YOUR CODE BELOW ##################</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># You may modify the code below if you want, but remember that</span></span><br><span class="line"><span class="comment"># your function must...</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 1) ...be called stochastic_value().</span></span><br><span class="line"><span class="comment"># 2) ...NOT take any arguments.</span></span><br><span class="line"><span class="comment"># 3) ...return two grids: FIRST value and THEN policy.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stochastic_value</span>():</span></span><br><span class="line">    value = [[<span class="number">1000</span> <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid[<span class="number">0</span>]))] <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid))]</span><br><span class="line">    policy = [[<span class="string">&#x27; &#x27;</span> <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid[<span class="number">0</span>]))] <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid))]</span><br><span class="line"></span><br><span class="line">    policy[goal[<span class="number">0</span>]][goal[<span class="number">1</span>]] = <span class="string">&#x27;*&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):  <span class="comment"># <span class="doctag">TODO:</span> Check convergence.</span></span><br><span class="line">      process(value, policy)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> value, policy</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process</span>(<span class="params">value, policy</span>):</span></span><br><span class="line">  processed = [[<span class="literal">False</span> <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid[<span class="number">0</span>]))] <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid))]</span><br><span class="line">  x = goal[<span class="number">0</span>]</span><br><span class="line">  y = goal[<span class="number">1</span>]</span><br><span class="line">  g = <span class="number">0</span></span><br><span class="line">  value[x][y] = <span class="number">0</span></span><br><span class="line">  processed[x][y] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">open</span> = [[g, x, y]]</span><br><span class="line">  <span class="keyword">while</span> <span class="built_in">len</span>(<span class="built_in">open</span>) &gt; <span class="number">0</span>:</span><br><span class="line">    <span class="built_in">open</span>.sort()</span><br><span class="line">    <span class="built_in">open</span>.reverse()</span><br><span class="line">    <span class="built_in">next</span> = <span class="built_in">open</span>.pop()</span><br><span class="line">    x = <span class="built_in">next</span>[<span class="number">1</span>]</span><br><span class="line">    y = <span class="built_in">next</span>[<span class="number">2</span>]</span><br><span class="line">    g = <span class="built_in">next</span>[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> x != goal[<span class="number">0</span>] <span class="keyword">or</span> y != goal[<span class="number">1</span>]:</span><br><span class="line">      value[x][y], <span class="built_in">dir</span> = calc_min_cost(grid, value, x, y)</span><br><span class="line">      policy[x][y] = delta_name[<span class="built_in">dir</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(delta)):</span><br><span class="line">        x2 = x + delta[i][<span class="number">0</span>]</span><br><span class="line">        y2 = y + delta[i][<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">if</span> x2 &gt;= <span class="number">0</span> <span class="keyword">and</span> x2 &lt; <span class="built_in">len</span>(grid) <span class="keyword">and</span> y2 &gt;=<span class="number">0</span> <span class="keyword">and</span> y2 &lt; <span class="built_in">len</span>(grid[<span class="number">0</span>]):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> processed[x2][y2] <span class="keyword">and</span> grid[x2][y2] == <span class="number">0</span>:</span><br><span class="line">                g2 = value[x][y] + cost_step</span><br><span class="line">                <span class="built_in">open</span>.append([g2, x2, y2])</span><br><span class="line">                processed[x2][y2] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_min_cost</span>(<span class="params">grid, value, x, y</span>):</span></span><br><span class="line">  mindir = -<span class="number">1</span></span><br><span class="line">  mincost = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> <span class="built_in">dir</span> <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">    cost = calc_cost(grid, value, x, y, <span class="built_in">dir</span>)</span><br><span class="line">    <span class="keyword">if</span> mindir &lt; <span class="number">0</span> <span class="keyword">or</span> cost &lt; mincost:</span><br><span class="line">      mindir = <span class="built_in">dir</span></span><br><span class="line">      mincost = cost</span><br><span class="line">  <span class="keyword">return</span> mincost, mindir</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_cost</span>(<span class="params">grid, value, x, y, <span class="built_in">dir</span></span>):</span></span><br><span class="line">  <span class="keyword">return</span> (get_dir_cost(grid, value, x, y, <span class="built_in">dir</span>) * success_prob +</span><br><span class="line">          get_dir_cost(grid, value, x, y, <span class="built_in">dir</span> - <span class="number">1</span>) * failure_prob +</span><br><span class="line">          get_dir_cost(grid, value, x, y, <span class="built_in">dir</span> + <span class="number">1</span>) * failure_prob) + cost_step</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_dir_cost</span>(<span class="params">grid, value, x, y, <span class="built_in">dir</span></span>):</span></span><br><span class="line">  <span class="built_in">dir</span> &amp;= <span class="number">3</span></span><br><span class="line">  x += delta[<span class="built_in">dir</span>][<span class="number">0</span>]</span><br><span class="line">  y += delta[<span class="built_in">dir</span>][<span class="number">1</span>]</span><br><span class="line">  <span class="keyword">if</span> x &lt; <span class="number">0</span> <span class="keyword">or</span> y &lt; <span class="number">0</span> <span class="keyword">or</span> x &gt;= <span class="built_in">len</span>(value) <span class="keyword">or</span> y &gt;= <span class="built_in">len</span>(value[x]) <span class="keyword">or</span> grid[x][y] != <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> collision_cost</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">return</span> value[x][y]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">value, policy = stochastic_value()</span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> value:</span><br><span class="line">  <span class="built_in">print</span> line</span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> policy:</span><br><span class="line">  <span class="built_in">print</span> line</span><br></pre></td></tr></table></figure>
+
+<p>故障を恐れるあまり、左上のゴールに直接向かわないようになってしまっている </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[57.902, 40.278, 26.066, 0]</span><br><span class="line">[47.054, 36.572, 29.993, 27.269]</span><br><span class="line">[53.171, 42.022, 37.775, 45.091]</span><br><span class="line">[77.585, 1000, 1000, 73.54582111158368]</span><br><span class="line">[&#x27;&gt;&#x27;, &#x27;v&#x27;, &#x27;v&#x27;, &#x27;*&#x27;]</span><br><span class="line">[&#x27;&gt;&#x27;, &#x27;&gt;&#x27;, &#x27;^&#x27;, &#x27;&lt;&#x27;]</span><br><span class="line">[&#x27;&gt;&#x27;, &#x27;^&#x27;, &#x27;^&#x27;, &#x27;&lt;&#x27;]</span><br><span class="line">[&#x27;^&#x27;, &#x27; &#x27;, &#x27; &#x27;, &#x27;^&#x27;]</span><br></pre></td></tr></table></figure>
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

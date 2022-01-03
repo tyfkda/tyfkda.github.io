@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="WASMを自前で生成してブラウザ上で動かせるようになったら面白いかと思って、まずはWASMのバイナリフォーマットを調べてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【WASM】WASMのバイナリフォーマット"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【WASM】WASMのバイナリフォーマット - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/11/22/wasm-bin-format.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【WASM】WASMのバイナリフォーマット</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-11-22
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/wasm/">#wasm</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>WASMを自前で生成してブラウザ上で動かせるようになったら面白いかと思って、まずはWASMのバイナリフォーマットを調べてみた。</p>
+<span id="more"></span>
+
+<h3 id="使用するツール"><a href="#使用するツール" class="headerlink" title="使用するツール"></a>使用するツール</h3><p>WASMのテキスト形式からバイナリ形式へのコンパイルなどの低レベルなツール群の
+<a href="https://github.com/WebAssembly/wabt">wabt</a>(The WebAssembly Binary Toolkit)
+というものが便利。
+Macの場合 <code>brew install wabt</code> で簡単にインストールできる。
+主に使うのは、</p>
+<ul>
+<li><code>wat2wasm</code> : テキスト形式.watからバイナリ形式.wasmに変換</li>
+<li><code>wasm-objdump</code> : wasmファイルの情報表示。 <code>-d</code> で逆アセンブルとバイナリの対応が出力される。</li>
+</ul>
+<h3 id="コンパイル結果を見てみる"><a href="#コンパイル結果を見てみる" class="headerlink" title="コンパイル結果を見てみる"></a>コンパイル結果を見てみる</h3><p>まずは簡単に、 <a href="https://developer.mozilla.org/ja/docs/WebAssembly/Understanding_the_text_format#%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AE%E9%96%A2%E6%95%B0%E6%9C%AC%E4%BD%93">WebAssembly テキストフォーマットを理解する - WebAssembly | MDN</a>
+の2引数を加算するだけの関数をコンパイルして内容を見てみると出力されるWASMファイルの全体像がつかみやすい：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">;; add.wat</span><br><span class="line">(module</span><br><span class="line">  (func $add (param $lhs i32) (param $rhs i32) (result i32)</span><br><span class="line">    local.get $lhs</span><br><span class="line">    local.get $rhs</span><br><span class="line">    i32.add)</span><br><span class="line">  (export &quot;add&quot; (func $add))</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>コンパイル結果：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ wat2wasm add.wat --verbose</span><br><span class="line">0000000: 0061 736d                                 ; WASM_BINARY_MAGIC</span><br><span class="line">0000004: 0100 0000                                 ; WASM_BINARY_VERSION</span><br><span class="line">; section <span class="string">&quot;Type&quot;</span> (1)</span><br><span class="line">0000008: 01                                        ; section code</span><br><span class="line">0000009: 00                                        ; section size (guess)</span><br><span class="line">000000a: 01                                        ; num types</span><br><span class="line">; <span class="built_in">type</span> 0</span><br><span class="line">000000b: 60                                        ; func</span><br><span class="line">000000c: 02                                        ; num params</span><br><span class="line">000000d: 7f                                        ; i32</span><br><span class="line">000000e: 7f                                        ; i32</span><br><span class="line">000000f: 01                                        ; num results</span><br><span class="line">0000010: 7f                                        ; i32</span><br><span class="line">0000009: 07                                        ; FIXUP section size</span><br><span class="line">; section <span class="string">&quot;Function&quot;</span> (3)</span><br><span class="line">0000011: 03                                        ; section code</span><br><span class="line">0000012: 00                                        ; section size (guess)</span><br><span class="line">0000013: 01                                        ; num <span class="built_in">functions</span></span><br><span class="line">0000014: 00                                        ; <span class="keyword">function</span> 0 signature index</span><br><span class="line">0000012: 02                                        ; FIXUP section size</span><br><span class="line">; section <span class="string">&quot;Export&quot;</span> (7)</span><br><span class="line">0000015: 07                                        ; section code</span><br><span class="line">0000016: 00                                        ; section size (guess)</span><br><span class="line">0000017: 01                                        ; num exports</span><br><span class="line">0000018: 03                                        ; string length</span><br><span class="line">0000019: 6164 64                                  add  ; <span class="built_in">export</span> name</span><br><span class="line">000001c: 00                                        ; <span class="built_in">export</span> kind</span><br><span class="line">000001d: 00                                        ; <span class="built_in">export</span> func index</span><br><span class="line">0000016: 07                                        ; FIXUP section size</span><br><span class="line">; section <span class="string">&quot;Code&quot;</span> (10)</span><br><span class="line">000001e: 0a                                        ; section code</span><br><span class="line">000001f: 00                                        ; section size (guess)</span><br><span class="line">0000020: 01                                        ; num <span class="built_in">functions</span></span><br><span class="line">; <span class="keyword">function</span> body 0</span><br><span class="line">0000021: 00                                        ; func body size (guess)</span><br><span class="line">0000022: 00                                        ; <span class="built_in">local</span> decl count</span><br><span class="line">0000023: 20                                        ; local.get</span><br><span class="line">0000024: 00                                        ; <span class="built_in">local</span> index</span><br><span class="line">0000025: 20                                        ; local.get</span><br><span class="line">0000026: 01                                        ; <span class="built_in">local</span> index</span><br><span class="line">0000027: 6a                                        ; i32.add</span><br><span class="line">0000028: 0b                                        ; end</span><br><span class="line">0000021: 07                                        ; FIXUP func body size</span><br><span class="line">000001f: 09                                        ; FIXUP section size</span><br></pre></td></tr></table></figure>
+
+<p>ヘッダや型、exportの宣言などがあって、0x21からが関数本体のコードとなっている。</p>
+<h3 id="フィボナッチ数計算のコード"><a href="#フィボナッチ数計算のコード" class="headerlink" title="フィボナッチ数計算のコード"></a>フィボナッチ数計算のコード</h3><p>フィボナッチ数の計算では
+関数への引数（ローカル変数）参照、
+加減算、
+比較、
+条件分岐、
+関数呼び出し
+を使用する。</p>
+<p>出力されるバイナリコードと対比させてみた：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">;; fib.wat</span><br><span class="line">(module</span><br><span class="line">  (func $fib (export &quot;fib&quot;) (param $n i32) (result i32)</span><br><span class="line">                        ;; 0000020: 1c     | func body size</span><br><span class="line">                        ;; 0000021: 00     | local decl count</span><br><span class="line">    local.get $n        ;; 0000022: 20 00  | local.get 0</span><br><span class="line">    i32.const 2         ;; 0000024: 41 02  | i32.const 2</span><br><span class="line">    i32.lt_s            ;; 0000026: 48     | i32.lt_s</span><br><span class="line">    if (result i32)     ;; 0000027: 04 7f  | if i32</span><br><span class="line">      local.get $n      ;; 0000029: 20 00  |   local.get</span><br><span class="line">    else                ;; 000002b: 05     | else</span><br><span class="line">      ;; (fib (- n 2)</span><br><span class="line">      local.get $n      ;; 000002c: 20 00  |   local.get 0</span><br><span class="line">      i32.const 2       ;; 000002e: 41 02  |   i32.const</span><br><span class="line">      i32.sub           ;; 0000030: 6b     |   i32.sub</span><br><span class="line">      call $fib         ;; 0000031: 10 00  |   call 0</span><br><span class="line"></span><br><span class="line">      ;; (fib (- n 1))</span><br><span class="line">      local.get $n      ;; 0000033: 20 00  |   local.get 0</span><br><span class="line">      i32.const 1       ;; 0000035: 41 01  |   i32.const</span><br><span class="line">      i32.sub           ;; 0000037: 6b     |   i32.sub</span><br><span class="line">      call $fib         ;; 0000038: 10 00  |   call 0</span><br><span class="line"></span><br><span class="line">      i32.add           ;; 000003a: 6a     |   i32.add</span><br><span class="line">    end                 ;; 000003b: 0b     | end</span><br><span class="line">  )                     ;; 000003c: 0b     | end</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>WASMのアーキテクチャは<a href="https://ja.wikipedia.org/wiki/%E3%82%B9%E3%82%BF%E3%83%83%E3%82%AF%E3%83%9E%E3%82%B7%E3%83%B3">スタックマシン</a></li>
+<li>ローカル変数参照 <code>local.get</code> で内容がスタックに積まれる</li>
+<li>関数名やローカル変数や引数に <code>$fib</code> や <code>$n</code> などと名前で参照できる（コンパイルするとインデクスに変換される）</li>
+<li>条件分岐には <code>if</code>-<code>else</code>-<code>end</code> が使える<ul>
+<li><code>if</code> の終了時点でスタックになにが積まれるか <code>(result i32)</code> を明示する必要がある（なにも積まない場合には省略できる）</li>
+</ul>
+</li>
+<li>加減算や比較演算は <code>i32.add</code> など、型に合った命令を使用する</li>
+<li>関数呼び出しは引数を頭から順に積んで <code>call</code></li>
+</ul>
+<h4 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h4><p>ブラウザでJavaScriptから読み込んで実行することもできるが、Node.js上でも実行できる。</p>
+<p><a href="https://gist.github.com/kanaka/3c9caf38bc4da2ecec38f41ba24b77df#gistcomment-2564224">runwasmのリファクタ版</a>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// wasmQuickRun.mjs</span></span><br><span class="line"><span class="keyword">const</span> [_, __, wasm_file, func_name, ...args] = process.argv;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span>(<span class="string">&quot;fs/promises&quot;</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">module</span> =&gt;</span> <span class="built_in">module</span>.default.readFile(wasm_file))</span><br><span class="line">  .then(<span class="function"><span class="params">bytes</span> =&gt;</span> WebAssembly.compile(bytes))</span><br><span class="line">  .then(</span><br><span class="line">    <span class="function"><span class="params">module</span> =&gt;</span></span><br><span class="line">      <span class="keyword">new</span> WebAssembly.Instance(<span class="built_in">module</span>, &#123;</span><br><span class="line">        <span class="attr">env</span>: &#123;</span><br><span class="line">          <span class="attr">memory</span>: <span class="keyword">new</span> WebAssembly.Memory(&#123; <span class="attr">initial</span>: <span class="number">256</span> &#125;),</span><br><span class="line"></span><br><span class="line">          <span class="attr">table</span>: <span class="keyword">new</span> WebAssembly.Table(&#123;</span><br><span class="line">            <span class="attr">initial</span>: <span class="number">0</span>,</span><br><span class="line">            <span class="attr">element</span>: <span class="string">&quot;anyfunc&quot;</span>,</span><br><span class="line">          &#125;),</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;)</span><br><span class="line">  )</span><br><span class="line">  .then(<span class="function"><span class="params">instance</span> =&gt;</span> instance.exports[func_name](...args))</span><br><span class="line">  .then(<span class="built_in">console</span>.log, <span class="built_in">console</span>.error);</span><br></pre></td></tr></table></figure>
+
+<p>を使って</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ node --experimental-modules ./wasmQuickRun.mjs ./fib.wasm fib 10</span><br><span class="line">55</span><br></pre></td></tr></table></figure>
+
+<h3 id="FizzBuzz"><a href="#FizzBuzz" class="headerlink" title="FizzBuzz"></a>FizzBuzz</h3><p>FizzBuzzでは
+ローカル変数、
+ループと脱出、
+文字列操作
+を使用する：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(module</span><br><span class="line">  (import &quot;console&quot; &quot;puts&quot; (func $puts (param i32)))</span><br><span class="line"></span><br><span class="line">  (func $puti32 (param $offset i32) (param $x i32) (result)</span><br><span class="line">                          ;; 000004e: 3e        ; func body size</span><br><span class="line">                          ;; 000004f: 00        ; local decl count</span><br><span class="line">    local.get $offset     ;; 0000050: 20 00     ; local.get 0</span><br><span class="line">    i32.const 15          ;; 0000052: 41 0f     ; i32.const 15</span><br><span class="line">    i32.add               ;; 0000054: 6a        ; i32.add</span><br><span class="line">    local.set $offset     ;; 0000055: 21 00     ; local.set 0</span><br><span class="line"></span><br><span class="line">    local.get $offset     ;; 0000057: 20 00     ; local.get 0</span><br><span class="line">    i32.const 0           ;; 0000059: 41 00     ; i32.const 0</span><br><span class="line">    i32.store8            ;; 000005b: 3a 00 00  ; i32.store8 0 0</span><br><span class="line"></span><br><span class="line">    block $break          ;; 000005e: 02 40     ; block void</span><br><span class="line">      loop $cont          ;; 0000060: 03 40     ; loop</span><br><span class="line">        local.get $offset ;; 0000062: 20 00     ; local.get 0</span><br><span class="line">        i32.const 1       ;; 0000064: 41 01     ; i32.const 1</span><br><span class="line">        i32.sub           ;; 0000066: 6b        ; i32.sub</span><br><span class="line">        local.set $offset ;; 0000067: 21 00     ; local.set</span><br><span class="line"></span><br><span class="line">        local.get $offset ;; 0000069: 20 00     ; local.get 0</span><br><span class="line">        local.get $x      ;; 000006b: 20 01     ; local.get 1</span><br><span class="line">        i32.const 10      ;; 000006d: 41 0a     ; i32.const 10</span><br><span class="line">        i32.rem_s         ;; 000006f: 6f        ; i32.rem_s</span><br><span class="line">        i32.const 48      ;; 0000070: 41 30     ; i32.const &#x27;0&#x27;</span><br><span class="line">        i32.add           ;; 0000072: 6a        ; i32.add</span><br><span class="line">        i32.store8        ;; 0000073: 3a 00 00  ; i32.store8</span><br><span class="line"></span><br><span class="line">        local.get $x      ;; 0000076: 20 01     ; local.get 1</span><br><span class="line">        i32.const 10      ;; 0000078: 41 0a     ; i32.const 10</span><br><span class="line">        i32.div_s         ;; 000007a: 6d        ; i32.div_s</span><br><span class="line">        local.set $x      ;; 000007b: 21 01     ; local.set 1</span><br><span class="line"></span><br><span class="line">        local.get $x      ;; 000007d: 20 01     ; local.get 1</span><br><span class="line">        i32.const 0       ;; 000007f: 41 00     ; i32.const</span><br><span class="line">        i32.le_s          ;; 0000081: 4c        ; i32.le_s</span><br><span class="line">        br_if $break      ;; 0000082: 0d 01     ; br_if 1</span><br><span class="line"></span><br><span class="line">        br $cont          ;; 0000084: 0c 00     ; br 0</span><br><span class="line">      end                 ;; 0000086: 0b        ; end</span><br><span class="line">    end                   ;; 0000087: 0b        ; end</span><br><span class="line"></span><br><span class="line">    local.get $offset     ;; 0000088: 20 00     ; local.get</span><br><span class="line">    call $puts            ;; 000008a: 10 00     ; call</span><br><span class="line">  )                       ;; 000008c: 0b        ; end</span><br><span class="line"></span><br><span class="line">  (func $fizzbuzz (export &quot;fizzbuzz&quot;) (result)</span><br><span class="line">                          ;; 000008d: 55        ; func body size</span><br><span class="line">                          ;; 000008e: 01        ; local decl count</span><br><span class="line">                          ;; 000008f: 01        ; local type count</span><br><span class="line">     (local $i i32)       ;; 0000090: 7f        ; i32</span><br><span class="line"></span><br><span class="line">     i32.const 1          ;; 0000091: 41 01     ; i32.const 1</span><br><span class="line">     local.set $i         ;; 0000093: 21 00     ; local.set 0</span><br><span class="line"></span><br><span class="line">     loop $cont           ;; 0000095: 03 40     ; loop</span><br><span class="line">       local.get $i       ;; 0000097: 20 00     ; local.get 0</span><br><span class="line">       i32.const 15       ;; 0000099: 41 0f     ; i32.const 15</span><br><span class="line">       i32.rem_s          ;; 000009b: 6f        ; i32.rem_s</span><br><span class="line">       i32.const 0        ;; 000009c: 41 00     ; i32.const 0</span><br><span class="line">       i32.eq             ;; 000009e: 46        ; i32.eq</span><br><span class="line">       if                 ;; 000009f: 04 40     ; if void</span><br><span class="line">         i32.const 10     ;; 00000a1: 41 0a     ; i32.const 10</span><br><span class="line">         call $puts       ;; 00000a3: 10 00     ; call 0</span><br><span class="line">       else               ;; 00000a5: 05        ; else</span><br><span class="line">         local.get $i     ;; 00000a6: 20 00     ; local.get 0</span><br><span class="line">         i32.const 3      ;; 00000a8: 41 03     ; i32.const 3</span><br><span class="line">         i32.rem_s        ;; 00000aa: 6f        ; i32.rem_s</span><br><span class="line">         i32.const 0      ;; 00000ab: 41 00     ; i32.const 0</span><br><span class="line">         i32.eq           ;; 00000ad: 46        ; i32.eq</span><br><span class="line">         if               ;; 00000ae: 04 40     ; if void</span><br><span class="line">           i32.const 0    ;; 00000b0: 41 00     ; i32.const 0 (offset &quot;Fizz&quot;)</span><br><span class="line">           call $puts     ;; 00000b2: 10 00     ; call 0</span><br><span class="line">         else             ;; 00000b4: 05        ; else</span><br><span class="line">           local.get $i   ;; 00000b5: 20 00     ; local.get 0</span><br><span class="line">           i32.const 5    ;; 00000b7: 41 05     ; i32.const 5</span><br><span class="line">           i32.rem_s      ;; 00000b9: 6f        ; i32.rem_s</span><br><span class="line">           i32.const 0    ;; 00000ba: 41 00     ; i32.const 0</span><br><span class="line">           i32.eq         ;; 00000bc: 46        ; i32.eq</span><br><span class="line">           if             ;; 00000bd: 04 40     ; if</span><br><span class="line">             i32.const 5  ;; 00000bf: 41 05     ; i32.const 5 (offset &quot;Buzz&quot;)</span><br><span class="line">             call $puts   ;; 00000c1: 10 00     ; call 0</span><br><span class="line">           else           ;; 00000c3: 05        ; else</span><br><span class="line">             i32.const 32 ;; 00000c4: 41 20     ; i32.const 32 (work)</span><br><span class="line">             local.get $i ;; 00000c6: 20 00     ; local.get 0</span><br><span class="line">             call $puti32 ;; 00000c8: 10 01     ; call</span><br><span class="line">           end            ;; 00000ca: 0b        ; end</span><br><span class="line">         end              ;; 00000cb: 0b        ; end</span><br><span class="line">       end                ;; 00000cc: 0b        ; end</span><br><span class="line"></span><br><span class="line">       local.get $i       ;; 00000cd: 20 00     ; local.get 0</span><br><span class="line">       i32.const 1        ;; 00000cf: 41 01     ; i32.const 1</span><br><span class="line">       i32.add            ;; 00000d1: 6a        ; i32.add</span><br><span class="line">       local.set $i       ;; 00000d2: 21 00     ; local.set 0</span><br><span class="line"></span><br><span class="line">       local.get $i       ;; 00000d4: 20 00     ; local.get 0</span><br><span class="line">       i32.const 100      ;; 00000d6: 41 e400   ; i32.const 100</span><br><span class="line">       i32.gt_s           ;; 00000d9: 4a        ; i32.gt_s</span><br><span class="line">       if                 ;; 00000da: 04 40     ; if void</span><br><span class="line">         br 2             ;; 00000dc: 0c 02     ; br 2</span><br><span class="line">       end                ;; 00000de: 0b        ; end</span><br><span class="line">       br $cont           ;; 00000df: 0c 00     ; br 0</span><br><span class="line">     end                  ;; 00000e1: 0b        ; end</span><br><span class="line">  )                       ;; 00000e2: 0b        ; end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  (memory (export &quot;memory&quot;) 1)</span><br><span class="line">  (data (i32.const 0)</span><br><span class="line">                          ;; 00000e3: 0b        ; section &quot;Data&quot; (11)</span><br><span class="line">                          ;; 00000e4: 19        ; section size</span><br><span class="line">                          ;; 00000e5: 01        ; num data segments</span><br><span class="line">                          ;; 00000e6: 00        ; segment flags</span><br><span class="line">                          ;; 00000e7: 41 00     ; i32.const 0</span><br><span class="line">                          ;; 00000e9: 0b        ; end</span><br><span class="line">                          ;; 00000ea: 13        ; data segment size</span><br><span class="line">       &quot;Fizz\00&quot;     ;; offset=0</span><br><span class="line">       &quot;Buzz\00&quot;     ;; offset=5</span><br><span class="line">       &quot;FizzBuzz\00&quot; ;; offset=10</span><br><span class="line">       )</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ローカル変数は関数先頭で <code>(local $i i32)</code> などと宣言する（括弧は省略できない）</li>
+<li><code>loop</code> や <code>block</code> や <code>if</code> は <strong>ブロック</strong> となっていて、途中で抜けるには <code>br</code> や <code>br_if</code> を使用する<ul>
+<li><code>$cont</code> などと名前をつけて、または直接数値で何段抜けるかを指定する</li>
+<li><code>loop</code> ブロックでも自動的にループされず、 <code>br $cont</code> と呼び出さないと抜けてしまう</li>
+</ul>
+</li>
+</ul>
+<p>文字列操作は結構面倒。
+<code>import</code> する外部関数の <code>$puts</code> で文字列表示をさせるが、文字列やポインタといったものをWASMで扱うことができない。
+<a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-mem">線形メモリ</a>というものに対して、そのオフセットを受け渡すことでやりとりする。</p>
+<p>起動側のJavScript(Node.js)：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// run_fizzbuzz.js</span></span><br><span class="line"><span class="keyword">const</span> w = <span class="built_in">require</span>(<span class="string">&#x27;./runwasm.js&#x27;</span>)</span><br><span class="line"></span><br><span class="line">;(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> imports = &#123;</span><br><span class="line">    <span class="attr">console</span>: &#123;</span><br><span class="line">      <span class="attr">puts</span>: <span class="function">(<span class="params">offset</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> buffer = instance.exports.memory.buffer</span><br><span class="line">        <span class="keyword">const</span> mem = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(buffer)</span><br><span class="line">        <span class="keyword">let</span> end</span><br><span class="line">        <span class="keyword">for</span> (end = offset; mem[end] !== <span class="number">0</span>; ++end)</span><br><span class="line">          ;</span><br><span class="line">        <span class="keyword">const</span> str = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(buffer, offset, end - offset)</span><br><span class="line">        <span class="keyword">const</span> text = <span class="keyword">new</span> TextDecoder(<span class="string">&#x27;utf-8&#x27;</span>).decode(str)</span><br><span class="line">        <span class="built_in">console</span>.log(text)</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> instance = <span class="keyword">await</span> w.loadWebAssembly(<span class="string">&#x27;fizzbuzz.wasm&#x27;</span>, imports)</span><br><span class="line">  instance.exports.fizzbuzz()</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://gist.github.com/kanaka/3c9caf38bc4da2ecec38f41ba24b77df#file-runwasm-js">runwasm</a>を使用<ul>
+<li><code>loadWebAssembly</code> に渡した <code>imports</code> の <code>console.puts</code> がWASM側から参照できる</li>
+</ul>
+</li>
+<li><code>puts</code> に線形メモリ中のオフセットを渡して、JavaScript側で <code>mem</code>(<code>=instance.exports.memory.buffer</code>) の内容を取り出す</li>
+<li>線形メモリのどこに何が置かれるかは自分で管理する</li>
+<li>数値を文字列化するには、線形メモリの適当な位置に文字列を構築する。
+線形メモリへの書き込みは <code>i32.store8</code> で1バイトずつ行う。</li>
+<li><code>data</code> 中のヌル文字のエスケープは <code>\0</code> じゃなくて <code>\00</code> （<code>\</code>に続けて16進数2桁）</li>
+</ul>
+<h3 id="配列"><a href="#配列" class="headerlink" title="配列"></a>配列</h3><p>ローカル変数で配列型はどう扱うんだろうと思い、C言語で書いたエラトステネスの篩を<code>emcc</code>したものを<code>wasm2wat</code>で逆アセンブルして見てみた。
+要は、</p>
+<ul>
+<li>ローカル変数で使用できるのは<code>i32</code>などの数値型だけで、配列は線形メモリ上に配置する。</li>
+<li>グローバル変数で線形メモリ上のオフセットを（スタックポインタの用途として）保持して、関数内で使用する分を増減する。</li>
+<li>配列には<code>i32.store</code>や<code>i32.load</code>でアクセスする。</li>
+</ul>
+<p>構造体も同様。</p>
+<h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><ul>
+<li>数値型しか扱えないからか、命令セットがすごくシンプル</li>
+<li>ジャンプ先をアドレスじゃなくブロックから何段抜けるかで指定するのはバイトコード的にはリーズナブルかも<ul>
+<li>好き勝手な場所に飛ばれないというのもいいかも</li>
+</ul>
+</li>
+<li>定数は<a href="https://en.wikipedia.org/wiki/LEB128">LEB128</a>という可変長（最上位ビットで続くかどうかを示す）でエンコードする</li>
+<li><code>if</code>, <code>loop</code>, <code>block</code> などのブロックで結果の型をテキスト形式で指定するのはまだしも、バイナリ形式では必要なくね？</li>
+<li><a href="https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-variable"><code>local.tee</code></a> などという命令は入れないで、<code>local.set</code>-<code>local.get</code> をランタイムが勝手に最適化して欲しい…</li>
+<li><code>malloc</code> 相当の機能を提供するには、線形メモリを管理するランタイムを用意する必要がある？</li>
+<li>バイナリフォーマットは結構シンプルなので、頑張ればターゲットコードとして出力できそう！？</li>
+</ul>
+<h3 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h3><ul>
+<li><a href="https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#high-level-structure">design/BinaryEncoding.md · WebAssembly/design</a>
+どういうバイナリコードを使うかはここが一番わかり易い気がするが、先頭に「もう更新されていません」と書かれている…<ul>
+<li><a href="https://webassembly.github.io/spec/core/binary/index.html">Binary Format — WebAssembly 1.1</a>
+どう見たらいいのかさっぱりわからん…</li>
+</ul>
+</li>
+<li><a href="https://developer.mozilla.org/ja/docs/WebAssembly/Understanding_the_text_format">WebAssembly テキストフォーマットを理解する - WebAssembly | MDN</a></li>
+<li><a href="https://github.com/WebAssembly/wabt">WebAssembly/wabt: The WebAssembly Binary Toolkit</a><ul>
+<li><a href="https://webassembly.github.io/wabt/demo/wat2wasm/">wat2wasm demo</a>
+オンラインでコンパイル結果を確認できて便利</li>
+</ul>
+</li>
+<li><a href="https://github.com/guybedford/wasm-intro">guybedford/wasm-intro: Egghead.io WASM Introduction Examples</a>
+plnkr で動作確認できて便利</li>
+<li><a href="https://wasdk.github.io/WasmFiddle/">WasmFiddle</a>
+動作確認できて便利</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/07/12/rust-wasm-pack.html" title="【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…" rel="bookmark">【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="「わかりやすいパターン認識」の2.3節「パーセプトロンの学習規則」(p.18)を１次元・2クラスの学習パターンに適用する例(p.23)を試してみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="パーセプトロンの学習規則を1次元のデータに対して試してみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>パーセプトロンの学習規則を1次元のデータに対して試してみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/10/13/perceptron-learning-1d.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>パーセプトロンの学習規則を1次元のデータに対して試してみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-10-13
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/machine-learning/">#machine learning</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>「わかりやすいパターン認識」の2.3節「パーセプトロンの学習規則」(p.18)を１次元・2クラスの学習パターンに適用する例(p.23)を試してみた。</p>
+<span id="more"></span>
+
+<h3 id="動作デモ"><a href="#動作デモ" class="headerlink" title="動作デモ"></a>動作デモ</h3><p><a href="https://jsfiddle.net/gs93texd/10/embedded/result/">PerceptronLearning1D - JsFiddle</a></p>
+<iframe width="100%" height="700" src="//jsfiddle.net/gs93texd/10/embedded/result,js,html,css/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<ul>
+<li>緑の丸が拡張重みベクトルを表していて、「step」のボタンを押すごとに学習で赤い線と青い線を分離するパラメータを探す<ul>
+<li>適用するパターンの順序は、本の記述とは違い、ランダムにしている</li>
+</ul>
+</li>
+<li>「reset」ボタンで、拡張重みベクトルをランダムの位置からやり直す</li>
+</ul>
+<h3 id="パーセプトロンの学習規則"><a href="#パーセプトロンの学習規則" class="headerlink" title="パーセプトロンの学習規則"></a>パーセプトロンの学習規則</h3><ol>
+<li>重みベクトル $\mathbf{w}$ の初期値を適当に設定する。</li>
+<li>$\chi$ の中から学習パターンを一つ選ぶ。</li>
+<li>識別関数 $g(x) = \mathbf{w}^t \mathbf{x}$ によって識別を行い、正しく判定できなかった場合のみ次のように重みベクトル $\mathbf{w}$ を修正し、新しい重みベクトル $\mathbf{w}^\prime$ を作る。<script type="math/tex; mode=display">% <![CDATA[</li>
+</ol>
+<p>\left{
+\begin{align}
+\mathbf{w}^\prime &amp;= \mathbf{w} + \rho \cdot \mathbf{x} 　（\omega_1 のパターンに対して g(\mathbf{x}) \le 0 となったとき）　\tag{2.25} \
+\mathbf{w}^\prime &amp;= \mathbf{w} - \rho \cdot \mathbf{x} 　（\omega_2 のパターンに対して g(\mathbf{x}) \ge 0 となったとき）　\tag{2.26}
+\end{align}
+\right.
+%]]&gt;</script>
+4. 上の処理(2), (3)を <script type="math/tex">\chi</script> の全パターンに対して繰り返す。
+5. <script type="math/tex">\chi</script> の全パターンを正しく識別できたら終了。誤りがあるときは2に戻る。</p>
+<h3 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h3><p>上記の学習規則をJavaScriptで書くとこんな感じ：</p>
+<p>perceptron_learning.js</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 学習パターンを識別関数に適用して誤識別した場合、パーセプトロンの学習規則に基づき重みを調整する</span></span><br><span class="line"><span class="comment">//   ws : 拡張重みベクトル</span></span><br><span class="line"><span class="comment">//   xs : 拡張特徴ベクトル</span></span><br><span class="line"><span class="comment">//   c  : クラス (0 or 1)</span></span><br><span class="line"><span class="comment">//   rho: 学習係数ρ</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">learn</span>(<span class="params">ws, xs, c, rho</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> g = dot(ws, xs);  <span class="comment">// 識別関数gを計算</span></span><br><span class="line">  <span class="keyword">if</span> (c == <span class="number">0</span> &amp;&amp; g &lt;= <span class="number">0</span>) &#123;  <span class="comment">// クラスω1を誤識別</span></span><br><span class="line">    madd(ws, rho, xs);  <span class="comment">// w&#x27; = w + ρx</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c != <span class="number">0</span> &amp;&amp; g &gt;= <span class="number">0</span>) &#123;  <span class="comment">// クラスω2を誤識別</span></span><br><span class="line">    madd(ws, -rho, xs);  <span class="comment">// w&#x27; = w - ρx</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内積</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dot</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> l = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; a.length; ++i)</span><br><span class="line">    l += a[i] * b[i];</span><br><span class="line">  <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 係数付き加算</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">madd</span>(<span class="params">a, p, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; a.length; ++i)</span><br><span class="line">    a[i] += p * b[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="多クラスの場合"><a href="#多クラスの場合" class="headerlink" title="多クラスの場合"></a>多クラスの場合</h3><blockquote>
+<p>多クラス（<script type="math/tex">c > 2</script>）への拡張は、<script type="math/tex">\omega_i</script>に属するパターンを<script type="math/tex">\omega_j</script>と誤ったとき、もしくは識別結果として<script type="math/tex">\omega_i</script>と<script type="math/tex">\omega_j</script>の双方が候補となったとき（<script type="math/tex">i \ne j</script>）、重みベクトルの修正を</p>
+</blockquote>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\left\{
+\begin{align}
+\mathbf{w_i}^\prime &= \mathbf{w_i} + \rho \cdot \mathbf{x} \\
+\mathbf{w_j}^\prime &= \mathbf{w_j} - \rho \cdot \mathbf{x}  \tag{2.27}
+\end{align}
+\right.
+%]]></script>
+
+<p>とのこと。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

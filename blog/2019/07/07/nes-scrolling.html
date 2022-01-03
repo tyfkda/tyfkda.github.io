@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="だいぶ前から細々とファミコンエミュレータを作っていてそれなりに動くようになっているんだけど、ここらで処理をメモっておく。
+特にBG（背景）の処理に関しては結構トリッキーで、実装に戸惑ったことを書いてみる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ファミコンでのBGスクロール"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ファミコンでのBGスクロール - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2019/07/07/nes-scrolling.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ファミコンでのBGスクロール</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-07-07
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/nes/">#nes</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>だいぶ前から細々と<a href="https://github.com/tyfkda/nesemu">ファミコンエミュレータ</a>を作っていてそれなりに動くようになっているんだけど、ここらで処理をメモっておく。
+特にBG（背景）の処理に関しては結構トリッキーで、実装に戸惑ったことを書いてみる。</p>
+<span id="more"></span>
+
+<h3 id="画面表示の処理方法"><a href="#画面表示の処理方法" class="headerlink" title="画面表示の処理方法"></a>画面表示の処理方法</h3><p>ファミコンのハードは（オーディオとかはひとまず置いておくとして）大まかにCPUという命令を処理する部分と、PPUという画像を処理する部分があって、これらを実装すれば絵が出るようになる。
+エミュレータがインタラクティブに動くようにするためには、経過時間を測ってそれに対応するクロック数だけCPUとPPUを動かしてやればよい。</p>
+<p>自作エミュレータの処理的にはCPUはクロックに従って動かすけど、PPUはそういうことはしてない。
+エミュレート側で画面表示を行うタイミングでPPUのレジスタやVRAMの内容から画面を構築して表示している。</p>
+<p>実際にはファミコンでは表示期間中は固定の内容が表示されるというわけではなく画面の途中でBGのスクロール位置などを変更できるので（後述）、水平ラインのどの位置で変更されたかを記録しておいて、それも反映させている。</p>
+<p>ファミコン実機の動作を正確に再現したい場合には、PPU側も真面目にクロックによって動作を再現してやる方法もあるらしい。
+考えるだけでも処理が重そう、と思うんだけど<a href="https://github.com/dbousamra/hnes/blob/master/src/Emulator.hs#L13-L16">hnes</a>とか
+<a href="https://github.com/mame/optcarrot/blob/a545929edc/lib/optcarrot/cpu.rb#L941">optcarrotでも場合によっては</a>そうしているっぽい。</p>
+<h3 id="BGのスクロール"><a href="#BGのスクロール" class="headerlink" title="BGのスクロール"></a>BGのスクロール</h3><p>ファミコンには背景が2画面分の広さがあって、位置をずらすことで簡単にスクロールさせることができる。
+ゲームの背景として使う場合はこの機能が利用できる。
+しかしレイヤーとしては１面しかないという制約があって、それを回避しようとするとちょっとトリッキーになってくる。</p>
+<p>スコアなどの情報を画面に表示させる場合それらはスクロールさせたくないが、BGが１面しかないので単純にはそういうことができない。
+じゃあどうするかというと、表示期間中にスクロール位置を書き換えて、画面の途中でスクロール位置を変更することで実現している。</p>
+<p>例えばスーパーマリオでは画面上部はBGの左上部分を表示、32ライン目以降を横スクロールさせるようになっている。</p>
+<p><img src="/assets/blog/nes-scrolling/smb.png" alt="Super Mario Bros"></p>
+<p>画面の途中でスクロール位置を変更する場合の、レジスタに書き込まれる値というものがちょっと注意が必要だった。
+通常のVブランク中にスクロール位置を設定する場合に画面左上の位置を指定するということと、
+「BG面」という名称から、実際にそういう論理的な構造があってスクロールレジスタはその原点位置を指定するもので、PPUがそれに従って画面に反映させているのかと想像していた。
+なので画面の途中でスクロール位置を変更した場合、その後に表示される内容はそのスクロール位置＋描画している位置のオフセットとなるものだと思っていた。</p>
+<p>しかし実際にはそうじゃなくて、PPUはスクロール値としてレジスタに書き込まれた値に対応するネームテーブルのアドレスを直接管理していて、表示期間中はそのアドレスから背景チップのパターンを取り出して描画する、ということを繰り返しているのだった。
+画面の途中でスクロール位置を書き換えるとそのアドレスが直接変更されて、それによってスクロール位置が切り替わるという動作になっている。
+確かにそうなってるとハードウェアの回路が単純ですみそうだなぁという気はする。</p>
+<p>注意点としては、表示期間中にスクロールレジスタを書き換えても反映されるのはX方向だけでY方向は効かない。
+Y方向もいじりたい場合には、アクセスするPPUのアドレスを指定するレジスタがスクロールレジスタと共有されていることが利用される。</p>
+<p>この辺り、ハードウェア的にどう構成されているのか知らないけどそんなに複雑には作られてないはず、
+しかしエミュレートする際には（PPUをクロック動作させてないこともあって）かなりトリッキーになってくる。</p>
+<h3 id="スクロール切り替え位置の決定方法"><a href="#スクロール切り替え位置の決定方法" class="headerlink" title="スクロール切り替え位置の決定方法"></a>スクロール切り替え位置の決定方法</h3><p>画面の途中でスクロール位置を切り替える場合には、タイミングをみはからってPPUレジスタに書き込む必要がある。
+しかしCPUからはPPUの現在の描画位置を直接取得することができないのでどうするか。</p>
+<p>PPUの機能で、0番目のスプライトと背景が交差していたらそのラインを処理するときに特定のビットが1になるというものを利用する（<a href="https://wiki.nesdev.com/w/index.php?title=PPU_OAM&redirect=no#Sprite_zero_hits">スプライト0ヒット</a>）。
+CPUでそのビット監視して、1になったらスクロール位置を変更するというふうになっている。</p>
+<p>スーパーマリオの場合、上部のコイン表示が実は単なる背景じゃなくスプライト0が重ねて配置してあって、これを使って検知している：</p>
+<p><img src="/assets/blog/nes-scrolling/sprite0hit.png" alt="Sprite 0 hit"></p>
+<p>しかし重なっても割り込みが発生するわけじゃないので、実装にはかなり気を使うんじゃないかと思う。
+ポーリングで待つ必要があるが多少余裕を持っておかないと、遅れた場合に画面が乱れてしまうのでまずい。
+しかし余裕を持ちすぎると非力なCPUパワーの無駄遣いになってしまうので悩ましい。</p>
+<p>ROMカセットの種類によっては<a href="https://wiki.nesdev.com/w/index.php/IRQ">IRQ</a>という機能で割り込みが制御できるので（<a href="https://wiki.nesdev.com/w/index.php/MMC3">MMC3</a>など）、そういう問題は回避できる。
+（サウンドチップ<a href="https://wiki.nesdev.com/w/index.php/APU#DMC_.28.244010-4013.29">APUのDMC</a>でもIRQが制御できるぽいが、使用しているゲームはあまりなさそう）。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://wiki.nesdev.com/w/index.php/PPU_scrolling">PPU scrolling - Nesdev wiki</a></li>
+<li><a href="https://wiki.nesdev.com/w/index.php/PPU_registers">PPU registers - Nesdev wiki</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/09/optcarrot.html" title="Optcarrotがすごい" rel="bookmark">Optcarrotがすごい</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/01/square-duty.html" title="矩形波のデューティ比を変化させる" rel="bookmark">矩形波のデューティ比を変化させる</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

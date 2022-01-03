@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="HaskellでReaderTを使って組むとよい、という記事を見てちょっと試してみた感想。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Haskell】ReaderTデザインパターンについて"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Haskell】ReaderTデザインパターンについて - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2018/09/27/readert-pattern.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Haskell】ReaderTデザインパターンについて</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2018-09-27
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/haskell/">#haskell</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Haskellで<code>ReaderT</code>を使って組むとよい、という記事を見てちょっと試してみた感想。</p>
+<span id="more"></span>
+
+<p><a href="https://www.fpcomplete.com/blog/2017/06/readert-design-pattern">The ReaderT Design Pattern</a>に、
+アプリ全体で参照したい値や書き換えたい値を<a href="http://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Reader.html#g:3">ReaderT</a>で扱うとよい、というようなことが書いてあった。
+要点をよくわかってないけど試したところまでメモしておく。</p>
+<p><code>ReaderT</code> の前に、関連するモナドの動作もよく理解してないので復習しつつ。</p>
+<h3 id="IORef"><a href="#IORef" class="headerlink" title="IORef"></a>IORef</h3><p>値を書き換えたい場合、<a href="http://hackage.haskell.org/package/base-4.12.0.0/docs/Data-IORef.html">IORef</a>が使える：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Data.IORef (<span class="type">IORef</span>, <span class="title">newIORef</span>, <span class="title">readIORef</span>, <span class="title">writeIORef</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">square</span> :: <span class="type">IORef</span> <span class="type">Int</span> -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">square</span> ref = <span class="keyword">do</span></span><br><span class="line">  x &lt;- readIORef ref</span><br><span class="line">  writeIORef ref $ x * x</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">  ref &lt;- newIORef <span class="number">1111</span></span><br><span class="line">  square ref</span><br><span class="line">  y &lt;- readIORef ref  <span class="comment">-- 1234321</span></span><br><span class="line">  print y</span><br></pre></td></tr></table></figure>
+
+<p>扱うにはIOモナド内で行う必要がある。</p>
+<h3 id="Reader"><a href="#Reader" class="headerlink" title="Reader"></a>Reader</h3><p>値を参照したいだけの場合、<a href="http://hackage.haskell.org/package/transformers-0.5.5.0/docs/Control-Monad-Trans-Reader.html#g:1">Readerモナド</a>が使える。
+<a href="http://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Reader.html#v:runReader">runReader</a>で走る内部に環境を暗黙的に引き回すことができて、
+<a href="http://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Reader.html#v:ask">ask</a>で値の取得ができる：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Control.Monad.Reader (<span class="type">Reader</span>, <span class="title">runReader</span>, <span class="title">ask</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">square</span> :: <span class="type">Reader</span> <span class="type">Int</span> <span class="type">Int</span></span><br><span class="line"><span class="title">square</span> = <span class="keyword">do</span></span><br><span class="line">  x &lt;- ask</span><br><span class="line">  return $ x * x</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">  <span class="keyword">let</span> x = <span class="number">1111</span></span><br><span class="line">  <span class="keyword">let</span> y = runReader square x  <span class="comment">-- 1234321</span></span><br><span class="line">  print y</span><br></pre></td></tr></table></figure>
+
+<h3 id="ReaderT"><a href="#ReaderT" class="headerlink" title="ReaderT"></a>ReaderT</h3><p><code>Reader</code>で渡す環境に<code>IORef</code>を入れてもIOモナドじゃないので値を読んだり書いたりできない。
+そこで<code>ReaderT</code>モナドを使用する。
+<code>ReaderT</code>モナド内部で<a href="https://hackage.haskell.org/package/transformers-0.3.0.0/docs/Control-Monad-IO-Class.html#v:liftIO">liftIO</a>でIOモナドを実行できる。
+走らせるには<code>runReaderT</code>を使う：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Data.IORef (<span class="type">IORef</span>, <span class="title">newIORef</span>, <span class="title">readIORef</span>, <span class="title">writeIORef</span>)</span><br><span class="line"><span class="keyword">import</span> Control.Monad.Reader (<span class="type">ReaderT</span>, <span class="title">runReaderT</span>, <span class="title">ask</span>)</span><br><span class="line"><span class="keyword">import</span> Control.Monad.State (<span class="title">liftIO</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">square</span> :: <span class="type">ReaderT</span> (<span class="type">IORef</span> <span class="type">Int</span>) <span class="type">IO</span> ()</span><br><span class="line"><span class="title">square</span> = <span class="keyword">do</span></span><br><span class="line">  ref &lt;- ask</span><br><span class="line">  liftIO $ <span class="keyword">do</span></span><br><span class="line">    x &lt;- readIORef ref</span><br><span class="line">    writeIORef ref (x * x)</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">  v &lt;- newIORef <span class="number">1111</span></span><br><span class="line">  runReaderT square v</span><br><span class="line">  y &lt;- readIORef v  <span class="comment">-- 1234321</span></span><br><span class="line">  print y</span><br></pre></td></tr></table></figure>
+
+<h3 id="ReaderT-Design-Pattern"><a href="#ReaderT-Design-Pattern" class="headerlink" title="ReaderT Design Pattern"></a>ReaderT Design Pattern</h3><p><code>ReaderT</code>の場合と内容は変わらないけど、<a href="https://www.fpcomplete.com/blog/2017/06/readert-design-pattern">The ReaderT Design Pattern</a>の冒頭で書かれているように<code>Env</code>や<code>App</code>を定義してみる：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Data.IORef (<span class="type">IORef</span>, <span class="title">newIORef</span>, <span class="title">readIORef</span>, <span class="title">writeIORef</span>)</span><br><span class="line"><span class="keyword">import</span> Control.Monad.Reader (<span class="type">ReaderT</span>, <span class="title">runReaderT</span>, <span class="title">ask</span>)</span><br><span class="line"><span class="keyword">import</span> Control.Monad.State (<span class="title">liftIO</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Env</span> = <span class="type">Env</span> &#123;</span></span><br><span class="line"><span class="class">  <span class="title">ref</span> :: <span class="type">IORef</span> <span class="type">Int</span></span></span><br><span class="line"><span class="class">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="type">App</span> = <span class="type">ReaderT</span> <span class="type">Env</span> <span class="type">IO</span></span></span><br><span class="line"></span><br><span class="line"><span class="title">square</span> :: <span class="type">App</span> ()</span><br><span class="line"><span class="title">square</span> = <span class="keyword">do</span></span><br><span class="line">  env &lt;- ask</span><br><span class="line">  liftIO $ <span class="keyword">do</span></span><br><span class="line">    x &lt;- readIORef $ ref env</span><br><span class="line">    writeIORef (ref env) $ x * x</span><br><span class="line"></span><br><span class="line"><span class="title">runApp</span> :: <span class="type">App</span> a -&gt; <span class="type">Env</span> -&gt; <span class="type">IO</span> a</span><br><span class="line"><span class="title">runApp</span> f env = <span class="keyword">do</span></span><br><span class="line">  runReaderT f env</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">  ref &lt;- newIORef <span class="number">1111</span></span><br><span class="line">  <span class="keyword">let</span> env = <span class="type">Env</span> &#123; ref = ref &#125;</span><br><span class="line">  runApp square env</span><br><span class="line">  y &lt;- readIORef ref</span><br><span class="line">  print y</span><br></pre></td></tr></table></figure>
+
+<p>Haskellで作られているNESエミュレータ<a href="https://github.com/dbousamra/hnes">hnes</a>も<a href="https://github.com/dbousamra/hnes/blob/master/src/Emulator/Nes.hs#L160">Emulator</a>型をそのように使っているみたいだった
+（<a href="https://github.com/dbousamra/hnes/blob/master/src/Emulator/Nes.hs#L86">Nes</a>がアプリ全体の情報を保持する環境か）。</p>
+<h3 id="考察"><a href="#考察" class="headerlink" title="考察"></a>考察</h3><ul>
+<li>「Better globals」とのことで暗黙的に全体の設定を引き回すことができて必要な箇所で参照できる、というのが利点とのことで、</li>
+<li>値を書き換えたい場合にも対応できて、</li>
+<li>こういう仕組みで作ればアプリ作れるよね</li>
+</ul>
+<p>ということでいいかと思ったんだけど、</p>
+<ul>
+<li>IOモナドの代わりに<code>ReaderT</code>モナドになっただけで、全体をモナドとして書かなきゃいけないことは変わりない</li>
+<li>引き渡す環境がアプリ全体どこからでも参照・変更される可能性があるというのは、スパゲティになる可能性が高くてダメそう</li>
+<li>それを考慮して部分によって渡す環境を絞るのは何が必要か決めるのが難しいし面倒</li>
+</ul>
+<p>というので問題があるんじゃないか、と思った。</p>
+<p>まあ元記事もHaskell自体もよく理解してないのでなんともなんだけど…。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

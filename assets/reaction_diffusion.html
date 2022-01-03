@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="App">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="robots" content="noindex">
+    <title>Reaction Diffusion</title>
+
+    <!-- CSS -->
+    <style type="text/css">
+      html, body {
+        margin: 0;
+      }
+
+      body {
+        background-color: lightgray;
+      }
+
+      canvas {
+        cursor: pointer;
+      }
+    </style>
+
+    <!-- JS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.js"></script>
+    <script type="text/javascript">
+
+var setup, draw
+
+function laplaceA(grid, x, y) {
+  const h = grid.length, w = grid[0].length
+  const x0 = (x - 1 + w) % w, x1 = x, x2 = (x + 1) % w
+  const y0 = (y - 1 + h) % h, y1 = y, y2 = (y + 1) % h
+  return (grid[y0][x0].a * 0.05 + grid[y0][x1].a * 0.2 + grid[y0][x2].a * 0.05 +
+          grid[y1][x0].a * 0.2  + grid[y1][x1].a * -1  + grid[y1][x2].a * 0.2 +
+          grid[y2][x0].a * 0.05 + grid[y2][x1].a * 0.2 + grid[y2][x2].a * 0.05)
+}
+
+function laplaceB(grid, x, y) {
+  const h = grid.length, w = grid[0].length
+  const x0 = (x - 1 + w) % w, x1 = x, x2 = (x + 1) % w
+  const y0 = (y - 1 + h) % h, y1 = y, y2 = (y + 1) % h
+  return (grid[y0][x0].b * 0.05 + grid[y0][x1].b * 0.2 + grid[y0][x2].b * 0.05 +
+          grid[y1][x0].b * 0.2  + grid[y1][x1].b * -1  + grid[y1][x2].b * 0.2 +
+          grid[y2][x0].b * 0.05 + grid[y2][x1].b * 0.2 + grid[y2][x2].b * 0.05)
+}
+
+class AppController {
+  setup() {
+    const p5canvas = createCanvas(320, 200)
+    p5canvas.parent('sketch-holder')
+    pixelDensity(1)
+
+    setTimeout(() => {
+      p5canvas.canvas.style.width = (width * 2) + 'px'
+      p5canvas.canvas.style.height = (height * 2) + 'px'
+    }, 0)
+
+    this.reset()
+  }
+
+  draw() {
+    this.update()
+
+    loadPixels()
+    const grid = this.grid
+    const w = width, h = height
+    const colA = this.colA
+    const colB = this.colB
+
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const pix = (x + y * width) * 4
+        const a = grid[y][x].a
+        const b = grid[y][x].b
+        const dx = (grid[y][(x + 1) % w].b - grid[y][(x - 1 + w) % w].b) * 5
+        const dy = (grid[(y + 1) % h][x].b - grid[(y - 1 + h) % h][x].b) * 5
+        const nlen = sqrt(dx * dx + dy * dy + 1 * 1)
+        const nx = dx / nlen
+        const ny = dy / nlen
+        const nz = 1 / nlen
+        const d = nz  // Diffuse
+        const s = pow(constrain((nx + ny + nz) * (1 / 1.732050807568877), 0, 1), 50) * 255  // Specular
+
+        const bb = b * d * 2
+        pixels[pix + 0] = colA.r * a + colB.r * bb + s
+        pixels[pix + 1] = colA.g * a + colB.g * bb + s
+        pixels[pix + 2] = colA.b * a + colB.b * bb + s
+        pixels[pix + 3] = 255
+      }
+    }
+    updatePixels()
+  }
+
+  reset() {
+    const grid = []
+    const next = []
+    for (let y = 0; y < height; ++y) {
+      grid[y] = []
+      next[y] = []
+      for (let x = 0; x < width; ++x) {
+        grid[y][x] = { a: 1, b: 0 }
+        next[y][x] = { a: 1, b: 0 }
+      }
+    }
+
+    const n = floor(random(1, 16))
+    for (let k = 0; k < n; ++k) {
+      const size = floor(random(2, 5))
+      const x = floor(random(10, width - 10))
+      const y = floor(random(10, height - 10))
+      for (let i = -size; i <= size; ++i) {
+        for (let j = -size; j <= size; ++j) {
+	  grid[y + i][x + j].a = 0
+	  grid[y + i][x + j].b = 0.5
+        }
+      }
+    }
+
+    this.grid = grid
+    this.next = next
+  }
+
+  update() {
+    const n = this.iteration
+    for (let i = 0; i < n; ++i) {
+      this.step()
+      this.handleMouse()
+    }
+  }
+
+  handleMouse() {
+    if (!mouseIsPressed || mouseButton != LEFT)
+      return
+
+    const radius = 8, radius2 = sq(radius)
+    const x = floor(mouseX), y = floor(mouseY)
+    const dx0 = max(-radius, -x), dy0 = max(-radius, -y)
+    const dx1 = min(radius, width - 1 - x), dy1 = min(radius, height - 1 - y)
+    const grid = this.grid
+    for (let dy = dy0; dy <= dy1; ++dy) {
+      for (let dx = dx0; dx <= dx1; ++dx) {
+        if (dx * dx + dy * dy >= radius2)
+          continue
+        const cell = grid[y + dy][x + dx]
+        //cell.a = 1
+        cell.b = 0
+      }
+    }
+  }
+
+  step() {
+    const dA = this.dA, dB = this.dB
+    const feed = this.feed, k = this.k
+    for (let y = 0; y < height; ++y) {
+      for (let x = 0; x < width; ++x) {
+        const a = this.grid[y][x].a
+        const b = this.grid[y][x].b
+        this.next[y][x].a = a + (dA * laplaceA(this.grid, x, y)) - (a * b * b) + feed * (1 - a)
+        this.next[y][x].b = b + (dB * laplaceB(this.grid, x, y)) + (a * b * b) - (k + feed) * b
+      }
+    }
+    this.swapBuffer()
+  }
+
+  swapBuffer() {
+    const temp = this.grid
+    this.grid = this.next
+    this.next = temp
+  }
+
+  constructor() {
+    this.dA = 1
+    this.dB = 0.5
+    this.feed = 0.055
+    this.k = 0.062
+    this.iteration = 10
+
+    this.colA = { r: 0, g: 0, b: 128 }
+    this.colB = { r: 128, g: 255, b: 0 }
+
+    setup = () => { this.setup() }
+    draw = () => { this.draw() }
+  }
+}
+
+angular.module('App', [])
+  .controller('AppCtrl', [AppController])
+
+    </script>
+  </head>
+  <body ng-controller="AppCtrl as $ctrl">
+
+    <div id="sketch-holder"></div>
+
+    <div>
+      <button ng-click="$ctrl.reset()">reset</button>
+      <table>
+        <tr><td>dA</td><td><input type="number" ng-model="$ctrl.dA"></td></tr>
+        <tr><td>dB</td><td><input type="number" ng-model="$ctrl.dB"></td></tr>
+        <tr><td>feed</td><td><input type="number" ng-model="$ctrl.feed"></td></tr>
+        <tr><td>kill</td><td><input type="number" ng-model="$ctrl.k"></td></tr>
+      </table>
+    </div>
+
+  </body>
+</html>

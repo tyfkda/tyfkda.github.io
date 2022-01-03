@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="もとはjQueryでHTML要素をアニメーションをさせていたのだけど一時停止・復帰をさせたかったので別のアニメーション用ライブラリを探したところ、TweenJSが対応しているので使ってみた。
+そこでスケールアニメーションをさせるプラグインを作ってみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="TweenJSで独自のプラグインを実装する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>TweenJSで独自のプラグインを実装する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/04/11/tweenjs-cssplugin.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>TweenJSで独自のプラグインを実装する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-04-11
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/tweenjs/">#tweenjs</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>もとはjQueryでHTML要素をアニメーションをさせていたのだけど一時停止・復帰をさせたかったので別のアニメーション用ライブラリを探したところ、<a href="http://www.createjs.com/tweenjs">TweenJS</a>が対応しているので使ってみた。
+そこでスケールアニメーションをさせるプラグインを作ってみた。</p>
+<iframe src="/assets/tweenjs-scale-plugin.html" width="500" height="200" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto"></iframe>
+
+<span id="more"></span>
+
+<h3 id="TweenJS用プラグインの作り方"><a href="#TweenJS用プラグインの作り方" class="headerlink" title="TweenJS用プラグインの作り方"></a>TweenJS用プラグインの作り方</h3><p>TweenJSは<a href="http://www.createjs.com/easeljs">EaselJS</a>と組み合わせて、キャンバス上で表示させる要素をトゥイーンさせるという使い方が一般的だと思うが、<a href="http://createjs.com/docs/tweenjs/classes/CSSPlugin.html">CSSPlugin</a>を使うとでHTMLの要素に対してトゥイーンをかけることができて、位置の移動、サイズの変更、透明度の変更ができる。</p>
+<p>で拡大・縮小させたかったので、CSSの<code>transform</code>の<code>scale</code>をいじるプラグインを作成してみた。</p>
+<p>TweenJSの<a href="http://createjs.com/docs/tweenjs/classes/Tween.html#method_installPlugin">installPlugin</a>のドキュメントを見ても、「<a href="http://createjs.com/docs/tweenjs/classes/CSSPlugin.html">CSSPlugin</a>を見ろ」というだけであまり情報がない。
+<code>console.log</code>とか差し込んでどういう具合に呼び出されるか探ったところ、</p>
+<ul>
+<li><code>init</code>で初期値を返す</li>
+<li><code>tween</code>の<code>value</code>に補間された値が渡ってくるので、<code>tween.target</code>の値を更新してやる</li>
+<li><code>step</code>は？謎</li>
+</ul>
+<p>という具合に実装すればよいっぽい。</p>
+<h3 id="スケールプラグイン"><a href="#スケールプラグイン" class="headerlink" title="スケールプラグイン"></a>スケールプラグイン</h3><p>上記のことを元にして、CSSの<code>transfrom</code>の<code>scale</code>をいじるプラグインを作ってみた：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> CssTransformScalePlugin = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="meta">  &#x27;use strict&#x27;</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">CssTransformScalePlugin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">  CssTransformScalePlugin.priority = -<span class="number">100</span> <span class="comment">// very low priority, should run last</span></span><br><span class="line">  CssTransformScalePlugin.init = <span class="function"><span class="keyword">function</span>(<span class="params">tween, prop, value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> style = tween.target.style</span><br><span class="line">    <span class="keyword">if</span> (!style)</span><br><span class="line">      <span class="keyword">return</span> value</span><br><span class="line">    <span class="keyword">var</span> m = style[<span class="string">&#x27;transform&#x27;</span>].match(<span class="regexp">/scale\(([0-9.]+)(,\s*([0-9.]+))?\)/</span>)</span><br><span class="line">    <span class="keyword">if</span> (!m)</span><br><span class="line">      <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">var</span> x = m[<span class="number">1</span>]  <span class="comment">//, y = m[3]</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">parseFloat</span>(x)</span><br><span class="line">  &#125;</span><br><span class="line">  CssTransformScalePlugin.step = <span class="function"><span class="keyword">function</span>(<span class="params"><span class="comment">/*tween, prop, startValue, endValue, injectProps*/</span></span>) </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">  CssTransformScalePlugin.tween = <span class="function"><span class="keyword">function</span>(<span class="params">tween, prop, value</span></span></span><br><span class="line"><span class="params"><span class="function">                                           <span class="comment">/*, startValues, endValues, ratio, wait, end*/</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> style = tween.target.style</span><br><span class="line">    <span class="keyword">if</span> (!style)</span><br><span class="line">      <span class="keyword">return</span> value</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> transform = style[<span class="string">&#x27;transform&#x27;</span>]</span><br><span class="line">    <span class="keyword">var</span> newTransform =</span><br><span class="line">        style[<span class="string">&#x27;transform&#x27;</span>].replace(<span class="regexp">/scale\([0-9.]+(,\s*([0-9.]+))?\)/</span>,</span><br><span class="line">                                   <span class="string">&#x27;scale(&#x27;</span> + value + <span class="string">&#x27;)&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> (transform != newTransform)</span><br><span class="line">      style[<span class="string">&#x27;transform&#x27;</span>] = newTransform</span><br><span class="line">    <span class="keyword">return</span> createjs.Tween.IGNORE</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> CssTransformScalePlugin</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>init</code>で<code>style</code>の<code>transform</code>から<code>scale</code>の初期値を取り出す<ul>
+<li>本当ならxとyで別々のスケールを指定できるが、TweenJSで複数の値を補間してくれるのかわからなかったので、xy共通とする</li>
+</ul>
+</li>
+<li><code>tween</code>で<code>transform</code>の<code>scale</code>部分を書き換える<ul>
+<li>アップデート毎に正規表現使うとか、富豪的…！</li>
+</ul>
+</li>
+<li>戻り値<code>IGNORE</code>は？謎</li>
+</ul>
+<h3 id="使用例"><a href="#使用例" class="headerlink" title="使用例"></a>使用例</h3><p><a href="http://createjs.com/docs/tweenjs/classes/Tween.html#method_installPlugin">installPlugin</a>に扱うプロパティ名を指定してやると、TweenJSの枠組みで使えるようになる：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// プラグインのインストール</span></span><br><span class="line">createjs.Tween.installPlugin(CssTransformScalePlugin, [<span class="string">&#x27;scale&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>使用してみる：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> text = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;text&#x27;</span>)</span><br><span class="line">createjs.Tween.get(text, &#123; <span class="attr">loop</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">  .to(&#123; <span class="attr">scale</span>: <span class="number">4.0</span> &#125;, <span class="number">2000</span>, createjs.Ease.getPowInOut(<span class="number">2</span>))</span><br><span class="line">  .to(&#123; <span class="attr">scale</span>: <span class="number">0.1</span> &#125;, <span class="number">2000</span>, createjs.Ease.getPowInOut(<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

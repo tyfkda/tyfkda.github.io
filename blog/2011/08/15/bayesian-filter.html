@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="第3回　ベイジアンフィルタを実装してみよう：機械学習 はじめよう｜gihyo.jp … 技術評論社をRubyでやってみる。テキスト解析:日本語形態素解析 - Yahoo!デベロッパーネットワークも使わずに、自分で単語分けして。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="「ベイジアンフィルタを実装してみよう」をRubyで"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>「ベイジアンフィルタを実装してみよう」をRubyで - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2011/08/15/bayesian-filter.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>「ベイジアンフィルタを実装してみよう」をRubyで</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2011-08-15
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ruby/">#ruby</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://gihyo.jp/dev/serial/01/machine-learning/0003">第3回　ベイジアンフィルタを実装してみよう：機械学習 はじめよう｜gihyo.jp … 技術評論社</a>をRubyでやってみる。<a href="http://developer.yahoo.co.jp/webapi/jlp/ma/v1/parse.html">テキスト解析:日本語形態素解析 - Yahoo!デベロッパーネットワーク</a>も使わずに、自分で単語分けして。</p>
+<span id="more"></span>
+
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/ruby -Ku</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Array</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">sum</span></span></span><br><span class="line">    <span class="keyword">self</span>.inject(<span class="number">0</span>) &#123;<span class="params">|r, x|</span> r + x&#125;</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NaiveBayes</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span></span></span><br><span class="line">    <span class="variable">@vocabularies</span> = &#123;&#125;  <span class="comment"># 単語の集合</span></span><br><span class="line">    <span class="variable">@wordcount</span> = Hash.new &#123;<span class="params">|h, k|</span> h[k] = Hash.new(<span class="number">0</span>)&#125;  <span class="comment"># &#123;category : &#123; words : n, ...&#125;&#125;</span></span><br><span class="line">    <span class="variable">@catcount</span> = Hash.new(<span class="number">0</span>)  <span class="comment"># &#123;category : n&#125;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">wordcountup</span><span class="params">(word, cat)</span></span></span><br><span class="line">    <span class="variable">@wordcount</span>[cat][word] += <span class="number">1</span></span><br><span class="line">    <span class="variable">@vocabularies</span>[word] = <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">catcountup</span><span class="params">(cat)</span></span></span><br><span class="line">    <span class="variable">@catcount</span>[cat] += <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(tokens, cat)</span></span></span><br><span class="line">    tokens.each <span class="keyword">do</span> <span class="params">|w|</span></span><br><span class="line">      wordcountup(w, cat)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    catcountup(cat)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">priorprob</span><span class="params">(cat)</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable">@catcount</span>[cat].to_f / <span class="variable">@catcount</span>.values.sum</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># あるカテゴリの中に単語が登場した回数を返す</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">incategory</span><span class="params">(word, cat)</span></span></span><br><span class="line">    <span class="keyword">if</span> <span class="variable">@wordcount</span>[cat].has_key?(word)</span><br><span class="line">      <span class="keyword">return</span> <span class="variable">@wordcount</span>[cat][word].to_f</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0.0</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># P(word|cat) が生起する確率を求める</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">wordprob</span><span class="params">(word, cat)</span></span></span><br><span class="line">    prob = (incategory(word, cat) + <span class="number">1.0</span>) /</span><br><span class="line">             (<span class="variable">@wordcount</span>[cat].values.sum + <span class="variable">@vocabularies</span>.length)</span><br><span class="line">    <span class="keyword">return</span> prob</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">score</span><span class="params">(tokens, cat)</span></span></span><br><span class="line">    sc = Math::log(priorprob(cat))</span><br><span class="line">    tokens.each <span class="keyword">do</span> <span class="params">|w|</span></span><br><span class="line">      sc += Math::log(wordprob(w, cat))</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> sc</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">classifier</span><span class="params">(tokens)</span></span></span><br><span class="line">    best = <span class="literal">nil</span>  <span class="comment"># 最適なカテゴリ</span></span><br><span class="line">    max = -<span class="number">1.0</span> / <span class="number">0.0</span>  <span class="comment"># -Infinity</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># カテゴリ毎に確率の対数を求める</span></span><br><span class="line">    <span class="variable">@catcount</span>.keys.each <span class="keyword">do</span> <span class="params">|cat|</span></span><br><span class="line">      prob = score(tokens, cat)</span><br><span class="line">      <span class="keyword">if</span> prob &gt; max</span><br><span class="line">        max = prob</span><br><span class="line">        best = cat</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> best</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getwords</span><span class="params">(doc)</span></span></span><br><span class="line">  doc.split.select &#123;<span class="params">|w|</span> !stop_word?(w)&#125;.map &#123;<span class="params">|w|</span> w.downcase&#125;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stop_word?</span><span class="params">(word)</span></span></span><br><span class="line">  word =~ <span class="regexp">/^[・。，（）ぁ-んァ-ヴ]$/</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="variable">$0</span> == <span class="keyword">__FILE__</span></span><br><span class="line">  nb = NaiveBayes.new</span><br><span class="line">  nb.train(getwords(&lt;&lt;EOD), <span class="string">&#x27;Python&#x27;</span>)</span><br><span class="line">Python （ パイソン ） は ， オランダ 人 の グイド ・ ヴァン ロッサム が 作 った オープンソース の プログラミング 言語 。</span><br><span class="line">オブジェクト 指向 スクリプト 言語 の 一種 で あり ， Perl と とも に 欧米 で 広く 普及 して い る 。 イギリス の テレビ 局 BBC が 製作 し た コメディ 番組 『 空 飛ぶ モンティ パイソン 』 に ちな ん で 名付け られ た 。</span><br><span class="line">Python は 英語 で 爬虫類 の ニシキヘビ の 意味 で ， Python 言語 の マスコット や アイコン と して 使われ る こと が あ る 。 Python は 汎用 の 高水準 言語 で あ る 。 プログラマ の 生産性 と コード の 信頼性 を 重視 して 設計 されて お り ， 核 と な る シンタックス および セマンティクス は 必要 最小限 に 抑え られ て い る 反面 ， 利便性 の 高い 大規模 な 標準 ライブラリ を 備え て い る 。</span><br><span class="line">Unicode に よる 文字列 操作 を サポート して お り ， 日本語 処理 も 標準 で 可能 で あ る 。 多く の プラットフォーム を サポート して お り （ 動作 する プラットフォーム ） ， また ， 豊富 な ドキュメント ， 豊富 な ライブラリ が あ る こと から ， 産業界 でも 利用 が 増え つつ あ る 。</span><br><span class="line">EOD</span><br><span class="line"></span><br><span class="line">  nb.train(getwords(&lt;&lt;EOD), <span class="string">&#x27;Ruby&#x27;</span>)</span><br><span class="line">Ruby （ ルビー ） は ， まつもと ゆきひろ （ 通称 Matz ） に より 開発 され た オブジェクト 指向 スクリプト 言語 で あり ， 従来 Perl など の スクリプト 言語 が 用いられ て きた 領域 で の オブジェクト 指向 プログラミング を 実現 する 。 Ruby は 当初 <span class="number">1993</span>年 <span class="number">2</span>月 <span class="number">24</span>日 に 生まれ ， <span class="number">1995</span>年 <span class="number">12</span>月 に fj 上 で 発表 され た 。 名称 の Ruby は ， プログラミング 言語 Perl が <span class="number">6</span>月 の 誕生石 で あ る Pearl （ 真珠 ） と 同じ 発音 を する こと から ， まつもと の 同僚 の 誕生石 （ <span class="number">7</span>月 ） の ルビー を 取って 名付け られ た 。</span><br><span class="line">EOD</span><br><span class="line"></span><br><span class="line">  nb.train(getwords(&lt;&lt;EOD), <span class="string">&#x27;機械学習&#x27;</span>)</span><br><span class="line">豊富 な 機械 学習 （ きかい がくしゅう ， Machine learning ） とは ， 人工知能 に おける 研究 課題 の 一つ で ， 人間 が 自然 に 行っ て い る 学習 能力 と 同様 の 機能 を コンピュータ で 実現 させ る ため の 技術 ・ 手法 の こと で あ る 。 ある 程度 の 数 の サンプル データ 集合 を 対象 に 解析 を 行い ， その データ から 有用 な 規則 ， ルール ， 知識 表現 ，判断 基準 など を 抽出 する 。 データ 集合 を 解析 する ため ， 統計学 との 関連 も 非常 に 深い 。</span><br><span class="line">機械 学習 は 検索 エンジン ， 医療 診断 ， スパム メール の 検出 ， 金融 市場 の 予測 ， DNA 配列 の 分類 ， 音声 認識 や 文字 認識 など の パターン 認識 ， ゲーム 戦略 ， ロボット ， など 幅広い 分野 で 用いられ て い る 。 応用 分野 の 特性 に 応じ て 学習 手法 も 適切 に 選択 する 必要 が あり ， 様々 な 手法 が 提案 されて い る 。 それら の 手法 は ， Machine Learning や IEEE Transactions on Pattern Analysis <span class="keyword">and</span> Machine Intelligence など の 学術 雑誌 など で 発表 される こと が 多い 。</span><br><span class="line">EOD</span><br><span class="line"></span><br><span class="line">  texts = [</span><br><span class="line">    <span class="comment"># Python</span></span><br><span class="line">    <span class="string">&#x27;ヴァン ロッサム 氏 に よっ て 開発 され ま し た .&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;豊富 な ドキュメント や 豊富 な ライブラリ が あり ま す. &#x27;</span>,</span><br><span class="line">    <span class="comment"># Ruby</span></span><br><span class="line">    <span class="string">&#x27;純粋 な オブジェクト 指向 言語 です .&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Ruby は まつもと ゆきひろ 氏 ( 通称 Matz ) に より 開発 され ま し た .&#x27;</span>,</span><br><span class="line">    <span class="comment"># 機械学習</span></span><br><span class="line">    <span class="string">&#x27;「 機械 学習 はじ め よう 」 が 始まり ま し た .&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;検索 エンジン や 画像 認識 に 利用 され て い ま す .&#x27;</span>,</span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line">  texts.each <span class="keyword">do</span> <span class="params">|text|</span></span><br><span class="line">    puts <span class="string">&quot;<span class="subst">#&#123;nb.classifier(getwords(text))&#125;</span>: <span class="subst">#&#123;text.split.join&#125;</span>&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>で走らせると、単語分けの方法が違うからか、一部合わない：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Ruby: ヴァンロッサム氏によって開発されました.</span><br><span class="line">Python: 豊富なドキュメントや豊富なライブラリがあります.</span><br><span class="line">Ruby: 純粋なオブジェクト指向言語です.</span><br><span class="line">Ruby: Rubyはまつもとゆきひろ氏(通称Matz)により開発されました.</span><br><span class="line">機械学習: 「機械学習はじめよう」が始まりました.</span><br><span class="line">機械学習: 検索エンジンや画像認識に利用されています.</span><br></pre></td></tr></table></figure>
+
+<p>最初のテキストがRubyと誤判定されてしまっている。うーむ…</p>
+<ul>
+<li>「ヴァンロッサム」と入ってても誤判定されるとは…</li>
+<li>もとのプログラムでは、Yahoo!のAPIで形態素解析した結果のうち、形容詞、形容動詞、感動詞、副詞、連帯子、名詞、動詞のみを使ってる。<ul>
+<li>こちらは、正規表現で一文字のひらがなorカタカナor括弧などを省いている</li>
+</ul>
+</li>
+<li>もっと訓練データを増やせば精度が上がるか？</li>
+<li>一番確率が高いものを求めるので、<a href="http://gihyo.jp/dev/serial/01/machine-learning/0003?page=3">３ページ目</a>のメソッド<code>classifier</code>の不等号は逆？</li>
+<li>プログラムはシンプルでいいですね。数学的なことはあまり理解してないですが…。<ul>
+<li>気をつけるところは、訓練データに出てこない単語の確率<script type="math/tex">P(word)=0</script>となってしまって無効になってしまうのを避けるため、+1する<ul>
+<li>訓練データが少ないと、誤差が重大？</li>
+</ul>
+</li>
+<li>単語の出現頻度の確率0.0~1.0を掛け合わせていくとアンダーフローしてしまうので、対数を取って積を和にする</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/03/21/easy-dsl.html" title="Rubyで簡単DSL" rel="bookmark">Rubyで簡単DSL</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/06/01/ga-helloworld.html" title="GAで"Hello, world!"" rel="bookmark">GAで"Hello, world!"</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/omni-auth.html" title="OmniAuthを使ってみる" rel="bookmark">OmniAuthを使ってみる</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

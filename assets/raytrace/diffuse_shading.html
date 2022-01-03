@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta name="robots" content="noindex">
+    <title>Diffuse lighting</title>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="default.css">
+
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.16/processing.min.js"></script>
+  </head>
+  <body style="height:256px; overflow:hidden">
+    <div class="sketch-canvas">
+      <div class="pull-left"><canvas id="processing-canvas"></canvas></div>
+      <div class="pull-left" style="margin:8px"><button onclick="restart()">restart</button></div>
+    </div>
+
+<script id="mysketch" type="text/processing">
+class vec {
+  float x, y, z;
+  vec(float x, float y, float z) { this.x = x; this.y = y; this.z = z; }
+  void set(float x, float y, float z) { this.x = x; this.y = y; this.z = z; }
+  vec add(vec v) { return new vec(x + v.x, y + v.y, z + v.z); }
+  vec sub(vec v) { return new vec(x - v.x, y - v.y, z - v.z); }
+  vec scale(float s) { return new vec(x * s, y * s, z * s); }
+  vec neg() { return new vec(-x, -y, -z); }
+  float len() { return sqrt(x * x + y * y + z * z); }
+  vec normal() { return scale(1.0 / len()); }
+  float dot(vec v) { return x * v.x + y * v.y + z * v.z; }
+  vec cross(vec v) { return new vec(y * v.z - v.y * z, z * v.x - v.z * x, x * v.y - v.x * y); }
+}
+
+int renderY = 0;
+color LineBuf[];
+
+void setup() {
+  size(256, 256);
+  LineBuf = new color[width];
+}
+
+void draw() {
+  render_line(LineBuf, width, height, renderY);
+  copy_line(LineBuf, renderY);
+  if (++renderY >= height) {
+    noLoop();
+  }
+}
+
+void copy_line(color[] img, int y) {
+  loadPixels();
+  for (int i = 0; i < width; ++i) {
+    pixels[y * width + i] = img[i];
+  }
+  updatePixels();
+}
+
+// 線分と球の交差判定
+float intersect_line_sphere(vec orig, vec dir, vec sphere_center, float sphere_radius) {
+  vec c = sphere_center;
+  vec s = orig;
+  vec d = dir;
+  float r = sphere_radius;
+  vec v = s.sub(c);
+
+  float dd = sq(v.dot(d)) - (v.dot(v) - sq(r));
+  if (dd < 0) {
+    return -1;  // not intersect
+  } else {
+    float sqdd = sqrt(dd);
+    float t1 = -v.dot(d) - sqdd;
+    return t1;  // maybe intersect
+  }
+}
+
+vec eyepos = new vec(0, 0, -1);
+vec sphere_center = new vec(0, 0, 0);
+float sphere_radius = 0.5;
+vec light_pos = new vec(10, 10, -10);
+
+void render_line(color[] img, int width, int height, int iy) {
+  float w2 = width / 2;
+  float h2 = height / 2;
+  float xofs = w2 - 0.5;
+  float yofs = h2 - 0.5;
+  float py = -((iy - yofs) / h2);    // flip Y
+
+  for (int j=0; j<width; ++j) {
+    float px = (j - xofs) / w2;
+    vec raydir = (new vec(px, py, 1)).normal();
+
+    float t = intersect_line_sphere(eyepos, raydir, sphere_center, sphere_radius);
+    if (t >= 0) {
+      vec pos = eyepos.add(raydir.scale(t));  // 交差位置
+      vec nrm = pos.sub(sphere_center).normal();  // 法線
+      img[j] = shading(pos, nrm, light_pos);
+    } else {
+      img[j] = color(0, 0, 0);
+    }
+  }
+}
+
+color shading(vec pos, vec normal, vec light_pos) {
+  vec lv = light_pos.sub(pos).normal();
+  float f = max(normal.dot(lv), 0);
+  return color(255 * f, 0, 0);
+}
+
+void restart() {
+  renderY = 0;
+  fill(color(192));
+  noStroke();
+  rect(0, 0, width, height);
+  loop();
+}
+    </script>
+
+<script type="text/javascript">
+var pjs
+window.addEventListener('load', function() {
+  var code = document.getElementById('mysketch').text
+  pjs = new Processing('processing-canvas', code)
+})
+function restart() {
+  pjs.restart()
+}
+</script>
+  </body>
+</html>

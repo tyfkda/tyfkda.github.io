@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Androidでデータを保存するときにはデータを文字列に変換して保存したいが、フィールドの追加・削除などのデータ形式が変更された場合にも対応したいので、シリアライズをそのまま使うと問題がある。
+プロトコルバッファを使えば柔軟性があってよさそうだけど、導入までに一手間かかる。
+というわけで、リフレクションでフィールドを調べる方法を探ってみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Javaのリフレクションでクラスの持つフィールドとインスタンスの値を調べる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Javaのリフレクションでクラスの持つフィールドとインスタンスの値を調べる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/08/24/java-reflection.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Javaのリフレクションでクラスの持つフィールドとインスタンスの値を調べる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-08-24
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/java/">#java</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Androidでデータを保存するときにはデータを文字列に変換して保存したいが、フィールドの追加・削除などのデータ形式が変更された場合にも対応したいので、シリアライズをそのまま使うと問題がある。
+<a href="https://code.google.com/p/protobuf/">プロトコルバッファ</a>を使えば柔軟性があってよさそうだけど、導入までに一手間かかる。</p>
+<p>というわけで、リフレクションでフィールドを調べる方法を探ってみた。</p>
+<span id="more"></span>
+
+<p>例えばなにか適当なクラスがあったとして：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> i = <span class="number">123</span>;</span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">long</span> l = <span class="number">9876543210L</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">float</span> f = <span class="number">1.23f</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">double</span> d = <span class="number">1.234567890</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String s = <span class="string">&quot;foobar&quot;</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">int</span>[] a = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">int</span>[][] a2 = &#123; &#123;<span class="number">1</span>&#125;, &#123;<span class="number">2</span>&#125;, &#123;<span class="number">3</span>&#125; &#125;;</span><br><span class="line">  <span class="keyword">public</span> Foo obj;</span><br><span class="line">  <span class="keyword">public</span> List&lt;String&gt; list;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>それを調べるには、調べたいクラスの <code>getDeclaredFields()</code> を使えばそのクラスのフィールドをすべて取得できる：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Modifier;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReflectionTest</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Foo foo = <span class="keyword">new</span> Foo();</span><br><span class="line">    dumpInstanceFields(foo);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">dumpInstanceFields</span><span class="params">(Object object)</span> <span class="keyword">throws</span> IllegalAccessException </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (Field field : object.getClass().getDeclaredFields()) &#123;</span><br><span class="line">      <span class="keyword">boolean</span> accessible = field.isAccessible();</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">int</span> modifier = field.getModifiers();</span><br><span class="line">        Class&lt;?&gt; type = field.getType();</span><br><span class="line">        String name = field.getName();</span><br><span class="line">        Object value = field.get(object);</span><br><span class="line">        System.out.println(</span><br><span class="line">            modifierString(modifier) + getTypeName(type) + <span class="string">&quot; &quot;</span> + name + <span class="string">&quot; = &quot;</span> + value);</span><br><span class="line">      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        field.setAccessible(accessible);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>型名は配列を特別に判定、 <code>getModifiers</code> で得られた値は個別に判定：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">getTypeName</span><span class="params">(Class type)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!type.isArray())</span><br><span class="line">      <span class="keyword">return</span> type.getName();</span><br><span class="line">    <span class="keyword">return</span> getTypeName(type.getComponentType()) + <span class="string">&quot;[]&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">modifierString</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isPrivate(v))  sb.append(<span class="string">&quot;private &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isPublic(v))  sb.append(<span class="string">&quot;public &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isProtected(v))  sb.append(<span class="string">&quot;protected &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isStatic(v))  sb.append(<span class="string">&quot;static &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isAbstract(v))  sb.append(<span class="string">&quot;abstract &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isFinal(v))  sb.append(<span class="string">&quot;final &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isInterface(v))  sb.append(<span class="string">&quot;interface &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isNative(v))  sb.append(<span class="string">&quot;native &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isStrict(v))  sb.append(<span class="string">&quot;strict &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isSynchronized(v))  sb.append(<span class="string">&quot;synchoronized &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isTransient(v))  sb.append(<span class="string">&quot;transient &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (Modifier.isVolatile(v))  sb.append(<span class="string">&quot;volatile &quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> sb.toString();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>なんかやたら長いけど基本はシンプルで、</p>
+<ul>
+<li>Class#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/Class.html#getDeclaredFields%28%29">getDeclaredFields</a>()ですべてのフィールドの取得、もしくは<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/Class.html#getFields%28%29">getFields</a>()で<code>public</code>なフィールドだけ取得できる</li>
+<li>Field#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/reflect/Field.html#getType%28%29">getType</a>()でそのフィールドの<code>Class</code>、#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/reflect/Field.html#getName%28%29">getName</a>()でフィールド名、#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/reflect/Field.html#get%28java.lang.Object%29">get</a>(オブジェクト)でオブジェクトのフィールドの値を取得できる。</li>
+<li>#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/reflect/Field.html#getModifiers%28%29">getModifiers</a>()で得られる値はモディファイアのビット和で、<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/reflect/Modifier.html">Modifier</a>.isXXX()で調べられる。</li>
+<li>フィールドが<code>public</code>じゃない場合、#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/reflect/Field.html#get%28java.lang.Object%29">get</a>()で取得しようとすると<code>IllegalAccessException</code>が発生する。#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/reflect/AccessibleObject.html#setAccessible%28boolean%29">setAccessible</a>()でtrueを渡すと<code>private</code>や<code>final</code>のフィールドでも無理矢理読み書きできる。</li>
+<li>リフレクションとは関係ないが、型が配列の場合はそのまま<code>toString()</code>するとまともに表示されない。Class#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/Class.html#isArray%28%29">isArray</a>()で配列かどうか調べて、その場合は#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/Class.html#getComponentType%28%29">getComponentType</a>()で配列の要素の方を取得できる。</li>
+</ul>
+<p>実行結果：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ javac ReflectionTest.java &amp;&amp; java ReflectionTest</span><br><span class="line">private int i = 123</span><br><span class="line">protected long l = 9876543210</span><br><span class="line">public <span class="built_in">float</span> f = 1.23</span><br><span class="line">public double d = 1.23456789</span><br><span class="line">public static final java.lang.String s = foobar</span><br><span class="line">public int[] a = [I@70dea4e</span><br><span class="line">public int[][] a2 = [[I@5c647e05</span><br><span class="line">public Foo obj = null</span><br><span class="line">public java.util.List list = null</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>型がジェネリックの場合には、Field#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/reflect/Field.html#getType%28%29">getType</a>()だとジェネリック型の型パラメータまではわからない。Field#<a href="https://docs.oracle.com/javase/jp/6/api/java/lang/reflect/Field.html#getGenericType%28%29">getGenericType</a>()を使う。</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/03/03/2week-script-parser.html" title="５日目「構文解析器を作る」と、Javaのリフレクション" rel="bookmark">５日目「構文解析器を作る」と、Javaのリフレクション</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/07/31/mac-java-opengl-jogl.html" title="Mac/JavaでOpenGL (jogl)" rel="bookmark">Mac/JavaでOpenGL (jogl)</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

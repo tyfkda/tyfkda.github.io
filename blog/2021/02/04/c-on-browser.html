@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="自作のCコンパイラはx86-64用となっていて、ELF64バイナリを出力する。
+x86-64上で実行できるコードを出力できれば自宅のパソコン上で実行できるし、今後10年くらいはやっていけるだろうという目論見だった。
+ところがいろんなプロセッサが出てきたりして、x86が主流で居続けるとはいえないかもという気がしてきた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【WASM】Cコンパイラをブラウザ上で動かす"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【WASM】Cコンパイラをブラウザ上で動かす - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2021/02/04/c-on-browser.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【WASM】Cコンパイラをブラウザ上で動かす</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2021-02-04
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/wasm/">#wasm</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://github.com/tyfkda/xcc">自作のCコンパイラ</a>はx86-64用となっていて、ELF64バイナリを出力する。
+x86-64上で実行できるコードを出力できれば自宅のパソコン上で実行できるし、今後10年くらいはやっていけるだろうという目論見だった。
+ところがいろんなプロセッサが出てきたりして、x86が主流で居続けるとはいえないかもという気がしてきた。</p>
+<span id="more"></span>
+
+<p>またRustで書いたコードをwasmにコンパイルしてブラウザで動かせる、ということを体験した。
+ポインタでメモリ操作みたいな低レベルのことができる言語で書いたコードをブラウザで動かせるなんてどうなっているの？と結構驚いた。</p>
+<p>てなことでいっちょCコンパイラからwasmを出力できるようにしてみようと考えた。</p>
+<p><a href="https://tyfkda.github.io/xcc/">オンラインデモ</a></p>
+<h3 id="WASMのアーキテクチャ"><a href="#WASMのアーキテクチャ" class="headerlink" title="WASMのアーキテクチャ"></a>WASMのアーキテクチャ</h3><p>WASMのアーキテクチャは<a href="/blog/2020/11/22/wasm-bin-format.html" title="ちょっと前に調べて">ちょっと前に調べて</a>、特徴的なこととしては：</p>
+<ul>
+<li>スタックマシンの命令セット（レジスタがない）</li>
+<li>ローカル変数が使える</li>
+<li>扱える型は <code>i32</code>, <code>i64</code>, <code>f32</code>, <code>f64</code> のみ（文字列すらない）</li>
+<li>ジャンプはラベル（アドレス）に対してでなく、制御構文的なジャンプ（ブロックから抜けるかループで戻る）のみ</li>
+<li>GCはない</li>
+</ul>
+<p>扱えるデータ形式としてはオブジェクトや文字列といった便利なものがなくバイト列をゴリゴリ触れるだけだが、C程度の言語仕様から持ってくるには十分なレベルだと思う。</p>
+<h3 id="CコンパイラからWASMバイナリを出力する方針"><a href="#CコンパイラからWASMバイナリを出力する方針" class="headerlink" title="CコンパイラからWASMバイナリを出力する方針"></a>CコンパイラからWASMバイナリを出力する方針</h3><p>元のコンパイラはレジスタマシンの命令列に変換するために、</p>
+<ol>
+<li>フロントエンド（パーサ）：Cソース→抽象構文木(AST)</li>
+<li>ミドルエンド（中間表現）：AST→中間表現(IR)</li>
+<li>バックエンド：IR→x86-64バイナリ(ELF64形式)</li>
+</ol>
+<p>という手順を踏んでいる。
+出力対象を切り替えるのは本来ミドルウェアまでは共有してバックエンドを差し替えることで変更できるのがいいんだけど、ちょっと難しい。</p>
+<p>ミドルエンドではジャンプを基本ブロックの連結に変換して、最終的にラベルジャンプになる。
+しかしwasmではジャンプが制御構造となっていて、任意の箇所にラベルを配置してジャンプさせるということができない。
+なのでやるとしたらラベルジャンプから制御構造を復元させてやる必要がある。
+制御フローグラフの解析とかしたら復元できるのかもしれないけど、簡単ではなさそう。</p>
+<p>他にも面倒そうな点があって、</p>
+<ul>
+<li>式の計算が仮想レジスタ同士の3番地コードでの演算に変換されたものを、スタックマシン方式に戻す必要がある</li>
+</ul>
+<p>ASTの段階であればそのまま使えるので、フロントエンドだけ共有してASTから直接wasmバイナリを出力するようにした。</p>
+<h3 id="いくつか実装ポイント"><a href="#いくつか実装ポイント" class="headerlink" title="いくつか実装ポイント"></a>いくつか実装ポイント</h3><h4 id="数値型以外のローカル変数の扱い"><a href="#数値型以外のローカル変数の扱い" class="headerlink" title="数値型以外のローカル変数の扱い"></a>数値型以外のローカル変数の扱い</h4><p>WASMでローカル変数として扱えるのは32/64ビットの整数／小数点数型のみで、構造体や配列は扱えない。
+どうするかというと線形メモリに格納することになる。</p>
+<p>線形メモリのどこを使うかというのは自前で管理する必要がある。
+そこでグローバル変数にスタックポインタを表す変数を用意して、関数の頭でベースポインタを表すローカル変数に格納してスタックポインタをいじってやり、抜けるときに戻すという処理を自前で行う。</p>
+<p>数値型でも<code>&amp;</code>で参照を取られた場合にはポインタ経由で書き換えられるようにする必要があるため、ローカル変数にはできないので線形メモリ上に置くようにする。</p>
+<h4 id="関数途中からのreturn"><a href="#関数途中からのreturn" class="headerlink" title="関数途中からのreturn"></a>関数途中からのreturn</h4><p>関数の途中から <code>return</code> で値を伴って抜ける場合x86などの実プロセッサではABIに従って例えば <code>rax</code> レジスタに値を入れて呼び出し元に返る、などとする。
+WASMでも <code>return</code> という命令で関数から抜けてスタックトップの値を返すことができるんだけど、前項のスタックポインタを戻す処理が必要な場合もあるので、関数から抜ける処理（エピローグ）は統一したい。</p>
+<p>そうなると途中からの<code>return</code>が使えないので、戻り値を格納するローカル変数を用意して、そいつに格納してエピローグにジャンプ、エピローグ処理して戻り値を取り出して返す、というようにする。</p>
+<h4 id="代入式の扱い"><a href="#代入式の扱い" class="headerlink" title="代入式の扱い"></a>代入式の扱い</h4><p>C言語では代入が式なので複数つなげたり他の式と混ぜたりできる。
+しかしWASMではローカル変数への格納（<code>local.set</code>）や線形メモリへの格納（<code>i32.store</code>）をするとスタックトップの値が取り除かれてしまう。
+スタック上の値を複製する <code>dup</code> のような命令もないので、代入した値を残しておくことができない
+（ローカル変数に対しては<code>local.tee</code>命令で格納しつつ値を残すことはできるが）。</p>
+<p>そこで代入式を <code>void</code> 扱いにして、値を引き継げないものとするようにした。
+代入式の値が引き続き使われる場合には内部的にローカル変数を確保して、カンマ演算子に変換するようにした
+（<code>l = r</code> を <code>((void)(tmp = r), (void)(l = tmp), tmp)</code> と変換する）。</p>
+<h4 id="switch文"><a href="#switch文" class="headerlink" title="switch文"></a>switch文</h4><p>WASMでは構造化したジャンプしかできないが、 <code>switch</code> 文をどう実装したものか？
+と悩んだがなんのことはない、 <code>case</code> の数だけ <code>block</code> をネストして、それぞれに <code>br</code> してやればよかった。</p>
+<p><code>br_table</code> という命令もあって、順に <code>br_if</code> する代わりにテーブルジャンプができる（やってない）。</p>
+<h4 id="可変長引数"><a href="#可変長引数" class="headerlink" title="可変長引数"></a>可変長引数</h4><p>WASMの関数の引数は数が固定で型もそれぞれ決まっている必要がある。
+可変長引数をどうやって扱うかというと、やはり線形メモリで受け渡すことにする。
+内部的に関数の引数を <code>...</code> より前の引数+可変長引数格納先ポインタに変換してやる。</p>
+<h4 id="ポインタ長"><a href="#ポインタ長" class="headerlink" title="ポインタ長"></a>ポインタ長</h4><p>ポインタは線形メモリ上のオフセットとして扱うが、オフセットは <code>u32</code> なのでポインタも32bit長で十分。
+なので <code>sizeof(void*) == sizeof(long) == sizeof(int) == 4</code> にすることにした。
+<a href="https://www.wdic.org/w/TECH/ILP32">ILP32</a>という<a href="https://www.wdic.org/w/TECH/%E3%83%87%E3%83%BC%E3%82%BF%E5%9E%8B%E3%83%A2%E3%83%87%E3%83%AB">データ型モデル</a>とのこと。
+<code>i64</code> は <code>long long</code> で扱うことになる。</p>
+<p>コード側で判定できるようにするために <code>__ILP32__</code> マクロが事前定義されているようにするとよい。</p>
+<h4 id="関数ポインタを使った関数呼び出し"><a href="#関数ポインタを使った関数呼び出し" class="headerlink" title="関数ポインタを使った関数呼び出し"></a>関数ポインタを使った関数呼び出し</h4><p>WASMでは通常の関数の呼び出しは名前やラベルじゃなくて、関数に順に振られたインデクスを使って呼び出す。
+関数ポインタを扱うにはそのインデクスを使ってやればできる、というわけではなかった。</p>
+<p>関数ポインタとして扱いたい関数は別途テーブルというものに登録して、そのインデクスを使う必要がある。</p>
+<h4 id="古い関数プロトタイプ宣言"><a href="#古い関数プロトタイプ宣言" class="headerlink" title="古い関数プロトタイプ宣言"></a>古い関数プロトタイプ宣言</h4><p>旧時代のC言語の関数のプロトタイプ宣言では引数を省略することもできる。
+その場合、呼び出し側で与える引数の型が実体と合っているものとしてコンパイルされ、合ってない場合には誤動作する。</p>
+<p>WASMでは呼び出す関数の引数の型や個数が合ってないと実行時エラーになるので、コンパイル時にエラーにしてやる。</p>
+<h4 id="ランタイム環境"><a href="#ランタイム環境" class="headerlink" title="ランタイム環境"></a>ランタイム環境</h4><p>バイナリにコンパイルする利点として、コンパイル時にもろもろ解決するのでランタイムを書かなくていいという点がある。
+かといってスタンドアロンな実行ファイルが本当に独立しているということではなくて、OSのシステムコールに依存している。</p>
+<p>同じようにwasmバイナリの世界では演算ができるだけなので、外部とやり取りする場合にはシステムコールに相当する呼び出しを用意してやる必要がある。
+wasmからは <code>import</code> した関数の呼び出すとして実行できる。
+<code>open</code> や <code>read</code> など、<code>unistd</code> 相当な関数を用意して呼び出せるようにしてやる。</p>
+<h3 id="ブラウザ上で動かす"><a href="#ブラウザ上で動かす" class="headerlink" title="ブラウザ上で動かす"></a>ブラウザ上で動かす</h3><p>また例によって、コンパイラのソース自身をコンパイルすればWebAssemblyとして動作するコンパイラが手に入るという、セルフホスティングが出来上がる。
+今回はクロスコンパイルも含んでいるというのがちょっと面白い：</p>
+<ol>
+<li>Cコンパイラのソース(wcc.c) → gcc on Mac → wasmを吐けるMac上で動くCコンパイラ(wcc on Mac)</li>
+<li>Cコンパイラのソース(wcc.c) → wcc on Mac → wasmを吐けるwasm上で動くCコンパイラ(wcc on wasm)</li>
+<li>ランタイムを用意して、wcc on wasmをブラウザ上で動かす</li>
+</ol>
+<p>Cコンパイラからwasmを吐けるようにするだけで、自動的にブラウザ上で動くCコンパイラが手に入った！というお得感がある。</p>
+<p>あとはファイルシステムもどきをでっちあげて、
+ブラウザで動くテキストエディタとしてAceエディタを組み込んで、
+ボタンでコンパイル、実行できるようにしてやる。</p>
+<h3 id="問題点"><a href="#問題点" class="headerlink" title="問題点"></a>問題点</h3><p>ブラウザ上だけとは限らないが、WASMの問題点として、</p>
+<ul>
+<li>非同期処理を行えない</li>
+<li>明示的にも処理を譲れないので、同期でなにか処理が終わるまで待つことができない</li>
+<li>プロセスを <code>fork</code> できない</li>
+<li>大域ジャンプできない</li>
+</ul>
+<p>JavaScriptだとPromiseで非同期処理ができるが、現状wasmではできない。
+むりやりやるとしたら関数を途中で区切っていったん処理を抜けさせて…となるけど、関数呼び出しがネストしてる箇所ではそうもいかない。</p>
+<p>大域ジャンプできないと例外の処理ができないので、CやRustではいいけどC++では例外をどう扱うんだろうか。</p>
+<h3 id="未実装項目"><a href="#未実装項目" class="headerlink" title="未実装項目"></a>未実装項目</h3><p><code>goto</code> によるジャンプは構造ジャンプに簡単には直せないので対応してない。
+<code>goto</code> だけ無効にすれば大丈夫かというとそうでもなく、 <code>switch</code> 内部で <code>case</code> をまたいでループさせると構造を破るのでできない
+（<a href="https://en.wikipedia.org/wiki/Duff%27s_device">Duff’s device</a>）。</p>
+<p>その他：構造体の値渡し・値返し、複合リテラル。</p>
+<h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><p>Cで書かれたコードをブラウザ上で動かせるというのはなかなか面白いかと思ったんだが、
+ブラウザ上でわざわざC言語で苦労してコーディングしたいというニーズはないな、と気づいた…orz</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/01/03/clox-closure.html" title="1パスコンパイラでのクロージャの実装方法(Upvalue)" rel="bookmark">1パスコンパイラでのクロージャの実装方法(Upvalue)</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

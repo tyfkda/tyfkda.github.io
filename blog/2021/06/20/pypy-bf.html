@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="JIT関連を検索していて見つけた
+PyPy Status Blog: Tutorial: Writing an Interpreter with PyPy, Part 1
+を読んで試してみようと思った。
+しかしリンク切れでソースが見れなかったりPyPyで変換できなかったりでそのままでは動かなかったので修正してみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="PyPyでBrainf*ck"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>PyPyでBrainf*ck - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2021/06/20/pypy-bf.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>PyPyでBrainf*ck</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2021-06-20
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/jit/">#jit</a> <a href="/tags/python/">#python</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>JIT関連を検索していて見つけた
+<a href="https://www.pypy.org/posts/2011/04/tutorial-writing-interpreter-with-pypy-3785910476193156295.html">PyPy Status Blog: Tutorial: Writing an Interpreter with PyPy, Part 1</a>
+を読んで試してみようと思った。
+しかしリンク切れでソースが見れなかったりPyPyで変換できなかったりでそのままでは動かなかったので修正してみた。</p>
+<span id="more"></span>
+
+<p>使用したバージョンは 7.3.4：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ pypy --version</span><br><span class="line">Python 2.7.18 (63df5ef41012b07fa6f9eaba93f05de0eb540f88, Apr 08 2021, 15:52:53)</span><br><span class="line">[PyPy 7.3.4 with GCC Apple LLVM 12.0.0 (clang-1200.0.32.29)]</span><br></pre></td></tr></table></figure>
+
+<p>RPythonは3.7.5</p>
+<p>ソースのリポジトリ：<a href="https://github.com/tyfkda/pypy-bf">https://github.com/tyfkda/pypy-bf</a></p>
+<h3 id="実装言語"><a href="#実装言語" class="headerlink" title="実装言語"></a>実装言語</h3><p>件のブログで実装されている言語はBrainf*ckで、VM方式に命令をフェッチして実行の繰り返し。
+唯一の事前処理は命令以外の文字の除去と、対応する<code>[]</code>の飛び先を事前に調べることだけ。</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># bf.py</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mainloop</span>(<span class="params">program, bracket_map, putc, getc</span>):</span></span><br><span class="line">  tape = [<span class="number">0</span>] * <span class="number">30000</span></span><br><span class="line">  pc = <span class="number">0</span></span><br><span class="line">  head = <span class="number">0</span></span><br><span class="line">  <span class="keyword">while</span> pc &lt; <span class="built_in">len</span>(program):</span><br><span class="line">    code = program[pc]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> code == <span class="string">&#x27;&gt;&#x27;</span>:</span><br><span class="line">      head += <span class="number">1</span></span><br><span class="line">    <span class="keyword">elif</span> code == <span class="string">&#x27;&lt;&#x27;</span>:</span><br><span class="line">      head -= <span class="number">1</span></span><br><span class="line">    <span class="keyword">elif</span> code == <span class="string">&#x27;+&#x27;</span>:</span><br><span class="line">      tape[head] += <span class="number">1</span></span><br><span class="line">    <span class="keyword">elif</span> code == <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">      tape[head] -= <span class="number">1</span></span><br><span class="line">    <span class="keyword">elif</span> code == <span class="string">&#x27;.&#x27;</span>:</span><br><span class="line">      putc(tape[head])</span><br><span class="line">    <span class="keyword">elif</span> code == <span class="string">&#x27;,&#x27;</span>:</span><br><span class="line">      tape[head] = getc()</span><br><span class="line">    <span class="keyword">elif</span> code == <span class="string">&#x27;[&#x27;</span>:</span><br><span class="line">      <span class="keyword">if</span> tape[head] == <span class="number">0</span>:</span><br><span class="line">        pc = bracket_map[pc]</span><br><span class="line">    <span class="keyword">elif</span> code == <span class="string">&#x27;]&#x27;</span>:</span><br><span class="line">      <span class="keyword">if</span> tape[head] != <span class="number">0</span>:</span><br><span class="line">        pc = bracket_map[pc]</span><br><span class="line"></span><br><span class="line">    pc += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse</span>(<span class="params">program</span>):</span></span><br><span class="line">  parsed = []</span><br><span class="line">  bracket_map = &#123;&#125;</span><br><span class="line">  leftstack = []</span><br><span class="line"></span><br><span class="line">  pc = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> char <span class="keyword">in</span> program:</span><br><span class="line">    <span class="keyword">if</span> char <span class="keyword">in</span> (<span class="string">&#x27;[&#x27;</span>, <span class="string">&#x27;]&#x27;</span>, <span class="string">&#x27;&lt;&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="string">&#x27;+&#x27;</span>, <span class="string">&#x27;-&#x27;</span>, <span class="string">&#x27;,&#x27;</span>, <span class="string">&#x27;.&#x27;</span>):</span><br><span class="line">      parsed.append(char)</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> char == <span class="string">&#x27;[&#x27;</span>:</span><br><span class="line">        leftstack.append(pc)</span><br><span class="line">      <span class="keyword">elif</span> char == <span class="string">&#x27;]&#x27;</span>:</span><br><span class="line">        left = leftstack.pop()</span><br><span class="line">        right = pc</span><br><span class="line">        bracket_map[left] = right</span><br><span class="line">        bracket_map[right] = left</span><br><span class="line">      pc += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(parsed), bracket_map</span><br></pre></td></tr></table></figure>
+
+<p>ブログ記事から変更して、<code>Tape</code>クラスを作らずに固定長のリストとヘッド位置をローカル変数として持つようにした。
+標準入力からの１文字読み込みと標準出力への１文字出力は、RPython用とで切り替える必要があるため、引数として受け取る形にした。</p>
+<p>CPythonで動かすための起動部分。
+文字の入出力は <code>sys.stdin.read</code>、<code>sys.stdout.write</code>を使用：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># for_cpython.py</span></span><br><span class="line"><span class="keyword">import</span> bf</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">putc</span>(<span class="params">c</span>):</span></span><br><span class="line">  sys.stdout.write(<span class="built_in">chr</span>(c))  <span class="comment">#; sys.stdout.flush()</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getc</span>():</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">ord</span>(sys.stdin.read(<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span>(<span class="params"><span class="built_in">input</span></span>):</span></span><br><span class="line">  program, <span class="built_in">map</span> = bf.parse(<span class="built_in">input</span>.read())</span><br><span class="line">  bf.mainloop(program, <span class="built_in">map</span>, putc, getc)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  <span class="keyword">import</span> sys</span><br><span class="line">  run(<span class="built_in">open</span>(sys.argv[<span class="number">1</span>], <span class="string">&#x27;r&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<p>動かすにはシェルからBrainf*ckのコードを渡す：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time python for_cpython.py examples/mandelbrot.b</span><br></pre></td></tr></table></figure>
+
+<p>試しにマンデルブロ集合を計算するプログラムを動かしてみたが、遅過ぎて実行完了を待ちきれずかかる時間は不明。</p>
+<h3 id="PyPyによる実行"><a href="#PyPyによる実行" class="headerlink" title="PyPyによる実行"></a>PyPyによる実行</h3><p>PyPyはPythonの処理系の1つとして使用できる。
+なので上記のプログラムも動かすことができる。</p>
+<h4 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h4><p>Mac OSXだと <code>brew install pypy</code> でインストールできる。</p>
+<p>またはpyenv経由でインストールすることもできるらしい。</p>
+<h4 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time pypy for_cpython.py examples/mandelbrot.b</span><br></pre></td></tr></table></figure>
+
+<p>手元で動かしたところCPythonよりずっと高速で完了まで待つことができて、70.70秒だった。</p>
+<h3 id="RPython-Toolchain"><a href="#RPython-Toolchain" class="headerlink" title="RPython Toolchain"></a>RPython Toolchain</h3><p>RPython ToolchainというJITコンパイラ生成のツールチェインがあって、制限されたPythonの文法でインタプリタを書くとそれを変換して高速に実行できるようになる。
+PyPyがRPythonで実装されているらしい。</p>
+<p>PyPyのインストールではソースが含まれないので、<a href="https://www.pypy.org/download.html">ダウンロードのページ</a>のSourceから、または<a href="https://foss.heptapod.net/pypy/pypy">リポジトリ</a>から落としてきてくる。</p>
+<h4 id="呼び出すコード"><a href="#呼び出すコード" class="headerlink" title="呼び出すコード"></a>呼び出すコード</h4><p>RPythonは制限されたPythonコードを受け付けるため、CPython版から少し変更する必要がある：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># for_rpython.py</span></span><br><span class="line"><span class="keyword">import</span> bf</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">putc</span>(<span class="params">c</span>):</span></span><br><span class="line">  os.write(<span class="number">1</span>, <span class="built_in">chr</span>(c))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getc</span>():</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">ord</span>(os.read(<span class="number">0</span>, <span class="number">1</span>)[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span>(<span class="params">fp</span>):</span></span><br><span class="line">  program_contents = <span class="string">&#x27;&#x27;</span></span><br><span class="line">  <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    read = os.read(fp, <span class="number">4096</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(read) == <span class="number">0</span>:</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    program_contents += read</span><br><span class="line">  os.close(fp)</span><br><span class="line">  program, bm = bf.parse(program_contents)</span><br><span class="line">  bf.mainloop(program, bm, putc, getc)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">entry_point</span>(<span class="params">argv</span>):</span></span><br><span class="line">  <span class="keyword">try</span>:</span><br><span class="line">    filename = argv[<span class="number">1</span>]</span><br><span class="line">  <span class="keyword">except</span> IndexError:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;You must supply a filename&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  run(os.<span class="built_in">open</span>(filename, os.O_RDONLY, <span class="number">0o777</span>))</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">target</span>(<span class="params">*args</span>):</span></span><br><span class="line">  <span class="keyword">return</span> entry_point, <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  <span class="keyword">import</span> sys</span><br><span class="line">  entry_point(sys.argv)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>RPython では <code>sys</code> が使えないとのことなので、 <code>os.read</code> や <code>os.write</code> を使う必要がある<ul>
+<li>ただなにか仕様が違うらしく、これをCPythonで動かそうとしてもエラーが出る</li>
+<li><code>pypy</code>に食わせて走らせることはできる</li>
+<li><code>os.write</code>だとバッファリングされないのではないかと推測するので不利じゃないかと思うが、行ごとに出力するように変更しても時間的には大差なかった</li>
+</ul>
+</li>
+<li><code>target</code>は変換用の関数で変換後のバイナリの実行開始情報となる</li>
+</ul>
+<h4 id="変換"><a href="#変換" class="headerlink" title="変換"></a>変換</h4><p>記事にはインタプリタを変換するには <code>pypy/translator/goal/translate.py</code> を使うということが書かれているけど、
+今では <a href="https://foss.heptapod.net/pypy/pypy/-/blob/branch/default/rpython/bin/rpython">rpython/bin/rpython</a> 呼び出しに変わっているぽい。</p>
+<p>PyPyのソースが置かれているパスを <code>PYPY_SRC_PATH</code> とすると、</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="variable">$PYPY_SRC_PATH</span>/rpython/bin/rpython for_rpython.py</span><br></pre></td></tr></table></figure>
+
+<p>しばらく待つとファイル名に<code>-c</code>が付けられた実行ファイルが生成される。
+実行：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time ./for_rpython-c examples/mandelbrot.b</span><br></pre></td></tr></table></figure>
+
+<p>手元では22.44秒だったので、PyPyでの実行時間と比べて31.7%(3.2倍速)に短縮された。</p>
+<p>C++で同じ処理内容のVMを書いて動かしたところ43.71秒となり、RPythonで変換したもののほうが速い（すごい）。
+単なるコンパイルじゃないんだろうか…？</p>
+<h3 id="JIT化"><a href="#JIT化" class="headerlink" title="JIT化"></a>JIT化</h3><p>チュートリアルのパート2
+<a href="https://www.pypy.org/posts/2011/04/tutorial-part-2-adding-jit-8121732841568309472.html">Adding a JIT</a>
+に、JIT化について書いてある。</p>
+<p><code>rpython</code> による変換時に <code>--opt=jit</code> と指定するとJIT化される、らしい</p>
+<ul>
+<li><code>JitDriver</code> にgreensとredsを指定する</li>
+<li>ループ箇所に <code>jit_merge_point</code> を入れる</li>
+<li><code>JitPolicy</code>を指定する</li>
+</ul>
+<p>という必要がある：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line"># bf.y</span><br><span class="line"></span><br><span class="line"><span class="addition">+try:</span></span><br><span class="line"><span class="addition">+  from rpython.rlib.jit import JitDriver</span></span><br><span class="line"><span class="addition">+except ImportError:</span></span><br><span class="line"><span class="addition">+  class JitDriver(object):</span></span><br><span class="line"><span class="addition">+    def __init__(self,**kw): pass</span></span><br><span class="line"><span class="addition">+    def jit_merge_point(self,**kw): pass</span></span><br><span class="line"><span class="addition">+    def can_enter_jit(self,**kw): pass</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+jitdriver = JitDriver(</span></span><br><span class="line"><span class="addition">+  greens=[&#x27;pc&#x27;, &#x27;program&#x27;, &#x27;bracket_map&#x27;, &#x27;tape&#x27;],</span></span><br><span class="line"><span class="addition">+  reds=[&#x27;head&#x27;])</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"> def mainloop(program, bracket_map, putc, getc):</span><br><span class="line">   tape = [0] * 30000</span><br><span class="line">   pc = 0</span><br><span class="line">   head = 0</span><br><span class="line">   while pc &lt; len(program):</span><br><span class="line"><span class="addition">+    jitdriver.jit_merge_point(pc=pc, head=head, tape=tape, program=program,</span></span><br><span class="line"><span class="addition">+                              bracket_map=bracket_map)</span></span><br><span class="line"></span><br><span class="line">    code = program[pc]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line"># for_rpython.py</span><br><span class="line"></span><br><span class="line"><span class="addition">+def jitpolicy(driver):</span></span><br><span class="line"><span class="addition">+  from rpython.jit.codewriter.policy import JitPolicy</span></span><br><span class="line"><span class="addition">+  return JitPolicy()</span></span><br></pre></td></tr></table></figure>
+
+<p>変換には <code>--opt=jit</code> をつけて、</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="variable">$PYPY_SRC_PATH</span>/rpython/bin/rpython --opt=jit for_rpython.py</span><br></pre></td></tr></table></figure>
+
+<p>（なぜかマンデルブロ集合のようなカラーのAAが出力され）7分半ほどかかり、実行ファイル <code>for_rpython-c</code> が生成される。</p>
+<p>実行時間は11.85秒、普通の変換に比べて52.8%(1.9倍速)に短縮される。</p>
+<h4 id="最適化"><a href="#最適化" class="headerlink" title="最適化"></a>最適化</h4><p>Brainf*ckの <code>[]</code> のジャンプ命令でディクショナリ参照が行われるが、ジャンプ先は変わらないので最適化したい。
+<code>@purefunction</code> デコレータでRPythonの変換にヒントを与えて、<code>mainloop</code> のブラケットの処理で使用するよう変更すると：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line"># bf.py</span><br><span class="line"><span class="addition">+from rpython.rlib.jit import purefunction</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+@purefunction</span></span><br><span class="line"><span class="addition">+def get_matching_bracket(bracket_map, pc):</span></span><br><span class="line"><span class="addition">+    return bracket_map[pc]</span></span><br><span class="line"></span><br><span class="line"> def mainloop(program, bracket_map, putc, getc, puts):</span><br><span class="line">   ...</span><br><span class="line">   while pc &lt; len(program):</span><br><span class="line">     ...</span><br><span class="line">     elif code == &#x27;[&#x27;:</span><br><span class="line">       if tape.get() == 0:</span><br><span class="line"><span class="deletion">-        pc = bracket_map[pc]</span></span><br><span class="line"><span class="addition">+        pc = get_matching_bracket(bracket_map, pc)</span></span><br><span class="line">     elif code == &#x27;]&#x27;:</span><br><span class="line">       if tape.get() != 0:</span><br><span class="line"><span class="deletion">-        pc = bracket_map[pc]</span></span><br><span class="line"><span class="addition">+        pc = get_matching_bracket(bracket_map, pc)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>実行時間は3.48秒、単なるJIT化からさらに29.4%(3.4倍速)に短縮される。</p>
+<p>実行時間まとめ：</p>
+<table>
+<thead>
+<tr>
+<th align="left">処理系</th>
+<th align="right">秒数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">CPython</td>
+<td align="right">計測断念</td>
+</tr>
+<tr>
+<td align="left">PyPy</td>
+<td align="right">70.70</td>
+</tr>
+<tr>
+<td align="left">C++</td>
+<td align="right">43.71</td>
+</tr>
+<tr>
+<td align="left">RPython変換後</td>
+<td align="right">22.44</td>
+</tr>
+<tr>
+<td align="left">–opt=jit</td>
+<td align="right">11.85</td>
+</tr>
+<tr>
+<td align="left">@purefunction指定</td>
+<td align="right">3.48</td>
+</tr>
+</tbody></table>
+<p>むちゃくちゃ速い、すごい！
+与えているのは単純なBrainf*ckのインタプリタだけなのに、どういう変換が行われればここまで速くなるのよ？</p>
+<h3 id="参考として、手動JIT版だと"><a href="#参考として、手動JIT版だと" class="headerlink" title="参考として、手動JIT版だと"></a>参考として、手動JIT版だと</h3><p><a href="https://hogelog.hatenablog.com/entry/20100914/p1">[VM][JIT]Brainf*ckで学ぶスクリプト言語処理系高速化。インタプリタ→VMインタプリタ→JITコンパイラ。 - hogelogの日記</a>
+を参考に、64ビット版Xbyakの速度を測ったところ、3.22秒だった。</p>
+<p>RPython-jit版が手動でJIT化したものと遜色ないのがすごい。</p>
+<h3 id="RPython-Toolchainについて"><a href="#RPython-Toolchainについて" class="headerlink" title="RPython Toolchainについて"></a>RPython Toolchainについて</h3><p>ドキュメントが古い状態のままだったり、検索してもあまり新しい記事がなく、あまり使われてないんだろうか…。</p>
+<ul>
+<li>readthedocs<ul>
+<li><a href="https://rpython.readthedocs.io/_/downloads/en/latest/pdf/">RPython Documentation</a> Release 4.0.0</li>
+<li><a href="https://rpython.readthedocs.io/en/latest/rpython.html">RPython Language — RPython Documentation</a></li>
+<li><a href="https://rpython.readthedocs.io/en/latest/jit/index.html">JIT documentation — RPython Documentation</a></li>
+<li><a href="https://rpython.readthedocs.io/en/latest/translation.html">The RPython Toolchain — RPython Documentation</a></li>
+</ul>
+</li>
+<li><a href="https://www.pypy.org/posts/2012/01/comparing-partial-evaluation-and-7255412724168990164.html">Comparing Partial Evaluation and Tracing, Part 1 | PyPy</a>
+メタトレーシングがどうとか。</li>
+<li><a href="https://dl.acm.org/doi/10.1145/1565824.1565827">Tracing the meta-level: PyPy’s tracing JIT compiler</a>
+読んでない。</li>
+<li><a href="https://keens.github.io/blog/2017/12/12/rpythonnitsuitekaruku/">RPythonについて軽く | κeenのHappy Hacκing Blog</a>
+<a href="https://ja.wikipedia.org/wiki/%E9%83%A8%E5%88%86%E8%A9%95%E4%BE%A1#%E4%BA%8C%E6%9D%91%E5%B0%84%E5%BD%B1">二村射影</a>とか、部分評価とか、
+インタプリタからコンパイラが作られるとか。</li>
+<li>RPythonを使ったインタプリタ実装にTopazとかいろいろあったみたいなんだけど最近は動きがない？
+どうなっちゃったんだろう？</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/21/adv-in-jit-compilation.html" title="「JITコンパイルでの冒険」を読んだ" rel="bookmark">「JITコンパイルでの冒険」を読んだ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/10/10/calling-convension-64.html" title="Xbyakで動的に生成するコードからCの関数を呼び出す" rel="bookmark">Xbyakで動的に生成するコードからCの関数を呼び出す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/22/dt-jit-comparison.html" title="Direct Threaded版とJITの速度比較" rel="bookmark">Direct Threaded版とJITの速度比較</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/05/jit.html" title="JITについてお勉強" rel="bookmark">JITについてお勉強</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/11/xbyak-jit.html" title="Xbyakで簡単な関数を実行時に生成する" rel="bookmark">Xbyakで簡単な関数を実行時に生成する</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

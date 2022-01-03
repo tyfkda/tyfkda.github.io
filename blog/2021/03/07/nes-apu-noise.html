@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ファミコンエミュレータで音を鳴らす際にノイズチャンネルはどうやって鳴らせばいいのか分からなくて、ひとまず適当に
+createPeriodicWave()
+をランダムで埋めてホワイトノイズみたいなものを鳴らしていただけだった。
+しかしOptcarrotのソースを読んでるうちに少し分かってきた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ファミコンのノイズチャンネルの再現方法"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ファミコンのノイズチャンネルの再現方法 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2021/03/07/nes-apu-noise.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ファミコンのノイズチャンネルの再現方法</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2021-03-07
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/nes/">#nes</a> <a href="/tags/audio/">#audio</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://github.com/tyfkda/nesemu">ファミコンエミュレータ</a>で音を鳴らす際にノイズチャンネルはどうやって鳴らせばいいのか分からなくて、ひとまず適当に
+<a href="https://developer.mozilla.org/ja/docs/Web/API/BaseAudioContext/createPeriodicWave">createPeriodicWave()</a>
+をランダムで埋めてホワイトノイズみたいなものを鳴らしていただけだった。
+しかし<a href="https://github.com/mame/optcarrot">Optcarrot</a>のソースを読んでるうちに少し分かってきた。</p>
+<span id="more"></span>
+
+<h3 id="ノイズチャンネルの動作"><a href="#ノイズチャンネルの動作" class="headerlink" title="ノイズチャンネルの動作"></a>ノイズチャンネルの動作</h3><p>サウンドチップであるAPUの解説はNesdev wikiの<a href="https://wiki.nesdev.com/w/index.php/APU_Noise">APU Noise</a>に詳しい：</p>
+<ul>
+<li>15ビットのレジスタがある（初期値は1）</li>
+<li>ビット0が0の場合、指定の音量を出力</li>
+<li>クロックが進むとき：<ul>
+<li>ビット0とビット1のXORを取る</li>
+<li>1ビット右シフト</li>
+<li>最上位ビット(14)はXORの結果とする</li>
+</ul>
+</li>
+</ul>
+<p>このように動かしたときビット0が疑似乱数のように0と1を繰り返し、それによってノイズを発生させることができる。
+周期は32767になる。</p>
+<p>モードによってはビット1とじゃなくビット6とXORを取る。
+その場合周期は93または31となるとのこと（その時のレジスタの値により）。</p>
+<h4 id="クロックの進め方"><a href="#クロックの進め方" class="headerlink" title="クロックの進め方"></a>クロックの進め方</h4><p>同じNesdev wikiの<a href="https://wiki.nesdev.com/w/index.php/APU#Glossary">APUページの用語集</a>に注意点として書いてある：</p>
+<blockquote>
+<p>A <strong>timer</strong> is used in each of the five channels to control the sound frequency.
+It contains a divider which is clocked by the CPU clock.
+The triangle channel’s timer is clocked on every CPU cycle, but the pulse, noise, and DMC timers are clocked only on every second CPU cycle and thus produce only even periods.</p>
+</blockquote>
+<blockquote>
+<p>5チャンネルの各チャンネルには、音の周波数を制御するための<strong>タイマー</strong>が搭載されています。
+これにはCPUクロックでクロックされる分周器が含まれています。
+トライアングルチャンネルのタイマーはCPUサイクルごとにクロックされますが、パルスタイマー、ノイズタイマー、DMCタイマーはCPUサイクルごとにクロックされるため、偶数周期しか生成されません。</p>
+</blockquote>
+<p>なのでノイズチャンネルはCPUの周波数(≒1.79MHz)の半分で動作する。</p>
+<blockquote>
+<p>A <strong>divider</strong> outputs a clock periodically.
+It contains a period reload value, P, and a counter, that starts at P.
+When the divider is clocked, if the counter is currently 0, it is reloaded with P and generates an output clock, otherwise the counter is decremented.
+In other words, the divider’s period is P + 1.</p>
+</blockquote>
+<blockquote>
+<p><strong>分周器</strong>は周期的にクロックを出力します。
+分周器には周期リロード値Pと、Pから始まるカウンタが含まれています。
+分周器がクロックされると、現在カウンタが0であればPでリロードされて出力クロックが発生し、そうでなければカウンタがデクリメントされます。
+つまり、分周器の周期はP＋1です。</p>
+</blockquote>
+<p>P値は<code>$400e</code>の下位4ビットの値を元に<a href="https://wiki.nesdev.com/w/index.php/APU_Noise">テーブル</a>参照：
+<code>[4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068]</code></p>
+<h3 id="WebAudioで波形を鳴らす-AudioWorklet"><a href="#WebAudioで波形を鳴らす-AudioWorklet" class="headerlink" title="WebAudioで波形を鳴らす(AudioWorklet)"></a>WebAudioで波形を鳴らす(AudioWorklet)</h3><p>WebAudioで任意の波形を鳴らすには<a href="/blog/2018/09/15/white-noise.html" title="ScriptProcessorNode">ScriptProcessorNode</a>でできる…と思ってたんだけど
+すでに<a href="https://www.w3.org/TR/webaudio/#scriptprocessornode">deprecated</a>にされていた：</p>
+<blockquote>
+<p>@deprecated — As of the August 29 2014 Web Audio API spec publication, this feature has been marked as deprecated, and was replaced by AudioWorklet (see AudioWorkletNode).</p>
+</blockquote>
+<p>メッセージに従って<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode/AudioWorkletNode"><code>AudioWorkletNode</code></a>を見てみることにした。
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode#examples">Examples</a>が取っ掛かりとしてわかりやすい。</p>
+<ul>
+<li>別スクリプトをworkletとして起動する</li>
+<li><code>registerProcessor</code>で登録したクラスの<code>process</code>関数が呼び出されるので、<code>Float32Array</code>型の<code>output</code>を埋めてやると再生される</li>
+<li>メイン側とやり取りするには<code>port</code>が使える<ul>
+<li><code>parameters</code>は波形の各時刻に関する情報の受け渡し用途</li>
+</ul>
+</li>
+<li>サンプリングレートは<code>sampleRate</code>に格納されている</li>
+<li>動作を停止させるには<code>process</code>で<code>false</code>を返してやる</li>
+</ul>
+<p>悲しいことに<code>AudioWorklet</code>は<a href="https://caniuse.com/?search=AudioWorklet">Safariで未実装</a>なので、
+使えない場合には<code>ScriptProcessorNode</code>にフォールバックしてやる必要がある
+（または<a href="https://github.com/GoogleChromeLabs/audioworklet-polyfill">polyfill</a>を使う）。</p>
+<h4 id="サンプルごとの処理"><a href="#サンプルごとの処理" class="headerlink" title="サンプルごとの処理"></a>サンプルごとの処理</h4><p>AudioWorklet側のサンプリングレートが例えば44.1kHzの場合、1秒分の波形は44100個の値に対応する。
+サンプル1つごとに時間的には1/44100秒進むことになるので、それに対応する時間分APU側のタイマーを進めてクロック処理してやればよい。</p>
+<p>できれば整数で扱いたいので、あらかじめサンプリングレートとAPUの周波数の最小公倍数から適切な係数を掛けて固定小数点として扱うとよい：
+<a href="https://github.com/mame/optcarrot/blob/5d3ca1177afc973c8e14c44c4aa0000341db58e9/lib/optcarrot/apu.rb#L71-L79">Optcarrotのコードを参照</a>。</p>
+<p>（Optcarrotの数値を見ていくとどうやらCPUの周波数/2じゃなくそのままの値に、また1/(P+1)じゃなく1/Pになってるぽいんだが、聞き分けられるほどの違いを感じなかった、
+なにが正解なんだ…。）</p>
+<h3 id="成果物"><a href="#成果物" class="headerlink" title="成果物"></a>成果物</h3><ul>
+<li><a href="https://github.com/tyfkda/nesemu/blob/main/src/noise_channel_worker.ts">noise_channel_worker.ts</a>: AudioWorklet</li>
+<li><a href="https://github.com/tyfkda/nesemu/blob/main/src/util/apu_util.ts">apu_util.ts</a>: ノイズのサンプル処理</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/01/square-duty.html" title="矩形波のデューティ比を変化させる" rel="bookmark">矩形波のデューティ比を変化させる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/07/07/nes-scrolling.html" title="ファミコンでのBGスクロール" rel="bookmark">ファミコンでのBGスクロール</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/09/optcarrot.html" title="Optcarrotがすごい" rel="bookmark">Optcarrotがすごい</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

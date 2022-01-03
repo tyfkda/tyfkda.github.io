@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="robots" content="noindex">
+    <title>Matrix palette skinning (with weight)</title>
+
+    <!-- CSS -->
+    <style type="text/css">
+      html, body {
+        margin: 0;
+      }
+
+      body {
+        background-color: lightgray;
+      }
+    </style>
+
+    <!-- JS -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.6.1/gl-matrix-min.js"></script>
+    <script type="text/javascript">
+
+/**
+ * Provides requestAnimationFrame in a cross browser way.
+ */
+window.requestAnimationFrame = (
+  window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    function(func) {
+      return window.setTimeout(func, 1000/60)
+    }
+)
+
+////////////////////////////////////////////////////////////////
+
+window.addEventListener('load', () => {
+  'use strict'
+
+  function main() {
+    const canvas = document.getElementById('world')
+    const gl = initGL(canvas)
+    const shaderProgram = initShader(gl)
+    const model = initModel(gl)
+
+    gl.clearColor(0, 0, 0, 1)
+    gl.enable(gl.DEPTH_TEST)
+    gl.enable(gl.CULL_FACE)
+    gl.cullFace(gl.BACK)
+
+    // Animation.
+    let rx = 0, ry = 0, rz = 0
+    const modelMatrix1 = mat4.create()
+    const modelMatrix2 = mat4.create()
+    const modelMatrices = [modelMatrix1, modelMatrix2]
+
+    const tick = () => {
+      requestAnimationFrame(tick)  // Request next frame.
+
+      rx += 0.02
+      ry += 0.03
+      rz += 0.05
+      mat4.identity(modelMatrix1)
+      mat4.identity(modelMatrix2)
+      mat4.translate(modelMatrix2, modelMatrix2, [1, 0, 0])
+      mat4.rotateX(modelMatrix2, modelMatrix2, Math.sin(rx) * 45 * 2 * Math.PI / 180)
+      mat4.rotateY(modelMatrix2, modelMatrix2, Math.sin(ry) * 45 * 2 * Math.PI / 180)
+      mat4.rotateZ(modelMatrix2, modelMatrix2, Math.sin(rz) * 45 * 2 * Math.PI / 180)
+
+      drawScene(gl, shaderProgram, model, modelMatrices)
+    }
+    requestAnimationFrame(tick)  // Request next frame.
+  }
+
+  function drawScene(gl, shaderProgram, model, modelMatrices) {
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight)
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+    // Projection matrix.
+    const vpMatrix = mat4.create()
+    mat4.perspective(vpMatrix, 45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
+
+    // View matrix.
+    const vMatrix = mat4.create()
+    mat4.lookAt(vMatrix, [2.0, 2.0, 3.0], [1, 0, 0], [0, 1, 0])
+
+    mat4.multiply(vpMatrix, vpMatrix, vMatrix)
+    gl.uniformMatrix4fv(shaderProgram.uVPMatrix, false, vpMatrix)
+
+    // Model matrix.
+    for (let i = 0; i < 2; ++i) {
+      mat4.multiply(modelMatrices[i], modelMatrices[i], model.basePose[i])
+      gl.uniformMatrix4fv(shaderProgram.uMMatrix[i], false, modelMatrices[i])
+    }
+
+    gl.useProgram(shaderProgram)
+    gl.bindBuffer(gl.ARRAY_BUFFER, model.aVertexPosition)
+    gl.vertexAttribPointer(shaderProgram.aVertexPosition,
+			   model.aVertexPosition.itemSize, gl.FLOAT, false, 0, 0)
+    gl.bindBuffer(gl.ARRAY_BUFFER, model.aVertexColor)
+    gl.vertexAttribPointer(shaderProgram.aVertexColor,
+			   model.aVertexColor.itemSize, gl.FLOAT, false, 0, 0)
+    gl.bindBuffer(gl.ARRAY_BUFFER, model.aBlendIndices)
+    gl.vertexAttribPointer(shaderProgram.aBlendIndices,
+			   model.aBlendIndices.itemSize, gl.FLOAT, false, 0, 0)
+    gl.bindBuffer(gl.ARRAY_BUFFER, model.aBlendWeight)
+    gl.vertexAttribPointer(shaderProgram.aBlendWeight,
+			   model.aBlendWeight.itemSize, gl.FLOAT, false, 0, 0)
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, model.indexBuffer)
+    gl.drawElements(gl.TRIANGLES, model.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0)
+  }
+
+  function initShader(gl) {
+    const shader_vs_src = `
+attribute vec3 aVertexPosition;
+attribute vec4 aVertexColor;
+attribute vec2 aBlendIndices;
+attribute float aBlendWeight;
+
+uniform mat4 uMMatrix[2]; // モデル行列配列
+uniform mat4 uVPMatrix;
+
+varying vec4 vColor;
+
+void main() {
+  float leftWeight = 1.0 - aBlendWeight;
+  vec4 pos;
+  pos  = uMMatrix[int(aBlendIndices.x)] * vec4(aVertexPosition, 1.0) * aBlendWeight;
+  pos += uMMatrix[int(aBlendIndices.y)] * vec4(aVertexPosition, 1.0) * leftWeight;
+  gl_Position = uVPMatrix * pos;
+  vColor = aVertexColor;
+}`
+    const shader_fs_src = `
+precision mediump float;
+
+varying vec4 vColor;
+
+void main() {
+  gl_FragColor = vColor;
+}`
+
+    const shaderProgram = createShaderProgram(
+      gl,
+      compileShader(gl, gl.VERTEX_SHADER, shader_vs_src),
+      compileShader(gl, gl.FRAGMENT_SHADER, shader_fs_src))
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+      alert('Could not initialise shaders')
+    }
+
+    shaderProgram.aVertexPosition = gl.getAttribLocation(shaderProgram, 'aVertexPosition')
+    gl.enableVertexAttribArray(shaderProgram.aVertexPosition)
+
+    shaderProgram.aVertexColor = gl.getAttribLocation(shaderProgram, 'aVertexColor')
+    gl.enableVertexAttribArray(shaderProgram.aVertexColor)
+
+    shaderProgram.aBlendIndices = gl.getAttribLocation(shaderProgram, 'aBlendIndices')
+    gl.enableVertexAttribArray(shaderProgram.aBlendIndices)
+
+    shaderProgram.aBlendWeight = gl.getAttribLocation(shaderProgram, 'aBlendWeight')
+    gl.enableVertexAttribArray(shaderProgram.aBlendWeight)
+
+    shaderProgram.uVPMatrix = gl.getUniformLocation(shaderProgram, 'uVPMatrix')
+    shaderProgram.uMMatrix = [
+      gl.getUniformLocation(shaderProgram, 'uMMatrix[0]'),
+      gl.getUniformLocation(shaderProgram, 'uMMatrix[1]'),
+    ]
+
+    return shaderProgram
+  }
+
+  function initModel(gl) {
+    const DIV = 16
+
+    const positionBuffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+    const positions = []
+    for (let i = 0; i <= DIV; ++i) {
+      const x = i * 2.0 / DIV
+      positions.push(x,-0.5,-0.5, x, 0.5,-0.5,
+		     x, 0.5,-0.5, x, 0.5, 0.5,
+		     x, 0.5, 0.5, x,-0.5, 0.5,
+		     x,-0.5, 0.5, x,-0.5,-0.5)
+    }
+    // Cap.
+    positions.push(0.0,-0.5,-0.5, 0.0, 0.5,-0.5, 0.0, 0.5, 0.5, 0.0,-0.5, 0.5,
+		   2.0,-0.5,-0.5, 2.0, 0.5,-0.5, 2.0, 0.5, 0.5, 2.0,-0.5, 0.5)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
+    positionBuffer.itemSize = 3
+    positionBuffer.numItems = positions.length / positionBuffer.itemSize
+
+    const colorBuffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer)
+    const colors = []
+    for (let i = 0; i <= DIV; ++i) {
+      colors.push(1,0,0,1, 1,0,0,1,
+		  0,1,0,1, 0,1,0,1,
+		  0,0,1,1, 0,0,1,1,
+		  1,1,0,1, 1,1,0,1)
+    }
+    colors.push(0,1,1,1, 0,1,1,1, 0,1,1,1, 0,1,1,1,
+	        1,0,1,1, 1,0,1,1, 1,0,1,1, 1,0,1,1)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW)
+    colorBuffer.itemSize = 4
+    colorBuffer.numItems = colors.length / colorBuffer.itemSize
+
+    const blendIndicesBuffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, blendIndicesBuffer)
+    const blendIndices = []
+    for (let i = 0; i < (DIV + 1) * 4 * 2 + 4 + 4; ++i) {
+      blendIndices.push(0, 1)
+    }
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blendIndices), gl.STATIC_DRAW)
+    blendIndicesBuffer.itemSize = 2
+    blendIndicesBuffer.numItems = blendIndices.length / blendIndicesBuffer.itemSize
+
+    const blendWeightBuffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, blendWeightBuffer)
+    const blendWeights = []
+    for (let i = 0; i <= DIV; ++i) {
+      const x = i * 2.0 / DIV
+      const weight = Math.min(Math.max(1.0 - x / 2, 0.0), 1.0)
+      blendWeights.push(weight, weight,
+		        weight, weight,
+		        weight, weight,
+		        weight, weight)
+    }
+    blendWeights.push(1.0,1.0,1.0,1.0, 0.0,0.0,0.0,0.0)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blendWeights), gl.STATIC_DRAW)
+    blendWeightBuffer.itemSize = 1
+    blendWeightBuffer.numItems = blendWeights.length / blendWeightBuffer.itemSize
+
+    const indexBuffer = gl.createBuffer()
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
+    const indices = []
+    for (let i = 0; i < DIV; ++i) {
+      const index = i * 8
+      indices.push(index+0,index+1,index+9,  index+0,index+9, index+8,
+		   index+2,index+3,index+11, index+2,index+11,index+10,
+		   index+4,index+5,index+13, index+4,index+13,index+12,
+		   index+6,index+7,index+15, index+6,index+15,index+14)
+    }
+    const index = (DIV + 1) * 8
+    indices.push(index+0,index+3,index+2, index+0,index+2,index+1,
+	         index+4,index+5,index+6, index+4,index+6,index+7)
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW)
+    indexBuffer.itemSize = 1
+    indexBuffer.numItems = indices.length / indexBuffer.itemSize
+
+    // Base pose.
+    const baseMatrix1 = mat4.create()
+    mat4.identity(baseMatrix1)
+    const baseMatrix2 = mat4.create()
+    mat4.identity(baseMatrix2)
+    mat4.translate(baseMatrix2, baseMatrix2, [1, 0, 0])
+
+    const invBaseMatrix1 = mat4.create()
+    mat4.invert(invBaseMatrix1, baseMatrix1)
+    const invBaseMatrix2 = mat4.create()
+    mat4.invert(invBaseMatrix2, baseMatrix2)
+
+    const basePose = [invBaseMatrix1, invBaseMatrix2]
+
+    return {
+      aVertexPosition: positionBuffer,
+      aVertexColor: colorBuffer,
+      aBlendIndices: blendIndicesBuffer,
+      aBlendWeight: blendWeightBuffer,
+      basePose: basePose,
+      indexBuffer: indexBuffer,
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Matrix stack.
+  const mvMatrixStack = []
+
+  function pushMatrix(mtx) {
+    const copy = mat4.create()
+    mat4.set(mtx, copy)
+    mvMatrixStack.push(copy)
+  }
+
+  function popMatrix() {
+    if (mvMatrixStack.length == 0) {
+      throw "Invalid popMatrix!"
+    }
+    return mvMatrixStack.pop()
+  }
+
+  ////////////////////////////////////////////////////////////////
+  function initGL(canvas) {
+    let gl
+    try {
+      gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+      gl.viewportWidth = canvas.width
+      gl.viewportHeight = canvas.height
+    } catch (e) {
+    }
+    if (!gl) {
+      alert('Could not initialise WebGL, sorry :-(')
+    }
+    return gl
+  }
+
+  function createShaderProgram(gl, vertexShader, fragmentShader) {
+    const shaderProgram = gl.createProgram()
+    gl.attachShader(shaderProgram, vertexShader)
+    gl.attachShader(shaderProgram, fragmentShader)
+    gl.linkProgram(shaderProgram)
+    return shaderProgram
+  }
+
+  // type: gl.VERTEX_SHADER or gl.FRAGMENT_SHADER
+  function compileShader(gl, type, src) {
+    const shader = gl.createShader(type)
+    gl.shaderSource(shader, src)
+    gl.compileShader(shader)
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      alert(gl.getShaderInfoLog(shader))
+      return null
+    }
+    return shader
+  }
+
+  // ========
+
+  main()
+})
+
+    </script>
+  </head>
+  <body>
+    <div id="canvas-holder" style="width:450px; height:450px; overflow:hidden">
+      <canvas id="world" width="450" height="450"></canvas>
+    </div>
+  </body>
+</html>

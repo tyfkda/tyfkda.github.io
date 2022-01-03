@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="これなら分かる 応用数学教室4.6 「１の原始N乗根による表現」
+普通の（fastじゃない）離散フーリエ変換に引き続き。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="１の原始N乗根による表現を使った離散フーリエ変換"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>１の原始N乗根による表現を使った離散フーリエ変換 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/05/15/primitive-nth-root.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>１の原始N乗根による表現を使った離散フーリエ変換</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-05-15
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ruby/">#ruby</a> <a href="/tags/math/">#math</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://www.kyoritsu-pub.co.jp/texthp/sugaku/01738-2.html">これなら分かる 応用数学教室</a>4.6 「１の原始N乗根による表現」</p>
+<a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換">普通の（fastじゃない）離散フーリエ変換</a>に引き続き。
+
+<span id="more"></span>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\omega_N = e^{i 2\pi/N}
+%]]></script>
+
+<p>とすると</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+F_k &= \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i 2\pi kl/N} \\
+    &= \frac{1}{N} \sum_{l=0}^{N-1} f_l(\omega_N)^{-kl} \\
+\end{align}
+%]]></script>
+
+<script type="math/tex">\overline{\omega_N} = \omega_N^{-1}</script> より（上バーは[複素数の共役](http://onohiro.hp.infoseek.co.jp/amanojack2/a/kisokaku018.htm)をあらわす）
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+ = \frac{1}{N} \sum_{l=0}^{N-1} f_l \overline{\omega_N^{kl} }
+%]]></script>
+
+<script type="math/tex">\overline{ab} = \overline{a} \cdot \overline{b}</script> より
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+ &= \frac{1}{N} \overline{\overline{ \sum_{l=0}^{N-1} f_l \overline{\omega_N^{kl} } }} \\
+ &= \frac{1}{N} \overline{ \sum_{l=0}^{N-1} \overline{f_l} \omega_N^{kl} } \\
+\end{align}
+%]]></script>
+
+<p>となる。</p>
+<script type="math/tex">b_k = \sum_{l=0}^{N-1} a_l \omega_N^{kl}</script> , <script type="math/tex">a_l = \overline{f_l}</script> とすれば、
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+F_k = \overline{b_k} / N.
+%]]></script>
+
+<h3 id="プログラム化"><a href="#プログラム化" class="headerlink" title="プログラム化"></a>プログラム化</h3><p>Rubyの<a href="http://www.ruby-lang.org/ja/man/html/Complex.html">Complex</a>を使って</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;complex&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 原始N乗根</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">primitiveNthRoot</span><span class="params">(n, k=<span class="number">1</span>)</span></span></span><br><span class="line">  t = <span class="number">2</span> * Math::PI * k / n</span><br><span class="line">  Complex(Math.cos(t), Math.sin(t))</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 係数計算</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calcb</span><span class="params">(a, k)</span></span></span><br><span class="line">  n = a.length</span><br><span class="line">  (<span class="number">0</span>...n).inject(Complex(<span class="number">0</span>, <span class="number">0</span>)) <span class="keyword">do</span> <span class="params">|r, l|</span></span><br><span class="line">    wklN = primitiveNthRoot(n, k * l)</span><br><span class="line">    r + a[l] * wklN</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 離散フーリエ変換</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dft</span><span class="params">(fs)</span></span></span><br><span class="line">  n = fs.length</span><br><span class="line">  a = fs.map&#123;<span class="params">|fl|</span> Complex(fl, <span class="number">0</span>)&#125;</span><br><span class="line">  b = (<span class="number">0</span>...n).map &#123;<span class="params">|k|</span> calcb(a, k)&#125;</span><br><span class="line">  b.map &#123;<span class="params">|be|</span> be.conjugate / n&#125;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">p dft([<span class="number">1</span>,<span class="number">7</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">0</span>,<span class="number">5</span>,<span class="number">0</span>,<span class="number">8</span>])</span><br></pre></td></tr></table></figure>
+
+<p>結果：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">[(<span class="number">3.25</span>-<span class="number">0.0i</span>), (<span class="number">0.8321067811865474</span>-<span class="number">0.021446609406726047i</span>), (-<span class="number">0.2500000000000002</span>-<span class="number">0.25i</span>), (-<span class="number">0.5821067811865479</span>+<span class="number">0.7285533905932745i</span>), (-<span class="number">2.25</span>-<span class="number">1.3471114790620886e-15i</span>), (-<span class="number">0.5821067811865464</span>-<span class="number">0.7285533905932751i</span>), (-<span class="number">0.2500000000000022</span>+<span class="number">0.25i</span>), (<span class="number">0.8321067811865511</span>+<span class="number">0.02144660940672849i</span>)]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>O(N^2)</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2011/08/15/bayesian-filter.html" title="「ベイジアンフィルタを実装してみよう」をRubyで" rel="bookmark">「ベイジアンフィルタを実装してみよう」をRubyで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/03/21/easy-dsl.html" title="Rubyで簡単DSL" rel="bookmark">Rubyで簡単DSL</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/06/01/ga-helloworld.html" title="GAで"Hello, world!"" rel="bookmark">GAで"Hello, world!"</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

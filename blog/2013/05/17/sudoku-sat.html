@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Project Euler の96問目が数独を解く問題で、手筋を調べて解くプログラムを書こうかと思ったが、SATソルバを使うとゲームのルールごとに解法を考えてプログラムを作らなくても、制約を与えれば解を求めることができる、ということを知ったので使って見ることにした。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Haskell】SATソルバを使って数独を解く"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Haskell】SATソルバを使って数独を解く - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/05/17/sudoku-sat.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Haskell】SATソルバを使って数独を解く</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-05-17
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/haskell/">#haskell</a> <a href="/tags/puzzle/">#puzzle</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://projecteuler.net/problem=96">Project Euler の96問目</a>が数独を解く問題で、手筋を調べて解くプログラムを書こうかと思ったが、SATソルバを使うとゲームのルールごとに解法を考えてプログラムを作らなくても、制約を与えれば解を求めることができる、ということを知ったので使って見ることにした。</p>
+<span id="more"></span>
+
+<p>参考にしたのは<a href="http://d.hatena.ne.jp/nitar/20080121/p1">HaskellとSATソルバーで数独を解く - メタサブカル病</a>のページ。このページのプログラムを実行すると、数独を解くための制約を標準出力に出力する。それを<a href="http://minisat.se/">MiniSat</a>というオープンソースのSATソルバに与えて、その出力をパースして結果をわかりやすく9x9に表示している。Haskellだけで閉じてるわけじゃなくて、SATソルバは外部プログラムになっている。</p>
+<p>MiniSatに与える制約は、乗法標準形(Conjunctive Normal Form、orでつないだ命題を、andでつないだもの)という形式で与える必要がある。論理変数を正の数で表して、そのまま正の数を使えばその論理変数が真の時、符号反転して負の数を使えば偽を表す。プログラムが出力する制約は次のようなファイルになる：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">p cnf 729 17607</span><br><span class="line">5 0</span><br><span class="line">...</span><br><span class="line">9 8 7 6 5 4 3 2 1 0</span><br><span class="line">90 89 88 87 86 85 84 83 82 0</span><br><span class="line">171 170 169 168 167 166 165 164 163 0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>最初の行で変数の数と節の数を明示していて、続く各行がorでつないだ命題で、全体をandでつないだものが制約となる（各行最後の0は行の終わりを示しているだけで、意味はない）。1つの論理変数は真か偽かしか持てないので、数独では各マスに対して変数を9個用意して、変数1が真なら1が入る、変数2が真なら2が入る、…というように用いている。なので9x9マスx9変数 = 729個変数がある。節は17577+問題に埋め込まれている数字の個数となる。</p>
+<p>で、外部プログラムを使わずにHaskellでSATを解くライブラリがないか調べたところいろいろあるらしく、どれがいいのかよくわからなかった。<a href="https://gist.github.com/gatlin/1755736">gatlin / sat.hs - gist</a>はファイル1つだけでソースも短いので、これを試してみたところ、速いかどうかは他と比べてないのでわからないが、ちゃんと動いて問題が解けた。うーむ便利。</p>
+<p>関数<code>solve</code>に与える引数はMiniSatとほぼ同じで、整数の二重リストで、外側のリストが節全体、内部の各リストが節、数値が論理変数の真（正）または偽（負）となっている。戻り値は<code>Maybe</code>で、<code>Nothing</code>なら解なし、あれば論理変数の値のリストで、ソートはされてない。</p>
+<p>このSATソルバを使って、Haskellだけで解けるコード：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- This code requires SAT solver module,</span></span><br><span class="line"><span class="comment">-- e.g. https://gist.github.com/gatlin/1755736</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Data.List (<span class="title">sort</span>)</span><br><span class="line"><span class="keyword">import</span> Sat (<span class="title">solve</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">  <span class="keyword">case</span> solveSudoku problem <span class="keyword">of</span></span><br><span class="line">    <span class="type">Nothing</span> -&gt; putStrLn <span class="string">&quot;Impossible&quot;</span></span><br><span class="line">    <span class="type">Just</span> answer -&gt; putStr $ unlines $ map (concatMap show) $ pack <span class="number">9</span> answer</span><br><span class="line"></span><br><span class="line"><span class="title">pack</span> n [] = []</span><br><span class="line"><span class="title">pack</span> n xs = (take n xs) : pack n (drop n xs)</span><br><span class="line"></span><br><span class="line"><span class="title">problem</span> = [<span class="number">5</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">7</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,</span><br><span class="line">           <span class="number">6</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">9</span>,<span class="number">5</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,</span><br><span class="line">           <span class="number">0</span>,<span class="number">9</span>,<span class="number">8</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">6</span>,<span class="number">0</span>,</span><br><span class="line">           <span class="number">8</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">6</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">3</span>,</span><br><span class="line">           <span class="number">4</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">8</span>,<span class="number">0</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,</span><br><span class="line">           <span class="number">7</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">2</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">6</span>,</span><br><span class="line">           <span class="number">0</span>,<span class="number">6</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">2</span>,<span class="number">8</span>,<span class="number">0</span>,</span><br><span class="line">           <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">9</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">5</span>,</span><br><span class="line">           <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">8</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">7</span>,<span class="number">9</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">solveSudoku</span> :: [<span class="type">Integer</span>] -&gt; <span class="type">Maybe</span> [<span class="type">Integer</span>]</span><br><span class="line"><span class="title">solveSudoku</span> field = solve ts &gt;&gt;= return . toAnswer</span><br><span class="line">  <span class="keyword">where</span> ts = map (map cellToVar) $ makeProblem field ++ sudokuConstraints</span><br><span class="line">        toAnswer = map varToNum . sort . filter (&gt; <span class="number">0</span>)</span><br><span class="line">        varToNum v = (v - <span class="number">1</span>) `mod` <span class="number">9</span> + <span class="number">1</span></span><br><span class="line">        cellToVar (x,y,n) | n &gt; <span class="number">0</span> = var x y n</span><br><span class="line">                          | n &lt; <span class="number">0</span> = -(var x y (-n))</span><br><span class="line">        var x y n = (y<span class="number">-1</span>) * <span class="number">9</span> * <span class="number">9</span> + (x<span class="number">-1</span>) * <span class="number">9</span> + (n<span class="number">-1</span>) + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="title">makeProblem</span> :: [<span class="type">Integer</span>] -&gt; [[(<span class="type">Integer</span>, <span class="type">Integer</span>, <span class="type">Integer</span>)]]</span><br><span class="line"><span class="title">makeProblem</span> l = map mp $ filter ((/= <span class="number">0</span>) . snd) $ zip allGrid l</span><br><span class="line">  <span class="keyword">where</span> mp ((x,y), n) = [(x, y, n)]</span><br><span class="line"></span><br><span class="line"><span class="title">sudokuConstraints</span> :: [[(<span class="type">Integer</span>, <span class="type">Integer</span>, <span class="type">Integer</span>)]]</span><br><span class="line"><span class="title">sudokuConstraints</span> = (cellConstraints ++ horzConstraint ++ vertConstraint ++</span><br><span class="line">                     boxConstraint)</span><br><span class="line">  <span class="keyword">where</span> horzConstraint = concatMap hrzn allGrid</span><br><span class="line">        vertConstraint = concatMap vtcl allGrid</span><br><span class="line">        boxConstraint = concatMap box allGrid</span><br><span class="line"></span><br><span class="line"><span class="title">cellConstraints</span> :: [[(<span class="type">Integer</span>, <span class="type">Integer</span>, <span class="type">Integer</span>)]]</span><br><span class="line"><span class="title">cellConstraints</span> = map f allGrid</span><br><span class="line">  <span class="keyword">where</span> f (x,y) = map (\n -&gt; (x,y,n)) [<span class="number">1.</span><span class="number">.9</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">hrzn</span> (x, y) = [[(x, y, -n), (x, y&#x27;, -n)] | n &lt;- [<span class="number">1.</span><span class="number">.9</span>], y&#x27; &lt;- [<span class="number">1.</span><span class="number">.9</span>], y&#x27; /= y]</span><br><span class="line"><span class="title">vtcl</span> (x, y) = [[(x, y, -n), (x&#x27;, y, -n)] | n &lt;- [<span class="number">1.</span><span class="number">.9</span>], x&#x27; &lt;- [<span class="number">1.</span><span class="number">.9</span>], x&#x27; /= x]</span><br><span class="line"><span class="title">box</span> (x, y) = [[(x, y, -n), (x&#x27;, y&#x27;, -n)] | n &lt;- [<span class="number">1.</span><span class="number">.9</span>],</span><br><span class="line">                                           x&#x27; &lt;- [(boxS x)..(boxS x + <span class="number">2</span>)],</span><br><span class="line">                                           y&#x27; &lt;- [(boxS y)..(boxS y + <span class="number">2</span>)],</span><br><span class="line">                                           x /= x&#x27; || y /= y&#x27;]</span><br><span class="line">  <span class="keyword">where</span> boxS n = n - ((n<span class="number">-1</span>) `mod` <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">allGrid</span> = [(x,y) | y &lt;- [<span class="number">1.</span><span class="number">.9</span>], x &lt;- [<span class="number">1.</span><span class="number">.9</span>]]</span><br></pre></td></tr></table></figure>
+
+<p>各列や行に同じ数字が入らないという制約は、論理式「P→Q」が「¬P ∨ Q」と表せることを使って、例えば論理式Aを「マスaに1が入る」、論理式Bを「マスbに1が入る」とすると、「A→¬B（AならばBじゃない）」を「¬A ∨ ¬B」という形で構築している。</p>
+<p>ソルバの結果から数独の解答を取り出すのは簡単で、論理変数が各マスにつき9個x横方向に9マスx縦方向に9マス、1から729まで順番に割り振られているので、真となっている変数（正の値）だけ取り出してソートして、9で割ったあまりが左上のマスから順に入る答えの数になる（1オリジンなところだけ注意）。</p>
+<p>5秒くらいかかることはあるにせよ、変数729個、制約17,600節を、現実的な時間で解けるってすごいな。パズルのルールから手筋を考えずに、一般的に解けるって便利すぎる。</p>
+<ul>
+<li><a href="http://d.hatena.ne.jp/ku-ma-me/20080108/p1">SAT ソルバで数独を解く方法 - まめめも</a></li>
+<li><a href="http://qiita.com/items/05aaa875bfa6568967b2">Ersatzを使って数独を解く #Haskell - Qiita [キータ]</a> 自分でCNFを作らなくても解けるらしい</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

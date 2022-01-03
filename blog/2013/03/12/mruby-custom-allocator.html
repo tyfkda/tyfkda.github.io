@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="mrubyで標準のmalloc/freeじゃなく、アプリ側で用意したメモリアロケータを指定してみる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="mrubyでカスタムアロケータを指定"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>mrubyでカスタムアロケータを指定 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/03/12/mruby-custom-allocator.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>mrubyでカスタムアロケータを指定</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-03-12
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/mruby/">#mruby</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>mrubyで標準のmalloc/freeじゃなく、アプリ側で用意したメモリアロケータを指定してみる。</p>
+<span id="more"></span>
+
+<p>mrubyの初期化を<code>mrb_open()</code>じゃなくて<code>mrb_open_allocf()</code>にして、引数にアロケータの関数とその関数に渡すユーザデータを与えて呼び出すことで、アプリ側でメモリ管理ができる。</p>
+<p>アロケータは <code>typedef void* (*mrb_allocf) (struct mrb_state *mrb, void*, size_t, void *ud);</code> という型の関数で、サイズが０なら解放、０より大きい場合ポインタが<code>NULL</code>なら新規確保、<code>NULL</code>じゃなければ以前確保していた領域をリサイズした結果のポインタを返すことで、アプリ側で任意のメモリ管理ができる。デフォルトだと以下の様なアロケータになっている。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// src/state.c</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>*</span></span><br><span class="line"><span class="function"><span class="title">allocf</span><span class="params">(mrb_state *mrb, <span class="keyword">void</span> *p, <span class="keyword">size_t</span> size, <span class="keyword">void</span> *ud)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="built_in">free</span>(p);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">realloc</span>(p, size);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意として、<code>p == NULL</code>かつ<code>size == 0</code>で呼び出されることもあるようだ。この場合はなにもせずに単に<code>NULL</code>を返せばよい、はず。</p>
+<p>テストとしてmalloc/realloc/free/イミフの数を数えるアロケータを指定して、単純に<code>mrb_load_string()</code>に空の文字列を与えたときそれぞれ何回呼ばれるかカウントしてみた。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ ./custom_allocator_rb</span><br><span class="line">1586/1/1586/316: total=3489</span><br></pre></td></tr></table></figure>
+
+<p>同様のことをLua 5.2.1で試したところ</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ ./custom_allocator_lua</span><br><span class="line">283/7/283/29: total=602</span><br></pre></td></tr></table></figure>
+
+<p>となり、mrubyが合計3489回に対しLuaが602回と、Luaのほうが呼び出し回数が少なかった。</p>
+<p>また、最大のメモリ使用量はmrubyが185Kに対し、Luaは22Kだった。</p>
+<h3 id="テストのソース"><a href="#テストのソース" class="headerlink" title="テストのソース"></a>テストのソース</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mruby.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mruby/compile.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line">map&lt;<span class="keyword">void</span>*, <span class="keyword">size_t</span>&gt; SizeMap;</span><br><span class="line"><span class="keyword">int</span> TotalSize;</span><br><span class="line"><span class="keyword">int</span> MaxSize;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> call_count;</span><br><span class="line"><span class="keyword">int</span> alloc_count, realloc_count, free_count, meanless_count;</span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">allocator</span><span class="params">(mrb_state *mrb, <span class="keyword">void</span>* ptr, <span class="keyword">size_t</span> nsize, <span class="keyword">void</span> *ud)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;alloc: %p, %ld\n&quot;</span>, ptr, nsize);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span>* result;</span><br><span class="line">  ++call_count;</span><br><span class="line">  <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (nsize == <span class="number">0</span>) &#123;</span><br><span class="line">      result = <span class="literal">NULL</span>;</span><br><span class="line">      ++meanless_count;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      result = <span class="built_in">malloc</span>(nsize);</span><br><span class="line">      ++alloc_count;</span><br><span class="line">      <span class="built_in">assert</span>(SizeMap.<span class="built_in">find</span>(result) == SizeMap.<span class="built_in">end</span>());</span><br><span class="line">      SizeMap[result] = nsize;</span><br><span class="line">      TotalSize += nsize;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (nsize == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="built_in">free</span>(ptr);</span><br><span class="line">      result = <span class="literal">NULL</span>;</span><br><span class="line">      ++free_count;</span><br><span class="line">      <span class="built_in">assert</span>(SizeMap.<span class="built_in">find</span>(ptr) != SizeMap.<span class="built_in">end</span>());</span><br><span class="line">      TotalSize -= SizeMap[ptr];</span><br><span class="line">      SizeMap.<span class="built_in">erase</span>(ptr);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      result = <span class="built_in">realloc</span>(ptr, nsize);</span><br><span class="line">      ++realloc_count;</span><br><span class="line">      <span class="built_in">assert</span>(SizeMap.<span class="built_in">find</span>(ptr) != SizeMap.<span class="built_in">end</span>());</span><br><span class="line">      TotalSize += nsize - SizeMap[ptr];</span><br><span class="line">      SizeMap.<span class="built_in">erase</span>(ptr);</span><br><span class="line">      SizeMap[result] = nsize;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (TotalSize &gt; MaxSize)</span><br><span class="line">    MaxSize = TotalSize;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  mrb_state* mrb = <span class="built_in">mrb_open_allocf</span>(::allocator, <span class="literal">NULL</span>);</span><br><span class="line">  <span class="built_in">mrb_load_string</span>(mrb, <span class="string">&quot;&quot;</span>);</span><br><span class="line">  <span class="built_in">mrb_close</span>(mrb);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%d/%d/%d/%d: total=%d\n&quot;</span>,</span><br><span class="line">         alloc_count, realloc_count, free_count, meanless_count, call_count);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Size: %d, %d\n&quot;</span>, MaxSize, TotalSize);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby-api.html" title="mrubyのAPIテスト" rel="bookmark">mrubyのAPIテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-backtrace.html" title="mrubyでエラー発生時にバックトレースを表示する" rel="bookmark">mrubyでエラー発生時にバックトレースを表示する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/18/mruby-gc.html" title="mrubyのGCの仕組みを調べた" rel="bookmark">mrubyのGCの仕組みを調べた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-voidp.html" title="mrubyでvoidpの値を扱うと死ぬ" rel="bookmark">mrubyでvoidpの値を扱うと死ぬ</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

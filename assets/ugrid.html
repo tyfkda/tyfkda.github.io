@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta name="robots" content="noindex">
+    <title>Uniform grid</title>
+    <!-- CSS -->
+    <style type="text/css">
+canvas:focus {
+  outline: none;
+}
+    </style>
+
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.16/processing.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <div><canvas id="processing-canvas"></canvas></div>
+    </div>
+
+<script id="mysketch" type="text/processing">
+UGrid2D ugrid;
+float sx, sy, vx, vy;
+
+void setup() {
+  size(300, 200);
+  ugrid = new UGrid2D(50, 40, 250, 160, 8, 6);
+
+  sx = 0;
+  sy = 0;
+  vx = 1;
+  vy = 0.5;
+
+  render();
+  noLoop();
+}
+
+void draw() {}
+
+void render() {
+  noStroke();
+  fill(153);
+  rect(0, 0, width, height);
+
+  draw_ugrid(ugrid);
+  if (vx != 0 || vy != 0)
+    traverse(sx, sy, vx, vy);
+}
+
+void mousePressed() {
+  sx = mouseX;
+  sy = mouseY;
+  vx = vy = 0;
+  render();
+  loop();
+}
+
+void mouseDragged() {
+  vx = mouseX - sx;
+  vy = mouseY - sy;
+  float l = mag(vx, vy);
+  if (l > 0) {
+    vx /= l;
+    vy /= l;
+    render();
+  }
+}
+
+void mouseReleased() {
+  noLoop();
+}
+
+void traverse(float sx, float sy, float vx, float vy) {
+  UGrid2D.Iterator it = ugrid.ray_traverse(sx, sy, vx, vy);
+  if (it != null) {
+    stroke(0, 0, 0);
+    fill(255, 0, 0);
+    do {
+      draw_cell(ugrid, it.X, it.Y);
+    } while (it.next());
+  }
+  stroke(0, 0, 0);
+  line(sx, sy, sx + vx * 1000, sy + vy * 1000);
+}
+
+void draw_ugrid(UGrid2D ugrid) {
+  stroke(0, 0, 0);
+  noFill();
+  for (int i = 0; i < ugrid.m_ny; ++i) {
+    for (int j = 0; j < ugrid.m_nx; ++j) {
+      draw_cell(ugrid, j, i);
+    }
+  }
+}
+
+void draw_cell(UGrid2D ugrid, int bx, int by) {
+  float x = ugrid.m_xmin + ugrid.m_xw * bx;
+  float y = ugrid.m_ymin + ugrid.m_yw * by;
+  rect(x, y, ugrid.m_xw, ugrid.m_yw);
+}
+
+class UGrid2D {
+  float m_xmin, m_ymin;  // 最小座標
+  float m_xsize, m_ysize;  // 全体の幅
+  float m_xw, m_yw;  // グリッド１つのサイズ
+  int m_nx, m_ny;  // 分割数
+
+  UGrid2D(float xmin, float ymin, float xmax, float ymax, int nx, int ny) {
+    m_xmin = xmin; m_ymin = ymin;
+    m_xsize = (xmax - xmin) * 0.999999;  // クリッピング用に少し狭める
+    m_ysize = (ymax - ymin) * 0.999999;
+    m_xw = (xmax - xmin) / nx;
+    m_yw = (ymax - ymin) / ny;
+    m_nx = nx; m_ny = ny;
+  }
+
+  Iterator ray_traverse(float sx, float sy, float vx, float vy) {
+    float l = sqrt(vx * vx + vy * vy);
+    vx /= l;
+    vy /= l;
+    float ax = abs(vx), ay = abs(vy);
+    float x = sx - m_xmin, y = sy - m_ymin;
+    if (x < 0) {
+      if (vx <= 0) return null;
+      float d = -x;
+      x = 0;
+      y += vy * d / ax;
+    } else if (x > m_xsize) {
+      if (vx >= 0) return null;
+      float d = x - m_xsize;
+      x = m_xsize;
+      y += vy * d / ax;
+    }
+    if (y < 0) {
+      if (vy <= 0) return null;
+      float d = -y;
+      y = 0;
+      x += vx * d / ay;
+      if (x < 0 || x > m_xsize)
+        return null;  // yでクリップした結果、xが範囲外になってしまった
+    } else if (y > m_ysize) {
+      if (vy >= 0) return null;
+      float d = y - m_ysize;
+      y = m_ysize;
+      x += vx * d / ay;
+      if (x < 0 || x > m_xsize)
+        return null;  // yでクリップした結果、xが範囲外になってしまった
+    }
+    Iterator it = new Iterator(this);
+    it.X = floor(x / m_xw);
+    it.Y = floor(y / m_yw);
+    float dx = x - m_xw * it.X;
+    if (vx >= 0)
+      dx = m_xw - dx;
+    float dy = y - m_yw * it.Y;
+    if (vy >= 0)
+      dy = m_yw - dy;
+    it.tMaxX = dx / ax;
+    it.tMaxY = dy / ay;
+    it.tDeltaX = m_xw / ax;
+    it.tDeltaY = m_yw / ay;
+    it.stepX = vx >= 0 ? 1 : -1;
+    it.stepY = vy >= 0 ? 1 : -1;
+    return it;
+  }
+
+  // レイに沿ってグリッドをトラバースするためのイテレータ
+  class Iterator {
+    UGrid2D parent;
+    int X, Y;
+    float tMaxX, tMaxY;
+    float tDeltaX, tDeltaY;
+    int stepX, stepY;
+
+    Iterator(UGrid2D _parent) {
+      parent = _parent;
+    }
+    boolean next() {
+      if (tMaxX < tMaxY) {
+        X += stepX;
+        if (X < 0 || X >= parent.m_nx)
+          return false;
+        tMaxX += tDeltaX;
+      } else {
+        Y += stepY;
+        if (Y < 0 || Y >= parent.m_ny)
+          return false;
+        tMaxY += tDeltaY;
+      }
+      return true;
+    }
+  }
+}
+</script>
+
+<script type="text/javascript">
+var pjs
+window.addEventListener('load', function() {
+  var code = document.getElementById('mysketch').text
+  pjs = new Processing('processing-canvas', code)
+})
+function restart() {
+  pjs.restart()
+}
+</script>
+  </body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="AI for Robotics - Lesson 3: Particle Filters (Wiki) (動画)">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="パーティクルフィルタ"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>パーティクルフィルタ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/05/07/particle-filter.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>パーティクルフィルタ</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-05-07
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://www.udacity.com/course/viewer#!/c-cs373/l-48704330/m-48750008">AI for Robotics - Lesson 3: Particle Filters</a> (<a href="https://www.udacity.com/wiki/cs373/unit_3">Wiki</a>) (<a href="http://www.youtube.com/playlist?list=PL5493E5D24A081719">動画</a>)</p>
+<span id="more"></span>
+
+<p>実装が簡単、とのこと。</p>
+<p>いろんな状態のパーティクルで予測してみて、それぞれ実際の観測データとの誤差によって重み付けして、ありえそうなパーティクルを選択するようにしていく。</p>
+<h3 id="weight"><a href="#weight" class="headerlink" title="weight"></a>weight</h3><p>各パーティクルがどのくらいセンサーからの観測データに近いかに応じて、ウェイトを計算する。ウェイトはセンサーで取得した値とそのパーティクルでの理論値との二乗誤差が規定のガウシアンででる確率を乗算したもの：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">measurement_prob</span><span class="params">(<span class="keyword">self</span>, measurement)</span></span>:</span><br><span class="line">  <span class="comment"># calculates how likely a measurement should be</span></span><br><span class="line">  prob = <span class="number">1.0</span></span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> range(len(landmarks)):</span><br><span class="line">    dist = sqrt((<span class="keyword">self</span>.x - landmarks[i][<span class="number">0</span>]) ** <span class="number">2</span> + (<span class="keyword">self</span>.y - landmarks[i][<span class="number">1</span>]) ** <span class="number">2</span>)</span><br><span class="line">    prob *= Gaussian(dist, <span class="keyword">self</span>.sense_noise, measurement[i])</span><br><span class="line">  <span class="keyword">return</span> prob</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Gaussian</span><span class="params">(mu, sigma, x)</span></span>:</span><br><span class="line">  <span class="comment"># calculates the probability of x for 1-dim Gaussian with mean mu and var. sigma</span></span><br><span class="line">  <span class="keyword">return</span> exp(- ((mu - x) ** <span class="number">2</span>) / (sigma ** <span class="number">2</span>) / <span class="number">2.0</span>) / sqrt(<span class="number">2.0</span> * pi * (sigma ** <span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+<h3 id="resampling"><a href="#resampling" class="headerlink" title="resampling"></a>resampling</h3><p>世代を進めるときに、ウェイトが大きいものは重要なものとして多く残し、小さいものは重要じゃないので減らしていく。実際にはウェイトに比例してサンプリングしなおす。遺伝アルゴリズムみたいな感じか。</p>
+<p>ウェイトに比例したリサンプリングは、単純に実装すると非効率的なものになってしまう。うまいリサンプリングの仕方：ウェイトの最大値をwmaxとしたとき、0〜2 * wmaxの乱数を生成して、周期的にピックアップしていく：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># p: パーティクルリスト</span></span><br><span class="line"><span class="comment"># N: パーティクルの数</span></span><br><span class="line">p3 = []</span><br><span class="line">index = int(random.random() * N)</span><br><span class="line">beta = <span class="number">0.0</span></span><br><span class="line">mw = max(w)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(N):</span><br><span class="line">  beta += random.random() * <span class="number">2.0</span> * mw</span><br><span class="line">  <span class="keyword">while</span> beta &gt;= w[index]:</span><br><span class="line">    beta -= w[index]</span><br><span class="line">    index = (index + <span class="number">1</span>) % N</span><br><span class="line">  p3.append(p[index])</span><br><span class="line">p = p3</span><br></pre></td></tr></table></figure>
+
+<p>このアルゴリズムで、2*wmaxにはなにか理由があるのか、選ばれるパーティクルに偏りができてしまわないかという質問に対する回答は、わからん、とのこと。</p>
+<p>リサンプリングによって同じパーティクルが何度も選ばれる可能性があるが、次回の移動時に正規分布の乱数によってばらつくので、リサンプルしたときにランダムでずらさなくてもよい。</p>
+<h3 id="プログラミング課題"><a href="#プログラミング課題" class="headerlink" title="プログラミング課題"></a>プログラミング課題</h3><p>ノイズのある移動、回転、センサー情報からロボットの姿勢を推測する。センサーはランドマークの角度を使う：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># --------------</span></span><br><span class="line"><span class="comment"># USER INSTRUCTIONS</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Now you will put everything together.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># First make sure that your sense and move functions</span></span><br><span class="line"><span class="comment"># work as expected for the test cases provided at the</span></span><br><span class="line"><span class="comment"># bottom of the previous two programming assignments.</span></span><br><span class="line"><span class="comment"># Once you are satisfied, copy your sense and move</span></span><br><span class="line"><span class="comment"># definitions into the robot class on this page, BUT</span></span><br><span class="line"><span class="comment"># now include noise.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># A good way to include noise in the sense step is to</span></span><br><span class="line"><span class="comment"># add Gaussian noise, centered at zero with variance</span></span><br><span class="line"><span class="comment"># of self.bearing_noise to each bearing. You can do this</span></span><br><span class="line"><span class="comment"># with the command random.gauss(0, self.bearing_noise)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># In the move step, you should make sure that your</span></span><br><span class="line"><span class="comment"># actual steering angle is chosen from a Gaussian</span></span><br><span class="line"><span class="comment"># distribution of steering angles. This distribution</span></span><br><span class="line"><span class="comment"># should be centered at the intended steering angle</span></span><br><span class="line"><span class="comment"># with variance of self.steering_noise.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Feel free to use the included set_noise function.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Please do not modify anything except where indicated</span></span><br><span class="line"><span class="comment"># below.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># some top level parameters</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line">max_steering_angle = pi / <span class="number">4.0</span> <span class="comment"># You do not need to use this value, but keep in mind the limitations of a real car.</span></span><br><span class="line">bearing_noise = <span class="number">0.1</span> <span class="comment"># Noise parameter: should be included in sense function.</span></span><br><span class="line">steering_noise = <span class="number">0.1</span> <span class="comment"># Noise parameter: should be included in move function.</span></span><br><span class="line">distance_noise = <span class="number">5.0</span> <span class="comment"># Noise parameter: should be included in move function.</span></span><br><span class="line"></span><br><span class="line">tolerance_xy = <span class="number">15.0</span> <span class="comment"># Tolerance for localization in the x and y directions.</span></span><br><span class="line">tolerance_orientation = <span class="number">0.25</span> <span class="comment"># Tolerance for orientation.</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># --------</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># the &quot;world&quot; has 4 landmarks.</span></span><br><span class="line"><span class="comment"># the robot&#x27;s initial coordinates are somewhere in the square</span></span><br><span class="line"><span class="comment"># represented by the landmarks.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># <span class="doctag">NOTE:</span> Landmark coordinates are given in (y, x) form and NOT</span></span><br><span class="line"><span class="comment"># in the traditional (x, y) format!</span></span><br><span class="line"></span><br><span class="line">landmarks  = [[<span class="number">0.0</span>, <span class="number">100.0</span>], [<span class="number">0.0</span>, <span class="number">0.0</span>], [<span class="number">100.0</span>, <span class="number">0.0</span>], [<span class="number">100.0</span>, <span class="number">100.0</span>]] <span class="comment"># position of 4 landmarks in (y, x) format.</span></span><br><span class="line">world_size = <span class="number">100.0</span> <span class="comment"># world is NOT cyclic. Robot is allowed to travel &quot;out of bounds&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ------------------------------------------------</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># this is the robot class</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">robot</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># --------</span></span><br><span class="line">    <span class="comment"># init: </span></span><br><span class="line">    <span class="comment">#    creates robot and initializes location/orientation </span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, length = <span class="number">20.0</span></span>):</span></span><br><span class="line">        self.x = random.random() * world_size <span class="comment"># initial x position</span></span><br><span class="line">        self.y = random.random() * world_size <span class="comment"># initial y position</span></span><br><span class="line">        self.orientation = random.random() * <span class="number">2.0</span> * pi <span class="comment"># initial orientation</span></span><br><span class="line">        self.length = length <span class="comment"># length of robot</span></span><br><span class="line">        self.bearing_noise  = <span class="number">0.0</span> <span class="comment"># initialize bearing noise to zero</span></span><br><span class="line">        self.steering_noise = <span class="number">0.0</span> <span class="comment"># initialize steering noise to zero</span></span><br><span class="line">        self.distance_noise = <span class="number">0.0</span> <span class="comment"># initialize distance noise to zero</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># --------</span></span><br><span class="line">    <span class="comment"># set: </span></span><br><span class="line">    <span class="comment">#    sets a robot coordinate</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set</span>(<span class="params">self, new_x, new_y, new_orientation</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> new_orientation &lt; <span class="number">0</span> <span class="keyword">or</span> new_orientation &gt;= <span class="number">2</span> * pi:</span><br><span class="line">            <span class="keyword">raise</span> ValueError, <span class="string">&#x27;Orientation must be in [0..2pi]&#x27;</span></span><br><span class="line">        self.x = <span class="built_in">float</span>(new_x)</span><br><span class="line">        self.y = <span class="built_in">float</span>(new_y)</span><br><span class="line">        self.orientation = <span class="built_in">float</span>(new_orientation)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># --------</span></span><br><span class="line">    <span class="comment"># set_noise: </span></span><br><span class="line">    <span class="comment">#    sets the noise parameters</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set_noise</span>(<span class="params">self, new_b_noise, new_s_noise, new_d_noise</span>):</span></span><br><span class="line">        <span class="comment"># makes it possible to change the noise parameters</span></span><br><span class="line">        <span class="comment"># this is often useful in particle filters</span></span><br><span class="line">        self.bearing_noise  = <span class="built_in">float</span>(new_b_noise)</span><br><span class="line">        self.steering_noise = <span class="built_in">float</span>(new_s_noise)</span><br><span class="line">        self.distance_noise = <span class="built_in">float</span>(new_d_noise)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># --------</span></span><br><span class="line">    <span class="comment"># measurement_prob</span></span><br><span class="line">    <span class="comment">#    computes the probability of a measurement</span></span><br><span class="line">    <span class="comment">#  </span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">measurement_prob</span>(<span class="params">self, measurements</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># calculate the correct measurement</span></span><br><span class="line">        predicted_measurements = self.sense(<span class="number">0</span>) <span class="comment"># Our sense function took 0 as an argument to switch off noise.</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment"># compute errors</span></span><br><span class="line">        error = <span class="number">1.0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(measurements)):</span><br><span class="line">            error_bearing = <span class="built_in">abs</span>(measurements[i] - predicted_measurements[i])</span><br><span class="line">            error_bearing = (error_bearing + pi) % (<span class="number">2.0</span> * pi) - pi <span class="comment"># truncate</span></span><br><span class="line">            </span><br><span class="line"></span><br><span class="line">            <span class="comment"># update Gaussian</span></span><br><span class="line">            error *= (exp(- (error_bearing ** <span class="number">2</span>) / (self.bearing_noise ** <span class="number">2</span>) / <span class="number">2.0</span>) /  </span><br><span class="line">                      sqrt(<span class="number">2.0</span> * pi * (self.bearing_noise ** <span class="number">2</span>)))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> error</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span>(<span class="params">self</span>):</span> <span class="comment">#allows us to print robot attributes.</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;[x=%.6s y=%.6s orient=%.6s]&#x27;</span> % (<span class="built_in">str</span>(self.x), <span class="built_in">str</span>(self.y), </span><br><span class="line">                                                <span class="built_in">str</span>(self.orientation))</span><br><span class="line">    </span><br><span class="line">    <span class="comment">############# ONLY ADD/MODIFY CODE BELOW HERE ###################</span></span><br><span class="line">       </span><br><span class="line">    <span class="comment"># --------</span></span><br><span class="line">    <span class="comment"># move: </span></span><br><span class="line">    <span class="comment">#   </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">move</span>(<span class="params">self, motion</span>):</span></span><br><span class="line">        alpha = random.gauss(motion[<span class="number">0</span>], self.steering_noise)</span><br><span class="line">        d = random.gauss(motion[<span class="number">1</span>], self.distance_noise)</span><br><span class="line"></span><br><span class="line">        L = self.length</span><br><span class="line">        beta = d / L * tan(alpha)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">abs</span>(beta) &lt; <span class="number">0.001</span>:</span><br><span class="line">            new_x = self.x + cos(self.orientation) * d</span><br><span class="line">            new_y = self.y + sin(self.orientation) * d</span><br><span class="line">            new_orientation = (self.orientation + beta) % (<span class="number">2</span> * pi)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            R = d / beta</span><br><span class="line">            theta = self.orientation</span><br><span class="line">            cx = self.x - sin(theta) * R</span><br><span class="line">            cy = self.y + cos(theta) * R</span><br><span class="line">            new_x = cx + sin(theta + beta) * R</span><br><span class="line">            new_y = cy - cos(theta + beta) * R</span><br><span class="line">            new_orientation = (theta + beta) % (<span class="number">2</span> * pi)</span><br><span class="line"></span><br><span class="line">        result = robot(self.length)</span><br><span class="line">        result.<span class="built_in">set</span>(new_x, new_y, new_orientation)</span><br><span class="line">        result.bearing_noise = self.bearing_noise</span><br><span class="line">        result.steering_noise = self.steering_noise</span><br><span class="line">        result.distance_noise = self.distance_noise</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line">    <span class="comment"># --------</span></span><br><span class="line">    <span class="comment"># sense: </span></span><br><span class="line">    <span class="comment">#    </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sense</span>(<span class="params">self, add_noise = <span class="literal">True</span></span>):</span></span><br><span class="line">        Z = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(landmarks)):</span><br><span class="line">            dx = landmarks[i][<span class="number">1</span>] - self.x</span><br><span class="line">            dy = landmarks[i][<span class="number">0</span>] - self.y</span><br><span class="line">            bearing = atan2(dy, dx) - self.orientation</span><br><span class="line">            <span class="keyword">if</span> add_noise:</span><br><span class="line">                bearing += random.gauss(<span class="number">0.0</span>, self.bearing_noise)</span><br><span class="line">            Z.append(bearing % (<span class="number">2.0</span> * pi))</span><br><span class="line">        <span class="keyword">return</span> Z</span><br><span class="line"></span><br><span class="line">    <span class="comment">############## ONLY ADD/MODIFY CODE ABOVE HERE ####################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># --------</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># extract position from a particle set</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_position</span>(<span class="params">p</span>):</span></span><br><span class="line">    x = <span class="number">0.0</span></span><br><span class="line">    y = <span class="number">0.0</span></span><br><span class="line">    orientation = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(p)):</span><br><span class="line">        x += p[i].x</span><br><span class="line">        y += p[i].y</span><br><span class="line">        <span class="comment"># orientation is tricky because it is cyclic. By normalizing</span></span><br><span class="line">        <span class="comment"># around the first particle we are somewhat more robust to</span></span><br><span class="line">        <span class="comment"># the 0=2pi problem</span></span><br><span class="line">        orientation += (((p[i].orientation - p[<span class="number">0</span>].orientation + pi) % (<span class="number">2.0</span> * pi)) </span><br><span class="line">                        + p[<span class="number">0</span>].orientation - pi)</span><br><span class="line">    <span class="keyword">return</span> [x / <span class="built_in">len</span>(p), y / <span class="built_in">len</span>(p), orientation / <span class="built_in">len</span>(p)]</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># The following code generates the measurements vector</span></span><br><span class="line"><span class="comment"># You can use it to develop your solution.</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_ground_truth</span>(<span class="params">motions</span>):</span></span><br><span class="line"></span><br><span class="line">    myrobot = robot()</span><br><span class="line">    myrobot.set_noise(bearing_noise, steering_noise, distance_noise)</span><br><span class="line"></span><br><span class="line">    Z = []</span><br><span class="line">    T = <span class="built_in">len</span>(motions)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(T):</span><br><span class="line">        myrobot = myrobot.move(motions[t])</span><br><span class="line">        Z.append(myrobot.sense())</span><br><span class="line">    <span class="comment">#print &#x27;Robot:    &#x27;, myrobot</span></span><br><span class="line">    <span class="keyword">return</span> [myrobot, Z]</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># The following code prints the measurements associated</span></span><br><span class="line"><span class="comment"># with generate_ground_truth</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_measurements</span>(<span class="params">Z</span>):</span></span><br><span class="line"></span><br><span class="line">    T = <span class="built_in">len</span>(Z)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;measurements = [[%.8s, %.8s, %.8s, %.8s],&#x27;</span> % \</span><br><span class="line">        (<span class="built_in">str</span>(Z[<span class="number">0</span>][<span class="number">0</span>]), <span class="built_in">str</span>(Z[<span class="number">0</span>][<span class="number">1</span>]), <span class="built_in">str</span>(Z[<span class="number">0</span>][<span class="number">2</span>]), <span class="built_in">str</span>(Z[<span class="number">0</span>][<span class="number">3</span>]))</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,T-<span class="number">1</span>):</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;                [%.8s, %.8s, %.8s, %.8s],&#x27;</span> % \</span><br><span class="line">            (<span class="built_in">str</span>(Z[t][<span class="number">0</span>]), <span class="built_in">str</span>(Z[t][<span class="number">1</span>]), <span class="built_in">str</span>(Z[t][<span class="number">2</span>]), <span class="built_in">str</span>(Z[t][<span class="number">3</span>]))</span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;                [%.8s, %.8s, %.8s, %.8s]]&#x27;</span> % \</span><br><span class="line">        (<span class="built_in">str</span>(Z[T-<span class="number">1</span>][<span class="number">0</span>]), <span class="built_in">str</span>(Z[T-<span class="number">1</span>][<span class="number">1</span>]), <span class="built_in">str</span>(Z[T-<span class="number">1</span>][<span class="number">2</span>]), <span class="built_in">str</span>(Z[T-<span class="number">1</span>][<span class="number">3</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># The following code checks to see if your particle filter</span></span><br><span class="line"><span class="comment"># localizes the robot to within the desired tolerances</span></span><br><span class="line"><span class="comment"># of the true position. The tolerances are defined at the top.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_output</span>(<span class="params">final_robot, estimated_position</span>):</span></span><br><span class="line"></span><br><span class="line">    error_x = <span class="built_in">abs</span>(final_robot.x - estimated_position[<span class="number">0</span>])</span><br><span class="line">    error_y = <span class="built_in">abs</span>(final_robot.y - estimated_position[<span class="number">1</span>])</span><br><span class="line">    error_orientation = <span class="built_in">abs</span>(final_robot.orientation - estimated_position[<span class="number">2</span>])</span><br><span class="line">    error_orientation = (error_orientation + pi) % (<span class="number">2.0</span> * pi) - pi</span><br><span class="line">    correct = error_x &lt; tolerance_xy <span class="keyword">and</span> error_y &lt; tolerance_xy \</span><br><span class="line">              <span class="keyword">and</span> error_orientation &lt; tolerance_orientation</span><br><span class="line">    <span class="keyword">return</span> correct</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">particle_filter</span>(<span class="params">motions, measurements, N=<span class="number">500</span></span>):</span> <span class="comment"># I know it&#x27;s tempting, but don&#x27;t change N!</span></span><br><span class="line">    <span class="comment"># --------</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="comment"># Make particles</span></span><br><span class="line">    <span class="comment"># </span></span><br><span class="line"></span><br><span class="line">    p = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">        r = robot()</span><br><span class="line">        r.set_noise(bearing_noise, steering_noise, distance_noise)</span><br><span class="line">        p.append(r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># --------</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="comment"># Update particles</span></span><br><span class="line">    <span class="comment">#     </span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(motions)):</span><br><span class="line">    </span><br><span class="line">        <span class="comment"># motion update (prediction)</span></span><br><span class="line">        p2 = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">            p2.append(p[i].move(motions[t]))</span><br><span class="line">        p = p2</span><br><span class="line"></span><br><span class="line">        <span class="comment"># measurement update</span></span><br><span class="line">        w = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">            w.append(p[i].measurement_prob(measurements[t]))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># resampling</span></span><br><span class="line">        p3 = []</span><br><span class="line">        index = <span class="built_in">int</span>(random.random() * N)</span><br><span class="line">        beta = <span class="number">0.0</span></span><br><span class="line">        mw = <span class="built_in">max</span>(w)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">            beta += random.random() * <span class="number">2.0</span> * mw</span><br><span class="line">            <span class="keyword">while</span> beta &gt;= w[index]:</span><br><span class="line">                beta -= w[index]</span><br><span class="line">                index = (index + <span class="number">1</span>) % N</span><br><span class="line">            p3.append(p[index])</span><br><span class="line">        p = p3</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> get_position(p)</span><br><span class="line"></span><br><span class="line"><span class="comment">## IMPORTANT: You may uncomment the test cases below to test your code.</span></span><br><span class="line"><span class="comment">## But when you submit this code, your test cases MUST be commented</span></span><br><span class="line"><span class="comment">## out.</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment">## You can test whether your particle filter works using the</span></span><br><span class="line"><span class="comment">## function check_output (see test case 2). We will be using a similar</span></span><br><span class="line"><span class="comment">## function. Note: Even for a well-implemented particle filter this</span></span><br><span class="line"><span class="comment">## function occasionally returns False. This is because a particle</span></span><br><span class="line"><span class="comment">## filter is a randomized algorithm. We will be testing your code</span></span><br><span class="line"><span class="comment">## multiple times. Make sure check_output returns True at least 80%</span></span><br><span class="line"><span class="comment">## of the time.</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"><span class="comment">## --------</span></span><br><span class="line"><span class="comment">## TEST CASES:</span></span><br><span class="line"><span class="comment">## </span></span><br><span class="line"><span class="comment">##1) Calling the particle_filter function with the following</span></span><br><span class="line"><span class="comment">##    motions and measurements should return a [x,y,orientation]</span></span><br><span class="line"><span class="comment">##    vector near [x=93.476 y=75.186 orient=5.2664], that is, the</span></span><br><span class="line"><span class="comment">##    robot&#x27;s true location.</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment">##motions = [[2. * pi / 10, 20.] for row in range(8)]</span></span><br><span class="line"><span class="comment">##measurements = [[4.746936, 3.859782, 3.045217, 2.045506],</span></span><br><span class="line"><span class="comment">##                [3.510067, 2.916300, 2.146394, 1.598332],</span></span><br><span class="line"><span class="comment">##                [2.972469, 2.407489, 1.588474, 1.611094],</span></span><br><span class="line"><span class="comment">##                [1.906178, 1.193329, 0.619356, 0.807930],</span></span><br><span class="line"><span class="comment">##                [1.352825, 0.662233, 0.144927, 0.799090],</span></span><br><span class="line"><span class="comment">##                [0.856150, 0.214590, 5.651497, 1.062401],</span></span><br><span class="line"><span class="comment">##                [0.194460, 5.660382, 4.761072, 2.471682],</span></span><br><span class="line"><span class="comment">##                [5.717342, 4.736780, 3.909599, 2.342536]]</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment">##print particle_filter(motions, measurements)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 2) You can generate your own test cases by generating</span></span><br><span class="line"><span class="comment">##    measurements using the generate_ground_truth function.</span></span><br><span class="line"><span class="comment">##    It will print the robot&#x27;s last location when calling it.</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment">##number_of_iterations = 6</span></span><br><span class="line"><span class="comment">##motions = [[2. * pi / 20, 12.] for row in range(number_of_iterations)]</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment">##x = generate_ground_truth(motions)</span></span><br><span class="line"><span class="comment">##final_robot = x[0]</span></span><br><span class="line"><span class="comment">##measurements = x[1]</span></span><br><span class="line"><span class="comment">##estimated_position = particle_filter(motions, measurements)</span></span><br><span class="line"><span class="comment">##print_measurements(measurements)</span></span><br><span class="line"><span class="comment">##print &#x27;Ground truth:    &#x27;, final_robot</span></span><br><span class="line"><span class="comment">##print &#x27;Particle filter: &#x27;, estimated_position</span></span><br><span class="line"><span class="comment">##print &#x27;Code check:      &#x27;, check_output(final_robot, estimated_position)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>measurement_prob()</code>での誤差の計算は、モデルごとに変える必要がある。ここでは、ランドマークの方向との差がセンサーのノイズのガウシアンでどのくらい起こりえるか、を乗算していったもの。</li>
+<li><code>measurement_prob()</code>で、ノイズを加えないセンサーからのデータを使う理由がよくわからない…。実際にはセンサーからのデータからノイズを完全に除去できるわけじゃないと思うので。</li>
+</ul>
+<h3 id="QA"><a href="#QA" class="headerlink" title="QA"></a>QA</h3><p>パーティクルフィルタは</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

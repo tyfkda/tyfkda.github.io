@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="オブジェクト指向的な組み方でRustでゲームを作り、それを継承より合成を使用するようにして、
+敵の種類によって処理を分割することができた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Rust】ECSを使ってみる(Specs)"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Rust】ECSを使ってみる(Specs) - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/10/03/ecs-in-rust.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Rust】ECSを使ってみる(Specs)</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-10-03
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/rust/">#rust</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2020/09/17/galangua.html" title="オブジェクト指向的な組み方でRustでゲームを作り">オブジェクト指向的な組み方でRustでゲームを作り</a>、それを<a href="/blog/2020/09/27/composition-over-inheritance.html" title="継承より合成">継承より合成</a>を使用するようにして、
+<p>敵の種類によって処理を分割することができた。</p>
+<span id="more"></span>
+
+<p>しかし個々のオブジェクトの更新処理でゲームの各情報を参照する際に借用が被るのを回避するために<a href="/blog/2020/03/31/peep-ref.html" title="unsafeに手を染めていた">unsafeに手を染めていた</a>。
+もっといい方法がないかと調べていたところ、 <strong>ECS</strong> という方法があることを知った。</p>
+<h3 id="ECS-とは？"><a href="#ECS-とは？" class="headerlink" title="ECS とは？"></a>ECS とは？</h3><p>ECSは <strong>Entity Component System</strong> の略で、プログラムを<a href="https://ja.wikipedia.org/wiki/%E3%82%A8%E3%83%B3%E3%83%86%E3%82%A3%E3%83%86%E3%82%A3%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88%E3%83%BB%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0">エンティティ、コンポーネント、システム</a>として構築する：</p>
+<ul>
+<li>エンティティ：任意のコンポーネントたちを持つ実体</li>
+<li>コンポーネント：単なるデータ</li>
+<li>システム：コンポーネントに対する処理を行う</li>
+</ul>
+<p>オブジェクト指向ではデータとメソッドをオブジェクトとしてまとめたのに対して、
+ECSではデータと処理が分離されているのが大きな違い
+（データ指向というらしい）。
+それに伴って考え方・プログラムの構成も大きく変わってくる。</p>
+<p>ECSは実行時にコンポーネントを柔軟に追加・削除できる、
+同じ種類のコンポーネントを連続したメモリに配置することによってキャッシュ的に有利という利点があるらしいが、
+それに加えてRustでは借用が被ってしまう問題を解決できる、ということで使われているっぽい。</p>
+<h3 id="ECSライブラリ：Specs"><a href="#ECSライブラリ：Specs" class="headerlink" title="ECSライブラリ：Specs"></a>ECSライブラリ：Specs</h3><p>RustでECSを使ってみようと思い、 <a href="https://slide-rs.github.io/specs-website/">Specs</a> というライブラリを試してみた。
+これは <a href="https://amethyst.rs/">Amethyst</a> というゲームエンジンで使われているらしいが、単独でも使用できる。</p>
+<p>使い方は<a href="https://specs.amethyst.rs/docs/tutorials/">チュートリアル</a>や
+<a href="https://docs.rs/amethyst/0.9.0/amethyst/ecs/index.html">ドキュメント</a>、
+またAmethystでのサンプルゲームの説明<a href="https://book.amethyst.rs/stable/pong-tutorial.html">Pong Tutorial</a>
+を参考にするといい。</p>
+<p>以下に逆引き的にまとめておく：</p>
+<h4 id="システムでコンポーネントを受け取る"><a href="#システムでコンポーネントを受け取る" class="headerlink" title="システムでコンポーネントを受け取る"></a>システムでコンポーネントを受け取る</h4><p>システムはコンポーネントをストレージの形で受け取って処理する。
+<code>type SystemData</code> に <code>ReadStorage</code> や <code>WriteStorage</code> でコンポーネントを指定する。</p>
+<p>複数のストレージを <code>join</code> することで、それらのコンポーネントを併せ持つエンティティが列挙される。
+<a href="https://specs.amethyst.rs/docs/tutorials/11_advanced_component.html#marker-components">特定のコンポーネントを持たない</a>という絞り込みや、
+<a href="https://specs.amethyst.rs/docs/tutorials/08_join.html#optional-components">あってもなくてもよいオプショナル</a>
+という指定もできる。</p>
+<h4 id="リソースの挿入"><a href="#リソースの挿入" class="headerlink" title="リソースの挿入"></a>リソースの挿入</h4><p>コンポーネント以外に、システムで参照できるリソースというものがある。
+ワールドに登録するには：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line">world.insert(SomeData(<span class="number">123</span>));</span><br></pre></td></tr></table></figure>
+
+<p>リソースの型は <code>Default</code> を実装する必要がある。</p>
+<h4 id="レンダリング"><a href="#レンダリング" class="headerlink" title="レンダリング"></a>レンダリング</h4><p>Specsではシステムを動かすためにディスパッチャというものを登録する。
+ディスパッチャは自動的にマルチスレッドで実行されるとのことで、
+レンダリングなどで単独のスレッドで実行させたい場合には <a href="https://specs.amethyst.rs/docs/tutorials/10_rendering.html"><code>with_thread_local</code> を使う</a> ということが書いてある。
+ただ自分が作成しているプログラムの場合だと描画時に使用するトレイトを借用で渡すようにしているので、システム側でリソースで取得できないので <code>with_thread_local</code> では解決できなかった。</p>
+<p>そこで描画のシステムをディスパッチャに登録するのではなく、 <code>run_now</code> を呼び出すと動作させることができた：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">SysDrawer</span></span>&lt;<span class="symbol">&#x27;a</span>&gt;(<span class="keyword">pub</span> &amp;<span class="symbol">&#x27;a</span> <span class="keyword">mut</span> <span class="keyword">dyn</span> RendererTrait);</span><br><span class="line"><span class="keyword">impl</span>&lt;<span class="symbol">&#x27;a</span>&gt; System&lt;<span class="symbol">&#x27;a</span>&gt; <span class="keyword">for</span> SysDrawer&lt;<span class="symbol">&#x27;a</span>&gt; &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">SystemData</span></span> = ...;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">run</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, (pos_storage, drawable_storage): Self::SystemData) &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> App &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">draw</span></span>&lt;R: RendererTrait&gt;(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, renderer: &amp;<span class="keyword">mut</span> R) &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> sys_drawer = SysDrawer(renderer);</span><br><span class="line">        sys_drawer.run_now(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>.world);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>またはワールドの <a href="https://specs.amethyst.rs/docs/api/specs/prelude/trait.worldext#method.read_storage"><code>read_storage</code></a>
+でコンポーネントに対するストレージを取得できるので、それを使用して直接実行してもよい：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">draw</span></span>&lt;R: RendererTrait&gt;(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, renderer: &amp;<span class="keyword">mut</span> R) &#123;</span><br><span class="line">    <span class="keyword">let</span> pos_storage = <span class="keyword">self</span>.world.read_storage::&lt;Position&gt;();</span><br><span class="line">    <span class="keyword">let</span> drawable_storage = <span class="keyword">self</span>.world.read_storage::&lt;SpriteDrawable&gt;();</span><br><span class="line">    <span class="keyword">for</span> (pos, drawable) <span class="keyword">in</span> (&amp;pos_storage, &amp;drawable_storage).join() &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="エンティティのコンポーネント取得"><a href="#エンティティのコンポーネント取得" class="headerlink" title="エンティティのコンポーネント取得"></a>エンティティのコンポーネント取得</h4><p>ストレージから取り出す：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line">some_storage.get(entity).unwrap();  <span class="comment">// イミュータブル参照</span></span><br><span class="line">other_storage.get_mut(entity).unwrap();  <span class="comment">// ミュータブル参照</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="コンポーネントが属するエンティティの取得"><a href="#コンポーネントが属するエンティティの取得" class="headerlink" title="コンポーネントが属するエンティティの取得"></a>コンポーネントが属するエンティティの取得</h4><p>直接取得するメソッドはないようで、 <code>entities</code> と <code>join</code> して使用する：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">SysFooBar</span></span>;</span><br><span class="line"><span class="keyword">impl</span>&lt;<span class="symbol">&#x27;a</span>&gt; System&lt;<span class="symbol">&#x27;a</span>&gt; <span class="keyword">for</span> SysFooBar &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">SystemData</span></span> = (WriteStorage&lt;<span class="symbol">&#x27;a</span>, Position&gt;, Entities&lt;<span class="symbol">&#x27;a</span>&gt;);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">run</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, (<span class="keyword">mut</span> pos_storage, entities): Self::SystemData) &#123;</span><br><span class="line">        <span class="keyword">for</span> (pos, entity) <span class="keyword">in</span> (&amp;<span class="keyword">mut</span> pos_storage, &amp;*entities).join() &#123;</span><br><span class="line">            <span class="comment">// entity がコンポーネントが属するエンティティ</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="エンティティの生成"><a href="#エンティティの生成" class="headerlink" title="エンティティの生成"></a>エンティティの生成</h4><p>初期化時などワールドが使える場合： <a href="https://specs.amethyst.rs/docs/api/specs/trait.worldext#tymethod.create_entity"><code>world.create_entity()</code></a></p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line">world.create_entity()</span><br><span class="line">    .with(Position &#123; x: <span class="number">4.0</span>, y: <span class="number">7.0</span> &#125;)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p>システム内でワールドが使えない場合： <a href="https://specs.amethyst.rs/docs/api/specs/world/struct.entitiesres#method.build_entity"><code>entities.build_entity()</code></a></p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">SystemData</span></span> = (</span><br><span class="line">    Entities&lt;<span class="symbol">&#x27;a</span>&gt;,</span><br><span class="line">    WriteStorage&lt;<span class="symbol">&#x27;a</span>, Position&gt;,</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">    entities.build_entity()</span><br><span class="line">        .with(Position &#123; x: <span class="number">4.0</span>, y: <span class="number">7.0</span> &#125;, &amp;<span class="keyword">mut</span> pos_storage)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+
+<p>対象の <code>WriteStorage</code> も必要。</p>
+<h5 id="エンティティ生成時の注意点"><a href="#エンティティ生成時の注意点" class="headerlink" title="エンティティ生成時の注意点"></a>エンティティ生成時の注意点</h5><p>システム内で <code>join</code> でのループ内でエンティティを生成する場合にはストレージが借用されているので、生成するエンティティに追加するコンポーネントと同じコンポーネントを参照する必要がある場合はうまくいかない。
+例えば自機から弾を撃つ場合に、自機の位置を参照して弾エンティティを生成しようとしても、同じ位置コンポーネントにはループ内で書き込みができない。</p>
+<p>その場合には <code>join</code> したものを <code>map</code> して <code>collect::&lt;Vec&lt;T&gt;&gt;</code> でいったん別バッファにコピーするか、
+<code>join</code> には含めずに <code>pos_storage.get(entity).clone()</code> して対象のストレージを借用しないようにして回避する。</p>
+<h4 id="エンティティの削除"><a href="#エンティティの削除" class="headerlink" title="エンティティの削除"></a>エンティティの削除</h4><figure class="highlight rs"><table><tr><td class="code"><pre><span class="line">entities.delete(entity).unwrap();</span><br></pre></td></tr></table></figure>
+
+<h4 id="コンポーネントの追加、削除"><a href="#コンポーネントの追加、削除" class="headerlink" title="コンポーネントの追加、削除"></a>コンポーネントの追加、削除</h4><figure class="highlight rs"><table><tr><td class="code"><pre><span class="line">pos_storage.insert(entity, pos).unwrap();</span><br><span class="line">pos_storage.remove(entity);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><p>まだ慣れてないので、結構難しい。</p>
+<ul>
+<li>オブジェクト指向の組み方とはまったく考え方を変える必要がある。<ul>
+<li>すでにOOで作成していた場合、組み直すのは大変。</li>
+<li>オブジェクト指向で組む場合に派生型の呼び出しが自動的に分岐されていたものが、自分で分岐させる必要がある。</li>
+</ul>
+</li>
+<li>コンポーネントを管理してくれはするが、それ以外はすべてのコンポーネント・リソースの情報を持ったワールドを各システムがそれぞれ触るだけで、
+「分割して統治」する階層構造がなくなりすべてフラットになるので、混乱しそう。</li>
+<li>コンポーネントに対する操作が色々なシステムに分かれてしまうため、コンポーネントの状態管理が難しい。</li>
+<li>エンティティが持ってると想定しているコンポーネントをうかつに削除してしまうと、対応するシステムが呼び出されなくなる可能性がある。</li>
+<li>システムで扱うストレージやリソースがやたらと増えてしまい、それを受け渡すのが面倒。</li>
+<li>ストレージから情報を取り出すユーティリティ関数を作ろうとしたときに、 <code>ReadStorage</code> だけじゃなく <code>WriteStorage</code> でも受け付けるようにしたいが方法がわからなかった。</li>
+<li>コンポーネントは種類ごとに１つのストレージに格納されている？が、コンポーネントの組み合わせで <code>join</code> した際には連続しているとは限らないので、
+Specsではキャッシュ効率がよいとはいえない気がする（実装を見てみないとなんともいえないが）。<ul>
+<li><a href="https://amethyst.rs/roadmap">Amethystが2020のロードマップ</a>でSpecsに変えて置き換えようとしている<a href="https://amethyst.rs/posts/legion-ecs-v0.3">Legion</a>は
+アーキタイプという仕組みで解消するっぽい（<a href="https://csherratt.github.io/blog/posts/specs-and-legion/">Specs and Legion, two very different approaches to ECS</a>）。</li>
+</ul>
+</li>
+</ul>
+<p>慣れてないのでつい否定的になってしまうが、依存関係がぶつからないシステム同士はマルチスレッドで動かせるというのと、
+Rustの場合では借用でエラーが出るのをうまく回避できる、
+エンティティを保持しておくことで他のコンポーネントを参照できる、
+というメリットがある。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://qiita.com/mas-yo/items/e7d1e247e5d4a9f47e92">Rust + Entity Component System で仕様変更に強いゲーム設計 その１ 〜 序文</a></li>
+<li><a href="https://slide-rs.github.io/specs-website/">Specs - Parallel ECS</a>,
+<a href="https://specs.amethyst.rs/docs/tutorials/">Introduction - The Specs Book</a></li>
+<li>ECSは200X年頃からあるとのことで、昔の記事：<ul>
+<li><a href="http://cowboyprogramming.com/2007/01/05/evolve-your-heirachy/">Cowboy Programming » Evolve Your Hierarchy</a></li>
+<li><a href="https://gameprogrammingpatterns.com/component.html">Component · Decoupling Patterns · Game Programming Patterns</a></li>
+<li><a href="http://t-machine.org/index.php/2007/09/03/entity-systems-are-the-future-of-mmog-development-part-1/">Entity Systems are the future of MMOG development – Part 1 – T-machine.org</a></li>
+</ul>
+</li>
+<li>データ指向<ul>
+<li><a href="https://tech.cygames.co.jp/archives/2843/">データ指向設計 | Cygames Engineers’ Blog</a></li>
+<li><a href="https://sites.google.com/site/shunichisnote/translations/data-oriented-design">データ指向設計 (または何故OOPで自爆してしまうのか) - 雑記帳</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Data-oriented_design">Data-oriented design - Wikipedia</a> キャッシュ的な利点しか書かれてないね…</li>
+</ul>
+</li>
+<li><a href="https://www.f-sp.com/entry/2019/05/31/172439">【Unity】 ECSへ 思考の移行ガイド - エフアンダーバー</a></li>
+</ul>
+<p><a href="https://www.youtube.com/watch?v=aKLntZcp27M">RustConf 2018 でのプレゼン</a></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/aKLntZcp27M" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p><a href="https://kyren.github.io/rustconf_2018_slides/index.html">Slide</a>,
+Blog: <a href="https://kyren.github.io/2018/09/14/rustconf-talk.html">My RustConf 2018 Closing Keynote</a></p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（移譲）」について" rel="bookmark">「継承より合成（移譲）」について</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/21/legion-ecs.html" title="【Rust】Legion ECSを触ってみた" rel="bookmark">【Rust】Legion ECSを触ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか" rel="bookmark">Rustで状態管理や相互参照をどうするか</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/02/rewindable-slice.html" title="【Rust】生ポインタとその演算（戻せるスライスの実装）" rel="bookmark">【Rust】生ポインタとその演算（戻せるスライスの実装）</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

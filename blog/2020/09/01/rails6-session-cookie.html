@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="実のところ、ウェブサービスのセッションつーものがどうやって実現されているのかをあまり理解してなかった。
+特にRuby on Railsではセッションの内容自体をサーバのDBじゃなくてクッキーに保存するということらしいが、その場合のセキュリティ的なこともあまり自信がなかった。
+のでちょっと調べてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Rails6 のセッションの扱いと、クッキーからの復元方法"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Rails6 のセッションの扱いと、クッキーからの復元方法 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/09/01/rails6-session-cookie.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Rails6 のセッションの扱いと、クッキーからの復元方法</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-09-01
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ror/">#ror</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>実のところ、ウェブサービスのセッションつーものがどうやって実現されているのかをあまり理解してなかった。
+特にRuby on Railsではセッションの内容自体をサーバのDBじゃなくてクッキーに保存するということらしいが、その場合のセキュリティ的なこともあまり自信がなかった。
+のでちょっと調べてみた。</p>
+<span id="more"></span>
+
+<h3 id="先にまとめ"><a href="#先にまとめ" class="headerlink" title="先にまとめ"></a>先にまとめ</h3><ul>
+<li>Railsではセッションの内容がクッキーでやりとりされる（デフォルトの場合）</li>
+<li>Rails6 ではクッキーが暗号化されているので、クライアント側で改ざんはできない</li>
+<li>クッキーには <code>httpOnly</code> が指定されているので、サーバに送られるだけでJavaScriptから読み出されることはない</li>
+</ul>
+<h3 id="Railsでのセッションの使用方法"><a href="#Railsでのセッションの使用方法" class="headerlink" title="Railsでのセッションの使用方法"></a>Railsでのセッションの使用方法</h3><p>例えばユーザにログインさせる場合に、なんらかの認証をした後にコントローラでセッションにユーザIDをセット：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SessionsController</span> &lt; ApplicationController</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">login</span></span></span><br><span class="line">    <span class="comment"># user = ...</span></span><br><span class="line">    reset_session</span><br><span class="line">    session[<span class="symbol">:user_id</span>] = user.id  <span class="comment"># これ</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>すると以降コントローラで <code>session[:user_id]</code> が <code>nil</code> じゃなければログイン済みとして扱う、などとする。</p>
+<p>ここで疑問だったのは、</p>
+<ul>
+<li>クライアントでクッキーを書き換えられたら他人になりすましてログインされてしまうのでは？</li>
+<li>クッキーを盗まれたらまずいんじゃ？</li>
+</ul>
+<p>というあたりが不思議だった。</p>
+<h3 id="セッションクッキーの内容とクライアント側での書き換え"><a href="#セッションクッキーの内容とクライアント側での書き換え" class="headerlink" title="セッションクッキーの内容とクライアント側での書き換え"></a>セッションクッキーの内容とクライアント側での書き換え</h3><p>Railsではセッションクッキーには値を生のままではなく暗号化して送るようになっているので、秘密鍵を知らない限り復元も再暗号化もできないはず。</p>
+<p>なのでクライアント側で内容を書き換えるということはできないので、
+直接 <code>user_id</code> を書き換えることで他人としてログインできてしまう、ということはない。</p>
+<p>ただし内容自体をクッキーでやり取りしているので、クライアント側でのクッキーの削除による情報消失や、
+クッキー内容をコピーしておいて後で上書きして過去の状態に巻き戻るというのはあり得る
+（<a href="https://railsguides.jp/security.html#cookiestore%E3%82%BB%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AB%E5%AF%BE%E3%81%99%E3%82%8B%E5%86%8D%E7%94%9F%E6%94%BB%E6%92%83">CookieStoreセッションに対する再生攻撃</a>）</p>
+<h3 id="クッキーの盗み見・漏洩"><a href="#クッキーの盗み見・漏洩" class="headerlink" title="クッキーの盗み見・漏洩"></a>クッキーの盗み見・漏洩</h3><p>まずクッキーが盗まれたらまずいんじゃ？というのはまったくその通り。
+とはいえクッキーストアじゃなくてセッションIDだけを送る方式でも、盗まれたらセッションが奪われてしまってまずいのは同じ。
+なので盗まれないようにすることが重要。</p>
+<p>https 経由であれば、通信経路で内容を盗み見られても内容はわからないはず。</p>
+<p>ウェブサイトでJavaScriptを使用している場合にうかつなモジュールを組み込んだことで、
+またはXSSによって埋め込まれたコードでクッキーを盗み取られるようなことはないのか。</p>
+<p>Railsのセッションクッキーは <code>httpOnly</code> となっていてJavaScriptからアクセスできないので、スクリプト実行による漏洩はおきない。</p>
+<h3 id="セッションクッキーの内容の確認"><a href="#セッションクッキーの内容の確認" class="headerlink" title="セッションクッキーの内容の確認"></a>セッションクッキーの内容の確認</h3><p>Google Chromeではメニューから検証＞Application＞Cookies 内でクッキーが確認できる。</p>
+<p><code>_myapp_session</code> という名前が使われている。</p>
+<h3 id="セッションクッキーから内容を復元"><a href="#セッションクッキーから内容を復元" class="headerlink" title="セッションクッキーから内容を復元"></a>セッションクッキーから内容を復元</h3><p>クライアント側では改ざん不能といってもサーバ側では扱える必要があるので、復元する方法があるはず。</p>
+<p><a href="https://gist.github.com/wildjcrt/6359713fa770d277927051fdeb30ebbf">Decrypt Rails 6.0 beta session cookies</a></p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># `bundle exec ruby ...` で直接実行したい場合、以下を実行させる</span></span><br><span class="line"><span class="comment">#require File.expand_path(&#x27;../../../config/environment&#x27;, __FILE__)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">verify_and_decrypt_session_cookie</span><span class="params">(cookie, secret_key_base = Rails.application.secret_key_base)</span></span></span><br><span class="line">  config = Rails.application.config</span><br><span class="line">  cookie = CGI::unescape(cookie)</span><br><span class="line">  salt   = config.action_dispatch.authenticated_encrypted_cookie_salt</span><br><span class="line">  encrypted_cookie_cipher = config.action_dispatch.encrypted_cookie_cipher <span class="params">||</span> <span class="string">&#x27;aes-256-gcm&#x27;</span></span><br><span class="line">  <span class="comment"># serializer = ActiveSupport::MessageEncryptor::NullSerializer # use this line if you don&#x27;t know your serializer</span></span><br><span class="line">  serializer = ActionDispatch::Cookies::JsonSerializer</span><br><span class="line"></span><br><span class="line">  key_generator = ActiveSupport::KeyGenerator.new(secret_key_base, <span class="symbol">iterations:</span> <span class="number">1000</span>)</span><br><span class="line">  key_len = ActiveSupport::MessageEncryptor.key_len(encrypted_cookie_cipher)</span><br><span class="line">  secret = key_generator.generate_key(salt, key_len)</span><br><span class="line">  encryptor = ActiveSupport::MessageEncryptor.new(secret, <span class="symbol">cipher:</span> encrypted_cookie_cipher, <span class="symbol">serializer:</span> serializer)</span><br><span class="line"></span><br><span class="line">  session_key = config.session_options[<span class="symbol">:key</span>].freeze</span><br><span class="line">  encryptor.decrypt_and_verify(cookie, <span class="symbol">purpose:</span> <span class="string">&quot;cookie.<span class="subst">#&#123;session_key&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="variable">$0</span> == <span class="keyword">__FILE__</span></span><br><span class="line">  ARGV.each <span class="keyword">do</span> <span class="params">|arg|</span></span><br><span class="line">    puts verify_and_decrypt_session_cookie(arg)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>上記スクリプトをRailsアプリディレクトリ内に保存し、 <code>rails runner</code> でコマンドライン引数に与えてやると復元できる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ session_cookie=<span class="string">&#x27;wWL47h2B...--TImX...--e8t%...&#x27;</span>  <span class="comment"># ブラウザで確認したセッションクッキーの内容</span></span><br><span class="line">$ rails runner verify_and_decrypt_session_cookie60beta1.rb <span class="variable">$session_cookie</span></span><br><span class="line">&#123;<span class="string">&quot;session_id&quot;</span>=&gt;<span class="string">&quot;2b569463...&quot;</span>, <span class="string">&quot;user_id&quot;</span>=&gt;<span class="string">&quot;foobar&quot;</span>, <span class="string">&quot;_csrf_token&quot;</span>=&gt;<span class="string">&quot;fp6YvDbg...&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>salt</code> は <code>&quot;authenticated encrypted cookie&quot;</code> （デフォルト設定のままでいいんだろうか？）</li>
+<li><code>encrypted_cookie_cipher</code> は <code>nil</code> （なので <code>&#39;aes-256-gcm&#39;</code> が使われる）<ul>
+<li><a href="https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a>: Advanced Encryption Standard</li>
+<li><a href="https://ja.wikipedia.org/wiki/Galois/Counter_Mode">GCM</a>: Galois/Counter Mode</li>
+</ul>
+</li>
+<li><code>secret_key_base</code> は128文字の16進数文字列（＝512ビット）<ul>
+<li><code>rails new</code> 時に <code>config/master.key</code> と <code>credentials.yml.enc</code> が自動生成され、その中で保持されている</li>
+<li><code>development</code> 時には <code>tmp/development_secret.txt</code> が使われる</li>
+</ul>
+</li>
+<li><code>key_len</code> は <code>32</code></li>
+<li><code>session_key</code> は <code>&quot;_myapp_session&quot;</code></li>
+</ul>
+<h3 id="セッションIDの取得"><a href="#セッションIDの取得" class="headerlink" title="セッションIDの取得"></a>セッションIDの取得</h3><p>サーバ側でセッションIDを取得するには、いろいろ方法がある：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">session.id</span><br><span class="line">session[<span class="symbol">:session_id</span>]</span><br><span class="line">request.session_options[<span class="symbol">:id</span>]</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="セッションクッキーの削除"><a href="#セッションクッキーの削除" class="headerlink" title="セッションクッキーの削除"></a>セッションクッキーの削除</h3><p>ユーザがログアウトした場合に、ブラウザ側でセッションクッキーが削除されるようにする必要がある。
+Railsでは <code>session.clear</code> ですべての項目、 <code>session.delete</code> で個別に削除できる。</p>
+<p>ただし項目は削除されるが勝手に再度作成されるのか、セッションクッキー自体は送られていて、ブラウザから <code>_myapp_session</code> 自体が削除されるわけではない
+（<code>session</code> にアクセスしない状態や <code>session.clear</code> 後でも勝手にセッションクッキーが送られている）。
+セッションクッキーを送らない、というようなことはできないぽい…。</p>
+<p>またセッションを削除してもサーバ側で管理しているわけではないので、クライアント側で過去の内容を保持しておいて復元した場合には無効とならずに復帰されてしまう。</p>
+<h3 id="そもそもセッションとは？"><a href="#そもそもセッションとは？" class="headerlink" title="そもそもセッションとは？"></a>そもそもセッションとは？</h3><p>ここまできて、実のところ「セッション」という単語が指す内容の想定がずれているんじゃないかという気がしてきた…。
+よくショッピングカートの例とか出てくるけど、例えばアマゾンのショッピングカートとかを想像すると、
+ブラウザを閉じても別端末でアクセスしてもカートに追加した商品が保持されるが、こういうものはセッション情報には含まないのではないかという気がしてきた。</p>
+<p>もっと一時的な内容、例えば複数画面に渡るユーザ情報登録やアンケートなど、ブラウザのページを閉じたら捨てていいような内容のことを指すのが適切な気がする。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><p><a href="https://api.rubyonrails.org/classes/ActionDispatch/Session/CookieStore.html">ActionDispatch::Session::CookieStore</a></p>
+<blockquote>
+<p>Your cookies will be encrypted using your apps secret_key_base.</p>
+</blockquote>
+</li>
+<li><p><a href="https://railsguides.jp/configuring.html#action-dispatch%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B">Rails アプリケーションを設定する - Railsガイド</a></p>
+<blockquote>
+<p><code>config.action_dispatch.encrypted_cookie_cipher</code>: 暗号化済みcookieに使う暗号化方式を設定します。デフォルトは<code>&quot;aes-256-gcm&quot;</code>です。</p>
+</blockquote>
+</li>
+<li><p><a href="https://railsguides.jp/security.html">Rails セキュリティガイド - Railsガイド</a></p>
+</li>
+<li><p><a href="https://oauth.jp/blog/2013/09/26/rails-session-cookie/">Rails SessionにCookieStore使った時の問題点 - OAuth.jp</a></p>
+<ul>
+<li>セッションIDをやり取りする方式と比べて、クッキーストアは漏洩した場合にログアウトしてもパスワード変更しても失効しないのが問題。
+失効日時を含めておけば一定期間で無効化できるが、自前でチェックする必要がある。</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/12/rails-dot-install.html" title="ドットインストールの"Ruby on Rails 4 入門"" rel="bookmark">ドットインストールの"Ruby on Rails 4 入門"</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/11/04/ruby-on-rails-tutorial.html" title="Ruby on Railsを再び学ぶ" rel="bookmark">Ruby on Railsを再び学ぶ</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="iPhoneやAndroidなどで動くゲームエンジンであるCocos2dxではマルチプラットフォームを実現するためにゲームロジック部をC++で書くんだけど、スクリプト言語として軽量組み込み言語であるLuaやJavaScriptを使うこともできる。それも単なるインタプリタじゃなくてLuaJITやSpiderMonkeyを組み込んでいる。なのでスクリプト言語を使ったからといって速度的に大きなペナルティはない模様、すげえ！iPhoneやAndroidでCPU違っても動くんだろうか。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Xbyakで簡単な関数を実行時に生成する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Xbyakで簡単な関数を実行時に生成する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/09/11/xbyak-jit.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Xbyakで簡単な関数を実行時に生成する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-09-11
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/jit/">#jit</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>iPhoneやAndroidなどで動くゲームエンジンであるCocos2dxではマルチプラットフォームを実現するためにゲームロジック部をC++で書くんだけど、スクリプト言語として軽量組み込み言語である<a href="http://www.lua.org/">Lua</a>やJavaScriptを使うこともできる。それも単なるインタプリタじゃなくて<a href="http://luajit.org/">LuaJIT</a>やSpiderMonkeyを組み込んでいる。なのでスクリプト言語を使ったからといって速度的に大きなペナルティはない模様、すげえ！iPhoneやAndroidでCPU違っても動くんだろうか。</p>
+<span id="more"></span>
+
+<p>てことで、また瞬間的にJIT熱にうかされた。JITってどうやって作るのか全く知らないので、まずXbyakというものを触ってみた。そもそもx86のアーキテクチャもほとんど知らないので辛いんだけど、簡単なサンプルとして、定数を返す関数を作るクラスを生成する例：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;xbyak/xbyak.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConstFunc</span> :</span> <span class="keyword">public</span> Xbyak::CodeGenerator &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">ConstFunc</span>(<span class="keyword">int</span> x) &#123;</span><br><span class="line">    <span class="built_in">mov</span>(eax, x);  <span class="comment">// eax = 即値</span></span><br><span class="line">    <span class="built_in">ret</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in"><span class="keyword">int</span></span> (*<span class="built_in">get</span>() <span class="keyword">const</span>)() &#123; <span class="keyword">return</span> getCode&lt;<span class="built_in"><span class="keyword">int</span></span>(*)()&gt;(); &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> XBYAK64_GCC</span></span><br><span class="line">  cout &lt;&lt; <span class="string">&quot;64bit mode(gcc)&quot;</span> &lt;&lt; endl;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(XBYAK64_WIN)</span></span><br><span class="line">  cout &lt;&lt; <span class="string">&quot;64bit mode(win)&quot;</span> &lt;&lt; endl;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">  cout &lt;&lt; <span class="string">&quot;32bit&quot;</span> &lt;&lt; endl;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  cout &lt;&lt; <span class="built_in">ConstFunc</span>(<span class="number">1234</span>).<span class="built_in">get</span>()() &lt;&lt; endl;</span><br><span class="line">  <span class="comment">// =&gt; 1234</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>コンパイルするにはg++で<code>-fno-operator-names</code>オプションをつける必要がある（<a href="http://labs.cybozu.co.jp/blog/mitsunari/2007/09/xbyakx86ia3221.html">Xbyakで始めるx86(IA-32)入門(2-1) (mitsunari@cybozu labs)</a>）。</p>
+<p>Xbyakでのコードの生成は、<code>Xbyak::CodeGenerator</code>クラスを継承して、x86のニーモニックに似たメソッドでコードを組み立てて、<code>getCode&lt;関数の型&gt;()</code>で取得して使うってのが流れ。本当はx86の32ビットか64ビットかなどで使う命令を変える必要があるみたいなんだけど、自分の環境でしか試してないため64bit GCC用のコードとなっている。戻り値は<code>eax</code>レジスタに入れてやればよい。<code>mov</code>命令でレジスタに即値、または他のレジスタの値を代入する。</p>
+<p>次に引数を受け取る関数のテストとして、ある値を加算する関数を生成する：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AdderFunc</span> :</span> <span class="keyword">public</span> Xbyak::CodeGenerator &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">AdderFunc</span>(<span class="keyword">int</span> x) &#123;</span><br><span class="line">    <span class="built_in">mov</span>(eax, edi);</span><br><span class="line">    <span class="built_in">add</span>(eax, x);</span><br><span class="line">    <span class="built_in">ret</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in"><span class="keyword">int</span></span> (*<span class="built_in">get</span>() <span class="keyword">const</span>)(<span class="keyword">int</span>) &#123; <span class="keyword">return</span> getCode&lt;<span class="built_in"><span class="keyword">int</span></span>(*)(<span class="keyword">int</span>)&gt;(); &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  cout &lt;&lt; <span class="built_in">AdderFunc</span>(<span class="number">123</span>).<span class="built_in">get</span>()(<span class="number">456</span>) &lt;&lt; endl;</span><br><span class="line">  <span class="comment">// =&gt; 579</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>64bitのx86でのgccの呼出規約で、関数への整数の引数は１番目が<code>edi</code>、以降<code>esi</code>, <code>edx</code>, <code>ecs</code>, <code>er8</code>, <code>er9</code>…に渡されるらしい（<a href="http://homepage1.nifty.com/herumi/prog/x64.html#GCC64">gccでのレジスタ - x64 Assembly Language Programming</a>）。</p>
+<p>次は条件分岐を使う例として、階乗を求める関数を生成する：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FactorialFunc</span> :</span> <span class="keyword">public</span> Xbyak::CodeGenerator &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">FactorialFunc</span>() &#123;</span><br><span class="line">    <span class="built_in">inLocalLabel</span>(); <span class="comment">// use local label for multiple instance</span></span><br><span class="line">    <span class="built_in">mov</span>(eax, <span class="number">1</span>);</span><br><span class="line">  <span class="built_in">L</span>(<span class="string">&quot;.lp&quot;</span>);</span><br><span class="line">    <span class="built_in">mul</span>(edi);</span><br><span class="line">    <span class="built_in">dec</span>(edi);</span><br><span class="line">    <span class="built_in">cmp</span>(edi, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">jg</span>(<span class="string">&quot;.lp&quot;</span>);</span><br><span class="line">    <span class="built_in">ret</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in"><span class="keyword">int</span></span> (*<span class="built_in">get</span>() <span class="keyword">const</span>)(<span class="keyword">int</span>) &#123; <span class="keyword">return</span> getCode&lt;<span class="built_in"><span class="keyword">int</span></span>(*)(<span class="keyword">int</span>)&gt;(); &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  cout &lt;&lt; <span class="built_in">FactorialFunc</span>().<span class="built_in">get</span>()(<span class="number">10</span>) &lt;&lt; endl;</span><br><span class="line">  <span class="comment">// =&gt; 3628800</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ジャンプ命令は条件によっていろいろあって、ある値以上である場合は<code>jg</code>となる（<a href="http://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q1434023679">アセンブリ言語とx86機械語の対応表みたいなのってどこにありますか? 確かIntelの… - Yahoo!知恵袋</a>より、<a href="http://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol2A_i.pdf">intelの資料のIA-32 インテル® アーキテクチャー・ソフトウェア・デベロッパーズ・マニュアル、中巻 A: 命令セット・リファレンス A-M</a>および<a href="http://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol2B_i.pdf">N-Z</a>）。</p>
+<p>C言語で書けば</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">factorial</span><span class="params">(<span class="keyword">int</span> edi)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> eax = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">    eax *= edi;</span><br><span class="line">    --edi;</span><br><span class="line">  &#125; <span class="keyword">while</span> (edi &gt; <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> eax;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="次記事"><a href="#次記事" class="headerlink" title="次記事"></a>次記事</h3><ul>
+<li><a href="/blog/2013/10/10/calling-convension-64.html" title="Xbyakで動的に生成するコードからCの関数を呼び出す">Xbyakで動的に生成するコードからCの関数を呼び出す</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/21/adv-in-jit-compilation.html" title="「JITコンパイルでの冒険」を読んだ" rel="bookmark">「JITコンパイルでの冒険」を読んだ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/10/10/calling-convension-64.html" title="Xbyakで動的に生成するコードからCの関数を呼び出す" rel="bookmark">Xbyakで動的に生成するコードからCの関数を呼び出す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/22/dt-jit-comparison.html" title="Direct Threaded版とJITの速度比較" rel="bookmark">Direct Threaded版とJITの速度比較</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/05/jit.html" title="JITについてお勉強" rel="bookmark">JITについてお勉強</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/20/pypy-bf.html" title="PyPyでBrainf*ck" rel="bookmark">PyPyでBrainf*ck</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

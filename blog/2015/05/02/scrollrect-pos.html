@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="UnityのuGUIでスクロールビューを作る - テラシュールブログ を参考にしてスクロールビューを作ったが、その時に初期の表示位置を設定したかったのでやり方を調べた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Unity】ScrollRectのスクロール位置を調整"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Unity】ScrollRectのスクロール位置を調整 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/05/02/scrollrect-pos.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Unity】ScrollRectのスクロール位置を調整</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-05-02
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unity/">#unity</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://tsubakit1.hateblo.jp/entry/2014/12/18/040252">UnityのuGUIでスクロールビューを作る - テラシュールブログ</a> を参考にしてスクロールビューを作ったが、その時に初期の表示位置を設定したかったのでやり方を調べた。</p>
+<span id="more"></span>
+
+<p>縦スクロールの場合、<code>ScrollRect</code>の<a href="https://docs.unity3d.com/ja/560/ScriptReference/UI.ScrollRect-verticalNormalizedPosition.html">verticalNormalizedPosition</a>でスクロール位置を読み書きできる。で指定の要素を中心に表示したいかというのを与えられるようにしたい。</p>
+<p>あとは算数の問題で、<code>ScrollRect</code>と<code>Content</code>の高さと要素数から計算できる。<code>Content</code>に追加しているスクリプトに以下の様なメソッドを追加してやる：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ScrollController.cs</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetCenterItem</span>(<span class="params"><span class="built_in">int</span> index</span>)</span> &#123;</span><br><span class="line">    RectTransform scrollViewTfm = transform.parent <span class="keyword">as</span> RectTransform;</span><br><span class="line">    <span class="built_in">float</span> height = scrollViewTfm.sizeDelta.y;</span><br><span class="line">    <span class="built_in">float</span> contentHeight = (transform <span class="keyword">as</span> RectTransform).sizeDelta.y;</span><br><span class="line">    <span class="keyword">if</span> (contentHeight &lt;= height)  <span class="comment">// コンテンツよりスクロールエリアのほうが広いので、スクロールしなくてもすべて表示されている</span></span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">int</span> n = transform.childCount;</span><br><span class="line">    <span class="built_in">float</span> y = (index + <span class="number">0.5f</span>) / n;  <span class="comment">// 要素の中心座標</span></span><br><span class="line">    <span class="built_in">float</span> scrollY = y - <span class="number">0.5f</span> * height / contentHeight;</span><br><span class="line">    <span class="built_in">float</span> ny = scrollY / (<span class="number">1</span> - height / contentHeight);  <span class="comment">// ScrollRect用に正規化した座標</span></span><br><span class="line"></span><br><span class="line">    ScrollRect scrollRect = scrollViewTfm.GetComponent&lt;ScrollRect&gt;();</span><br><span class="line">    scrollRect.verticalNormalizedPosition = Mathf.Clamp(<span class="number">1</span> - ny, <span class="number">0</span>, <span class="number">1</span>);  <span class="comment">// Y軸は下から上なので反転してやる</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>あとスクリプトからノードを生成した場合、<code>Content</code>の<code>RectTransform</code>の高さ（<code>sizeDelta.y</code>）がすぐには反映されないようなので、ちょっと待ってから（<code>ContentSizeFilter</code>の<code>Update</code>が呼び出された後に？）上記のメソッドを呼び出す必要がある。</p>
+<p><a href="http://baba-s.hatenablog.com/entry/2014/05/07/165344">【Unity】StartCoroutineでラムダ式を使用できるようにするラッパークラス - コガネブログ</a>を使って、</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">ScrollController scroll = content.GetComponent&lt;ScrollController&gt;();</span><br><span class="line">CoroutineCommon.CallWaitForOneFrame(() =&gt; &#123;</span><br><span class="line">    scroll.SetCenterItem(index);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/19/cache-http.html" title="Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する" rel="bookmark">Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/14/fixed-font.html" title="【Unity】固定幅ビットマップフォントを使う" rel="bookmark">【Unity】固定幅ビットマップフォントを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/11/generate-prefabs.html" title="【Unity】スクリプトでプレハブを大量生産する" rel="bookmark">【Unity】スクリプトでプレハブを大量生産する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/23/interior-mapping.html" title="【Unity】Shader Graphでインテリアマッピング" rel="bookmark">【Unity】Shader Graphでインテリアマッピング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/09/modify-xcproj.html" title="【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する" rel="bookmark">【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

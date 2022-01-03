@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="TL;DR　originブランチはフォーク元のままにして、forkedを自分のリモートブランチとして使用する。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="GitHubでプルリクエストを送るときの操作手順"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>GitHubでプルリクエストを送るときの操作手順 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/10/22/pull-request.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>GitHubでプルリクエストを送るときの操作手順</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-10-22
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/git/">#git</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>TL;DR　<code>origin</code>ブランチはフォーク元のままにして、<code>forked</code>を自分のリモートブランチとして使用する。</p>
+<span id="more"></span>
+
+<p>他人のGitHubのプロジェクトにプルリクエストを送る場合に<a href="http://d.hatena.ne.jp/hnw/20110528">GitHubへpull requestする際のベストプラクティス - hnwの日記</a>で書かれている手順で行っていたのだけど、手順を憶えられなくて毎回ググっていたのでなんかいい方法がないかとやってたら以下のような手順に落ち着いた。</p>
+<h3 id="元のリポジトリをローカルに落とす"><a href="#元のリポジトリをローカルに落とす" class="headerlink" title="元のリポジトリをローカルに落とす"></a>元のリポジトリをローカルに落とす</h3><p>普通に<code>git clone</code>を使う：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> git@github.com:だれそれ/リポ名.git</span><br></pre></td></tr></table></figure>
+
+<p>GitHub上でフォークする前に、対象のリポジトリを直接ローカルに落として作業する。
+プルリクエストを投げれるような状態になるまでGitHubのフォークをする必要はない。</p>
+<h3 id="手元で修正し、コミット作成"><a href="#手元で修正し、コミット作成" class="headerlink" title="手元で修正し、コミット作成"></a>手元で修正し、コミット作成</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> リポ名</span><br><span class="line">$ git checkout -b フィーチャーブランチ名  <span class="comment"># フィーチャーブランチ作成</span></span><br><span class="line">（ファイル編集）</span><br><span class="line">$ git commit -am <span class="string">&#x27;変更内容&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>修正したい内容をローカルで編集してコミットを作成する。その際にはブランチを切ってやる。</p>
+<h3 id="GitHub上で元のリポジトリを自分にフォーク"><a href="#GitHub上で元のリポジトリを自分にフォーク" class="headerlink" title="GitHub上で元のリポジトリを自分にフォーク"></a>GitHub上で元のリポジトリを自分にフォーク</h3><p>変更がいけそうだとなったら、プルリクエストを送るために元のリポジトリのページから[Fork]ボタンを押して、自分用のフォーク先のリポジトリを作る。</p>
+<h3 id="フォークしたリポジトリをリモートブランチ先として追加"><a href="#フォークしたリポジトリをリモートブランチ先として追加" class="headerlink" title="フォークしたリポジトリをリモートブランチ先として追加"></a>フォークしたリポジトリをリモートブランチ先として追加</h3><p>GitHub上でフォークはしたけれど、ローカルに落としてあるリポジトリのリモート先<code>origin</code>は元のリポジトリを指している。<code>origin</code>はそのままにしておいて、例えば<code>forked</code>という名前のリモートブランチを追加してやる：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git remote add forked git@github.com:自分/リポ名.git</span><br><span class="line">$ git remote -v  <span class="comment"># 確認</span></span><br><span class="line">forked  git@github.com:自分/リポ名.git (fetch)</span><br><span class="line">forked  git@github.com:自分/リポ名.git (push)</span><br><span class="line">origin  git@github.com:だれそれ/リポ名.git (fetch)</span><br><span class="line">origin  git@github.com:だれそれ/リポ名.git (push)</span><br></pre></td></tr></table></figure>
+
+<p><code>git remote set-url origin ...</code>で<code>origin</code>を変更してしまうと後々元のリポジトリが更新されたときに追従するのが面倒なので、<code>forked</code>という名前で自分のリポジトリを追加してやる。</p>
+<h3 id="フィーチャーブランチを自分のフォーク先にプッシュ"><a href="#フィーチャーブランチを自分のフォーク先にプッシュ" class="headerlink" title="フィーチャーブランチを自分のフォーク先にプッシュ"></a>フィーチャーブランチを自分のフォーク先にプッシュ</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git push --set-upstream forked フィーチャーブランチ名</span><br></pre></td></tr></table></figure>
+
+<p>ローカルで作成していたフィーチャーブランチのリモート先をフォークした自分のリポジトリに設定する。</p>
+<p>自分のリモートリポジトリにプッシュできたら、GitHubのプルリクエストを投げてやる。</p>
+<h3 id="コミットを更新"><a href="#コミットを更新" class="headerlink" title="コミットを更新"></a>コミットを更新</h3><p>コードレビューなどでコミットに変更を加えた場合、再びプッシュする：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">（フィーチャーブランチをチェックアウトしている状態で）</span><br><span class="line">$ git push</span><br></pre></td></tr></table></figure>
+
+<p>フィーチャーブランチの自分のコミットは特に制限がない場合改変可能なので、改変した場合には<code>--force</code>を使ってプッシュしてもOK：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">（git commit --amend などでコミットを書き換える）</span><br><span class="line">$ git push --force</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="元のリポジトリの更新に追従する"><a href="#元のリポジトリの更新に追従する" class="headerlink" title="元のリポジトリの更新に追従する"></a>元のリポジトリの更新に追従する</h3><p>コードレビューの間に元のリポジトリのブランチが更新された時に追従したい場合には、単に<code>origin</code>から<code>pull</code>してやる：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git checkout master  <span class="comment"># 基準のブランチをチェックアウト</span></span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>
+
+<p>フィーチャーブランチの分岐をきれいにするために<code>HEAD</code>に移動させるには<code>rebase</code>してやる：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git checkout フィーチャーブランチ名</span><br><span class="line">$ git rebase master</span><br><span class="line">（コンフリクトは頑張って解消する。）</span><br><span class="line">$ git push -f forked</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="プルリクエストがマージされた後の後始末"><a href="#プルリクエストがマージされた後の後始末" class="headerlink" title="プルリクエストがマージされた後の後始末"></a>プルリクエストがマージされた後の後始末</h3><p>プルリクエストが取り込まれたならば、フォークした自分のリポジトリのフィーチャーブランチは不要になり[Delete branch]などというボタンが出るので、押してやると削除される。</p>
+<p>またはコマンドライン上で行うには：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git checkout master  <span class="comment"># フィーチャーブランチじゃないブランチに移動</span></span><br><span class="line">$ git branch -d フィーチャーブランチ名  <span class="comment"># ローカルからブランチを削除</span></span><br><span class="line">$ git push forked --delete フィーチャーブランチ名  <span class="comment"># フォーク先のリモートからも削除</span></span><br></pre></td></tr></table></figure>
+
+<p>他に送りたい変更もなくなったらフォーク先のリポジトリごとGitHubから削除してやってもいい。そうした後もローカルの<code>origin</code>は元のリポジトリを指しているので、そのまま使い続けることができる：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git remote rm forked</span><br></pre></td></tr></table></figure>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/18/git-flow.html" title="git-flowコマンドラインツールをgithub-flowとして使う" rel="bookmark">git-flowコマンドラインツールをgithub-flowとして使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/17/git-log.html" title="自分が今日一日何をしたのか調べる(gitのlogから)" rel="bookmark">自分が今日一日何をしたのか調べる(gitのlogから)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/07/git-worktree.html" title="gh-pagesをサブディレクトリ内で管理" rel="bookmark">gh-pagesをサブディレクトリ内で管理</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

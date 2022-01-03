@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Rustでオブジェクト指向的にプログラムを構築するのにちょっと難しさを感じて、ECSという手法を見てみた。
+借用の被りを回避できるのはいいんだけど、システムで扱うコンポーネントが増えるに従ってストレージの引数が増えていくのがなかなか辛いと感じた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Rust】Legion ECSを触ってみた"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Rust】Legion ECSを触ってみた - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/10/21/legion-ecs.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Rust】Legion ECSを触ってみた</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-10-21
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/rust/">#rust</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Rustでオブジェクト指向的にプログラムを構築するのにちょっと難しさを感じて、<a href="/blog/2020/10/03/ecs-in-rust.html" title="ECSという手法を見てみた">ECSという手法を見てみた</a>。
+借用の被りを回避できるのはいいんだけど、システムで扱うコンポーネントが増えるに従ってストレージの引数が増えていくのがなかなか辛いと感じた。</p>
+<span id="more"></span>
+
+<p>これは試した<a href="https://slide-rs.github.io/specs-website/">Specs</a>というライブラリの問題なのかもしれない、と思い別のライブラリも見てみることにした。
+<a href="https://amethyst.rs/">Amethyst</a>というゲームエンジンがSpecsから載せ替えを計画しているという、<a href="https://github.com/amethyst/legion/">Legion</a>というライブラリを見てみた。</p>
+<p>使用したバージョン： Legion 0.3.1</p>
+<h3 id="Legionの特徴"><a href="#Legionの特徴" class="headerlink" title="Legionの特徴"></a>Legionの特徴</h3><p><a href="https://amethyst.rs/posts/legion-ecs-v0.3">v0.3の説明</a>にベンチマークで速いとかいろいろ書いてある。
+性能面での比較はさておき、使用の際のSpecsに対する利点としては、</p>
+<ul>
+<li>システムでコンポーネントを扱う際に個々のストレージとしてじゃなく、
+必要なコンポーネントのストレージを含むサブワールドとして受け取るので、
+記述がそんなに増えずに済む</li>
+<li>エンティティやコンポーネントの生成・削除をコマンドバッファ経由で行うので、
+その際に扱うコンポーネントのストレージを要求せずに済む</li>
+<li>システムごとに型を定義する必要がなく、関数に<code>#[system]</code>アトリビュートを指定するだけで作れる（扱うコンポーネントを2度書かずに済む）</li>
+<li>コンポーネント、リソースに <code>Default</code> 実装が必要ない</li>
+</ul>
+<p>以下に逆引き：</p>
+<h4 id="コンポーネント定義"><a href="#コンポーネント定義" class="headerlink" title="コンポーネント定義"></a>コンポーネント定義</h4><p>任意の型が自動的にコンポーネントとして使える。</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> legion::*;</span><br><span class="line"><span class="keyword">use</span> legion::systems::CommandBuffer;</span><br><span class="line"><span class="keyword">use</span> legion::world::SubWorld;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Position</span></span> &#123; <span class="keyword">pub</span> x: <span class="built_in">i32</span>, <span class="keyword">pub</span> y: <span class="built_in">i32</span> &#125;</span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Velocity</span></span> &#123; <span class="keyword">pub</span> vx: <span class="built_in">i32</span>, <span class="keyword">pub</span> vy: <span class="built_in">i32</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="エンティティの生成、削除"><a href="#エンティティの生成、削除" class="headerlink" title="エンティティの生成、削除"></a>エンティティの生成、削除</h4><p>システム外：ワールドに <code>push</code></p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">init</span></span>(world: &amp;<span class="keyword">mut</span> World) &#123;</span><br><span class="line">    world.push((Position&#123;x:<span class="number">0</span>, y:<span class="number">0</span>&#125;, Velocity&#123;vx:<span class="number">2</span>, vy:<span class="number">1</span>&#125;));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>システム内：コマンドバッファに <code>push</code></p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="meta">#[system]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">foo</span></span>(commands: &amp;<span class="keyword">mut</span> CommandBuffer) &#123;</span><br><span class="line">    <span class="comment">// 生成</span></span><br><span class="line">    <span class="keyword">let</span> entity = commands.push((Position&#123;x:<span class="number">0</span>, y:<span class="number">0</span>&#125;, Velocity&#123;vx:<span class="number">2</span>, vy:<span class="number">1</span>&#125;));</span><br><span class="line">    <span class="comment">// 削除</span></span><br><span class="line">    commands.remove(entity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>複数のコンポーネントを持たせる場合、タプルで渡す</li>
+<li>スケジュール実行後、またはスケジュール中の <code>flush()</code> で実行される？</li>
+</ul>
+<h4 id="コンポーネントの追加、削除"><a href="#コンポーネントの追加、削除" class="headerlink" title="コンポーネントの追加、削除"></a>コンポーネントの追加、削除</h4><figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 追加</span></span><br><span class="line">commands.add_component(entity, Position&#123;x:<span class="number">0</span>, y:<span class="number">0</span>&#125;);</span><br><span class="line"><span class="comment">// 削除</span></span><br><span class="line">commands.remove_component::&lt;Position&gt;(entity);</span><br></pre></td></tr></table></figure>
+
+<h4 id="システム（for-each）"><a href="#システム（for-each）" class="headerlink" title="システム（for_each）"></a>システム（for_each）</h4><p><code>#[system(for_each)]</code> で、関数の引数に指定した型のコンポーネントを持つエンティティが自動的に列挙されて呼び出される：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#[system(for_each)]</span><br><span class="line">pub fn move_pos(pos: &amp;mut Position, vel: &amp;Velocity, entity: &amp;Entity) &#123;</span><br><span class="line">    pos.x += vel.vx;</span><br><span class="line">    pos.y += vel.vy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>&amp;Entity</code> で対応するエンティティを受け取れる</li>
+<li>その他、リソースやサブワールドやコマンドバッファも受け取れる</li>
+</ul>
+<h4 id="コンポーネントの列挙"><a href="#コンポーネントの列挙" class="headerlink" title="コンポーネントの列挙"></a>コンポーネントの列挙</h4><p>単純なループでは済まないような場合（二重ループなど）、システムでサブワールドを受け取って自分でループさせる：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#[system]</span><br><span class="line">#[read_component(Position)]</span><br><span class="line">#[read_component(Player)]</span><br><span class="line">#[read_component(Enemy)]</span><br><span class="line">pub fn check_collision(world: &amp;mut SubWorld) &#123;</span><br><span class="line">    for (_player, player_pos, player_entity) in &lt;(&amp;Player, &amp;Position, Entity)&gt;::query().iter(world) &#123;</span><br><span class="line">        for (_enemy, enemy_pos, enemy_entity) in &lt;(&amp;Enemy, &amp;Position, Entity)&gt;::query().iter(world) &#123;</span><br><span class="line">            ....</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>#[read_component(型)]</code> または <code>#[write_component(型)]</code> アトリビュートを指定すると、それらを含む <code>SubWorld</code> として受け取れる</li>
+<li>クエリのイテレータ： <code>&lt;(型, 型, ...)&gt;::query().iter(world)</code>、ミュータブルの場合は <code>iter_mut</code></li>
+<li><code>Entity</code> 指定でエンティティが得られる</li>
+</ul>
+<h4 id="サブワールドの分割"><a href="#サブワールドの分割" class="headerlink" title="サブワールドの分割"></a>サブワールドの分割</h4><p>サブワールドに対してクエリを行うと借用されてしまい他の操作ができなくなってしまうので、
+複数のコンポーネントを別々に触りたい場合には分割する必要がある：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (<span class="keyword">mut</span> target, <span class="keyword">mut</span> rest) = world.split::&lt;&amp;<span class="keyword">mut</span> Position&gt;();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>タプルの第１項目に指定したコンポーネント、第２項目に残りのコンポーネントを含むサブワールドに分割されて返される</li>
+<li>イミュータブルの場合には２番目のサブワールドでも参照可能</li>
+</ul>
+<h4 id="エンティティのコンポーネント取得"><a href="#エンティティのコンポーネント取得" class="headerlink" title="エンティティのコンポーネント取得"></a>エンティティのコンポーネント取得</h4><p>他のエンティティのコンポーネントを参照したい場合、クエリしてゲット</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let (pos, vel) = &lt;(&amp;mut Position, &amp;mut Velocity)&gt;::query().get_mut(world, entity).unwrap();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>エントリ経由だと１つのコンポーネントにしか触れなかった…</li>
+</ul>
+<h4 id="リソースの登録（システム外）"><a href="#リソースの登録（システム外）" class="headerlink" title="リソースの登録（システム外）"></a>リソースの登録（システム外）</h4><figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> resources = Resources::default();</span><br><span class="line"></span><br><span class="line">resources.insert(リソース);</span><br></pre></td></tr></table></figure>
+
+<h4 id="システムでのリソースの受け取り"><a href="#システムでのリソースの受け取り" class="headerlink" title="システムでのリソースの受け取り"></a>システムでのリソースの受け取り</h4><p>システムの引数に <code>#[resource]</code> を指定：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="meta">#[system]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">bar</span></span>(<span class="meta">#[resource]</span> bar: &amp;<span class="keyword">mut</span> Bar) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="システム外でのリソース取得"><a href="#システム外でのリソース取得" class="headerlink" title="システム外でのリソース取得"></a>システム外でのリソース取得</h4><figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> res = resources.get_mut::&lt;リソース型&gt;().unwrap();</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Legionの使用感"><a href="#Legionの使用感" class="headerlink" title="Legionの使用感"></a>Legionの使用感</h3><p>Specsに比べてLegionではストレージを個別に扱わずに済むので、ある程度記述が楽になる。
+ではいいこと尽くめで利点だけかといわれるとそうでもない：</p>
+<ul>
+<li>サブワールドに含まれないコンポーネントのクエリがコンパイル時にエラー検出できず、実行時に <code>panic!</code> する</li>
+<li>システム間の依存関係が指定できず、スケジュールに <code>flush()</code> を挟む必要がある</li>
+<li>エンティティやコンポーネントの生成・削除がコマンドバッファ経由で呼び出し時点では変更されないため、
+状態にずれが生じて問題が出るケースがあるのではないか？</li>
+<li>「システム内でこのコンポーネントにもアクセスしたい」と変更になった場合には同様に大幅な書き換えが必要</li>
+<li>システムの並列化に関して：多くのシステムで同じリソースを触ることになって、結局あまり並列化されないんじゃないかと疑っている</li>
+</ul>
+<p>特にシステムにどのコンポーネントが必要かというのをシステム内から呼び出している関数を全部調べないといけないのは痛くて、
+その点では自分でストレージを受け渡さないとコンパイルエラーが出る（し不要なものはワーニングが出る）Specsのほうがいいかもしれない。
+ま、魔法のような方法はないということで…。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://github.com/amethyst/legion">Github</a>, <a href="https://crates.io/crates/legion">crates.io</a>, <a href="https://docs.rs/legion/0.3.1/legion/index.html">doc.rs</a></li>
+<li><a href="https://amethyst.rs/posts/legion-ecs-v0.3">Legion ECS - v0.3 | Amethyst Game Engine</a></li>
+<li><a href="https://csherratt.github.io/blog/posts/specs-and-legion/">Specs and Legion, two very different approaches to ECS</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（移譲）」について" rel="bookmark">「継承より合成（移譲）」について</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/03/ecs-in-rust.html" title="【Rust】ECSを使ってみる(Specs)" rel="bookmark">【Rust】ECSを使ってみる(Specs)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか" rel="bookmark">Rustで状態管理や相互参照をどうするか</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/02/rewindable-slice.html" title="【Rust】生ポインタとその演算（戻せるスライスの実装）" rel="bookmark">【Rust】生ポインタとその演算（戻せるスライスの実装）</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

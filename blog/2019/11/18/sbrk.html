@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="C言語での malloc のお手本実装がK&amp;amp;Rの本に載っていて（リンク）、
+その中で実際にヒープとして使えるメモリ領域をOSに要求するシステムコールとして sbrk というものを使っている。
+これをlibcを使わずにシステムコールの直接呼び出しで同様のことを行いたい。
+libc関数を調べるま">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="sbrkのシステムコールを直接呼び出す"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>sbrkのシステムコールを直接呼び出す - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2019/11/18/sbrk.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>sbrkのシステムコールを直接呼び出す</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-11-18
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/linux/">#linux</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>C言語での <code>malloc</code> のお手本実装がK&amp;Rの本に載っていて（<a href="https://stackoverflow.com/q/13159564/6667631">リンク</a>）、
+その中で実際にヒープとして使えるメモリ領域をOSに要求するシステムコールとして <code>sbrk</code> というものを使っている。</p>
+<p>これをlibcを使わずにシステムコールの直接呼び出しで同様のことを行いたい。</p>
+<h3 id="libc関数を調べる"><a href="#libc関数を調べる" class="headerlink" title="libc関数を調べる"></a>libc関数を調べる</h3><p>まずはlibcの <code>brk</code>、<code>sbrk</code> 関数がどんなものかを調べると以下の通り：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">brk</span><span class="params">(<span class="keyword">void</span> *addr)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">sbrk</span><span class="params">(<span class="keyword">intptr_t</span> increment)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>brk</code> でデータセグメントの最後のアドレスを変更、 <code>sbrk</code> は増分を指定することができる。
+ヒープを増やすだけでOSに返却しないのであれば <code>brk</code> は使わずに、メモリが必要になったら <code>sbrk</code> を呼び出して取得したアドレスを使用すればよい。</p>
+<h3 id="システムコールを調べる"><a href="#システムコールを調べる" class="headerlink" title="システムコールを調べる"></a>システムコールを調べる</h3><p>libcの助けを借りずにシステムコールだけで実現したいので、まずは64bit Linuxのシステムコールを調べる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ grep sbrk &lt; /usr/include/asm/unistd_64.h  <span class="comment"># 結果：なし</span></span><br></pre></td></tr></table></figure>
+
+<p>結果が空ということで、 <code>sbrk</code> はシステムコールではなかった…。
+<code>brk</code> だと出てくる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ grep brk &lt; /usr/include/asm/unistd_64.h</span><br><span class="line"><span class="comment">#define __NR_brk 12</span></span><br></pre></td></tr></table></figure>
+
+<p>ので、 <code>brk</code> がシステムコールだった。</p>
+<h3 id="brkシステムコールの使い方を調べる"><a href="#brkシステムコールの使い方を調べる" class="headerlink" title="brkシステムコールの使い方を調べる"></a>brkシステムコールの使い方を調べる</h3><p><code>sbrk</code> はシステムコールじゃないので <code>brk</code> を使う必要があるが、その場合に <code>brk</code> に渡すアドレスの最初の値はどうやって取得するんだろうか？
+ググってもわからなかったのでシステムコールの呼び出しをトレースできる <code>strace</code> を使ってみることにした。
+これを使ってlibc内部でどういう呼び出しをしているか見てみる。</p>
+<p>以下のように <code>sbrk</code> を使用するプログラムを書いて：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">char</span> *p = sbrk(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">char</span> *q = sbrk(<span class="number">4096</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;p=%p, q=%p\n&quot;</span>, p, q);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>コンパイルして <code>strace</code> で動かす：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ gcc sbrktest.c</span><br><span class="line">$ strace ./a.out</span><br><span class="line">...</span><br><span class="line">brk(NULL)                               = 0x559036175000</span><br><span class="line">...</span><br><span class="line">brk(NULL)                               = 0x559036175000</span><br><span class="line">brk(0x559036176000)                     = 0x559036176000</span><br><span class="line">...</span><br><span class="line">brk(0x559036197000)                     = 0x559036197000</span><br><span class="line">write(1, &quot;p=0x559036175000, q=0x5590361750&quot;..., 35p=0x559036175000, q=0x559036175000</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>上記の出力から推測するに、 <code>sbrk</code> の内部で最初に現在のデータセグメントの値を <code>brk(NULL)</code> で取得して、
+それを使って増分を加算したアドレスを <code>brk</code> に与えているっぽい
+（４番目の<code>brk</code>は<code>printf</code>呼び出しで使われているぽい）。</p>
+<p>システムコール <code>brk</code> の戻り値はlibcの単純な成功／失敗じゃなくてアドレスが返るっぽい。
+なにそれググってもそういう記述見つからないしシステムコールの使い方はどうやって調べるのよ…。</p>
+<p>そんなこんなで、自前で <code>brk</code> と <code>sbrk</code> を実装してみた：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> *_brk(<span class="keyword">void</span> *addr) &#123;</span><br><span class="line">  __asm(<span class="string">&quot;mov $12, %eax&quot;</span>);  <span class="comment">// __NR_brk</span></span><br><span class="line">  __asm(<span class="string">&quot;syscall&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">brk</span><span class="params">(<span class="keyword">void</span> *addr)</span> </span>&#123;</span><br><span class="line">  _brk(addr);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;  <span class="comment">// <span class="doctag">TODO:</span> detect error.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> *curbrk;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">sbrk</span><span class="params">(<span class="keyword">intptr_t</span> increment)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">char</span> *p = curbrk;</span><br><span class="line">  <span class="keyword">if</span> (p == <span class="literal">NULL</span>)</span><br><span class="line">    p = _brk(<span class="literal">NULL</span>);</span><br><span class="line">  curbrk = _brk(p + increment);</span><br><span class="line">  <span class="comment">// <span class="doctag">TODO:</span> return (void*)-1 when error occurred.</span></span><br><span class="line">  <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>「現在の値」を <code>curbrk</code> に保持しておき、増分を加えた値をシステムコール <code>brk</code> でセットしつつ、増やす前の値を返せばOK。</p>
+<h3 id="後日談"><a href="#後日談" class="headerlink" title="後日談"></a>後日談</h3><p>ググってもシステムコールの内容が見つからないと思っていたのだけど、あるところにはあった：
+<a href="http://manpages.ubuntu.com/manpages/bionic/ja/man2/brk.2.html#%E6%B3%A8%E6%84%8F">Ubuntu Manpage: brk, sbrk - データセグメントのサイズの変更する</a></p>
+<blockquote>
+<p>C ライブラリとカーネル ABI の違い</p>
+<p>上で説明した brk()  の返り値についての動作は、 Linux の brk()   システムコールをラップする
+glibc  の関数によるものである。  (その他の多くの実装でも、 brk()  の返り値はこれと同じであ
+る。 この返り値は SUSv2 でも規定されている。) しかし、実際の Linux  システムコールは、成功
+した場合、  プログラムの新しいブレークを返す。  失敗した場合、このシステムコールは現在のブ
+レークを返す。 glibc ラッパー関数は同様の働きをし (すなわち、新しいブレークが addr  より小
+さいかどうかをチェックし)、 上で説明した 0 と -1 という返り値を返す。</p>
+<p>Linux では sbrk()  は brk()  システムコールを使うライブラリ関数として実装されており、 以前
+のブレークの値を返すことができるように内部で調整が行われている。</p>
+</blockquote>
+<p><code>brk</code> システムコールに <code>NULL</code> を与えると変更に失敗して、現在の値が得られるというわけですな。</p>
+<p><code>man brk</code> でも同じものが見れた。
+それにしても man は、</p>
+<ul>
+<li>2   System calls (functions provided by the kernel)</li>
+<li>3   Library calls (functions within program libraries)</li>
+</ul>
+<p>となっているのに、brk(2)の説明は全然カーネルじゃなくてlibcだな…。</p>
+<h3 id="ソースを出せ"><a href="#ソースを出せ" class="headerlink" title="ソースを出せ"></a>ソースを出せ</h3><p>ググってさらった二次ソースと、動かしてみての結果から勝手に推測してばっかいないで、ちゃんとソースに当たらんかい：</p>
+<ul>
+<li>brk: <a href="https://github.com/torvalds/linux/blob/af42d3466bdc8f39806b26f593604fdc54140bcb/arch/x86/entry/syscalls/syscall_64.tbl#L23">arch/x86/entry/syscalls/syscall_64.tbl</a> 64bitでは <code>12</code></li>
+<li>brk libc: <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/x86_64/brk.c;h=70f81036ac2d1b080b5823f6ebabf6b44fd7df12;hb=HEAD">sysdeps/unix/sysv/linux/x86_64/brk.c</a> <code>brk</code> システムコール呼び出し、現在の値を保存している</li>
+<li>sbrk libc: <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=misc/sbrk.c;h=96b48e99d31f807856b8bacd30f3a1abcd9bf383;hb=HEAD">misc/sbrk.c</a> <code>brk</code> を使用して実装</li>
+<li>brk syscall: <a href="https://github.com/torvalds/linux/blob/af42d3466bdc8f39806b26f593604fdc54140bcb/mm/nommu.c#L410-L433">mm/nommu.c</a> <code>mm</code> の範囲を調べて、動かしてよいようだったら動かす</li>
+</ul>
+<p>これらの参照先が自分が使っている環境のものなのかどうかの保証はできないが…。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

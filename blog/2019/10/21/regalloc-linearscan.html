@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="低レイヤを知りたい人のためのCコンパイラ作成入門を参考にして作っていたCコンパイラを、
+演算に汎用レジスタも使うコードを生成するように修正した。
+汎用レジスタへの割り付けはリニアスキャンという方法で行った。
+リポジトリはこちら：https://github.com/tyfkda/xcc
+モチベーショ">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="自作Cコンパイラでレジスタ割り付け"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>自作Cコンパイラでレジスタ割り付け - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2019/10/21/regalloc-linearscan.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>自作Cコンパイラでレジスタ割り付け</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-10-21
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/optimization/">#optimization</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2019/07/14/self-hosting-c.html" title="低レイヤを知りたい人のためのCコンパイラ作成入門を参考にして作っていた">低レイヤを知りたい人のためのCコンパイラ作成入門を参考にして作っていた</a>Cコンパイラを、
+<p>演算に汎用レジスタも使うコードを生成するように修正した。
+汎用レジスタへの割り付けはリニアスキャンという方法で行った。</p>
+<p>リポジトリはこちら：<a href="https://github.com/tyfkda/xcc">https://github.com/tyfkda/xcc</a></p>
+<h3 id="モチベーション"><a href="#モチベーション" class="headerlink" title="モチベーション"></a>モチベーション</h3><p>「低レイヤ」コンパイラで出力するコードはスタックマシン方式という、計算途中の値がスタックに積まれていて、現在の値がスタックトップに格納された状態となるように計算するコードを生成する。
+スタックマシン方式は抽象構文木と非常に相性がよくて、パーサで生成した構文木をたどる順番でコードを生成できるので比較的簡単にコード生成ができる。</p>
+<p>ただそれだとコンパイル先のプロセッサ(x86-64)が汎用レジスタをたくさん持っていてもまるで活かしきれない。
+そして変数や計算途中の値へのアクセスはすべてメモリを通すので遅くなってしまう。
+これでは「Cコンパイラで生成したコードは遅いから使えない、やっぱアセンブリで書かないと」と、性能厨に罵倒されてしまう。</p>
+<p>そこでレジスタ割り付けを実装した。</p>
+<h2 id="変更手順"><a href="#変更手順" class="headerlink" title="変更手順"></a>変更手順</h2><p>スタックマシン方式から汎用レジスタを使用するコードを出力するレジスタマシン方式への変更は以下のような段階を踏んで進めた：</p>
+<ul>
+<li>中間表現生成（スタックマシン方式のまま）</li>
+<li>中間表現の命令セットをレジスタを使用する方式に変更（レジスタの確保／解放は逐次）</li>
+<li>基本ブロックへの分割、生存期間の判定</li>
+<li>リニアスキャンレジスタ割り付け実装</li>
+</ul>
+<h3 id="中間表現化"><a href="#中間表現化" class="headerlink" title="中間表現化"></a>中間表現化</h3><p>スタックマシン方式は構文木と相性がいいので、コード生成で構文木をそのまま使って直接アセンブリコードを出力していて、わざわざ中間表現(Intermediate Representation, IR)を生成していなかった。
+しかしレジスタ割り付けを行うには、それぞれの値が使用される期間を調べるために命令列を見る必要がある。
+命令列はターゲットCPUの命令セットそのままではなく、もうちょっと扱いやすい形にしておくとやりやすい。
+なので構文木からいったん中間表現を出力し、それを実際のCPUの命令に変換して出力する、という具合にする。</p>
+<p>前提としてすでにスタックマシン方式を出力する動いているコンパイラがあるため、いきなりレジスタマシン方式の中間表現を生成する方式に変更するのは難しい。
+まずは中間表現もスタックマシン方式のままの命令セットで実装する。
+いままで直接x86-64のアセンブリコードを出力していたのを、それに似た中間表現の命令を用意してやってそれを出力し、それをx86に変換してやるという二段構えにする。</p>
+<h3 id="中間表現の命令セットをレジスタ方式に変更"><a href="#中間表現の命令セットをレジスタ方式に変更" class="headerlink" title="中間表現の命令セットをレジスタ方式に変更"></a>中間表現の命令セットをレジスタ方式に変更</h3><p>今まで計算の途中結果をスタックで管理していたのを、レジスタで扱うような命令セットに変更する。
+中間表現に<strong>仮想レジスタ</strong>というものを導入して、演算を仮想レジスタ間で行うようにする。
+仮想レジスタは好きな数だけ自由に扱えるものとして新しい値が登場するごとに新規に仮想レジスタを追加して使用し、中間表現ができあがったらその後に実際のプロセッサで使える有限個の物理レジスタに割り付けてやる。</p>
+<p>ひとまず物理レジスタに割り付ける値は式の途中で発生する中間結果だけとする。
+なのでレジスタの生存範囲は高々1つの式の間だけですみ、短命になる。
+ひとまずのところ、使えるレジスタがなくなったら単にコンパイルエラーで中断させる。</p>
+<p>ローカル変数はこれまで通りスタックフレームに割り付けておいて、値の参照で仮想レジスタに読み出し、代入で仮想レジスタから書き出す。</p>
+<p>仮想レジスタの生存管理は、中間表現を頭からたどりながら逐次行う。
+新しい仮想レジスタが出てきたら、空いている物理レジスタに割り付ける（空いてなかったらエラーで終了する）。
+仮想レジスタは演算などで使われたらその場で廃棄され、使用していた物理レジスタを解放する。</p>
+<p>x86-64では汎用レジスタが16本あって、そのうち自由に使えないスタックポインタ<code>rsp</code>とベースポインタ<code>rbp</code>、また関数の引数用として使われる6個（<code>rdi</code>, <code>rsi</code>, <code>rdx</code>, <code>rcx</code>, <code>r8</code>, <code>r9</code>）と戻り値や乗除算で使われる<code>rax</code>を除いた残りの、7個を使用可能な演算用物理レジスタとする：</p>
+<table>
+<thead>
+<tr>
+<th align="right"></th>
+<th align="center">0</th>
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">5</th>
+<th align="center">6</th>
+<th align="center">7</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">+0</td>
+<td align="center"><del>rax</del></td>
+<td align="center"><del>rcx</del></td>
+<td align="center"><del>rdx</del></td>
+<td align="center"><strong>rbx</strong></td>
+<td align="center"><del>rsp</del></td>
+<td align="center"><del>rbp</del></td>
+<td align="center"><del>rsi</del></td>
+<td align="center"><del>rdi</del></td>
+</tr>
+<tr>
+<td align="right">+8</td>
+<td align="center"><del>r8</del></td>
+<td align="center"><del>r9</del></td>
+<td align="center"><strong>r10</strong></td>
+<td align="center"><strong>r11</strong></td>
+<td align="center"><strong>r12</strong></td>
+<td align="center"><strong>r13</strong></td>
+<td align="center"><strong>r14</strong></td>
+<td align="center"><strong>r15</strong></td>
+</tr>
+</tbody></table>
+<h3 id="基本ブロックへの分割"><a href="#基本ブロックへの分割" class="headerlink" title="基本ブロックへの分割"></a>基本ブロックへの分割</h3><p>ローカル変数も物理レジスタに割り付けられるようにするための準備として、仮想レジスタの生存期間を調べる。
+そして生存期間を調べやすくするために<a href="https://ja.wikipedia.org/wiki/%E5%9F%BA%E6%9C%AC%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF">基本ブロック</a>というものを導入する。
+基本ブロック(Basic Block, BB)というのは内部にジャンプ命令がなく、また途中にジャンプで入ってこられない、一連の命令列のことをいう。</p>
+<p>基本ブロックへの切り分けは中間表現の出力と同時に行うことができる。
+<code>if</code>文などの条件分岐や<code>for</code>文などのループ構文での飛び先としてラベルを使用していたのを、基本ブロックに変更する。
+でジャンプ命令が現れたら中間表現の追加先を次の基本ブロックに変更してやる。</p>
+<p>基本ブロックの内部にはジャンプ命令がなくて通常はブロックの終わりで次の基本ブロックに遷移するんだけど、
+条件分岐の場合にはブロックの最後に条件分岐命令がきて条件が成り立てばそちらに、成り立たなければ次のブロックにと、飛び先は高々2つとなる。</p>
+<p>ループで戻る場合や<code>break</code>、<code>continue</code>、<code>return</code>などは基本ブロックの最後での無条件分岐となる。</p>
+<h3 id="仮想レジスタの生存期間を調べる"><a href="#仮想レジスタの生存期間を調べる" class="headerlink" title="仮想レジスタの生存期間を調べる"></a>仮想レジスタの生存期間を調べる</h3><p>式の中間結果だけをレジスタ上で扱えるようにしたが、ローカル変数もできるだけレジスタに配置したい。
+そうすると値の生存期間が１つの式を超えて延びる可能性があって、逐次での物理レジスタへの割り付け／解放では無理がある。
+関数内の命令列で個々の値がどの範囲で使用されているかを調べて、どの値をどの物理レジスタに割り付けるか、というレジスタ割り付けを行う。
+それをするためには各レジスタの生存期間を調べる必要がある。</p>
+<p>仮想レジスタの生存期間を調べるにはまず中間表現の命令を順に見ていって、最初と最後の使用位置を調べてやる。
+ただそれだけだとループで戻ってくる場合におかしくなる。
+中間表現の命令順的にはその後使われてないから別のレジスタに明け渡してしまうけど、ループで戻ってくるのでその間も他の値で上書きされないよう保持しておかなければならないということが起こり得る。</p>
+<p>そこで基本ブロックのフローを調べて生存期間を更新する。
+基本ブロックごとに入力レジスタと出力レジスタを割り出す。</p>
+<p>基本ブロック内で使用されるレジスタは、その基本ブロックに入力されるレジスタとなる。
+そしてある基本ブロックAが要求する入力レジスタは、Aに遷移する基本ブロックが出力する必要があるレジスタとなる。
+出力する必要ができたレジスタは、基本ブロック内で代入されていればそれが出力されるのでよし、
+そうでなければさらに入力として伝播してやって、確定するまで続ける。</p>
+<p>各基本ブロックからの出力となったレジスタは、その基本ブロックの末尾まで生きているものとしてやることで生存期間が決定する。</p>
+<h3 id="レジスタ割り付け（リニアスキャン）"><a href="#レジスタ割り付け（リニアスキャン）" class="headerlink" title="レジスタ割り付け（リニアスキャン）"></a>レジスタ割り付け（リニアスキャン）</h3><p>各レジスタの生存期間を割り出したら、どの仮想レジスタをどの物理レジスタに割り当てるか、という<a href="https://ja.wikipedia.org/wiki/%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E5%89%B2%E3%82%8A%E4%BB%98%E3%81%91">レジスタ割り付け</a>を行う。
+レジスタ割り付けのアルゴリズムは、有名なものでは<a href="https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%95%E5%BD%A9%E8%89%B2#%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E5%89%B2%E3%82%8A%E4%BB%98%E3%81%91">グラフ彩色</a>と<a href="https://en.wikipedia.org/wiki/Register_allocation#Linear_Scan">リニアスキャン</a>という方法がある。</p>
+<p>グラフ彩色では仮想レジスタをノードと考える。
+<strong>生存範囲</strong>が重なっているレジスタ同士は干渉といって、ノード同士を結ぶ。
+結ばれたノード同士は同時に生存する必要があるので、物理レジスタを割り付ける場合には異なるレジスタにする必要がある。
+物理レジスタを「色」と考えると、グラフのつながるノード同士は別の色で塗り分ける「彩色問題」と考えることができる、というわけ。</p>
+<p>塗り分けるのに必要な色の数が物理レジスタ数を超えると、そのすべてを同時に物理レジスタに割り当てることができない。
+その場合はどれかをスタックフレームに逃がしてやる（これをspillという）。
+spillされたレジスタの値はスタックのpush/popで一時的に退避/復帰、とかじゃなく常にスタックフレームからの取り出し/格納になる。</p>
+<p>グラフ彩色で生成されるコードのクオリティは高いが、コンパイル時の計算量が最悪仮想レジスタ数の2乗に比例するとのことで、計算量が線形でまた比較的簡単に実装できるというリニアスキャンという方法を試してみた。</p>
+<p>リニアスキャンではレジスタの<strong>生存期間</strong>を調べる。
+生存範囲では間が抜けるケースも扱えるけど、生存期間では抜けている間も構わずに使用しているとみなす。
+で命令を順に見ていって物理レジスタに割り付けていくんだけど、物理レジスタが足りなくなったら今新たに追加しようとしているレジスタか、またはすでに割り付けているレジスタの中で最後まで生存するレジスタのどちらか長く生存する方をspillしてやる。
+これを頭から最後まで命令列を1回たどればレジスタ割り付けが完了する。</p>
+<p>論文に示されているリニアスキャンの擬似コード：</p>
+<script src="https://gist.github.com/tyfkda/82eed77d97b80c6a69415a88e3549948.js"></script>
+
+<p>C言語の特徴として<code>&amp;</code>で変数のアドレスを扱うことができる。
+その変数がレジスタに割り付けられるとなると難しいことになるので、強制的にspillさせる。
+またワードとして扱えない型、配列や構造体もレジスタに割り付けないものとする。</p>
+<p>関数の仮引数もひとまずはspill扱いにする（x86-64ではレジスタ渡しで受け取れるのでメモリを介さずにレジスタ上だけでそのまま扱えればベストだが、今後の課題）。</p>
+<h3 id="spillされた値の取り扱い"><a href="#spillされた値の取り扱い" class="headerlink" title="spillされた値の取り扱い"></a>spillされた値の取り扱い</h3><p>spillされた仮想レジスタはスタックフレーム上に配置する。</p>
+<p>中間表現の命令としては仮想レジスタを対象にしているが、それが物理レジスタに割り付けられたか、それともspillされているかによって出力するコードを変えるのはかなり大変になる。
+そこで対処として、使用できる物理レジスタをいくつか減らしてspill用として予約しておいて、spillされたレジスタだったら命令前/命令後にスタックフレームからの読み出し/書き戻しを挿入してやるようにする。
+そうすることで中間表現からアセンブリを出力する際にspillされているかどうかを気にしなくて済むようになる。
+（x86ではレジスタ間だけじゃなく間接アドレッシングでメモリ上の値との演算もできるので、spillされた値の場合には出力するコードを変えてやれば効率がいいと思うが、今後の課題。）</p>
+<p>spill用に確保するレジスタは、入力が最大2つなので2つ必要になる。
+ただそうするとspillされたレジスタの読み出し先も管理する必要があって面倒なので、そういう事が起きる可能性がある命令には新規の仮想レジスタに移動させる命令を生成してやることで対処した。
+その仮想レジスタはその命令間でしか使われないので必ず物理レジスタに乗るはずなのでspillは高々1個でおさまるはず、という回避方法。</p>
+<p><a href="https://github.com/rui314/9cc/blob/882e4b2dd827ef4f00f801f45e78d8031641c067/regalloc.c#L15-L17">9ccでは1つしか確保していない</a>が、どうやって回避しているのかよくわからなかった…。</p>
+<h2 id="今後の課題"><a href="#今後の課題" class="headerlink" title="今後の課題"></a>今後の課題</h2><p>以上でレジスタ割り付けを行うCコンパイラが動作するようになった。今後の課題としては、</p>
+<ul>
+<li>関数の引数もレジスタ割り付け可能にする</li>
+<li>呼び出し規約で使用するレジスタや <code>%rax</code> も利用できるようにする</li>
+<li>SSA形式化</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://github.com/rui314/9cc">rui314/9cc: A Small C Compiler</a></li>
+<li><a href="https://www2.seas.gwu.edu/~hchoi/teaching/cs160d/linearscan.pdf">Linear Scan Register Allocation</a>, MASSIMILIANO POLETTO and VIVEK SARKAR</li>
+</ul>
+<p>追記：</p>
+<ul>
+<li><a href="https://hikalium.hatenablog.jp/entry/2018/12/07/210646">compilium v2 (in progress)の工夫点 - /var/log/hikalium</a> 中間結果のみをレジスタで計算する</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

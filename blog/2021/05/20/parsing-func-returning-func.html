@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="C言語の文法は型の記述が複雑で、特に関数ポインタが絡むと非情にややこしくなる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="関数ポインタを返す関数のパースと型の構築"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>関数ポインタを返す関数のパースと型の構築 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2021/05/20/parsing-func-returning-func.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>関数ポインタを返す関数のパースと型の構築</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2021-05-20
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/c/">#c</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>C言語の文法は型の記述が複雑で、特に関数ポインタが絡むと非情にややこしくなる。</p>
+<span id="more"></span>
+
+<p>例えば <a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man2/signal.2.html"><code>signal</code></a> という標準関数は
+なにかシグナルが発生したときに呼び出される関数ポインタ（シグナルハンドラ）を設定する関数で、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> (*signal(<span class="keyword">int</span> sig, <span class="keyword">void</span> (*func)(<span class="keyword">int</span>)))(<span class="keyword">int</span>);</span><br></pre></td></tr></table></figure>
+
+<p>となっている。
+パッと見たところどういう宣言なのかわからないけど、これはシグナル番号<code>int sig</code>と関数ポインタ<code>void (*func)(int)</code>を取る2引数関数で、戻り値に以前に設定されていた関数ポインタ<code>void (*)(int)</code>が返る。
+シグナルハンドラは<code>int</code>を1つ取る関数で、発生したシグナル番号が渡される。</p>
+<p>この文法をパースして対応する型を構築するのに手間取った。
+特に再帰下降法とは相性が悪いように思う。</p>
+<h3 id="型のBNF"><a href="#型のBNF" class="headerlink" title="型のBNF"></a>型のBNF</h3><p>C言語の型に関するBNFを
+<a href="https://cs.wmich.edu/~gupta/teaching/cs4850/sumII06/The%20syntax%20of%20C%20in%20Backus-Naur%20form.htm">The syntax of C in Backus-Naur form</a>
+から抜粋すると、</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;declaration&gt; ::=  &#123;&lt;declaration-specifier&gt;&#125;+ &#123;&lt;init-declarator&gt;&#125;* ;</span><br><span class="line"></span><br><span class="line">&lt;declaration-specifier&gt; ::= &lt;storage-class-specifier&gt;</span><br><span class="line">                          | &lt;type-specifier&gt;</span><br><span class="line">                          | &lt;type-qualifier&gt;</span><br><span class="line"></span><br><span class="line">&lt;init-declarator&gt; ::= &lt;declarator&gt;</span><br><span class="line">                    | &lt;declarator&gt; = &lt;initializer&gt;</span><br><span class="line"></span><br><span class="line">&lt;declarator&gt; ::= &#123;&lt;pointer&gt;&#125;? &lt;direct-declarator&gt;</span><br><span class="line"></span><br><span class="line">&lt;direct-declarator&gt; ::= &lt;identifier&gt;                                        // (a)</span><br><span class="line">                      | ( &lt;declarator&gt; )                                    // (b)</span><br><span class="line">                      | &lt;direct-declarator&gt; [ &#123;&lt;constant-expression&gt;&#125;? ]    // (c)</span><br><span class="line">                      | &lt;direct-declarator&gt; ( &lt;parameter-type-list&gt; )       // (d)</span><br><span class="line">                      | &lt;direct-declarator&gt; ( &#123;&lt;identifier&gt;&#125;* )             // (e)</span><br><span class="line"></span><br><span class="line">&lt;pointer&gt; ::= * &#123;&lt;type-qualifier&gt;&#125;* &#123;&lt;pointer&gt;&#125;?</span><br></pre></td></tr></table></figure>
+
+<p>（<code>&lt;type-specifier&gt;</code>は<code>int</code>や<code>struct</code>などの具体的な型、<code>&lt;type-qualifier&gt;</code>は<code>const</code>など）。</p>
+<p><code>&lt;declaration&gt;</code> ルールの <code>&#123;&lt;declaration-specifier&gt;&#125;+</code> がベースとなる型の部分で、関数の場合は戻り値の型になる。</p>
+<p><code>&lt;direct-declarator&gt;</code> ルールの(a)だと単純にその型、
+(b)の <code>( &lt;declarator&gt; )</code> は <code>&lt;declarator&gt;</code> のポインタが結合する先の変更、
+(c)のブラケットが配列型、(d)が関数型となる
+（(e)はなにかわからんのでひとまず無視）。</p>
+<p><code>&lt;direct-declarator&gt;</code> は左再帰になっていて、(a)か(b)の後に、(c)か(d)を任意回受け付ける。</p>
+<p>ちなみにこのBNFだと、 <code>int (x)</code>、はたまた <code>int (((y)))</code> などという宣言も合法。</p>
+<h3 id="再帰下降法によるパースの順序と型の生成のミスマッチ"><a href="#再帰下降法によるパースの順序と型の生成のミスマッチ" class="headerlink" title="再帰下降法によるパースの順序と型の生成のミスマッチ"></a>再帰下降法によるパースの順序と型の生成のミスマッチ</h3><p>再帰下降法によって上記の型のパースを擬似コードとして書き下すと（<code>&lt;init-declarator&gt;</code> を省略して）</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">declaration() &#123;</span><br><span class="line">  declaration_specifier();</span><br><span class="line">  declarator();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">declarator() &#123;</span><br><span class="line">  pointers();</span><br><span class="line">  direct_declarator();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">direct_declarator() &#123;</span><br><span class="line">  <span class="keyword">if</span> (token is <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">    declarator();                <span class="comment">// (1)</span></span><br><span class="line">    consume(<span class="string">&#x27;)&#x27;</span>);</span><br><span class="line">    direct_declarator_suffix();  <span class="comment">// (2)</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    consume(`ident`);</span><br><span class="line">    direct_declarator_suffix();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">direct_declarator_suffix(Type *type) &#123;</span><br><span class="line">  <span class="keyword">if</span> (token is <span class="string">&#x27;[&#x27;</span>) &#123;</span><br><span class="line">    const_expr();</span><br><span class="line">    consume(<span class="string">&#x27;]&#x27;</span>);</span><br><span class="line">    direct_declarator_suffix();</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (token is <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">    parameter_type_list();</span><br><span class="line">    consume(<span class="string">&#x27;)&#x27;</span>);</span><br><span class="line">    direct_declarator_suffix(type);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>direct_declarator</code> では左再帰を再帰下降法に変換するために、後半部分を別関数にして再帰させている。
+実際には各関数からの戻り値としてパースによって構築された型を返す。</p>
+<p>問題は<code>direct_declarator</code> 内の(1)と(2)の部分で、パースの順序としては(1)→(2)の順なんだけど、型の入れ子順としては(2)→(1)とする必要がある。</p>
+<p>具体的には例えば <code>signal</code> の場合、宣言の最初の括弧 <code>(*signal...)</code> のアスタリスクによるポインタ指定は戻り値型にかかるが
+そのパース時点では型が<code>void</code>までしか読まれておらず、括弧外最後の<code>(int)</code>は読まれてないので型が決定してない。
+なのでその時点でどの型に対するポインタ型かというのを構築することができない。</p>
+<h3 id="対処法"><a href="#対処法" class="headerlink" title="対処法"></a>対処法</h3><p>プレースホルダーとして型を作成して(1)の<code>declarator()</code>に渡すようにして、戻り値が結果の型になる。
+(2)の<code>direct_declarator_suffix()</code>には<code>direct_declarator()</code>に渡された型を渡す。
+その結果がプレースホルダーの中身となるので、<code>memcpy</code>してやる。</p>
+<p>実際のソースの該当箇所は<a href="https://github.com/tyfkda/xcc/blob/03ac29ee2651769e6cc88e5feb31c0068400ca97/src/cc/parser_expr.c#L1022-L1031">こちら</a>。</p>
+<h3 id="他のソースを見てみる"><a href="#他のソースを見てみる" class="headerlink" title="他のソースを見てみる"></a>他のソースを見てみる</h3><h4 id="chibicc"><a href="#chibicc" class="headerlink" title="chibicc"></a>chibicc</h4><p><a href="https://www.sigbus.info/compilerbook">低レイヤを知りたい人のためのCコンパイラ作成入門</a>の参考リポジトリとなる<a href="https://github.com/rui314/chibicc">chibicc</a>を見てみた。
+箇所は<a href="https://github.com/rui314/chibicc/blob/90d1f7f199cc55b13c7fdb5839d1409806633fdb/parse.c#L685-L690">declarator関数</a>で、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> Type *<span class="title">declarator</span><span class="params">(Token **rest, Token *tok, Type *ty)</span> </span>&#123;</span><br><span class="line">  ty = pointers(&amp;tok, tok, ty);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (equal(tok, <span class="string">&quot;(&quot;</span>)) &#123;</span><br><span class="line">    Token *start = tok;</span><br><span class="line">    Type dummy = &#123;&#125;;</span><br><span class="line">    declarator(&amp;tok, start-&gt;next, &amp;dummy);</span><br><span class="line">    tok = skip(tok, <span class="string">&quot;)&quot;</span>);</span><br><span class="line">    ty = type_suffix(rest, tok, ty);</span><br><span class="line">    <span class="keyword">return</span> declarator(&amp;tok, start-&gt;next, ty);  <span class="comment">// (3)</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<p>「<code>memcpy</code>してない…！」と驚愕したんだけど、トリックは<code>declarator()</code>呼び出し、<code>type_suffix()</code>呼び出しに続いて(3)で再度<code>declartor()</code>を呼び出しているところ。
+chibiccでは最初にソースをすべてトークンに分割してリンクリストにしていて任意の箇所からパースできるのがポイントで、
+最初の<code>declarator()</code>呼び出しはトークンを読み進めるだけで結果は<code>dummy</code>に受け取るが使用しておらず、
+型の構築としては<code>type_suffix()</code>が先に行われて、もう一度同じトークン<code>start-&gt;next</code>から<code>declarator()</code>呼び出しの結果を最終的な型としている。</p>
+<p>続きのトークンは<code>type_suffix()</code>で消費した次のトークンが<code>rest</code>に格納され、辻褄が合う。</p>
+<h4 id="8cc"><a href="#8cc" class="headerlink" title="8cc"></a>8cc</h4><p>chibiccの前身であるところの<a href="https://github.com/rui314/8cc">8cc</a>も見てみた。
+箇所は<a href="https://github.com/rui314/8cc/blob/b480958396f159d3794f0d4883172b21438a8597/parse.c#L1962-L1966">read_declarator関数</a>で、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> Type *<span class="title">read_declarator</span><span class="params">(<span class="keyword">char</span> **rname, Type *basety, Vector *params, <span class="keyword">int</span> ctx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (next_token(<span class="string">&#x27;(&#x27;</span>)) &#123;</span><br><span class="line">        <span class="comment">// &#x27;(&#x27; is either beginning of grouping parentheses or of a function parameter list.</span></span><br><span class="line">        <span class="comment">// If the next token is a type name, a parameter list must follow.</span></span><br><span class="line">        <span class="keyword">if</span> (is_type(peek()))</span><br><span class="line">            <span class="keyword">return</span> read_declarator_func(basety, params);</span><br><span class="line">        <span class="comment">// If not, it&#x27;s grouping. In that case we have to read from outside.</span></span><br><span class="line">        <span class="comment">// For example, consider int (*)(), which is &quot;pointer to function returning int&quot;.</span></span><br><span class="line">        <span class="comment">// We have only read &quot;int&quot; so far. We don&#x27;t want to pass &quot;int&quot; to</span></span><br><span class="line">        <span class="comment">// a recursive call, or otherwise we would get &quot;pointer to int&quot;.</span></span><br><span class="line">        <span class="comment">// Here, we pass a dummy object to get &quot;pointer to &lt;something&gt;&quot; first,</span></span><br><span class="line">        <span class="comment">// continue reading to get &quot;function returning int&quot;, and then combine them.</span></span><br><span class="line">        Type *stub = make_stub_type();</span><br><span class="line">        Type *t = read_declarator(rname, stub, params, ctx);</span><br><span class="line">        expect(<span class="string">&#x27;)&#x27;</span>);</span><br><span class="line">        *stub = *read_declarator_tail(basety, params);</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>で、こちらはトークンを逐次得る方式のようで、<code>stub</code>を渡しておいて後から中身には<code>read_declarator_tail()</code>の結果を書き込むようになっている。</p>
+<h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><ul>
+<li>この文法になったのもクレイジーだし、それをパースできるようにしたのもよくできたなぁという感想。</li>
+<li>単に関数ポインタのアスタリスクの位置がまずかっただけの問題な気もするが…普通の後置アスタリスク<code>(void func(int))*</code> だったら複雑にならなかったかも。</li>
+<li>yaccとか使ったらまだマシなのかしら？と思って試してみたが（<a href="/blog/2009/01/22/racc-c-parser.html" title="RaccによるC言語パーサ">RaccによるC言語パーサ</a>を使って）
+<code>direct_declarator</code> のアクション型生成すると型のネスト方向が逆になってしまい、構文木を構築して後から型を構築するのもいろいろ大変そうな気がした。</li>
+<li>「低レイヤ」の<a href="https://www.sigbus.info/compilerbook#%E3%83%8D%E3%82%B9%E3%83%88%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E5%9E%8B%E3%81%AE%E8%AA%AD%E3%81%BF%E6%96%B9">ネストしている型の読み方</a>に、<code>signal</code>関数の型の読み方が書いてあってオススメ。<ul>
+<li>またそれを含む<a href="https://www.sigbus.info/compilerbook#type">Cの型の構文</a>で型の内部表現がわかりやすい。</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

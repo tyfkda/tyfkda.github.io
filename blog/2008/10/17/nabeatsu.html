@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="http://d.hatena.ne.jp/yshigeru/20080418/1208523696 これは面白い、と思って今更ながら Haskell で挑戦：
+import Nabeatsuimport Prelude hiding ((.))import System (getArgs)impo">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="世界のナベアツにHaskellで挑戦する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>世界のナベアツにHaskellで挑戦する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2008/10/17/nabeatsu.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>世界のナベアツにHaskellで挑戦する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2008-10-17
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/haskell/">#haskell</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://d.hatena.ne.jp/yshigeru/20080418/1208523696">http://d.hatena.ne.jp/yshigeru/20080418/1208523696</a> これは面白い、と思って今更ながら Haskell で挑戦：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Nabeatsu</span><br><span class="line"><span class="keyword">import</span> Prelude <span class="keyword">hiding</span> ((.))</span><br><span class="line"><span class="keyword">import</span> System (<span class="title">getArgs</span>)</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">qualified</span> System.IO.UTF8 <span class="keyword">as</span> U8 (<span class="title">putStrLn</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 基本のネタ</span></span><br><span class="line"><span class="title">basic</span> =</span><br><span class="line">  <span class="number">1</span> `kara` <span class="number">40</span> . madeKazoete .</span><br><span class="line">  (<span class="number">3</span> `noBaisuu`) `to` (<span class="number">3</span> `gaTsukuSuuji`) `noTokiDake` ahoNi .</span><br><span class="line">  narimasu</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 凝ったネタ</span></span><br><span class="line"><span class="title">arrange</span> =</span><br><span class="line">  <span class="number">1</span> `kara` <span class="number">40</span> . madeKazoete .</span><br><span class="line">  (<span class="number">3</span> `noBaisuu`) `to` (<span class="number">3</span> `gaTsukuSuuji`) `noTokiDake` ahoNi . natte .</span><br><span class="line">  (<span class="number">5</span> `noBaisuu`) `noTokiDake` inuppoku . natte .</span><br><span class="line">  (<span class="number">8</span> `noBaisuu`) `noTokiDake` kimochiYoku .</span><br><span class="line">  narimasu</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">  args &lt;- getArgs</span><br><span class="line">  <span class="keyword">let</span> neta = <span class="keyword">if</span> null args <span class="keyword">then</span> basic <span class="keyword">else</span> arrange</span><br><span class="line">  perform neta</span><br><span class="line"></span><br><span class="line"><span class="title">perform</span> = mapM_ <span class="type">U8</span>.putStrLn</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>GHCで関数名に日本語が使えないのが悔しい！</li>
+</ul>
+<p>出力結果：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">さ～ん</span><br><span class="line">4</span><br><span class="line">ご Bow!</span><br><span class="line">ろ～く</span><br><span class="line">7</span><br><span class="line">はちぃ～～ッ</span><br><span class="line">きゅ～う</span><br><span class="line">じゅう Bow!</span><br><span class="line">11</span><br><span class="line">じゅ～うに</span><br><span class="line">じゅ～うさん</span><br><span class="line">14</span><br><span class="line">じゅ～うご Bow!</span><br><span class="line">じゅうろくぅ～～ッ</span><br><span class="line">17</span><br><span class="line">じゅ～うはち</span><br><span class="line">19</span><br><span class="line">にじゅう Bow!</span><br><span class="line">に～じゅういち</span><br><span class="line">22</span><br><span class="line">に～じゅうさん</span><br><span class="line">に～じゅうよん～～ッ</span><br><span class="line">にじゅうご Bow!</span><br><span class="line">26</span><br><span class="line">に～じゅうなな</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">さ～んじゅう Bow!</span><br><span class="line">さ～んじゅういち</span><br><span class="line">さ～んじゅうにぃ～～ッ</span><br><span class="line">さ～んじゅうさん</span><br><span class="line">さ～んじゅうよん</span><br><span class="line">さ～んじゅうご Bow!</span><br><span class="line">さ～んじゅうろく</span><br><span class="line">さ～んじゅうなな</span><br><span class="line">さ～んじゅうはち</span><br><span class="line">さ～んじゅうきゅう</span><br><span class="line">よんじゅう Bow!ぅ～～ッ</span><br></pre></td></tr></table></figure>
+
+<p>モジュール Nabeatsu：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span> Nabeatsu <span class="keyword">where</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Prelude <span class="keyword">hiding</span> ((.))</span><br><span class="line"></span><br><span class="line"><span class="keyword">infixl</span> <span class="number">8</span> .</span><br><span class="line"><span class="title">a</span> . f = f a</span><br><span class="line"></span><br><span class="line"><span class="keyword">infixl</span> <span class="number">9</span> `to`</span><br><span class="line"><span class="title">a</span> `to` b = \x -&gt; a x || b x</span><br><span class="line"></span><br><span class="line"><span class="keyword">infixl</span> <span class="number">9</span> `kara`</span><br><span class="line"><span class="title">a</span> `kara` b = [a .. b]</span><br><span class="line"></span><br><span class="line"><span class="title">madeKazoete</span> = map (\x -&gt; (x, yomi x))</span><br><span class="line"></span><br><span class="line"><span class="title">n</span> `noBaisuu` (x, s) = x `mod` n == <span class="number">0</span></span><br><span class="line"><span class="title">n</span> `gaTsukuSuuji` (x, s) = (head $ show n) `elem` show x</span><br><span class="line"></span><br><span class="line"><span class="title">pred</span> `noTokiDake` f = map (\x -&gt; <span class="keyword">if</span> pred x <span class="keyword">then</span> f x <span class="keyword">else</span> x)</span><br><span class="line"></span><br><span class="line"><span class="title">ahoNi</span> (x, s) = (x, s1 ++ <span class="string">&quot;～&quot;</span> ++ s2)</span><br><span class="line">  <span class="keyword">where</span></span><br><span class="line">    (s1, s2) = divide s</span><br><span class="line">    divide (x:[]) = ([x], [])</span><br><span class="line">    divide (x:y:xs)</span><br><span class="line">      | komoji y  = ([x,y], xs)</span><br><span class="line">      | otherwise  = ([x], y:xs)</span><br><span class="line">    komoji c = c `elem` <span class="string">&quot;ぁぃぅぇぉゃゅょ&quot;</span></span><br><span class="line"><span class="title">inuppoku</span> (x, s) = (x, s ++ <span class="string">&quot; Bow!&quot;</span>)</span><br><span class="line"><span class="title">kimochiYoku</span> (x, s) = (x, s ++ gobi ++ <span class="string">&quot;～～ッ&quot;</span>)</span><br><span class="line">  <span class="keyword">where</span></span><br><span class="line">    gobi = [<span class="string">&quot;ぅ&quot;</span>, <span class="string">&quot;ぃ&quot;</span>, <span class="string">&quot;ぃ&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;ぉ&quot;</span>, <span class="string">&quot;ぅ&quot;</span>, <span class="string">&quot;ぁ&quot;</span>, <span class="string">&quot;ぃ&quot;</span>, <span class="string">&quot;ぅ&quot;</span>] !! (x `mod` <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">natte</span> = id</span><br><span class="line"><span class="title">narimasu</span> = map get</span><br><span class="line">  <span class="keyword">where</span></span><br><span class="line">    get (x, s)</span><br><span class="line">      | yomi x /= s  = s</span><br><span class="line">      | otherwise    = show x</span><br><span class="line"></span><br><span class="line"><span class="title">yomi</span> x</span><br><span class="line">  | x &lt; <span class="number">10</span>           = [<span class="string">&quot;&quot;</span>, <span class="string">&quot;いち&quot;</span>, <span class="string">&quot;に&quot;</span>, <span class="string">&quot;さん&quot;</span>, <span class="string">&quot;よん&quot;</span>, <span class="string">&quot;ご&quot;</span>, <span class="string">&quot;ろく&quot;</span>, <span class="string">&quot;なな&quot;</span>, <span class="string">&quot;はち&quot;</span>, <span class="string">&quot;きゅう&quot;</span>] !! x</span><br><span class="line">  | x `div` <span class="number">10</span> == <span class="number">1</span>  = keta ++ yomi (x `mod` <span class="number">10</span>)</span><br><span class="line">  | otherwise        = yomi (x `div` <span class="number">10</span>) ++ keta ++ yomi (x `mod` <span class="number">10</span>)</span><br><span class="line">  <span class="keyword">where</span></span><br><span class="line">    keta = <span class="string">&quot;じゅう&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="http://d.hatena.ne.jp/sumim/20080417/p1">世界のナベアツに Squeak Smalltalk で挑戦する（改訂） - Smalltalkのtは小文字です</a> こういう発想が出てくるところがすごい</li>
+<li><a href="http://d.hatena.ne.jp/tociyuki/20080417/1208446259">世界のナベアツに Ruby で挑戦する - Tociyuki::Diary</a>のメソッドチェーンがきれいだと思います</li>
+<li><a href="http://d.hatena.ne.jp/yshigeru/20080418/1208523696">http://d.hatena.ne.jp/yshigeru/20080418/1208523696</a> は見た目かなりギョッとする</li>
+<li>Haskell だと案外ふつーで面白みがない…<ul>
+<li>接続の演算子を見た目薄くしたかったので、「<code>.</code>」を使うという暴挙に出ています</li>
+<li>バッククォート使いすぎ</li>
+</ul>
+</li>
+<li>日本語(UTF8)の出力は <a href="http://d.hatena.ne.jp/kazu-yamamoto/20080930/1222744635">GHC と UTF-8 - あどけない話</a> を参考に</li>
+<li>Haskellで中置記法を基本にして日本語プログラミング！とかかなりいけそうな気がしてきた</li>
+<li>ここは当然、FORTH系言語やなでしこでの挑戦が期待されるところ</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

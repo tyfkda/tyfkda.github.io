@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Rustでスライスを扱う場合前に進めることはできても、後ろに戻すことができない。
+C言語のプログラムから移植するなどでそのような操作をしたい場合にどうしたらいいか調べてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Rust】生ポインタとその演算（戻せるスライスの実装）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Rust】生ポインタとその演算（戻せるスライスの実装） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/04/02/rewindable-slice.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Rust】生ポインタとその演算（戻せるスライスの実装）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-04-02
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/rust/">#rust</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Rustでスライスを扱う場合前に進めることはできても、後ろに戻すことができない。
+C言語のプログラムから移植するなどでそのような操作をしたい場合にどうしたらいいか調べてみた。</p>
+<span id="more"></span>
+
+<h3 id="モチベーション"><a href="#モチベーション" class="headerlink" title="モチベーション"></a>モチベーション</h3><p>C言語で組まれたプログラムをRustで実装する際に、配列の途中を指すようなポインタはスライスで扱うことになると思う。
+スライスはC言語でいうところのポインタに加えて長さを保持しているもので（ファットポインタ）、それによって範囲外アクセスが起きないようチェックできる。</p>
+<p>ポインタを前に進める場合に対応するには、スライスをさらにスライス取ればいい：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C言語でいう ptr += 1;</span></span><br><span class="line"><span class="keyword">let</span> slice = &amp;slice[<span class="number">1</span>..];</span><br></pre></td></tr></table></figure>
+
+<p>でポインタを戻す場合にはどうしたらいいか。
+スライスでは後ろに戻した場合の安全性を確認できないため、そのような操作ができない。</p>
+<p>ということで、生ポインタの演算に手を出してみた。</p>
+<h3 id="生ポインタの操作"><a href="#生ポインタの操作" class="headerlink" title="生ポインタの操作"></a>生ポインタの操作</h3><h4 id="生ポインタの取得"><a href="#生ポインタの取得" class="headerlink" title="生ポインタの取得"></a>生ポインタの取得</h4><p>生ポインタを取得するには、参照から <code>as *const T</code> （イミュータブルの場合）または <code>as *mut T</code> （ミュータブルの場合）でキャストしてやる：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array: [<span class="built_in">i32</span>; <span class="number">6</span>] = [<span class="number">11</span>, <span class="number">22</span>, <span class="number">33</span>, <span class="number">44</span>, <span class="number">55</span>, <span class="number">66</span>];</span><br><span class="line"><span class="keyword">let</span> slice: &amp;[<span class="built_in">i32</span>] = &amp;array;</span><br><span class="line"><span class="comment">// C: int32_t *rawptr = &amp;slice[0];</span></span><br><span class="line"><span class="keyword">let</span> rawptr: *<span class="keyword">const</span> <span class="built_in">i32</span> = &amp;slice[<span class="number">0</span>] <span class="keyword">as</span> *<span class="keyword">const</span> <span class="built_in">i32</span>;  <span class="comment">// &lt;= 生ポインタ取得</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;*&#123;:?&#125; = &#123;&#125;&quot;</span>, rawptr, <span class="keyword">unsafe</span>&#123;*rawptr&#125;);   <span class="comment">// &lt;= *0x7ffee8de5020 = 11</span></span><br></pre></td></tr></table></figure>
+
+<p>スライスの <a href="https://moshg.github.io/rust-std-ja/std/primitive.slice.html#method.as_ptr">as_ptr</a> メソッドでも取得できる。</p>
+<h4 id="生ポインタへの整数加減算"><a href="#生ポインタへの整数加減算" class="headerlink" title="生ポインタへの整数加減算"></a>生ポインタへの整数加減算</h4><p>生ポインタを進めたり戻したりするには <a href="https://doc.rust-lang.org/std/primitive.pointer.html#method.offset"><code>offset</code></a> メソッドを使用する：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C: int32_t *rawptr2 = rawptr + 4;</span></span><br><span class="line"><span class="keyword">let</span> rawptr2: *<span class="keyword">const</span> <span class="built_in">i32</span> = <span class="keyword">unsafe</span> &#123; rawptr.offset(<span class="number">4</span>) &#125;;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;*&#123;:?&#125; = &#123;&#125;&quot;</span>, rawptr2, <span class="keyword">unsafe</span>&#123;*rawptr2&#125;);  <span class="comment">// &lt;= *0x7ffee8de5030 = 55</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// C: int32_t *rawptr3 = rawptr2 - 2;</span></span><br><span class="line"><span class="keyword">let</span> rawptr3: *<span class="keyword">const</span> <span class="built_in">i32</span> = rawptr2.wrapping_offset(-<span class="number">2</span>);</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;*&#123;:?&#125; = &#123;&#125;&quot;</span>, rawptr3, <span class="keyword">unsafe</span>&#123;*rawptr3&#125;);  <span class="comment">// &lt;= *0x7ffee8de5028 = 33</span></span><br></pre></td></tr></table></figure>
+
+<p>C言語と同様に、整数を加減算した場合にはその値そのものじゃなく、要素サイズ倍した値がポインタ値に加算される。</p>
+<p><a href="https://doc.rust-lang.org/std/primitive.pointer.html#method.wrapping_offset"><code>wrapping_offset</code></a> というメソッドもあって、こちらは <code>unsafe</code> が必要ない。
+説明を読むと <code>offset</code> メソッドのほうが適切に最適化される、と書いてあるがどういうことなんだろうか？
+ラッピング演算でポインタが境界内でなくてもよい、ということなので感覚的には逆だと思ってしまうんだが…。</p>
+<p><a href="https://doc.rust-lang.org/std/primitive.pointer.html#method.add"><code>add</code></a> や <a href="https://doc.rust-lang.org/std/primitive.pointer.html#method.sub"><code>sub</code></a> というのもあるが、内部では単に <code>offset</code> を呼んでいるだけ。</p>
+<h4 id="ポインタ間の距離"><a href="#ポインタ間の距離" class="headerlink" title="ポインタ間の距離"></a>ポインタ間の距離</h4><p>ポインタ間の距離（要素数）を計算するには <a href="https://doc.rust-lang.org/std/primitive.pointer.html#method.offset_from"><code>offset_from</code></a> をメソッド使用する：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="meta">#![feature(ptr_offset_from)]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// C: size_t ofs = rawptr3 - slice;</span></span><br><span class="line">    <span class="keyword">let</span> ofs: <span class="built_in">isize</span> = <span class="keyword">unsafe</span> &#123; rawptr3.offset_from(slice.as_ptr()) &#125;;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, ofs);  <span class="comment">// &lt;= 2</span></span><br></pre></td></tr></table></figure>
+
+<p>こちらもC言語同様に、要素サイズで割った値になる。
+experimentalとのことで、 <code>#![feature(ptr_offset_from)]</code> の指定が必要。</p>
+<p>同様に <a href="https://doc.rust-lang.org/std/primitive.pointer.html#method.wrapping_offset_from"><code>wrapping_offset_from</code></a> メソッドがある。</p>
+<h4 id="スライスに戻す"><a href="#スライスに戻す" class="headerlink" title="スライスに戻す"></a>スライスに戻す</h4><p>生ポインタからスライスに変換するには、 <a href="https://doc.rust-lang.org/std/slice/fn.from_raw_parts.html"><code>slice::from_raw_parts</code></a> を使用する：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> restored: &amp;[<span class="built_in">i32</span>] = <span class="keyword">unsafe</span> &#123; std::slice::from_raw_parts(rawptr3, slice.len() - ofs <span class="keyword">as</span> <span class="built_in">usize</span>) &#125;;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;#&#123;&#125;: &#123;:?&#125;&quot;</span>, restored.len(), restored);  <span class="comment">// &lt;= #4: [33, 44, 55, 66]</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="モジュール化する"><a href="#モジュール化する" class="headerlink" title="モジュール化する"></a>モジュール化する</h3><p>生ポインタをゴリゴリ触って <code>unsafe</code> をそこら中に書き散らして未定義動作の発生を拡散させてしまっては、なんのためにRustで書いてんの？ということになってしまう。
+なのでいっちょモジュール化してみる。</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="meta">#![feature(ptr_offset_from)]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::ops::Index;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">RewindableSlice</span></span>&lt;<span class="symbol">&#x27;a</span>, T&gt; &#123;</span><br><span class="line">    slice: &amp;<span class="symbol">&#x27;a</span> [T],</span><br><span class="line">    behind_count: <span class="built_in">usize</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;<span class="symbol">&#x27;a</span>, T&gt; RewindableSlice&lt;<span class="symbol">&#x27;a</span>, T&gt; &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(slice: &amp;<span class="symbol">&#x27;a</span> [T]) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">Self</span> &#123;</span><br><span class="line">            slice,</span><br><span class="line">            behind_count: <span class="number">0</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">to_slice</span></span>(&amp;<span class="keyword">self</span>) -&gt; &amp;<span class="symbol">&#x27;a</span> [T] &#123;</span><br><span class="line">        <span class="keyword">self</span>.slice</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">forward</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, d: <span class="built_in">usize</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.slice = &amp;<span class="keyword">self</span>.slice[d..];</span><br><span class="line">        <span class="keyword">self</span>.behind_count += d <span class="keyword">as</span> <span class="built_in">usize</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">backward</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, d: <span class="built_in">usize</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> d &gt; <span class="keyword">self</span>.behind_count &#123;</span><br><span class="line">            <span class="built_in">panic!</span>(</span><br><span class="line">                <span class="string">&quot;index out of bounds: the slice can moves backwards only &#123;&#125;, but try to move &#123;&#125;&quot;</span>,</span><br><span class="line">                <span class="keyword">self</span>.behind_count, d</span><br><span class="line">            );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> rawptr = <span class="keyword">self</span>.slice.as_ptr();</span><br><span class="line">        <span class="keyword">let</span> rawptr = <span class="keyword">unsafe</span> &#123; rawptr.offset((d <span class="keyword">as</span> <span class="built_in">isize</span>).wrapping_neg()) &#125;;</span><br><span class="line">        <span class="keyword">self</span>.slice = <span class="keyword">unsafe</span> &#123; std::slice::from_raw_parts(rawptr, <span class="keyword">self</span>.slice.len() + d) &#125;;</span><br><span class="line">        <span class="keyword">self</span>.behind_count -= d;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;<span class="symbol">&#x27;a</span>, T&gt; Index&lt;<span class="built_in">usize</span>&gt; <span class="keyword">for</span> RewindableSlice&lt;<span class="symbol">&#x27;a</span>, T&gt; &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = T;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">index</span></span>(&amp;<span class="keyword">self</span>, i: <span class="built_in">usize</span>) -&gt; &amp;Self::Output &#123;</span><br><span class="line">        &amp;<span class="keyword">self</span>.slice[i]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>forward</code> で進める際に進めた数をカウントしておく。
+<code>backward</code> で戻る際に範囲外になってしまう場合には <code>panic!</code> を起こすようにする。</p>
+<p>使用は：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> array: [<span class="built_in">i32</span>; <span class="number">6</span>] = [<span class="number">11</span>, <span class="number">22</span>, <span class="number">33</span>, <span class="number">44</span>, <span class="number">55</span>, <span class="number">66</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> rs = RewindableSlice::new(&amp;array);</span><br><span class="line">    rs.forward(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:?&#125;&quot;</span>, rs.to_slice());</span><br><span class="line"></span><br><span class="line">    <span class="comment">//slice.forward(3);  // &lt;= panic!</span></span><br><span class="line"></span><br><span class="line">    rs.backward(<span class="number">3</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, rs[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//slice.backward(2);  // &lt;= panic!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（移譲）」について" rel="bookmark">「継承より合成（移譲）」について</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/03/ecs-in-rust.html" title="【Rust】ECSを使ってみる(Specs)" rel="bookmark">【Rust】ECSを使ってみる(Specs)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/21/legion-ecs.html" title="【Rust】Legion ECSを触ってみた" rel="bookmark">【Rust】Legion ECSを触ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか" rel="bookmark">Rustで状態管理や相互参照をどうするか</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

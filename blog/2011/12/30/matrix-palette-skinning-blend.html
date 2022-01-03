@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="前回に引き続き、今度はウェイト指定あり版。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="WebGLで行列パレットスキニング、ブレンドウェイトあり"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>WebGLで行列パレットスキニング、ブレンドウェイトあり - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2011/12/30/matrix-palette-skinning-blend.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>WebGLで行列パレットスキニング、ブレンドウェイトあり</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2011-12-30
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/webgl/">#webgl</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2011/12/29/matrix-palette-skinning.html" title="前回">前回</a>に引き続き、今度はウェイト指定あり版。
+
+<span id="more"></span>
+<iframe src="/assets/matrix-palette-skinning-blend.html" width="450" height="450" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto"></iframe>
+
+<p><a href="/assets/matrix-palette-skinning-blend.html">WebGL行列パレットスキニング（ウェイトあり）</a></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">&#x27;load&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="string">&#x27;use strict&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;world&#x27;</span>)</span><br><span class="line">    <span class="keyword">const</span> gl = initGL(canvas)</span><br><span class="line">    <span class="keyword">const</span> shaderProgram = initShader(gl)</span><br><span class="line">    <span class="keyword">const</span> model = initModel(gl)</span><br><span class="line"></span><br><span class="line">    gl.clearColor(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    gl.enable(gl.DEPTH_TEST)</span><br><span class="line">    gl.enable(gl.CULL_FACE)</span><br><span class="line">    gl.cullFace(gl.BACK)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Animation.</span></span><br><span class="line">    <span class="keyword">let</span> rx = <span class="number">0</span>, ry = <span class="number">0</span>, rz = <span class="number">0</span></span><br><span class="line">    <span class="keyword">const</span> modelMatrix1 = mat4.create()</span><br><span class="line">    <span class="keyword">const</span> modelMatrix2 = mat4.create()</span><br><span class="line">    <span class="keyword">const</span> modelMatrices = [modelMatrix1, modelMatrix2]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> tick = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      requestAnimationFrame(tick)  <span class="comment">// Request next frame.</span></span><br><span class="line"></span><br><span class="line">      rx += <span class="number">0.02</span></span><br><span class="line">      ry += <span class="number">0.03</span></span><br><span class="line">      rz += <span class="number">0.05</span></span><br><span class="line">      mat4.identity(modelMatrix1)</span><br><span class="line">      mat4.identity(modelMatrix2)</span><br><span class="line">      mat4.translate(modelMatrix2, modelMatrix2, [<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">      mat4.rotateX(modelMatrix2, modelMatrix2, <span class="built_in">Math</span>.sin(rx) * <span class="number">45</span> * <span class="number">2</span> * <span class="built_in">Math</span>.PI / <span class="number">180</span>)</span><br><span class="line">      mat4.rotateY(modelMatrix2, modelMatrix2, <span class="built_in">Math</span>.sin(ry) * <span class="number">45</span> * <span class="number">2</span> * <span class="built_in">Math</span>.PI / <span class="number">180</span>)</span><br><span class="line">      mat4.rotateZ(modelMatrix2, modelMatrix2, <span class="built_in">Math</span>.sin(rz) * <span class="number">45</span> * <span class="number">2</span> * <span class="built_in">Math</span>.PI / <span class="number">180</span>)</span><br><span class="line"></span><br><span class="line">      drawScene(gl, shaderProgram, model, modelMatrices)</span><br><span class="line">    &#125;</span><br><span class="line">    requestAnimationFrame(tick)  <span class="comment">// Request next frame.</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">drawScene</span>(<span class="params">gl, shaderProgram, model, modelMatrices</span>) </span>&#123;</span><br><span class="line">    gl.viewport(<span class="number">0</span>, <span class="number">0</span>, gl.viewportWidth, gl.viewportHeight)</span><br><span class="line">    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Projection matrix.</span></span><br><span class="line">    <span class="keyword">const</span> vpMatrix = mat4.create()</span><br><span class="line">    mat4.perspective(vpMatrix, <span class="number">45</span>, gl.viewportWidth / gl.viewportHeight, <span class="number">0.1</span>, <span class="number">100.0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// View matrix.</span></span><br><span class="line">    <span class="keyword">const</span> vMatrix = mat4.create()</span><br><span class="line">    mat4.lookAt(vMatrix, [<span class="number">2.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>], [<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">    mat4.multiply(vpMatrix, vpMatrix, vMatrix)</span><br><span class="line">    gl.uniformMatrix4fv(shaderProgram.uVPMatrix, <span class="literal">false</span>, vpMatrix)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Model matrix.</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</span><br><span class="line">      mat4.multiply(modelMatrices[i], modelMatrices[i], model.basePose[i])</span><br><span class="line">      gl.uniformMatrix4fv(shaderProgram.uMMatrix[i], <span class="literal">false</span>, modelMatrices[i])</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    gl.useProgram(shaderProgram)</span><br><span class="line">    gl.bindBuffer(gl.ARRAY_BUFFER, model.aVertexPosition)</span><br><span class="line">    gl.vertexAttribPointer(shaderProgram.aVertexPosition,</span><br><span class="line">			   model.aVertexPosition.itemSize, gl.FLOAT, <span class="literal">false</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">    gl.bindBuffer(gl.ARRAY_BUFFER, model.aVertexColor)</span><br><span class="line">    gl.vertexAttribPointer(shaderProgram.aVertexColor,</span><br><span class="line">			   model.aVertexColor.itemSize, gl.FLOAT, <span class="literal">false</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">    gl.bindBuffer(gl.ARRAY_BUFFER, model.aBlendIndices)</span><br><span class="line">    gl.vertexAttribPointer(shaderProgram.aBlendIndices,</span><br><span class="line">			   model.aBlendIndices.itemSize, gl.FLOAT, <span class="literal">false</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">    gl.bindBuffer(gl.ARRAY_BUFFER, model.aBlendWeight)</span><br><span class="line">    gl.vertexAttribPointer(shaderProgram.aBlendWeight,</span><br><span class="line">			   model.aBlendWeight.itemSize, gl.FLOAT, <span class="literal">false</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, model.indexBuffer)</span><br><span class="line">    gl.drawElements(gl.TRIANGLES, model.indexBuffer.numItems, gl.UNSIGNED_SHORT, <span class="number">0</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">initShader</span>(<span class="params">gl</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> shader_vs_src = <span class="string">`</span></span><br><span class="line"><span class="string">attribute vec3 aVertexPosition;</span></span><br><span class="line"><span class="string">attribute vec4 aVertexColor;</span></span><br><span class="line"><span class="string">attribute vec2 aBlendIndices;</span></span><br><span class="line"><span class="string">attribute float aBlendWeight;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">uniform mat4 uMMatrix[2]; // モデル行列配列</span></span><br><span class="line"><span class="string">uniform mat4 uVPMatrix;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">varying vec4 vColor;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">void main() &#123;</span></span><br><span class="line"><span class="string">  float leftWeight = 1.0 - aBlendWeight;</span></span><br><span class="line"><span class="string">  vec4 pos;</span></span><br><span class="line"><span class="string">  pos  = uMMatrix[int(aBlendIndices.x)] * vec4(aVertexPosition, 1.0) * aBlendWeight;</span></span><br><span class="line"><span class="string">  pos += uMMatrix[int(aBlendIndices.y)] * vec4(aVertexPosition, 1.0) * leftWeight;</span></span><br><span class="line"><span class="string">  gl_Position = uVPMatrix * pos;</span></span><br><span class="line"><span class="string">  vColor = aVertexColor;</span></span><br><span class="line"><span class="string">&#125;`</span></span><br><span class="line">    <span class="keyword">const</span> shader_fs_src = <span class="string">`</span></span><br><span class="line"><span class="string">precision mediump float;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">varying vec4 vColor;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">void main() &#123;</span></span><br><span class="line"><span class="string">  gl_FragColor = vColor;</span></span><br><span class="line"><span class="string">&#125;`</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> shaderProgram = createShaderProgram(</span><br><span class="line">      gl,</span><br><span class="line">      compileShader(gl, gl.VERTEX_SHADER, shader_vs_src),</span><br><span class="line">      compileShader(gl, gl.FRAGMENT_SHADER, shader_fs_src))</span><br><span class="line">    <span class="keyword">if</span> (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) &#123;</span><br><span class="line">      alert(<span class="string">&#x27;Could not initialise shaders&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    shaderProgram.aVertexPosition = gl.getAttribLocation(shaderProgram, <span class="string">&#x27;aVertexPosition&#x27;</span>)</span><br><span class="line">    gl.enableVertexAttribArray(shaderProgram.aVertexPosition)</span><br><span class="line"></span><br><span class="line">    shaderProgram.aVertexColor = gl.getAttribLocation(shaderProgram, <span class="string">&#x27;aVertexColor&#x27;</span>)</span><br><span class="line">    gl.enableVertexAttribArray(shaderProgram.aVertexColor)</span><br><span class="line"></span><br><span class="line">    shaderProgram.aBlendIndices = gl.getAttribLocation(shaderProgram, <span class="string">&#x27;aBlendIndices&#x27;</span>)</span><br><span class="line">    gl.enableVertexAttribArray(shaderProgram.aBlendIndices)</span><br><span class="line"></span><br><span class="line">    shaderProgram.aBlendWeight = gl.getAttribLocation(shaderProgram, <span class="string">&#x27;aBlendWeight&#x27;</span>)</span><br><span class="line">    gl.enableVertexAttribArray(shaderProgram.aBlendWeight)</span><br><span class="line"></span><br><span class="line">    shaderProgram.uVPMatrix = gl.getUniformLocation(shaderProgram, <span class="string">&#x27;uVPMatrix&#x27;</span>)</span><br><span class="line">    shaderProgram.uMMatrix = [</span><br><span class="line">      gl.getUniformLocation(shaderProgram, <span class="string">&#x27;uMMatrix[0]&#x27;</span>),</span><br><span class="line">      gl.getUniformLocation(shaderProgram, <span class="string">&#x27;uMMatrix[1]&#x27;</span>),</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> shaderProgram</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">initModel</span>(<span class="params">gl</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> DIV = <span class="number">16</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> positionBuffer = gl.createBuffer()</span><br><span class="line">    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)</span><br><span class="line">    <span class="keyword">const</span> positions = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= DIV; ++i) &#123;</span><br><span class="line">      <span class="keyword">const</span> x = i * <span class="number">2.0</span> / DIV</span><br><span class="line">      positions.push(x,-<span class="number">0.5</span>,-<span class="number">0.5</span>, x, <span class="number">0.5</span>,-<span class="number">0.5</span>,</span><br><span class="line">		     x, <span class="number">0.5</span>,-<span class="number">0.5</span>, x, <span class="number">0.5</span>, <span class="number">0.5</span>,</span><br><span class="line">		     x, <span class="number">0.5</span>, <span class="number">0.5</span>, x,-<span class="number">0.5</span>, <span class="number">0.5</span>,</span><br><span class="line">		     x,-<span class="number">0.5</span>, <span class="number">0.5</span>, x,-<span class="number">0.5</span>,-<span class="number">0.5</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Cap.</span></span><br><span class="line">    positions.push(<span class="number">0.0</span>,-<span class="number">0.5</span>,-<span class="number">0.5</span>, <span class="number">0.0</span>, <span class="number">0.5</span>,-<span class="number">0.5</span>, <span class="number">0.0</span>, <span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.0</span>,-<span class="number">0.5</span>, <span class="number">0.5</span>,</span><br><span class="line">		   <span class="number">2.0</span>,-<span class="number">0.5</span>,-<span class="number">0.5</span>, <span class="number">2.0</span>, <span class="number">0.5</span>,-<span class="number">0.5</span>, <span class="number">2.0</span>, <span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">2.0</span>,-<span class="number">0.5</span>, <span class="number">0.5</span>)</span><br><span class="line">    gl.bufferData(gl.ARRAY_BUFFER, <span class="keyword">new</span> <span class="built_in">Float32Array</span>(positions), gl.STATIC_DRAW)</span><br><span class="line">    positionBuffer.itemSize = <span class="number">3</span></span><br><span class="line">    positionBuffer.numItems = positions.length / positionBuffer.itemSize</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> colorBuffer = gl.createBuffer()</span><br><span class="line">    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer)</span><br><span class="line">    <span class="keyword">const</span> colors = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= DIV; ++i) &#123;</span><br><span class="line">      colors.push(<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>, <span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,</span><br><span class="line">		  <span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>, <span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,</span><br><span class="line">		  <span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>, <span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,</span><br><span class="line">		  <span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>, <span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    colors.push(<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>, <span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>, <span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>, <span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,</span><br><span class="line">	        <span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>, <span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>, <span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>, <span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>)</span><br><span class="line">    gl.bufferData(gl.ARRAY_BUFFER, <span class="keyword">new</span> <span class="built_in">Float32Array</span>(colors), gl.STATIC_DRAW)</span><br><span class="line">    colorBuffer.itemSize = <span class="number">4</span></span><br><span class="line">    colorBuffer.numItems = colors.length / colorBuffer.itemSize</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> blendIndicesBuffer = gl.createBuffer()</span><br><span class="line">    gl.bindBuffer(gl.ARRAY_BUFFER, blendIndicesBuffer)</span><br><span class="line">    <span class="keyword">const</span> blendIndices = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; (DIV + <span class="number">1</span>) * <span class="number">4</span> * <span class="number">2</span> + <span class="number">4</span> + <span class="number">4</span>; ++i) &#123;</span><br><span class="line">      blendIndices.push(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    gl.bufferData(gl.ARRAY_BUFFER, <span class="keyword">new</span> <span class="built_in">Float32Array</span>(blendIndices), gl.STATIC_DRAW)</span><br><span class="line">    blendIndicesBuffer.itemSize = <span class="number">2</span></span><br><span class="line">    blendIndicesBuffer.numItems = blendIndices.length / blendIndicesBuffer.itemSize</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> blendWeightBuffer = gl.createBuffer()</span><br><span class="line">    gl.bindBuffer(gl.ARRAY_BUFFER, blendWeightBuffer)</span><br><span class="line">    <span class="keyword">const</span> blendWeights = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= DIV; ++i) &#123;</span><br><span class="line">      <span class="keyword">const</span> x = i * <span class="number">2.0</span> / DIV</span><br><span class="line">      <span class="keyword">const</span> weight = <span class="built_in">Math</span>.min(<span class="built_in">Math</span>.max(<span class="number">1.0</span> - x / <span class="number">2</span>, <span class="number">0.0</span>), <span class="number">1.0</span>)</span><br><span class="line">      blendWeights.push(weight, weight,</span><br><span class="line">		        weight, weight,</span><br><span class="line">		        weight, weight,</span><br><span class="line">		        weight, weight)</span><br><span class="line">    &#125;</span><br><span class="line">    blendWeights.push(<span class="number">1.0</span>,<span class="number">1.0</span>,<span class="number">1.0</span>,<span class="number">1.0</span>, <span class="number">0.0</span>,<span class="number">0.0</span>,<span class="number">0.0</span>,<span class="number">0.0</span>)</span><br><span class="line">    gl.bufferData(gl.ARRAY_BUFFER, <span class="keyword">new</span> <span class="built_in">Float32Array</span>(blendWeights), gl.STATIC_DRAW)</span><br><span class="line">    blendWeightBuffer.itemSize = <span class="number">1</span></span><br><span class="line">    blendWeightBuffer.numItems = blendWeights.length / blendWeightBuffer.itemSize</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> indexBuffer = gl.createBuffer()</span><br><span class="line">    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)</span><br><span class="line">    <span class="keyword">const</span> indices = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; DIV; ++i) &#123;</span><br><span class="line">      <span class="keyword">const</span> index = i * <span class="number">8</span></span><br><span class="line">      indices.push(index+<span class="number">0</span>,index+<span class="number">1</span>,index+<span class="number">9</span>,  index+<span class="number">0</span>,index+<span class="number">9</span>, index+<span class="number">8</span>,</span><br><span class="line">		   index+<span class="number">2</span>,index+<span class="number">3</span>,index+<span class="number">11</span>, index+<span class="number">2</span>,index+<span class="number">11</span>,index+<span class="number">10</span>,</span><br><span class="line">		   index+<span class="number">4</span>,index+<span class="number">5</span>,index+<span class="number">13</span>, index+<span class="number">4</span>,index+<span class="number">13</span>,index+<span class="number">12</span>,</span><br><span class="line">		   index+<span class="number">6</span>,index+<span class="number">7</span>,index+<span class="number">15</span>, index+<span class="number">6</span>,index+<span class="number">15</span>,index+<span class="number">14</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> index = (DIV + <span class="number">1</span>) * <span class="number">8</span></span><br><span class="line">    indices.push(index+<span class="number">0</span>,index+<span class="number">3</span>,index+<span class="number">2</span>, index+<span class="number">0</span>,index+<span class="number">2</span>,index+<span class="number">1</span>,</span><br><span class="line">	         index+<span class="number">4</span>,index+<span class="number">5</span>,index+<span class="number">6</span>, index+<span class="number">4</span>,index+<span class="number">6</span>,index+<span class="number">7</span>)</span><br><span class="line">    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, <span class="keyword">new</span> <span class="built_in">Uint16Array</span>(indices), gl.STATIC_DRAW)</span><br><span class="line">    indexBuffer.itemSize = <span class="number">1</span></span><br><span class="line">    indexBuffer.numItems = indices.length / indexBuffer.itemSize</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Base pose.</span></span><br><span class="line">    <span class="keyword">const</span> baseMatrix1 = mat4.create()</span><br><span class="line">    mat4.identity(baseMatrix1)</span><br><span class="line">    <span class="keyword">const</span> baseMatrix2 = mat4.create()</span><br><span class="line">    mat4.identity(baseMatrix2)</span><br><span class="line">    mat4.translate(baseMatrix2, baseMatrix2, [<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> invBaseMatrix1 = mat4.create()</span><br><span class="line">    mat4.invert(invBaseMatrix1, baseMatrix1)</span><br><span class="line">    <span class="keyword">const</span> invBaseMatrix2 = mat4.create()</span><br><span class="line">    mat4.invert(invBaseMatrix2, baseMatrix2)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> basePose = [invBaseMatrix1, invBaseMatrix2]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">aVertexPosition</span>: positionBuffer,</span><br><span class="line">      <span class="attr">aVertexColor</span>: colorBuffer,</span><br><span class="line">      <span class="attr">aBlendIndices</span>: blendIndicesBuffer,</span><br><span class="line">      <span class="attr">aBlendWeight</span>: blendWeightBuffer,</span><br><span class="line">      <span class="attr">basePose</span>: basePose,</span><br><span class="line">      <span class="attr">indexBuffer</span>: indexBuffer,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">////////////////////////////////////////////////////////////////</span></span><br><span class="line">  <span class="comment">// Matrix stack.</span></span><br><span class="line">  <span class="keyword">const</span> mvMatrixStack = []</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">pushMatrix</span>(<span class="params">mtx</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> copy = mat4.create()</span><br><span class="line">    mat4.set(mtx, copy)</span><br><span class="line">    mvMatrixStack.push(copy)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">popMatrix</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mvMatrixStack.length == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="string">&quot;Invalid popMatrix!&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mvMatrixStack.pop()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">////////////////////////////////////////////////////////////////</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">initGL</span>(<span class="params">canvas</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> gl</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      gl = canvas.getContext(<span class="string">&#x27;webgl&#x27;</span>) || canvas.getContext(<span class="string">&#x27;experimental-webgl&#x27;</span>)</span><br><span class="line">      gl.viewportWidth = canvas.width</span><br><span class="line">      gl.viewportHeight = canvas.height</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!gl) &#123;</span><br><span class="line">      alert(<span class="string">&#x27;Could not initialise WebGL, sorry :-(&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> gl</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">createShaderProgram</span>(<span class="params">gl, vertexShader, fragmentShader</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> shaderProgram = gl.createProgram()</span><br><span class="line">    gl.attachShader(shaderProgram, vertexShader)</span><br><span class="line">    gl.attachShader(shaderProgram, fragmentShader)</span><br><span class="line">    gl.linkProgram(shaderProgram)</span><br><span class="line">    <span class="keyword">return</span> shaderProgram</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// type: gl.VERTEX_SHADER or gl.FRAGMENT_SHADER</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">compileShader</span>(<span class="params">gl, type, src</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> shader = gl.createShader(type)</span><br><span class="line">    gl.shaderSource(shader, src)</span><br><span class="line">    gl.compileShader(shader)</span><br><span class="line">    <span class="keyword">if</span> (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) &#123;</span><br><span class="line">      alert(gl.getShaderInfoLog(shader))</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> shader</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ========</span></span><br><span class="line"></span><br><span class="line">  main()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2011/12/29/matrix-palette-skinning.html" title="WebGLで行列パレットスキニング" rel="bookmark">WebGLで行列パレットスキニング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2011/12/25/webgl-test.html" title="WebGL Test" rel="bookmark">WebGL Test</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

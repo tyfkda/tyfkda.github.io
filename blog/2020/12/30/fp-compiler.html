@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Cコンパイラの実装を始めた際の興味が制御構造や関数定義・呼び出しをどう実装するかということに向いていたため int などの固定長の整数型（ポインタ含む）のみの実装にとどまっていて、
+浮動小数点数は煩雑になるんじゃないかという懸念から未実装だった。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="コンパイラを浮動小数点数に対応させる（それと数学関数を実装）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>コンパイラを浮動小数点数に対応させる（それと数学関数を実装） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/12/30/fp-compiler.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>コンパイラを浮動小数点数に対応させる（それと数学関数を実装）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-12-30
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Cコンパイラの実装を始めた際の興味が制御構造や関数定義・呼び出しをどう実装するかということに向いていたため <code>int</code> などの固定長の整数型（ポインタ含む）のみの実装にとどまっていて、
+浮動小数点数は煩雑になるんじゃないかという懸念から未実装だった。</p>
+<span id="more"></span>
+
+<a href="/blog/2019/07/14/self-hosting-c.html" title="セルフホスティング">セルフホスティング</a>や<a href="/blog/2019/10/21/regalloc-linearscan.html" title="レジスタ割付">レジスタ割付</a>などある程度の機能が実装できたので、ついに浮動小数点数の実装に手を出してみた。
+
+
+<h3 id="ターゲットアーキテクチャ"><a href="#ターゲットアーキテクチャ" class="headerlink" title="ターゲットアーキテクチャ"></a>ターゲットアーキテクチャ</h3><p>x86で浮動小数点数を扱う方法は歴史的経緯でいくつか方法があるみたいだが、近頃のマシンではまず搭載しているだろうということでSSE2をターゲットにした</p>
+<p>整数型の汎用レジスタとは別に、SSE2で使えるレジスタは <code>xmm0</code>から<code>xmm15</code>までの16個となる(*)。</p>
+<h3 id="型の表現"><a href="#型の表現" class="headerlink" title="型の表現"></a>型の表現</h3><p>コンパイラ内部に型の種類として整数型というものがあり、その中で <code>int</code> や <code>char</code>, <code>long</code> といった型を持っている。
+浮動小数点数の型をそれらとまとめて数値型の一種として扱うか、それとも整数型とは別に分けて扱うのがいいか？という方針の選択に少し悩んだ。</p>
+<p>結論としては浮動小数点数型を新たに作成するのがいいと思う。
+理由としては整数型と区別して扱うことがが大半なのと、キャストの際に別の型になっていてもコード上まったく問題ないというところだった。</p>
+<h3 id="値の表現"><a href="#値の表現" class="headerlink" title="値の表現"></a>値の表現</h3><p>コード生成で中間表現に変換した際には式の値を仮想レジスタというもので扱っているが、それを浮動小数点数型用の仮想レジスタを別途作るかどうかでも迷った。
+実際のアーキテクチャでは整数を扱う汎用レジスタと浮動小数点数のレジスタが分かれているので、同様に分けたほうがいいのかなと悩んだりした。</p>
+<p>こっちは型を分けずに同じ仮想レジスタを使用して、浮動小数点数型かどうかのフラグを持つようにした。
+理由はコード生成時に仮想レジスタが同じ型じゃないと処理する関数を別々に用意する必要があるのを避けるため。</p>
+<h3 id="使用する命令"><a href="#使用する命令" class="headerlink" title="使用する命令"></a>使用する命令</h3><p>生成するコードで必要となったx86の命令は限られていて、</p>
+<ul>
+<li><code>movsd</code>: <code>xmm</code> レジスタ同士またはメモリとのやりとり</li>
+<li><code>addsd</code>, <code>subsd</code>, <code>mulsd</code>, <code>divsd</code>: 四則演算</li>
+<li><code>cvtsi2sd</code>: 整数型からの変換（汎用レジスタから<code>xmm</code>へ）</li>
+<li><code>cvttsd2si</code>: 整数型への変換（<code>xmm</code>から汎用レジスタへ）</li>
+<li><code>ucomisd</code>: 比較（<code>u</code>はUnorderedとのことだけど、付かない場合との違いがわかってない…）</li>
+</ul>
+<p>だけで事が足りる。
+<code>float</code> の場合には <code>d</code> の代わりに <code>s</code> となる。</p>
+<p>式の取り扱いで整数型と浮動小数点数型が混在した場合などを考慮すると取り扱いが煩雑になるんじゃないかと懸念していたが、そんなことはなかった。
+パースしてASTを構築した段階で式の各項の型が判明するので、 <code>+</code> 演算子などで左辺と右辺の方が違う場合には大きい方に合わせるよう暗黙的にキャストされて揃った状態に変換されている。</p>
+<p>なので演算自体は整数/浮動小数点数の同じ型同士だけとなり混在した場合を考える必要がなく、生成するためのコードはシンプルで済む。</p>
+<h3 id="関数呼出規約-ABI"><a href="#関数呼出規約-ABI" class="headerlink" title="関数呼出規約(ABI)"></a>関数呼出規約(ABI)</h3><p>x86-64では関数への引数をレジスタ経由で受け渡す。
+浮動小数点数型の場合には整数型で使用する汎用レジスタ6個とは別に、<code>xmm0</code>〜<code>xmm7</code> で受け渡すという規約になっている。
+別々に考慮してやる必要があるので地味に面倒で、場合漏れでバグを仕込みがちだった。</p>
+<p>戻り値は <code>%rax</code> の代わりに <code>%xmm0</code> となる。</p>
+<p>Callee Save、呼び出された関数側では<code>xmm</code>レジスタを保存する必要がないので、破壊されたくないレジスタは呼び出し元で保存する必要がある。</p>
+<p>関数が可変長引数の場合ははまだ対応してない。
+<code>va_arg</code> で取り出す際に浮動小数点数型かどうかによって処理を分ける必要があり、単純なマクロでは済まないのでどうしたものか…。
+（gccでは <code>__builtin_va_XXXX</code> と置換されて組込みの動作で処理している模様）</p>
+<h3 id="レジスタ割付"><a href="#レジスタ割付" class="headerlink" title="レジスタ割付"></a>レジスタ割付</h3><p>整数型の仮想レジスタを物理レジスタに割り付けるのと同じように、浮動小数点数用の仮装レジスタも物理レジスタに割り付ける必要がある。
+が処理的にはまったく同じ操作で割付できるので、流用で解決できる。</p>
+<h3 id="数学関数ライブラリ"><a href="#数学関数ライブラリ" class="headerlink" title="数学関数ライブラリ"></a>数学関数ライブラリ</h3><p>自作Cコンパイラではリンクを行わずに直接実行ファイルを生成してしまい、gccなどのホスト開発環境のライブラリを利用できないので、数学関数も自作する必要がある。
+これが結構大変だし地味だしうまい方法がわからずに苦労する。</p>
+<p>とりあえず適当に実装してみたが、本格的にするには先人の知恵を借りてnewlibだかmuslなど既存のソースを参考にするのがいいかもしれない。</p>
+<p>当面必要になった関数をば：</p>
+<h4 id="floor-ceil"><a href="#floor-ceil" class="headerlink" title="floor, ceil"></a>floor, ceil</h4><p>整数に変換して戻す。
+問題点：範囲外の場合壊れる。</p>
+<p>使用頻度高そうなので、専用命令で用意してくれてもよさそうなんだが…。</p>
+<h4 id="fmod"><a href="#fmod" class="headerlink" title="fmod"></a>fmod</h4><p><code>floor</code> を利用： <code>x - floor(x / m) * m</code>。
+問題点：除算、乗算を避けられないか？</p>
+<h4 id="fabs"><a href="#fabs" class="headerlink" title="fabs"></a>fabs</h4><p><code>if</code> で符号を判定して条件分岐。
+問題点：ビット操作の方がよい？</p>
+<h4 id="sqrt"><a href="#sqrt" class="headerlink" title="sqrt"></a>sqrt</h4><p><code>sqrtsd</code> 命令を使用。
+問題点：精度は？</p>
+<h4 id="sin-cos"><a href="#sin-cos" class="headerlink" title="sin, cos"></a>sin, cos</h4><p>-π〜π の範囲でマクローリン展開。
+問題点：<code>fmod</code> 、 <code>for</code>ループ使用、速度、精度。</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\sin x &=& x - \frac{x^3}{3!} + \frac{x^5}{5!} + \cdots &=& \sum_{n=0}^{\infty} -1^n \frac{x^{2n+1}}{(2n+1)!} \\
+\cos x &=& 1 - \frac{x^2}{2!} + \frac{x^4}{4!} + \cdots &=& \sum_{n=0}^{\infty} -1^n \frac{x^{2n}}{2n!}
+\end{align}
+%]]></script>
+
+<p>10項程度。</p>
+<h4 id="tan"><a href="#tan" class="headerlink" title="tan"></a>tan</h4><p><code>sin</code> / <code>cos</code>。
+問題点：専用に用意する。</p>
+<h4 id="atan"><a href="#atan" class="headerlink" title="atan"></a>atan</h4><p>範囲を22.5度以内に絞ってマクローリン展開：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\tan^{-1} x &= x - \frac{x^3}{3} + \frac{x^5}{5} - \frac{x^7}{7} + \cdots \\
+            &= \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n+1}}{2n+1}
+\end{align}
+%]]></script>
+
+<p>入力が <script type="math/tex">x</script> 、求める角度を <script type="math/tex">\theta</script> とすると、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\tan^{-1} x &= \theta \\
+\tan \theta &= x
+\end{align}
+%]]></script>
+
+<p>角度を絞るためにタンジェントの加法定理：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\tan(\alpha - \beta) &= \frac{\tan \alpha - \tan \beta}{1 + \tan \alpha \tan \beta} \\
+                     &= \frac{1 - \frac{\tan \beta}{\tan \alpha}}{\frac{1}{\tan \alpha} + \tan \beta}
+\end{align}
+%]]></script>
+
+<p>を利用する。</p>
+<ul>
+<li><script type="math/tex">1 \lt x</script> の場合（45度以上）
+<ul>
+<li><script type="math/tex">\alpha=\frac{\pi}{2}</script> とすると <script type="math/tex">\tan \frac{\pi}{2} = \infty</script> から <script type="math/tex">\therefore \tan (\frac{\pi}{2} - \theta) = \frac{1}{x}</script></li>
+</ul>
+</li>
+<li><script type="math/tex">\tan \frac{\pi}{8} \lt x \le 1</script> の場合（22.5度以上45度以下）
+<ul>
+<li><script type="math/tex">\alpha=\frac{\pi}{4}</script> とすると <script type="math/tex">\tan \frac{\pi}{4} = 1</script> から <script type="math/tex">\therefore \tan (\frac{\pi}{4} - \theta) = \frac{1 - x}{1 + x}</script></li>
+</ul>
+</li>
+</ul>
+<p>と変換して値の範囲を狭める。</p>
+<h4 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h4><script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+e^x &= 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots \\
+    &= \sum_{n=0}^{\infty} \frac{x^n}{n!}
+\end{align}
+%]]></script>
+
+<p>で求める。</p>
+<p>入力 <script type="math/tex">x</script> を整数部 <script type="math/tex">i</script> と小数部 <script type="math/tex">d</script> に分けて、 <script type="math/tex">e^x = e^{i+d} = e^i e^d</script> で <script type="math/tex">d</script> を0.0〜1.0の範囲に絞って <script type="math/tex">e^d</script> をマクローリン展開で求める。
+整数部 <script type="math/tex">e^i</script> は整数の指数計算のように2進数表現して求める。
+負の場合は逆数にする。</p>
+<p>ちょっと値が大きかったらすぐに発散するので、整数部が<code>int</code>に収まらなかったらという心配はしなくてよいかも。</p>
+<h4 id="log"><a href="#log" class="headerlink" title="log"></a>log</h4><p>入力<script type="math/tex">x</script> を2のべき乗との積で0.5〜1.0の範囲に絞る：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\log x = \log (2^n \cdot d) = \log 2^n + \log d = n \log 2 + \log d
+%]]></script>
+
+<p>このままマクローリン展開：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\log (1 + x) = x - \frac{x^2}{2} + \frac{x^3}{3} - \frac{x^4}{4} + \cdots
+%]]></script>
+
+<p>しても収束が遅くて打ち切り誤差がひどいので、 <script type="math/tex">x</script> の符号を反転した</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+-\log (1 - x) = x + \frac{x^2}{2} + \frac{x^3}{3} + \frac{x^4}{4} + \cdots
+%]]></script>
+
+<p>との和を取ると偶数の項が消えて</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\log (1 + x) - \log (1 - x) = \log \frac{1 + x}{1 - x} = 2 \left( x + \frac{x^3}{3} + \frac{x^5}{5} + \cdots \right) \\
+%]]></script>
+
+<script type="math/tex">y = \frac{1 + x}{1 - x}</script> と置いて <script type="math/tex">x</script> について解いて、
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+1 + x &= y \cdot (1 - x) \\
+x \cdot (y + 1) &= y - 1 \\
+\therefore x &= \frac{y - 1}{y + 1}
+\end{align}
+%]]></script>
+
+<p>で求めた <script type="math/tex">x</script> を使って求めると2乗で減っていくのでマシになる。</p>
+<p>2じゃなくて <script type="math/tex">e</script> のべき乗にすれば <script type="math/tex">\log 2</script> との乗算が必要なくなるが、
+<a href="https://ja.wikipedia.org/wiki/IEEE_754">IEEE-754</a>表現が2のべき乗の形で持っていて簡単に得られるのでこちらのほうがいいかも。</p>
+<h4 id="pow"><a href="#pow" class="headerlink" title="pow"></a>pow</h4><p><code>exp</code> と同様に、小数部のみをマクローリン展開する。
+指数関数のマクローリン展開は <script type="math/tex">\sum_{n} \frac{\log ^n a}{n !} x^n</script> 。</p>
+<p>問題点： <code>log</code> も使用するので処理が倍かかる。</p>
+<h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><ul>
+<li>コンピュータだから計算が得意、なのかと思っていたが数学関数は人間様の知恵で作り上げられたもので、それらを知らずにナイーブに実装すると精度も速度も実用となる数値計算はできたものではないというのが新たな発見だった。</li>
+<li>現代ではハードウェアで浮動小数点数の演算をサポートしてくれているから必要はないんだけどFPUがどのように処理しているのかというのにはちょっと興味あるので、そこもソフトウェア実装してみたいと思わなくもなかったり。
+てか昔のBASICやコンパイラはよく用意してくれたね…。</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li>リポジトリ：<a href="https://github.com/tyfkda/xcc">https://github.com/tyfkda/xcc</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SSE2">SSE2 - Wikipedia</a></li>
+<li><a href="https://sourceware.org/newlib/">The Newlib Homepage</a></li>
+<li><a href="https://musl.libc.org/">musl libc</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

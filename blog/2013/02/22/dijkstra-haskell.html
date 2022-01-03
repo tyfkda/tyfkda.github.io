@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Project Eulerの81は左上から右か下だけに動いて右下までの、一番値が小さいルートを見つける問題。総当りでやろうとしたが、迷路が80x80で組み合わせが
+% 
+
+通りなので全然無理だった。
+最短経路を見つけるうまいアルゴリズムにダイクストラ法がある。ということでダイクストラ法を使って最短経">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Haskell】ダイクストラ法を実装する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Haskell】ダイクストラ法を実装する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/02/22/dijkstra-haskell.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Haskell】ダイクストラ法を実装する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-02-22
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/haskell/">#haskell</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <span id="more"></span>
+
+<p><a href="http://projecteuler.net/problem=81">Project Eulerの81</a>は左上から右か下だけに動いて右下までの、一番値が小さいルートを見つける問題。総当りでやろうとしたが、迷路が80x80で組み合わせが</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+{}_{160}C_{80}=92045125813734238026462263037378063990076729140
+%]]></script>
+
+<p>通りなので全然無理だった。</p>
+<p>最短経路を見つけるうまいアルゴリズムに<a href="http://www.deqnotes.net/acmicpc/dijkstra/">ダイクストラ法</a>がある。ということでダイクストラ法を使って最短経路を求めよう。</p>
+<p>Haskellでライブラリがあるのかわからないが、パッとググったところ見つからなかったので自作してみた。<a href="http://hackage.haskell.org/packages/archive/containers/0.2.0.1/doc/html/Data-Graph.html">Data.Graph</a>はこういう用途で使えるんだろうか…わからん。</p>
+<p>グラフを表す情報にノードとエッジがあるけど、最短経路を求めるための入力としてはノード自体は特に情報は必要なくて、エッジ（有向グラフで、元ノードとターゲットノードとコスト）だけで十分。</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">dijkstra</span> :: pos -&gt; pos -&gt; [(pos, cost, pos)] -&gt; (cost, [pos])</span><br><span class="line"><span class="title">dijkstra</span> start goal edges = shortestPaths ! goal</span><br><span class="line">  <span class="keyword">where</span> shortestPaths = dijkstraAll start edges</span><br><span class="line"></span><br><span class="line"><span class="title">dijkstraAll</span> :: pos -&gt; [(pos, cost, pos)] -&gt; <span class="type">Map</span> pos (cost, [pos])</span><br><span class="line"><span class="title">dijkstraAll</span> start edges = fst $ until (null . snd) (step edgeMap) initial</span><br><span class="line">  <span class="keyword">where</span> initial = (empty, singleton start (<span class="number">0</span>, [start]))</span><br><span class="line">        edgeMap = genEdgeMap edges</span><br></pre></td></tr></table></figure>
+
+<p><code>dijkstra</code>はスタート位置とゴール位置、あとエッジリストを受け取って、最短経路（コスト、道順（の逆））を返す。<code>dijkstraAll</code>はゴール位置１つだけじゃなくて、スタート位置から辿れるすべての位置の最短経路を返す。<code>until (null . snd)</code>で、まだ決定されてないノードがなくなるまでstepを繰り返す。</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">step</span> :: <span class="type">Map</span> pos [<span class="type">Edge</span> pos cost] -&gt;</span><br><span class="line">        (<span class="type">Map</span> pos (cost, [pos]), <span class="type">Map</span> pos (cost, [pos])) -&gt;</span><br><span class="line">        (<span class="type">Map</span> pos (cost, [pos]), <span class="type">Map</span> pos (cost, [pos]))</span><br><span class="line"><span class="title">step</span> edgeMap (pathMap, nodeMap) =</span><br><span class="line">  <span class="keyword">let</span> (pos, path) = getMinimumCostNode nodeMap</span><br><span class="line">      edges = findWithDefault [] pos edgeMap</span><br><span class="line">  <span class="keyword">in</span> <span class="keyword">if</span> pos `member` pathMap</span><br><span class="line">       <span class="keyword">then</span> (pathMap, delete pos nodeMap)</span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">let</span> nodeMap&#x27; = delete pos $ updateNeigbors path edges nodeMap</span><br><span class="line">                pathMap&#x27; = insert pos path pathMap</span><br><span class="line">            <span class="keyword">in</span> (pathMap&#x27;, nodeMap&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p><code>pathMap</code>はスタートからの最短経路が確定したノードのパス、<code>nodeMap</code>は仮状態の最短経路が計算されたノードで、どちらもコストと道順を保持している。処理としては、未決定のノードの中で最短のコストとなるノードを見つけて、そのパスを確定する。その確定したノードに接続しているノードに対して、新たにそのノードからのエッジを通った場合のトータルコストが低い場合にはそちらを採用する。</p>
+<p>計算量は、一番近いノード順に最短経路を探す外側のループがN、まだ決定されてないノードから一番近いノードを探すのが、ノード全体じゃなくて未決定のノード分、なのでノード全体よりは少なくてそんなに爆発的に増えない、と仮定するとO(N)くらいになるのかな？</p>
+<p>モジュール全体のソースは</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span> Dijkstra (</span><br><span class="line">  <span class="title">dijkstra</span>,</span><br><span class="line">  <span class="title">dijkstraAll</span></span><br><span class="line">) <span class="keyword">where</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Prelude <span class="keyword">hiding</span> (<span class="title">null</span>)</span><br><span class="line"><span class="keyword">import</span> Data.List (<span class="title">minimumBy</span>)</span><br><span class="line"><span class="keyword">import</span> Data.Map (<span class="type">Map</span>, <span class="title">alter</span>, <span class="title">delete</span>, <span class="title">empty</span>, <span class="title">findWithDefault</span>, <span class="title">insert</span>, <span class="title">member</span>,</span><br><span class="line">                 <span class="title">null</span>, <span class="title">singleton</span>, <span class="title">toList</span>, (!))</span><br><span class="line"><span class="keyword">import</span> Data.Ord (<span class="title">comparing</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Edge</span> pos cost = <span class="type">Edge</span> pos cost</span></span><br><span class="line">  <span class="keyword">deriving</span> <span class="type">Show</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- Finds shortest path from starting position using edge list.</span></span><br><span class="line"><span class="comment">-- Edge is a triplet which consists of (from, cost, to).</span></span><br><span class="line"><span class="title">dijkstra</span> :: (<span class="type">Ord</span> pos, <span class="type">Num</span> cost, <span class="type">Ord</span> cost) =&gt;</span><br><span class="line">            pos -&gt; pos -&gt; [(pos, cost, pos)] -&gt; (cost, [pos])</span><br><span class="line"><span class="title">dijkstra</span> start goal edges = shortestPaths ! goal</span><br><span class="line">  <span class="keyword">where</span> shortestPaths = dijkstraAll start edges</span><br><span class="line"></span><br><span class="line"><span class="title">dijkstraAll</span> :: (<span class="type">Ord</span> pos, <span class="type">Num</span> cost, <span class="type">Ord</span> cost) =&gt;</span><br><span class="line">               pos -&gt; [(pos, cost, pos)] -&gt; <span class="type">Map</span> pos (cost, [pos])</span><br><span class="line"><span class="title">dijkstraAll</span> start edges = fst $ until (null . snd) (step edgeMap) initial</span><br><span class="line">  <span class="keyword">where</span> initial = (empty, singleton start (<span class="number">0</span>, [start]))</span><br><span class="line">        edgeMap = genEdgeMap edges</span><br><span class="line"></span><br><span class="line"><span class="comment">-- One step for Dijkstra algorithm.</span></span><br><span class="line"><span class="comment">--   * Pick next shortest path from undetermined nodes and determine it as the</span></span><br><span class="line"><span class="comment">--     shortest path for the position.</span></span><br><span class="line"><span class="comment">--   * If new path for its neighbors is shorter than current one, overwrite it.</span></span><br><span class="line"><span class="comment">-- PathMap stores determined shortest paths for each position.</span></span><br><span class="line"><span class="comment">-- Each node in the nodeMap has temporal shortest path.</span></span><br><span class="line"><span class="comment">-- Path consists of cost and way (a list of position, reverse order).</span></span><br><span class="line"><span class="title">step</span> :: (<span class="type">Ord</span> pos, <span class="type">Num</span> cost, <span class="type">Ord</span> cost) =&gt;</span><br><span class="line">        <span class="type">Map</span> pos [<span class="type">Edge</span> pos cost] -&gt;</span><br><span class="line">        (<span class="type">Map</span> pos (cost, [pos]), <span class="type">Map</span> pos (cost, [pos])) -&gt;</span><br><span class="line">        (<span class="type">Map</span> pos (cost, [pos]), <span class="type">Map</span> pos (cost, [pos]))</span><br><span class="line"><span class="title">step</span> edgeMap (pathMap, nodeMap) =</span><br><span class="line">  <span class="keyword">let</span> (pos, path) = getMinimumCostNode nodeMap</span><br><span class="line">      edges = findWithDefault [] pos edgeMap</span><br><span class="line">  <span class="keyword">in</span> <span class="keyword">if</span> pos `member` pathMap  <span class="comment">-- Shortest Path is already determined.</span></span><br><span class="line">       <span class="keyword">then</span> (pathMap, delete pos nodeMap)</span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">let</span> nodeMap&#x27; = delete pos $ updateNeigbors path edges nodeMap</span><br><span class="line">                pathMap&#x27; = insert pos path pathMap</span><br><span class="line">            <span class="keyword">in</span> (pathMap&#x27;, nodeMap&#x27;)</span><br><span class="line"></span><br><span class="line"><span class="title">getMinimumCostNode</span> :: (<span class="type">Ord</span> pos, <span class="type">Num</span> cost, <span class="type">Ord</span> cost) =&gt;</span><br><span class="line">                      <span class="type">Map</span> pos (cost, [pos]) -&gt; (pos, (cost, [pos]))</span><br><span class="line"><span class="title">getMinimumCostNode</span> = minimumBy (comparing getCost) . toList</span><br><span class="line">  <span class="keyword">where</span> getCost (_, (cost, _)) = cost</span><br><span class="line"></span><br><span class="line"><span class="title">updateNeigbors</span> :: (<span class="type">Ord</span> pos, <span class="type">Num</span> cost, <span class="type">Ord</span> cost) =&gt;</span><br><span class="line">                  (cost, [pos]) -&gt; [<span class="type">Edge</span> pos cost] -&gt; <span class="type">Map</span> pos (cost, [pos]) -&gt;</span><br><span class="line">                  <span class="type">Map</span> pos (cost, [pos])</span><br><span class="line"><span class="title">updateNeigbors</span> (cost, way) edges nodeMap = foldl updateNeighbor nodeMap edges</span><br><span class="line">  <span class="keyword">where</span> updateNeighbor nodeMap (<span class="type">Edge</span> nextPos moveCost) =</span><br><span class="line">          alter (updateNode (moveCost + cost, nextPos:way)) nextPos nodeMap</span><br><span class="line"></span><br><span class="line"><span class="title">updateNode</span> :: (<span class="type">Ord</span> pos, <span class="type">Num</span> cost, <span class="type">Ord</span> cost) =&gt;</span><br><span class="line">              (cost, [pos]) -&gt; <span class="type">Maybe</span> (cost, [pos]) -&gt; <span class="type">Maybe</span> (cost, [pos])</span><br><span class="line"><span class="title">updateNode</span> newPath <span class="type">Nothing</span>     = return newPath</span><br><span class="line"><span class="title">updateNode</span> newPath (<span class="type">Just</span> path) = return $ min newPath path</span><br><span class="line"></span><br><span class="line"><span class="title">genEdgeMap</span> :: (<span class="type">Ord</span> pos, <span class="type">Num</span> cost, <span class="type">Ord</span> cost) =&gt;</span><br><span class="line">              [(pos, cost, pos)] -&gt; <span class="type">Map</span> pos [<span class="type">Edge</span> pos cost]</span><br><span class="line"><span class="title">genEdgeMap</span> edges = foldl f empty edges</span><br><span class="line">  <span class="keyword">where</span> f edgeMap (from, cost, to) = append (<span class="type">Edge</span> to cost) from edgeMap</span><br><span class="line">        append val pos map = insert pos (val: findWithDefault [] pos map) map</span><br></pre></td></tr></table></figure>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/15/knapsack.html" title="【Haskell】ナップサック問題を解く" rel="bookmark">【Haskell】ナップサック問題を解く</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

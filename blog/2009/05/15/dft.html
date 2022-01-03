@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="周期２\piの関数を等間隔でN分割してそれぞれのサンプル点を
+% 
+
+、サンプル点での値をf_lとすると、離散フーリエ変換の係数は
+% 
+
+となる。
+複素表示を展開すると
+% 
+
+となる。
+逆変換サンプル点を復元する逆変換は、
+% 
+
+プログラム化Rubyの配列にベクトル演算を仕込む：
+class ">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="普通の（fastじゃない）離散フーリエ変換"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>普通の（fastじゃない）離散フーリエ変換 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/05/15/dft.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>普通の（fastじゃない）離散フーリエ変換</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-05-15
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ruby/">#ruby</a> <a href="/tags/math/">#math</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <span id="more"></span>
+
+<p>周期<script type="math/tex">２\pi</script>の関数を等間隔で<script type="math/tex">N</script>分割してそれぞれのサンプル点を</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\theta_l = \frac{2\pi}{N}, (l = 0, 1, 2 ... N-1)
+%]]></script>
+
+<p>、サンプル点での値を<script type="math/tex">f_l</script>とすると、離散フーリエ変換の係数は</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+F_k = \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i2\pi kl/N}
+%]]></script>
+
+<p>となる。</p>
+<p>複素表示を展開すると</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+F_k &= \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i2\pi kl/N} \\
+    &= \frac{1}{N} \sum_{l=0}^{N-1} \left\{ f_l \left( \cos(-2\pi kl/N) + i \sin(-2\pi kl/N) \right) \right\} \\
+    &= \frac{1}{N} \sum_{l=0}^{N-1} \left\{ f_l \left( \cos(2\pi kl/N) - i \sin(2\pi kl/N) \right) \right\} \\
+    &= \frac{1}{N} \sum_{l=0}^{N-1} f_l \cos(2\pi kl/N) - i\frac{1}{N} \sum_{l=0}^{N-1} f_l \sin(2\pi kl/N) \\
+\end{align}
+%]]></script>
+
+<p>となる。</p>
+<h3 id="逆変換"><a href="#逆変換" class="headerlink" title="逆変換"></a>逆変換</h3><p>サンプル点を復元する逆変換は、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+f_l &= \sum_{k=0}^{N-1} F_k e^{i2\pi kl/N} \\
+    &= \sum_{k=0}^{N-1} (Fr_k + i Fi_k) (\cos(2\pi kl/N) + i\sin(2\pi kl/N)) \\
+    &= \sum_{k=0}^{N-1} (Fr_k \cos(2\pi kl/N) - Fi_k \sin(2\pi kl/N)) + i \sum_{k=0}^{N-1} (Fr_k \sin(2\pi kl/N) + Fi_k \cos(2\pi kl/N)) \\
+\end{align}
+%]]></script>
+
+<h3 id="プログラム化"><a href="#プログラム化" class="headerlink" title="プログラム化"></a>プログラム化</h3><p>Rubyの配列にベクトル演算を仕込む：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Array</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">vadd</span><span class="params">(v2)</span></span></span><br><span class="line">    <span class="keyword">self</span>.zip(v2).map <span class="keyword">do</span> <span class="params">|a, b|</span></span><br><span class="line">      a + b</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">vsub</span><span class="params">(v2)</span></span></span><br><span class="line">    <span class="keyword">self</span>.zip(v2).map <span class="keyword">do</span> <span class="params">|a, b|</span></span><br><span class="line">      a - b</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">vscale</span><span class="params">(s)</span></span></span><br><span class="line">    <span class="keyword">self</span>.map <span class="keyword">do</span> <span class="params">|x|</span></span><br><span class="line">      x * s</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">vlength</span><span class="params">()</span></span></span><br><span class="line">    ll = <span class="keyword">self</span>.inject(<span class="number">0</span>) <span class="keyword">do</span> <span class="params">|r, x|</span></span><br><span class="line">      r + x ** <span class="number">2</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    Math.sqrt(ll)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">dot</span><span class="params">(v2)</span></span></span><br><span class="line">    <span class="keyword">self</span>.zip(v2).inject(<span class="number">0</span>) <span class="keyword">do</span> <span class="params">|r, x|</span></span><br><span class="line">      r + x[<span class="number">0</span>] * x[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>離散フーリエ変換を行うクラス：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DFT</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(n)</span></span></span><br><span class="line">    <span class="variable">@n</span> = n</span><br><span class="line">    <span class="variable">@base_cos</span> = (<span class="number">0</span>...<span class="variable">@n</span>).map &#123;<span class="params">|i|</span> make_cos_tbl(<span class="number">8</span>, i)&#125;</span><br><span class="line">    <span class="variable">@base_sin</span> = (<span class="number">0</span>...<span class="variable">@n</span>).map &#123;<span class="params">|i|</span> make_sin_tbl(<span class="number">8</span>, i)&#125;</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 変換</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">transform</span><span class="params">(v)</span></span></span><br><span class="line">    real_parts = <span class="variable">@base_cos</span>.map <span class="keyword">do</span> <span class="params">|b|</span></span><br><span class="line">      v.dot(b) / <span class="variable">@n</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    img_parts = <span class="variable">@base_sin</span>.map <span class="keyword">do</span> <span class="params">|b|</span></span><br><span class="line">      -v.dot(b) / <span class="variable">@n</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> real_parts, img_parts</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 逆変換</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">itransform</span><span class="params">(real_parts, img_parts)</span></span></span><br><span class="line">    rc = _extract(real_parts, <span class="variable">@base_cos</span>)</span><br><span class="line">    is = _extract(img_parts, <span class="variable">@base_sin</span>)</span><br><span class="line">    <span class="keyword">return</span> rc.vsub(is)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">_extract</span><span class="params">(coeffs, base)</span></span></span><br><span class="line">    coeffs.zip(base).inject([<span class="number">0</span>] * <span class="variable">@n</span>) <span class="keyword">do</span> <span class="params">|r, (c, b)|</span></span><br><span class="line">      r.vadd(b.vscale(c))</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  private <span class="symbol">:_extract</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>sin, cosを作るヘルパー関数</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_cos_tbl</span><span class="params">(n, k)</span></span></span><br><span class="line">  (<span class="number">0</span>...n).map <span class="keyword">do</span> <span class="params">|l|</span></span><br><span class="line">    Math.cos(<span class="number">2</span> * Math::PI * k * l / n)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_sin_tbl</span><span class="params">(n, k)</span></span></span><br><span class="line">  (<span class="number">0</span>...n).map <span class="keyword">do</span> <span class="params">|l|</span></span><br><span class="line">    Math.sin(<span class="number">2</span> * Math::PI * k * l / n)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>テスト：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">dft8 = DFT.new(<span class="number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#v = make_cos_tbl(8, 1).vscale(2).vadd(make_sin_tbl(8, 2).vscale(3))</span></span><br><span class="line">v = [<span class="number">1</span>,<span class="number">7</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">0</span>,<span class="number">5</span>,<span class="number">0</span>,<span class="number">8</span>]</span><br><span class="line">p v  <span class="comment"># 元のベクトル</span></span><br><span class="line"></span><br><span class="line">r, i = dft8.transform(v)</span><br><span class="line">p r  <span class="comment"># 離散フーリエ変換結果の係数：実部</span></span><br><span class="line">p i  <span class="comment"># 離散フーリエ変換結果の係数：虚部</span></span><br><span class="line"></span><br><span class="line">tr = dft8.itransform(r, i)</span><br><span class="line">p tr  <span class="comment"># 係数から復元した値</span></span><br><span class="line">p tr.vsub(v).vlength  <span class="comment"># 誤差の大きさ</span></span><br></pre></td></tr></table></figure>
+
+<p>結果：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">8</span>]  <span class="comment"># 元のベクトル</span></span><br><span class="line">[<span class="number">3.25</span>, <span class="number">0.8321067811865474</span>, -<span class="number">0.2500000000000002</span>, -<span class="number">0.5821067811865479</span>, -<span class="number">2.25</span>, -<span class="number">0.5821067811865464</span>, -<span class="number">0.2500000000000022</span>, <span class="number">0.8321067811865511</span>]  <span class="comment"># 離散フーリエ変換結果の係数：実部</span></span><br><span class="line">[-<span class="number">0.0</span>, -<span class="number">0.021446609406726047</span>, -<span class="number">0.25</span>, <span class="number">0.7285533905932745</span>, -<span class="number">1.3471114790620886e-15</span>, -<span class="number">0.7285533905932751</span>, <span class="number">0.25</span>, <span class="number">0.02144660940672849</span>]  <span class="comment"># 離散フーリエ変換結果の係数：虚部</span></span><br><span class="line">[<span class="number">1.0000000000000018</span>, <span class="number">7.000000000000002</span>, <span class="number">3.0000000000000058</span>, <span class="number">1.9999999999999987</span>, -<span class="number">6.709254972601658e-15</span>, <span class="number">5.0</span>, -<span class="number">1.3322676295501878e-15</span>, <span class="number">8.000000000000005</span>]  <span class="comment"># 係数から復元した値</span></span><br><span class="line"><span class="number">1.0798297524896547e-14</span>  <span class="comment"># 誤差の大きさ</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>計算量はO(N^2)</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="http://www.geocities.jp/jun930/etc/rubydft.html">離散フーリエ変換でRuby練習</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/primitive-nth-root.html" title="１の原始N乗根による表現を使った離散フーリエ変換" rel="bookmark">１の原始N乗根による表現を使った離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2011/08/15/bayesian-filter.html" title="「ベイジアンフィルタを実装してみよう」をRubyで" rel="bookmark">「ベイジアンフィルタを実装してみよう」をRubyで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/03/21/easy-dsl.html" title="Rubyで簡単DSL" rel="bookmark">Rubyで簡単DSL</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/06/01/ga-helloworld.html" title="GAで"Hello, world!"" rel="bookmark">GAで"Hello, world!"</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

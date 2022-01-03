@@ -1,0 +1,25 @@
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+canvas:focus {
+  outline: none;
+}
+
+.sketch-canvas {
+  height: 256px;
+  overflow: hidden;
+}
+
+.pull-left {
+  float: left;
+}
+
+div:after,
+ul:after {
+  content: "";
+  display: block;
+  clear: both;
+}

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ODEのジョイントで角度ばねを実現する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ODEのジョイントで角度ばねを実現する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/05/30/ode-damper-string.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ODEのジョイントで角度ばねを実現する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-05-30
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><img src="/assets/snake.png" alt="snake"></p>
+<span id="more"></span>
+
+<p>物理エンジンと遺伝的アルゴリズムを使ってなんかする、という動画たち</p>
+<ul>
+<li><a href="http://www.nicovideo.jp/watch/sm6392515">【人工知能】物理エンジンで人工生命つくって学習させた - ニコニコ動画:Q</a></li>
+<li><a href="http://www.nicovideo.jp/watch/sm16212939">遺伝的アルゴリズムでブランコの漕ぎ方を学習させた。 - ニコニコ動画:Q</a></li>
+</ul>
+<p>が面白かったので、俺もそういうのをやってみたい、と思った。</p>
+<p>WEB上で動かせるといいので、JavaScriptで動く物理エンジンを探してみたところ、<a href="http://chandlerprall.github.io/Physijs/">Physijs</a>というものがあった。
+これは<a href="http://threejs.org/">Three.js</a>というJavaScript用の3D描画エンジンのプラグインになっているので、3D表示が統合されていて便利。
+物理計算は<a href="http://granular.cs.umu.se/browserphysics/?p=349">ammo.js</a>という、C++で書かれた<a href="http://www.bulletphysics.com/">Bullet Physics</a>という物理エンジンを<a href="http://emscripten.org/">Emscripten</a>でJavaScriptにコンバートしたものを使っている。
+そこそこ動いてよかったんだけど、剛体間に角度バネみたいな拘束をさせたくて、剛体に<code>applyForce()</code>をしてみたところ物体が消えてしまい、原因や解決方法がよくわからなかった。</p>
+<p>しかたがないので一旦基本に戻って、C++でやってみることにした。
+使う物理エンジンはBullet Physicsじゃなくて、導入の簡単さから<a href="http://www.ode.org/">Open Dynamics Engine</a>で試してみた。
+ODEは使う浮動小数点数型をSINGLE(float)かDOUBLEを選べるんだけど、ちょっと試したところSINGLEだと計算エラーが発生しやすい感じだったので、configure時に–enable-double-precisionをつけてやったほうがよさそう。
+それでも頻繁に計算エラーや発散が発生するので、実際のアプリでの利用は大丈夫なのか心配。</p>
+<p>で角度バネをどうやって実装しようかとぐぐったところ、ODEのジョイント（拘束）は固いバネ＋ダンパーのような仕組みでできているので、うまくパラメータを設定するとそのようなことが実現できるらしい（<a href="http://lost-found-wandering.blogspot.jp/2012/12/implicit-springs-in-open-dynamics.html">Problems, Solutions, and Ideas: Implicit springs in the Open Dynamics Engine (ODE)</a>）。
+でジョイントは角度などの最小値と最大値を設定できるので、両方共に同じ値を設定してやれば希望の角度にダンパー付きバネで収束してくれる。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">dReal angle1 = M_PI / <span class="number">2</span>, angle2 = M_PI / <span class="number">2</span>;</span><br><span class="line">dJointID joint = <span class="built_in">dJointCreateUniversal</span>(world, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">dJointAttach</span>(joint, body1, body2);</span><br><span class="line"><span class="built_in">dJointSetUniversalAnchor</span>(joint, x, y, z);</span><br><span class="line"><span class="built_in">dJointSetUniversalAxis1</span>(joint, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line"><span class="built_in">dJointSetUniversalAxis2</span>(joint, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">dReal h = <span class="number">0.02</span>;  <span class="comment">// タイムステップ</span></span><br><span class="line">dReal kp = <span class="number">4</span>;  <span class="comment">// バネ係数</span></span><br><span class="line">dReal kd = <span class="number">1.0</span>;  <span class="comment">// ダンパー係数</span></span><br><span class="line">dReal erp = h * kp / (h * kp + kd);</span><br><span class="line">dReal cfm = <span class="number">1.0</span> / (h * kp + kd);</span><br><span class="line"><span class="built_in">dJointSetUniversalParam</span>(joint, dParamLoStop, angle1);</span><br><span class="line"><span class="built_in">dJointSetUniversalParam</span>(joint, dParamHiStop, angle1);</span><br><span class="line"><span class="built_in">dJointSetUniversalParam</span>(joint, dParamStopERP, erp);</span><br><span class="line"><span class="built_in">dJointSetUniversalParam</span>(joint, dParamStopCFM, cfm);</span><br><span class="line"><span class="comment">// 0x100をorすると2つめのパラメータの設定になる</span></span><br><span class="line"><span class="built_in">dJointSetUniversalParam</span>(joint, dParamLoStop | <span class="number">0x100</span>, angle2);</span><br><span class="line"><span class="built_in">dJointSetUniversalParam</span>(joint, dParamHiStop | <span class="number">0x100</span>, angle2);</span><br><span class="line"><span class="built_in">dJointSetUniversalParam</span>(joint, dParamStopERP | <span class="number">0x100</span>, erp);</span><br><span class="line"><span class="built_in">dJointSetUniversalParam</span>(joint, dParamStopCFM | <span class="number">0x100</span>, cfm);</span><br></pre></td></tr></table></figure>
+
+<p>ということで、複数の剛体をユニバーサルジョイント（２軸回転）でつないで、角度バネを設定して、へびっぽい物体を作ってみた。</p>
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/XEYEPc9gkXw" frameborder="0" allowfullscreen></iframe>
+
+<p>今後は遺伝的アルゴリズムというのを試してみたい。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

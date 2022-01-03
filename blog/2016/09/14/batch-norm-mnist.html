@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="多層ニューラルネットでBatch Normalizationの検証 - Qiitaでクォートされていた、
+
+バッチ正規化使ってないなら人生損してるで
+If you aren’t using batch normalization you should
+
+というのを見て初めてニューラルネットワークでのバッチ正規化というものを知った。
+なんか使うだけでいいことずくめらしいので調べてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="MNISTにバッチ正規化を適用"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>MNISTにバッチ正規化を適用 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/09/14/batch-norm-mnist.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>MNISTにバッチ正規化を適用</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-09-14
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/machine-learning/">#machine learning</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://qiita.com/hogefugabar/items/4f6e3702947f7ef8f1bf">多層ニューラルネットでBatch Normalizationの検証 - Qiita</a>でクォートされていた、</p>
+<blockquote>
+<p>バッチ正規化使ってないなら人生損してるで</p>
+<p>If you aren’t using batch normalization you should</p>
+</blockquote>
+<p>というのを見て初めてニューラルネットワークでのバッチ正規化というものを知った。
+なんか使うだけでいいことずくめらしいので調べてみた。</p>
+<span id="more"></span>
+
+<h3 id="イントロ"><a href="#イントロ" class="headerlink" title="イントロ"></a>イントロ</h3><p>論文は<a href="https://arxiv.org/abs/1502.03167">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a>にある。
+中身はよく理解してないけど、学習時のミニバッチごとに、各レイヤーの各要素ごとに正規化して学習させることで内部共変量シフト（Internal Covariate Shift）を減らすことができて、それによって学習率を高く設定できて速く学習が進み、またウェイトの初期値に敏感にならなくて済む。
+またRegularizerとしても機能するためドロップアウトを使わなくてもよい、ということらしい。
+論文では、その時点での最高の画像分類のモデルに対して１４分の１のステップ数で正解率に達したとのこと。</p>
+<h3 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h3><p>ということで論文の中身を読んでみるが意味もよく理解できないし、自力ではまず実装に落とし込めない。
+そこでキーワードでググってみて、<a href="http://qiita.com/sergeant-wizard/items/052c98c6e712a4a8df6a">Batch Normalizationによる収束性能向上 - Qiita</a>や<a href="http://stackoverflow.com/a/34634291/6667631">python - How could I use Batch Normalization in TensorFlow? - Stack Overflowの解答</a>などを見て、実際に動かしたりしてなんとなく動作が掴めた。
+実際のところ便利関数を用意して各層に挟んでやればそのまま適用できて、Tensorflowなどのフレームワークを使えば自動微分で逆誤差伝播も勝手に計算してくれるので、詳細に仕組みを理解しなくても使えてしまうのだった。</p>
+<p>学習時のミニバッチごとの平均と分散を計算するには<a href="https://www.tensorflow.org/versions/master/api_docs/python/nn.html#moments">tf.nn.moments</a>を使う。</p>
+<p>評価時には訓練データ全体の平均と分散を使…いたいところだけど計算するのが大変なので、<a href="https://www.tensorflow.org/versions/master/api_docs/python/train.html#ExponentialMovingAverage">tf.train.ExponentialMovingAverage</a>（指数移動平均）を使う方法が一般的のようだ。
+これだと学習を進めていくうちに自動的に値が得られ、また個々の値を保持しておく必要がないので都合がいいのだろう。</p>
+<h3 id="学習結果の保存・復帰"><a href="#学習結果の保存・復帰" class="headerlink" title="学習結果の保存・復帰"></a>学習結果の保存・復帰</h3><p>学習とテストデータでの評価はできたけど、状態を保存するところで躓いた。
+学習時にはそれまでに与えている訓練データの平均と分散を使えるが、それらの<code>Variable</code>をどうやって保存したらいいのかよくわからなかった。
+クロージャを配列として返しておいて学習が終わったら取り出せるようにして<a href="https://www.tensorflow.org/versions/master/api_docs/python/control_flow_ops.html#identity">tf.identity</a>で名前をつけて別のグラフを構築して…とか力づくでやろうとしたらえらく複雑になってしまった。</p>
+<p>でうろついてたところ、<a href="http://r2rt.com/implementing-batch-normalization-in-tensorflow.html">Implementing Batch Normalization in Tensorflow - R2RT</a>のやり方がスマートだった（<a href="http://disq.us/p/1a89yvj">コメント</a>）。
+訓練データ全体の平均と分散を保持する変数の<code>pop_mean</code>と<code>pop_var</code>を<code>trainable=False</code>として生成することでチェックポイントに保存されるようになるらしい。
+そして学習時にはそれらの変数に対して<a href="https://www.tensorflow.org/versions/r0.10/api_docs/python/state_ops.html#Variable.assign">tf.Variable.assign</a>することで値がセットされ、<code>tf.Saver</code>で保存・復帰ができる。</p>
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><p><a href="https://www.tensorflow.org/versions/master/tutorials/mnist/pros/index.html">Deep MNIST for Experts</a>にバッチ正規化を適用してみた。
+以下ブロックごとに解説：</p>
+<h4 id="インポート、設定"><a href="#インポート、設定" class="headerlink" title="インポート、設定"></a>インポート、設定</h4><figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> tensorflow.examples.tutorials.mnist <span class="keyword">import</span> input_data</span><br><span class="line"></span><br><span class="line">flags = tf.app.flags</span><br><span class="line">FLAGS = flags.FLAGS</span><br><span class="line">flags.DEFINE_integer(<span class="string">&#x27;epochs&#x27;</span>, <span class="number">10000</span>, <span class="string">&#x27;Number of epochs&#x27;</span>)</span><br><span class="line">flags.DEFINE_integer(<span class="string">&#x27;batch_size&#x27;</span>, <span class="number">50</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">flags.DEFINE_float(<span class="string">&#x27;learning_rate&#x27;</span>, <span class="number">1e-4</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">flags.DEFINE_string(<span class="string">&#x27;summary_dir&#x27;</span>, <span class="string">&#x27;summary&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">flags.DEFINE_string(<span class="string">&#x27;output&#x27;</span>, <span class="string">&#x27;checkpoint.ckpt&#x27;</span>, <span class="string">&#x27;Output filename&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>flags</code>でデフォルトのパラメータを設定しつつ、コマンドラインから変更できるようにする</li>
+</ul>
+<h4 id="バッチ正規化ルーチン"><a href="#バッチ正規化ルーチン" class="headerlink" title="バッチ正規化ルーチン"></a>バッチ正規化ルーチン</h4><figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># this is a simpler version of Tensorflow&#x27;s &#x27;official&#x27; version. See:</span></span><br><span class="line"><span class="comment"># https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/layers/python/layers/layers.py#L102</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">batch_norm_wrapper</span>(<span class="params">inputs, phase_train=<span class="literal">None</span>, decay=<span class="number">0.99</span></span>):</span></span><br><span class="line">  epsilon = <span class="number">1e-5</span></span><br><span class="line">  out_dim = inputs.get_shape()[-<span class="number">1</span>]</span><br><span class="line">  scale = tf.Variable(tf.ones([out_dim]))</span><br><span class="line">  beta = tf.Variable(tf.zeros([out_dim]))</span><br><span class="line">  pop_mean = tf.Variable(tf.zeros([out_dim]), trainable=<span class="literal">False</span>)</span><br><span class="line">  pop_var = tf.Variable(tf.ones([out_dim]), trainable=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> phase_train == <span class="literal">None</span>:</span><br><span class="line">    <span class="keyword">return</span> tf.nn.batch_normalization(inputs, pop_mean, pop_var, beta, scale, epsilon)</span><br><span class="line"></span><br><span class="line">  rank = <span class="built_in">len</span>(inputs.get_shape())</span><br><span class="line">  axes = <span class="built_in">range</span>(rank - <span class="number">1</span>)  <span class="comment"># nn:[0], conv:[0,1,2]</span></span><br><span class="line">  batch_mean, batch_var = tf.nn.moments(inputs, axes)</span><br><span class="line"></span><br><span class="line">  ema = tf.train.ExponentialMovingAverage(decay=decay)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">update</span>():</span>  <span class="comment"># Update ema.</span></span><br><span class="line">    ema_apply_op = ema.apply([batch_mean, batch_var])</span><br><span class="line">    <span class="keyword">with</span> tf.control_dependencies([ema_apply_op]):</span><br><span class="line">      <span class="keyword">return</span> tf.nn.batch_normalization(inputs, tf.identity(batch_mean), tf.identity(batch_var), beta, scale, epsilon)</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">average</span>():</span>  <span class="comment"># Use avarage of ema.</span></span><br><span class="line">    train_mean = pop_mean.assign(ema.average(batch_mean))</span><br><span class="line">    train_var = pop_var.assign(ema.average(batch_var))</span><br><span class="line">    <span class="keyword">with</span> tf.control_dependencies([train_mean, train_var]):</span><br><span class="line">      <span class="keyword">return</span> tf.nn.batch_normalization(inputs, train_mean, train_var, beta, scale, epsilon)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> tf.cond(phase_train, update, average)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>学習時：<code>phase_train</code>に<code>Variable</code>を渡してもらい、<a href="https://www.tensorflow.org/versions/master/api_docs/python/nn.html#batch_normalization">tf.nn.batch_normalization</a>を呼び出してバッチ正規化を行う<ul>
+<li><code>tf.nn.batch_normalization</code>を呼び出さずに自前で計算することも可能： <code>scale * (inputs - mean) / tf.sqrt(variance + epsilon) + beta</code></li>
+<li><a href="https://www.tensorflow.org/versions/master/api_docs/python/control_flow_ops.html#cond">tf.cond</a>で分岐させる：<ul>
+<li>学習時<code>true</code>の場合には、ミニバッチの平均と分散</li>
+<li>学習中にテストデータで正解率を調べる場合には<code>false</code>にして、それまでの学習データの指数移動平均</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>識別時：<code>phase_train</code>に<code>None</code>を渡してもらい、計算済みの訓練データの平均を使う</li>
+</ul>
+<h4 id="グラフ構築"><a href="#グラフ構築" class="headerlink" title="グラフ構築"></a>グラフ構築</h4><figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build_graph</span>(<span class="params">is_training</span>):</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">weight_variable</span>(<span class="params">shape</span>):</span></span><br><span class="line">    initial = tf.truncated_normal(shape, stddev=<span class="number">0.1</span>)</span><br><span class="line">    <span class="keyword">return</span> tf.Variable(initial)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">bias_variable</span>(<span class="params">shape</span>):</span></span><br><span class="line">    initial = tf.constant(<span class="number">0.1</span>, shape=shape)</span><br><span class="line">    <span class="keyword">return</span> tf.Variable(initial)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">conv2d</span>(<span class="params">x, W</span>):</span></span><br><span class="line">    <span class="keyword">return</span> tf.nn.conv2d(x, W, strides=[<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">&#x27;SAME&#x27;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">max_pool_2x2</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> tf.nn.max_pool(x, ksize=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">                          strides=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>], padding=<span class="string">&#x27;SAME&#x27;</span>)</span><br><span class="line"></span><br><span class="line">  x = tf.placeholder(tf.float32, shape=[<span class="literal">None</span>, <span class="number">784</span>])</span><br><span class="line">  y_ = tf.placeholder(tf.float32, shape=[<span class="literal">None</span>, <span class="number">10</span>])</span><br><span class="line">  phase_train = tf.placeholder(tf.<span class="built_in">bool</span>, name=<span class="string">&#x27;phase_train&#x27;</span>) <span class="keyword">if</span> is_training <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">  x_image = tf.reshape(x, [-<span class="number">1</span>, <span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">  W_conv1 = weight_variable([<span class="number">5</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">32</span>])</span><br><span class="line">  h_conv1 = conv2d(x_image, W_conv1)</span><br><span class="line">  bn1 = batch_norm_wrapper(h_conv1, phase_train)</span><br><span class="line">  h_pool1 = max_pool_2x2(tf.nn.relu(bn1))</span><br><span class="line"></span><br><span class="line">  W_conv2 = weight_variable([<span class="number">5</span>, <span class="number">5</span>, <span class="number">32</span>, <span class="number">64</span>])</span><br><span class="line">  h_conv2 = conv2d(h_pool1, W_conv2)</span><br><span class="line">  bn2 = batch_norm_wrapper(h_conv2, phase_train)</span><br><span class="line">  h_pool2 = max_pool_2x2(tf.nn.relu(bn2))</span><br><span class="line"></span><br><span class="line">  h_pool2_flat = tf.reshape(h_pool2, [-<span class="number">1</span>, <span class="number">7</span> * <span class="number">7</span> * <span class="number">64</span>])</span><br><span class="line"></span><br><span class="line">  W_fc1 = weight_variable([<span class="number">7</span> * <span class="number">7</span> * <span class="number">64</span>, <span class="number">1024</span>])</span><br><span class="line">  bn_fc1 = batch_norm_wrapper(tf.matmul(h_pool2_flat, W_fc1), phase_train)</span><br><span class="line">  h_fc1 = tf.nn.relu(bn_fc1)</span><br><span class="line"></span><br><span class="line">  W_fc2 = weight_variable([<span class="number">1024</span>, <span class="number">10</span>])</span><br><span class="line">  b_fc2 = bias_variable([<span class="number">10</span>])</span><br><span class="line"></span><br><span class="line">  y_conv = tf.nn.softmax(tf.matmul(h_fc1, W_fc2) + b_fc2)</span><br><span class="line"></span><br><span class="line">  cross_entropy = -tf.reduce_sum(y_ * tf.log(y_conv))</span><br><span class="line">  train_step = tf.train.AdamOptimizer(FLAGS.learning_rate).minimize(cross_entropy)</span><br><span class="line"></span><br><span class="line">  correct_prediction = tf.equal(tf.argmax(y_conv, <span class="number">1</span>), tf.argmax(y_, <span class="number">1</span>))</span><br><span class="line">  accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> x, phase_train, y_, train_step, accuracy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://www.tensorflow.org/versions/master/tutorials/mnist/pros/index.html">Deep MNIST for Experts</a>のモデルにバッチ正規化を適用</li>
+<li>バイアス項は不要なので削除し、活性化関数に渡す前に<code>batch_norm_wrapper</code>を呼び出す</li>
+<li>出力層はバッチ正規化はしない</li>
+<li>ドロップアウトはなくてもいい場合がある、ということなので適用しないでみる</li>
+</ul>
+<h4 id="駆動部分"><a href="#駆動部分" class="headerlink" title="駆動部分"></a>駆動部分</h4><figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">mnist</span>):</span></span><br><span class="line">  x, phase_train, y_, train_step, accuracy = build_graph(is_training=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">  train_accuracy_summary = tf.scalar_summary(<span class="string">&#x27;train accuracy&#x27;</span>, accuracy)</span><br><span class="line">  test_accuracy_summary = tf.scalar_summary(<span class="string">&#x27;test accuracy&#x27;</span>, accuracy)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    sess.run(tf.initialize_all_variables())</span><br><span class="line">    summary_writer = tf.train.SummaryWriter(FLAGS.summary_dir, sess.graph)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> step <span class="keyword">in</span> <span class="built_in">range</span>(FLAGS.epochs):</span><br><span class="line">      batch = mnist.train.next_batch(FLAGS.batch_size)</span><br><span class="line">      <span class="keyword">if</span> step % <span class="number">100</span> == <span class="number">0</span>:</span><br><span class="line">        train_accuracy_result, train_accuracy = sess.run([train_accuracy_summary, accuracy], feed_dict=&#123;x: batch[<span class="number">0</span>], phase_train: <span class="literal">False</span>, y_: batch[<span class="number">1</span>]&#125;)</span><br><span class="line">        test_accuracy_result, test_accuracy = sess.run([test_accuracy_summary, accuracy], feed_dict=&#123;x: mnist.test.images, phase_train: <span class="literal">False</span>, y_: mnist.test.labels&#125;)</span><br><span class="line">        summary_writer.add_summary(train_accuracy_result, step)</span><br><span class="line">        summary_writer.add_summary(test_accuracy_result, step)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;step %d, training accuracy %g, test accuracy %g&quot;</span> % (step, train_accuracy, test_accuracy))</span><br><span class="line">      sess.run(train_step, feed_dict=&#123;x: batch[<span class="number">0</span>], phase_train: <span class="literal">True</span>, y_: batch[<span class="number">1</span>]&#125;)</span><br><span class="line"></span><br><span class="line">    test_accuracy = sess.run(accuracy, feed_dict=&#123;</span><br><span class="line">      x: mnist.test.images, phase_train: <span class="literal">False</span>, y_: mnist.test.labels&#125;)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;test accuracy %g&quot;</span> % test_accuracy)</span><br><span class="line"></span><br><span class="line">    saver = tf.train.Saver()</span><br><span class="line">    <span class="keyword">return</span> saver.save(sess, FLAGS.output)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span>(<span class="params">mnist, saved_model</span>):</span></span><br><span class="line">  x, _, y_, train_step, accuracy = build_graph(is_training=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    sess.run(tf.initialize_all_variables())</span><br><span class="line">    saver = tf.train.Saver()</span><br><span class="line">    saver.restore(sess, saved_model)</span><br><span class="line"></span><br><span class="line">    test_accuracy = sess.run(accuracy, feed_dict=&#123;</span><br><span class="line">      x: mnist.test.images, y_: mnist.test.labels&#125;)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;test accuracy %g&quot;</span> % test_accuracy)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">  mnist = input_data.read_data_sets(<span class="string">&quot;MNIST_DATA/&quot;</span>, one_hot=<span class="literal">True</span>)</span><br><span class="line">  saved_model = train(mnist)</span><br><span class="line"></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;--------&#x27;</span>)</span><br><span class="line">  tf.reset_default_graph()</span><br><span class="line">  test(mnist, saved_model)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  main()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>train</code>で学習させて、チェックポイントファイルに保存</li>
+<li><code>test</code>でチェックポイントファイルから読み込み、テストデータでの正解率を計算<ul>
+<li><code>is_training</code>を切り替えて、学習時のグラフとは別のグラフを作っているが、学習時と同じ正解率になれば望み通り保存・復帰ができている</li>
+</ul>
+</li>
+</ul>
+<h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><ul>
+<li>グラフとか取ってないのでフィーリングの比較だけど、論文の通り学習率を高く設定できて、学習がなかなか進まないということも少なくて、学習率や初期値の調整にわずらわされなくなるのでとてもよい</li>
+<li><a href="http://stackoverflow.com/a/33950177/6667631">TFLearnでも使える</a>ようなので、そちらで動かせるようにしたい</li>
+<li>「BatchNormalizationの仕組みとその直感的な理解 - Qiita」という記事がよさそうなんだけど見れなくなっていて残念…</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/05/dl-brief-historical-review.html" title="「ディープラーニングの最も重要なアイディア」" rel="bookmark">「ディープラーニングの最も重要なアイディア」</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

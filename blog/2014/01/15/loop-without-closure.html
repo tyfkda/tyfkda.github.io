@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="考えていた、Schemeで末尾再帰のコードをループに変更する方法を実装した。考えとしてはシンプルだけど、実装するには大きな変更が必要で、174コミット、１５日も費やしてようやく実装できた（まだバグがあるかもしれないけど…）。やったことをメモしておきたいと思う。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Schemeコンパイラで、末尾再帰のクロージャをループに変更する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Schemeコンパイラで、末尾再帰のクロージャをループに変更する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/01/15/loop-without-closure.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Schemeコンパイラで、末尾再帰のクロージャをループに変更する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2014-01-15
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/lisp/">#lisp</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>考えていた、Schemeで<a href="/blog/2013/12/30/part-from-3imp.html" title="末尾再帰のコードをループに変更する方法">末尾再帰のコードをループに変更する方法</a>を実装した。考えとしてはシンプルだけど、実装するには大きな変更が必要で、174コミット、１５日も費やしてようやく実装できた（まだバグがあるかもしれないけど…）。やったことをメモしておきたいと思う。</p>
+<span id="more"></span>
+
+<h3 id="１．モチベーション"><a href="#１．モチベーション" class="headerlink" title="１．モチベーション"></a>１．モチベーション</h3><p>Schemeの言語仕様にはループのための構文はなく、その代わりに末尾呼び出し最適化を保証している。末尾呼び出し最適化があればスタックを大量に消費せずに繰り返しを実現できる。</p>
+<p>実際にSchemeでループをさせるには、例えばnamed letを使って、</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">(<span class="name">let</span> loop ((<span class="name">i</span> <span class="number">10</span>)</span><br><span class="line">           (<span class="name">acc</span> <span class="number">0</span>))</span><br><span class="line">  (<span class="name">if</span> (<span class="name">&gt;</span> i <span class="number">0</span>)</span><br><span class="line">      (<span class="name">loop</span> (<span class="name">-</span> i <span class="number">1</span>)  <span class="comment">; &lt;= 末尾呼び出し</span></span><br><span class="line">            (<span class="name">+</span> acc i))</span><br><span class="line">    (<span class="name">print</span> acc)))</span><br></pre></td></tr></table></figure>
+
+<p>のようになる。このコードはマクロによって展開されて</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">((<span class="name">lambda</span> (<span class="name">loop</span>)</span><br><span class="line">   (<span class="name">set!</span> loop (<span class="name">lambda</span> (<span class="name">i</span> acc)</span><br><span class="line">                (<span class="name">if</span> (<span class="name">&gt;</span> i <span class="number">0</span>)</span><br><span class="line">                    (<span class="name">loop</span> (<span class="name">-</span> i <span class="number">1</span>)</span><br><span class="line">                          (<span class="name">+</span> acc i))</span><br><span class="line">                  (<span class="name">print</span> acc))))</span><br><span class="line">   (<span class="name">loop</span> <span class="number">10</span> <span class="number">0</span>))</span><br><span class="line"> <span class="literal">nil</span>)</span><br></pre></td></tr></table></figure>
+
+<p>のようになる。</p>
+<p>しかしこのコードを字面通りナイーブにコンパイルすると、ループ用のクロージャの生成と、変数への破壊的代入が発生してしまう。これらはどちらも実行時にメモリ確保が必要で、パフォーマンス的によろしくないので、できれば避けたい。</p>
+<p>そこで文脈を解析して、これらを解決する。</p>
+<h3 id="２．構文木を作成するコンパイラへの変更"><a href="#２．構文木を作成するコンパイラへの変更" class="headerlink" title="２．構文木を作成するコンパイラへの変更"></a>２．構文木を作成するコンパイラへの変更</h3><p>クロージャをループに変換してもいいかどうかを調べるために、ループ用の関数の変数（上の例では<code>loop</code>）がどのように使われているか知る必要がある。3impで示されるような、Schemeのプログラムから直接バイトコードを出力する形式のコンパイラだと変数の使われ方を調べるのが難しいので、一旦S式からスコープ情報を持った構文木に変換して、その構文木を辿ってコンパイルする方式に変更した。</p>
+<p>スコープはlambda式が出てくるたびに現在のスコープを親とする新しいスコープを作成する。スコープにそれぞれの変数がどのように使われているかを構文木の構築時に格納していく。</p>
+<p>構文木のノードは、例えば<code>(lambda (loop) body...)</code>とかを単に<code>(:LAMBDA scope (loop) body-node body-code)</code>のように付加情報を追加したものに変換していく。</p>
+<h3 id="３．クロージャをループに変換できる条件"><a href="#３．クロージャをループに変換できる条件" class="headerlink" title="３．クロージャをループに変換できる条件"></a>３．クロージャをループに変換できる条件</h3><p>前回クロージャをループに変換できるための条件を考えたが、実際にはもっと色々条件が必要だった。
+lambda式のset!は、変数が導入されたスコープの地の文で１回だけ
+関数としてだけ使われていて、他の関数への引数や、戻り値として使われてはいない
+lambda式の内部では末尾再帰のみ（末尾じゃない位置での再帰がない）
+lambda式の内部の直下からだけ呼び出されていて、さらに深い位置からではない
+ループ開始のための、地の文での呼び出しが１回だけ（これは末尾じゃなくてもよい）</p>
+<h3 id="４．コンパイル時のスコープ変更"><a href="#４．コンパイル時のスコープ変更" class="headerlink" title="４．コンパイル時のスコープ変更"></a>４．コンパイル時のスコープ変更</h3><p>構築された構文木のコンパイルでは、ループとして使われるlambda式のset!は完全に出力を省略する。そしてループ開始のための呼び出し部分に、lambda式の本体を出力する。ここでスコープの変更が必要になる。</p>
+<p>元のソースで説明すると、</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">((<span class="name">lambda</span> (<span class="name">loop</span>)  <span class="comment">; &lt;= スコープA</span></span><br><span class="line">   (<span class="name">set!</span> loop (<span class="name">lambda</span> (<span class="name">i</span> acc)  <span class="comment">; &lt;= スコープB</span></span><br><span class="line">                (<span class="name">if</span> (<span class="name">&gt;</span> i <span class="number">0</span>)</span><br><span class="line">                    (<span class="name">loop</span> (<span class="name">-</span> i <span class="number">1</span>)</span><br><span class="line">                          (<span class="name">+</span> acc i))</span><br><span class="line">                  (<span class="name">print</span> acc))))</span><br><span class="line">   (<span class="name">loop</span> <span class="number">10</span> <span class="number">0</span>))  <span class="comment">; &lt;= C</span></span><br><span class="line"> <span class="literal">nil</span>)</span><br></pre></td></tr></table></figure>
+
+<p>ループ本体用クロージャのスコープBは、構文木を作成した時点ではスコープAを親とする別スコープなんだけど、ループとして出力する場合、この<code>set!</code>自体の出力がまるまる省略される。そしてCの位置でのループ開始でその本体をコンパイルして出力するのだけど、スコープBは出力されなくなってしまうので、新たにスコープAをパラメータ（ここでは<code>(i acc)</code>）で拡張したスコープで本体をコンパイルする必要がある。</p>
+<p>このスコープの変更は結構トリッキーで、スコープを変えて構文木を再構築するわけにも行かず、スコープBのメンバへの破壊的代入で対応している。さらにスコープBのlambda式の本体ノードに対してもスコープBの変更を適用する必要がある。ここは破壊的代入だらけで汚いし、バグもいっぱい出た。本当にうまく動いているのかよくわかってない。</p>
+<h3 id="５．ループ継続のジャンプ"><a href="#５．ループ継続のジャンプ" class="headerlink" title="５．ループ継続のジャンプ"></a>５．ループ継続のジャンプ</h3><p>ループを継続するための末尾再帰の関数呼び出しは、ジャンプに変更できる。それには末尾呼び出し最適化と同様に、スタック操作が必要となる。新しいVMのオペコード(<code>LOOP</code>)を追加して対応した。</p>
+<h3 id="６．結果"><a href="#６．結果" class="headerlink" title="６．結果"></a>６．結果</h3><p>今までのコンパイラでの出力：</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">(<span class="name">GREF</span> <span class="literal">nil</span></span><br><span class="line"> PUSH</span><br><span class="line"> EXPND <span class="number">1</span></span><br><span class="line"> BOX <span class="number">0</span>  <span class="comment">; ループ用関数を格納する変数をボックス化</span></span><br><span class="line"> FRAME (<span class="name">CONST</span> <span class="number">0</span></span><br><span class="line">        PUSH</span><br><span class="line">        CONST <span class="number">10</span></span><br><span class="line">        PUSH</span><br><span class="line">        LREF <span class="number">0</span></span><br><span class="line">        PUSH</span><br><span class="line">        <span class="comment">;; ループ用関数のクロージャの生成</span></span><br><span class="line">        CLOSE <span class="number">2</span> <span class="number">1</span> (<span class="name">FRAME</span> (<span class="name">CONST</span> <span class="number">0</span></span><br><span class="line">                          PUSH</span><br><span class="line">                          LREF <span class="number">0</span></span><br><span class="line">                          PUSH</span><br><span class="line">                          GREF &gt;</span><br><span class="line">                          APPLY <span class="number">2</span>)</span><br><span class="line">                         TEST (<span class="name">FRAME</span> (<span class="name">LREF</span> <span class="number">0</span></span><br><span class="line">                                      PUSH</span><br><span class="line">                                      LREF <span class="number">1</span></span><br><span class="line">                                      PUSH</span><br><span class="line">                                      GREF +</span><br><span class="line">                                      APPLY <span class="number">2</span>)</span><br><span class="line">                                     PUSH</span><br><span class="line">                                     FRAME (<span class="name">CONST</span> <span class="number">1</span></span><br><span class="line">                                            PUSH</span><br><span class="line">                                            LREF <span class="number">0</span></span><br><span class="line">                                            PUSH</span><br><span class="line">                                            GREF -</span><br><span class="line">                                            APPLY <span class="number">2</span>)</span><br><span class="line">                                     PUSH</span><br><span class="line">                                     FREF <span class="number">0</span></span><br><span class="line">                                     UNBOX</span><br><span class="line">                                     TAPPLY <span class="number">2</span>)  <span class="comment">; ループ用関数を末尾再帰で呼び出し</span></span><br><span class="line">                         LREF <span class="number">1</span></span><br><span class="line">                         PUSH</span><br><span class="line">                         GREF print</span><br><span class="line">                         TAPPLY <span class="number">1</span>)</span><br><span class="line">        LSET <span class="number">0</span></span><br><span class="line">        APPLY <span class="number">2</span>)</span><br><span class="line"> SHRNK <span class="number">1</span></span><br><span class="line"> HALT)</span><br></pre></td></tr></table></figure>
+
+<p>ボックス化とクロージャ生成が行われていた。</p>
+<p>ループに変換する版の出力：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(GREF nil</span><br><span class="line"> PUSH</span><br><span class="line"> EXPND 1</span><br><span class="line"> ;; ボックス化が省略されている</span><br><span class="line"> CONST 0</span><br><span class="line"> PUSH</span><br><span class="line"> CONST 10</span><br><span class="line"> PUSH</span><br><span class="line"> EXPND 2 .</span><br><span class="line"> ;; クロージャの生成が省略されている</span><br><span class="line"> #0=(FRAME (CONST 0</span><br><span class="line">            PUSH</span><br><span class="line">            LREF 0</span><br><span class="line">            PUSH</span><br><span class="line">            GREF &gt;</span><br><span class="line">            APPLY 2)</span><br><span class="line">           TEST (FRAME (LREF 0</span><br><span class="line">                        PUSH</span><br><span class="line">                        LREF 1</span><br><span class="line">                        PUSH</span><br><span class="line">                        GREF +</span><br><span class="line">                        APPLY 2)</span><br><span class="line">                       PUSH</span><br><span class="line">                       FRAME (CONST 1</span><br><span class="line">                              PUSH</span><br><span class="line">                              LREF 0</span><br><span class="line">                              PUSH</span><br><span class="line">                              GREF -</span><br><span class="line">                              APPLY 2)</span><br><span class="line">                       PUSH</span><br><span class="line">                       LOOP 2 1 . #0#)  ; 末尾再帰が直接ジャンプに変更されている</span><br><span class="line">           FRAME (LREF 1</span><br><span class="line">                  PUSH</span><br><span class="line">                  GREF print</span><br><span class="line">                  APPLY 1)</span><br><span class="line">           SHRNK 2</span><br><span class="line">           SHRNK 1</span><br><span class="line">           HALT))</span><br></pre></td></tr></table></figure>
+
+<p>ボックス化とクロージャ生成が省略され、また末尾再帰が直接のジャンプに変更されている。これにより、単純なループがメモリ確保をせずに実行できるようになった。</p>
+<h3 id="７．その他"><a href="#７．その他" class="headerlink" title="７．その他"></a>７．その他</h3><ul>
+<li>ループに変更した場合、生成されるコードには自己参照が発生するので、コンパイルした結果を出力したり、デバッグで表示させようとする場合、<a href="http://practical-scheme.net/gauche/man/gauche-refj_60.html#index-write_002fss">write/ss</a>のような、無限ループに陥らない対策が必要</li>
+<li>またそのコンパイルして出力されたコードを読み込むにはリーダーが自己参照の読み込みに対応する必要がある</li>
+<li>定義している地の文とかlambda式内部の地の文という条件がlet式を挟んだだけで成り立たなくならないように、3imp 4.7.2 Direct Function Invocations の実装が必要</li>
+</ul>
+<p>単なるループを実装するためだけにこんだけ苦労するのって一体…素直にループ構文導入すればいいじゃんと思うけど、これも<a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%83%A0%E3%83%80%E8%A8%88%E7%AE%97">ラムダ計算</a>の自由度を手に入れるため…と我慢する。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/09/lisp-to-js.html" title="LispからJavaScriptへのトランスレータを作り始めた" rel="bookmark">LispからJavaScriptへのトランスレータを作り始めた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/30/part-from-3imp.html" title="Schemeのコンパイラで効率のいいループの実現方法、そして3impとの決別" rel="bookmark">Schemeのコンパイラで効率のいいループの実現方法、そして3impとの決別</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/11/scheme-loop.html" title="Schemeでの効率のいいループの方法を考える" rel="bookmark">Schemeでの効率のいいループの方法を考える</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/01/16/setjmp.html" title="Schemeコンパイラで、ある種の継続をsetjmpに置き換える" rel="bookmark">Schemeコンパイラで、ある種の継続をsetjmpに置き換える</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="JRubyをコマンドライン上ではなく、Javaのプログラム中から呼び出して使う方法を調べた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="JRubyをJavaから使う方法を調べた"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>JRubyをJavaから使う方法を調べた - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/03/08/jruby-from-java.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>JRubyをJavaから使う方法を調べた</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-03-08
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/jruby/">#jruby</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://jruby.org/">JRuby</a>をコマンドライン上ではなく、Javaのプログラム中から呼び出して使う方法を調べた。</p>
+<span id="more"></span>
+
+<ul>
+<li>使用したJRubyのバージョン： <a href="http://jruby.org/2016/05/27/jruby-9-1-2-0.html">9.1.2.0</a></li>
+</ul>
+<h2 id="JRubyを使うJavaコードのコンパイル、実行"><a href="#JRubyを使うJavaコードのコンパイル、実行" class="headerlink" title="JRubyを使うJavaコードのコンパイル、実行"></a>JRubyを使うJavaコードのコンパイル、実行</h2><p>JRubyを使ったJavaコードをコンパイルするには、<code>-cp</code>（クラスパス）オプションで.jarファイルを指定してコンパイルする：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">javac -cp .:jruby.jar Foo.java</span><br></pre></td></tr></table></figure>
+
+<p>実行にも同じ.jarファイルを指定して</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java -cp .:jruby.jar Foo</span><br></pre></td></tr></table></figure>
+
+<p>などとする。</p>
+<h2 id="文字列をeval"><a href="#文字列をeval" class="headerlink" title="文字列をeval"></a>文字列をeval</h2><p>Javaの文字列として持っているRubyコードを実行するには <a href="http://jruby.org/apidocs/org/jruby/Ruby.html#evalScriptlet(java.lang.String)">Ruby.evalScriptlet</a> が使える：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.jruby.Ruby;</span><br><span class="line"><span class="keyword">import</span> org.jruby.runtime.builtin.IRubyObject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EvalString</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Ruby ruby = Ruby.newInstance();</span><br><span class="line">    IRubyObject result = ruby.evalScriptlet(<span class="string">&quot;(1 + 2) * 3&quot;</span>);</span><br><span class="line">    System.out.println(result);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="http://jruby.org/apidocs/org/jruby/Ruby.html#evalScriptlet(java.lang.String)">Ruby.newInstance</a> でJrubyのインスタンスを生成して使う</li>
+</ul>
+<h2 id="Rubyのコードをファイルから読み込んで実行"><a href="#Rubyのコードをファイルから読み込んで実行" class="headerlink" title="Rubyのコードをファイルから読み込んで実行"></a>Rubyのコードをファイルから読み込んで実行</h2><p>適当なRubyのコードが書かれたファイル</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">puts &quot;foobar&quot;</span><br></pre></td></tr></table></figure>
+
+<p>を読み込んで実行するには</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.jruby.Ruby;</span><br><span class="line"><span class="keyword">import</span> org.jruby.embed.ScriptingContainer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunFile</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Ruby ruby = Ruby.newInstance();</span><br><span class="line">    ScriptingContainer container = <span class="keyword">new</span> ScriptingContainer();</span><br><span class="line">    container.runScriptlet(org.jruby.embed.PathType.RELATIVE, <span class="string">&quot;foo.rb&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>[ScriptingContainer#runScriptlet](<a href="http://jruby.org/apidocs/org/jruby/embed/ScriptingContainer.html#runScriptlet">http://jruby.org/apidocs/org/jruby/embed/ScriptingContainer.html#runScriptlet</a>(org.jruby.embed.PathType, java.lang.String))</li>
+<li>他にも<code>InputStream</code>や<code>Reader</code>を受け取るオーバーロードされたメソッドがある</li>
+</ul>
+<h2 id="JRubyからJavaの静的メソッドを呼び出す"><a href="#JRubyからJavaの静的メソッドを呼び出す" class="headerlink" title="JRubyからJavaの静的メソッドを呼び出す"></a>JRubyからJavaの静的メソッドを呼び出す</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.jruby.Ruby;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CallStaticMethod</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">staticMethod</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;  <span class="comment">// このメソッドをJRubyから呼び出す</span></span><br><span class="line">    <span class="keyword">return</span> x * x;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Ruby ruby = Ruby.newInstance();</span><br><span class="line">    ruby.evalScriptlet(<span class="string">&quot;puts Java::CallStaticMethod.staticMethod(111)&quot;</span>);  <span class="comment">//=&gt; 12321</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Java::クラス名</code> でJavaのクラスにアクセス</li>
+<li>なにもしなくても透過的に呼び出せるし、引数や戻り値も自動変換、超楽チン</li>
+</ul>
+<h2 id="JRubyからJavaのインスタンスを生成してメソッド呼び出し"><a href="#JRubyからJavaのインスタンスを生成してメソッド呼び出し" class="headerlink" title="JRubyからJavaのインスタンスを生成してメソッド呼び出し"></a>JRubyからJavaのインスタンスを生成してメソッド呼び出し</h2><p>適当なJavaのクラスがあったとして</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class Foo &#123;</span><br><span class="line">  private int foo;</span><br><span class="line"></span><br><span class="line">  public Foo(int foo) &#123;</span><br><span class="line">    this.foo = foo;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public int bar(int x) &#123;</span><br><span class="line">    return foo + x;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>それをRubyから生成しメソッドを呼び出す：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.jruby.Ruby;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CallInstanceMethod</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Ruby ruby = Ruby.newInstance();</span><br><span class="line">    ruby.evalScriptlet(<span class="string">&quot;foo = Java::Foo.new(1)\n&quot;</span> +</span><br><span class="line">                       <span class="string">&quot;puts foo.bar(2)&quot;</span>);  <span class="comment">//=&gt; 3</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>普通にRubyで定義したクラスと同様に<code>new</code>して呼び出せる、すげぇ</li>
+</ul>
+<h2 id="JavaからJRubyのメソッドを呼び出す"><a href="#JavaからJRubyのメソッドを呼び出す" class="headerlink" title="JavaからJRubyのメソッドを呼び出す"></a>JavaからJRubyのメソッドを呼び出す</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.jruby.Ruby;</span><br><span class="line"><span class="keyword">import</span> org.jruby.embed.ScriptingContainer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CallJRubyMethod</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Ruby ruby = Ruby.newInstance();</span><br><span class="line"></span><br><span class="line">    ScriptingContainer container = <span class="keyword">new</span> ScriptingContainer();</span><br><span class="line">    container.runScriptlet(<span class="string">&quot;def add(x, y)\n&quot;</span> +</span><br><span class="line">                           <span class="string">&quot;  x + y\n&quot;</span> +</span><br><span class="line">                           <span class="string">&quot;end&quot;</span>);</span><br><span class="line">    Object result = container.callMethod(ruby.getCurrentContext(), <span class="string">&quot;add&quot;</span>, <span class="number">123</span>, <span class="number">456</span>);</span><br><span class="line">    System.out.println(result);  <span class="comment">//=&gt; 579</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>[ScriptingContainer#callMethod](<a href="http://jruby.org/apidocs/org/jruby/embed/ScriptingContainer.html#callMethod">http://jruby.org/apidocs/org/jruby/embed/ScriptingContainer.html#callMethod</a>(java.lang.Object, java.lang.String, java.lang.Object…)) で呼び出せる<ul>
+<li>戻り値は<code>Object</code>型</li>
+</ul>
+</li>
+</ul>
+<h2 id="JRubyからブロックを渡して、Javaから呼び出す"><a href="#JRubyからブロックを渡して、Javaから呼び出す" class="headerlink" title="JRubyからブロックを渡して、Javaから呼び出す"></a>JRubyからブロックを渡して、Javaから呼び出す</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.jruby.Ruby;</span><br><span class="line"><span class="keyword">import</span> org.jruby.RubyFixnum;</span><br><span class="line"><span class="keyword">import</span> org.jruby.RubyProc;</span><br><span class="line"><span class="keyword">import</span> org.jruby.runtime.builtin.IRubyObject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CallBlock</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Ruby ruby = Ruby.newInstance();</span><br><span class="line">    ruby.evalScriptlet(<span class="string">&quot;Java::CallBlock.times(5) &#123;|i| p i&#125;&quot;</span>);</span><br><span class="line">    ruby.evalScriptlet(<span class="string">&quot;Java::CallBlock.times(5).each &#123;|i| p i&#125;&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">times</span><span class="params">(<span class="keyword">int</span> n, RubyProc proc)</span> </span>&#123;</span><br><span class="line">    Ruby runtime = proc.getRuntime();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">      IRubyObject[] args = <span class="keyword">new</span> IRubyObject[] &#123;<span class="keyword">new</span> RubyFixnum(runtime, i)&#125;;</span><br><span class="line">      proc.call(runtime.getCurrentContext(), args);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[] times(<span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">      result[i] = i;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="http://jruby.org/apidocs/org/jruby/RubyProc.html">RubyProc</a>型の引数を指定するとブロックが受け取れる<ul>
+<li><a href="http://jruby.org/apidocs/org/jruby/runtime/Block.html">Block</a>ではない</li>
+</ul>
+</li>
+<li><a href="http://jruby.org/apidocs/org/jruby/RubyBasicObject.html#getRuntime()">getRuntime</a>で<a href="http://jruby.org/apidocs/org/jruby/Ruby.html">Ruby</a>インスタンスが取り出せるので、それを使ってあれこれする<ul>
+<li><a href="http://jruby.org/apidocs/org/jruby/Ruby.html#getCurrentContext()">getCurrentContext</a>のコンテキストをそのまま使っていいのかどうかは不明…</li>
+</ul>
+</li>
+<li>ブロックが省略されてもいい場合には、Javaのオーバーロードを使うのか？</li>
+</ul>
+<h2 id="Javaの配列やリストを受け渡す"><a href="#Javaの配列やリストを受け渡す" class="headerlink" title="Javaの配列やリストを受け渡す"></a>Javaの配列やリストを受け渡す</h2><p>複雑なオブジェクトの受け渡し：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> org.jruby.Ruby;</span><br><span class="line"><span class="keyword">import</span> org.jruby.embed.ScriptingContainer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HandleArray</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Ruby ruby = Ruby.newInstance();</span><br><span class="line"></span><br><span class="line">    ScriptingContainer container = <span class="keyword">new</span> ScriptingContainer();</span><br><span class="line">    container.runScriptlet(<span class="string">&quot;def handle_array(array)\n&quot;</span> +</span><br><span class="line">                           <span class="string">&quot;  p array\n&quot;</span> +</span><br><span class="line">                           <span class="string">&quot;  array.each do |elem|\n&quot;</span> +</span><br><span class="line">                           <span class="string">&quot;    p elem\n&quot;</span> +</span><br><span class="line">                           <span class="string">&quot;  end\n&quot;</span> +</span><br><span class="line">                           <span class="string">&quot;end&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Object[] array = &#123;(Integer)<span class="number">123</span>, <span class="string">&quot;foobar&quot;</span>&#125;;</span><br><span class="line">    container.callMethod(ruby.getCurrentContext(), <span class="string">&quot;handle_array&quot;</span>, <span class="keyword">new</span> Object[]&#123;array&#125;);</span><br><span class="line"></span><br><span class="line">    List&lt;Object&gt; list = <span class="keyword">new</span> ArrayList&lt;Object&gt;();</span><br><span class="line">    list.add(<span class="number">987</span>);</span><br><span class="line">    list.add(<span class="string">&quot;hogefuga&quot;</span>);</span><br><span class="line">    container.callMethod(ruby.getCurrentContext(), <span class="string">&quot;handle_array&quot;</span>, <span class="keyword">new</span> Object[]&#123;list&#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 結果：</span></span><br><span class="line"><span class="comment">// java.lang.Object[123, foobar]@6b68cb27</span></span><br><span class="line"><span class="comment">// 123</span></span><br><span class="line"><span class="comment">// &quot;foobar&quot;</span></span><br><span class="line"><span class="comment">// #&lt;Java::JavaUtil::ArrayList:0x62e6a3ec&gt;</span></span><br><span class="line"><span class="comment">// 987</span></span><br><span class="line"><span class="comment">// &quot;hogefuga&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Rubyの配列のように扱える、ダックタイピングとはいえ便利すぐる…</li>
+<li>同様にJavaの<code>Map</code>もRubyの<code>Hash</code>として扱える</li>
+</ul>
+<h2 id="パース"><a href="#パース" class="headerlink" title="パース"></a>パース</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.jruby.Ruby;</span><br><span class="line"><span class="keyword">import</span> org.jruby.ast.Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Parse</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Ruby ruby = Ruby.newInstance();</span><br><span class="line">    Node node = ruby.parseEval(<span class="string">&quot;1 + 2 * 3&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="keyword">null</span>, <span class="number">0</span>);</span><br><span class="line">    System.out.println(node);</span><br><span class="line"><span class="comment">//(RootNode 0, (CallNode:+ 0, (FixnumNode 0), (ArrayNode 0, (CallNode:* 0, (FixnumNode 0), (ArrayNode 0, (FixnumNode 0)), null)), null))</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      Node node2 = ruby.parseEval(<span class="string">&quot;1 + 2 *&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="keyword">null</span>, <span class="number">0</span>);</span><br><span class="line">      System.out.println(node2);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">      System.err.println(<span class="string">&quot;\nException:&quot;</span>);</span><br><span class="line">      System.err.println(e);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//:1: warning: `*&#x27; after local variable or literal is interpreted as binary operator</span></span><br><span class="line"><span class="comment">//:1: warning: even though it seems like argument prefix</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//Exception:</span></span><br><span class="line"><span class="comment">//org.jruby.exceptions.RaiseException: (SyntaxError) :1: syntax error, unexpected end-of-file</span></span><br><span class="line"><span class="comment">//1 + 2 *</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="コンパイル・実行"><a href="#コンパイル・実行" class="headerlink" title="コンパイル・実行"></a>コンパイル・実行</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.jruby.Ruby;</span><br><span class="line"><span class="keyword">import</span> org.jruby.ast.Node;</span><br><span class="line"><span class="keyword">import</span> org.jruby.ast.executable.Script;</span><br><span class="line"><span class="keyword">import</span> org.jruby.runtime.builtin.IRubyObject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompileRun</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Ruby ruby = Ruby.newInstance();</span><br><span class="line">    Node node = ruby.parseEval(<span class="string">&quot;1 + 2 * 3&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="keyword">null</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    Script script = ruby.tryCompile(node);</span><br><span class="line">    System.out.println(script);</span><br><span class="line"></span><br><span class="line">    IRubyObject result = ruby.runScript(script);</span><br><span class="line">    System.out.println(<span class="string">&quot;result = &quot;</span> + result);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="起動時間"><a href="#起動時間" class="headerlink" title="起動時間"></a>起動時間</h2><ul>
+<li>JRubyの起動にはそこそこ時間がかかる</li>
+<li><code>Ruby.newInstance()</code>を呼び出すだけのコードでも、6秒前後の時間がかかる</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

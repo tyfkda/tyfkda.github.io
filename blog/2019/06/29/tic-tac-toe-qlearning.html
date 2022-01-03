@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="強化学習のチュートリアルとしてOpenAI Gymで棒が倒れないようにする課題の解説のページを読んで動かしているうちにQ学習がなんとなくわかってきたので、
+次の題材としてマルバツゲームの思考ルーチンのAIを作ることにした。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="強化学習でマルバツゲームAI"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>強化学習でマルバツゲームAI - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2019/06/29/tic-tac-toe-qlearning.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>強化学習でマルバツゲームAI</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-06-29
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/machine-learning/">#machine learning</a> <a href="/tags/reinforcement-learning/">#reinforcement learning</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>強化学習のチュートリアルとして<a href="http://neuro-educator.com/rl1/">OpenAI Gymで棒が倒れないようにする課題の解説のページ</a>を読んで動かしているうちにQ学習がなんとなくわかってきたので、
+次の題材としてマルバツゲームの思考ルーチンのAIを作ることにした。</p>
+<span id="more"></span>
+
+<h3 id="マルバツゲームの状態数"><a href="#マルバツゲームの状態数" class="headerlink" title="マルバツゲームの状態数"></a>マルバツゲームの状態数</h3><p>マルバツゲームを学習させるにあたって、状態を見積もってみる：</p>
+<ul>
+<li>盤面のサイズ：3行×3列</li>
+<li>各マスの状態：なし／マル／バツの3通り</li>
+<li>盤面の状態数：3の9乗＝19,683通り（ゲームとしてはありえない状態も含む）</li>
+</ul>
+<p>これに、各状態での行動を掛け合わせてみる：</p>
+<ul>
+<li>行動数：9（盤面のどこに自分のコマを置くか、状態によって無効な行動もあり）</li>
+<li>状態×行動の総数：19,683×9＝177,147通り</li>
+</ul>
+<h3 id="Qテーブル"><a href="#Qテーブル" class="headerlink" title="Qテーブル"></a>Qテーブル</h3><p>状態と行動が離散的の場合、各状態での各行動に対する価値を配列として用意してやることで判断できるようになる（それをQテーブルと呼ぶ）。
+エージェントが行動する際には現在の状態での一番高い価値の行動を取ればいい。</p>
+<p>Python/numpyを使う場合には<code>np.array</code>が使える。</p>
+<h3 id="Qテーブルの学習（Q学習）"><a href="#Qテーブルの学習（Q学習）" class="headerlink" title="Qテーブルの学習（Q学習）"></a>Qテーブルの学習（Q学習）</h3><p>どうやってQテーブルを獲得するかというと、エージェントを実際に行動させてみてその結果によって徐々に改善していく、という方法で行う。
+ある行動を試してみてよい手だったら（報酬が得られたら）価値を高めてやる。
+逆に悪い手だったら価値を下げてやる。
+ということを何度も繰り返してやることで、徐々に正しい価値が推定される。
+（理論的には<a href="https://ja.wikipedia.org/wiki/%E3%83%99%E3%83%AB%E3%83%9E%E3%83%B3%E6%96%B9%E7%A8%8B%E5%BC%8F">ベルマン方程式</a>だのなんだのから導かれるということなんだけど、よく理解していないので割愛…。）</p>
+<p>Q学習（TD法）では</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+Q(s, a) & \mathrel{+}= \alpha (r + \gamma Q(s^\prime, a^\prime) - Q(s, a)), \\
+a^\prime & = \mathop{\rm argmax} Q(s^\prime) \\
+\end{align}
+%]]></script>
+
+<p>という式になる。
+日本語にすると、現在の状態<script type="math/tex">s</script>で行動<script type="math/tex">a</script>をとった場合の価値は、
+報酬<script type="math/tex">r</script>と次の状態<script type="math/tex">s^\prime</script>での最適な行動<script type="math/tex">a^\prime</script>の価値<script type="math/tex">Q(s^\prime, a^\prime)</script>を割引係数<script type="math/tex">\gamma</script>で割り引いたものと考えられるので、
+その値に向けて現在の値との差を学習率<script type="math/tex">\alpha</script>で近づけてやる、ということになるかな。</p>
+<p>最適な行動だけをしていると行き詰まってしまうので、他にいい手がないか探すために一定の確率でランダムな行動を選択する（ε-貪欲法）。</p>
+<h3 id="施行"><a href="#施行" class="headerlink" title="施行"></a>施行</h3><p>空いているマスのうちのどれかに打つというのを対戦相手として、</p>
+<ul>
+<li>学習率 <script type="math/tex">\alpha</script>：0.5</li>
+<li>割引係数 <script type="math/tex">\gamma</script>：0.999</li>
+<li>探索割合ε：5%</li>
+</ul>
+<p>で10万回ほどトライアウトしたところ、ほぼ完全に学習できた。</p>
+<p><img src="/assets/tic-tac-toe-qlearning.png" alt="win-rate-history"></p>
+<p>学習したQテーブルを使って人間相手に対戦できるようにしてみると、ほぼミスせずに勝ちか引き分けに持ち込むことが確認できた。</p>
+<h3 id="追試"><a href="#追試" class="headerlink" title="追試"></a>追試</h3><p>対戦してもランダム要素がないからつまらないな…と思って、ちょっと試しに初手だけランダムに打たせてみたところ、全然弱かった。
+ε-貪欲法で学習させてるんだからそういうケースも学習できてるんじゃないのか…と思ったが、10万回の試行じゃ足りないだけなのかも。</p>
+<p>探索の確率を上げて試行回数を1000万回とかに増やしてみるとようやく負けないようになった。</p>
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><p>盤面：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> reduce</span><br><span class="line"></span><br><span class="line">piece = [<span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;O&#x27;</span>, <span class="string">&#x27;X&#x27;</span>]</span><br><span class="line"></span><br><span class="line">lines = [</span><br><span class="line">  [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], [<span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>],</span><br><span class="line">  [<span class="number">0</span>, <span class="number">3</span>, <span class="number">6</span>], [<span class="number">1</span>, <span class="number">4</span>, <span class="number">7</span>], [<span class="number">2</span>, <span class="number">5</span>, <span class="number">8</span>],</span><br><span class="line">  [<span class="number">0</span>, <span class="number">4</span>, <span class="number">8</span>], [<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>],</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Board</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">    self.buf = [<span class="number">0</span>] * <span class="number">9</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">reset</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(self.buf)):</span><br><span class="line">      self.buf[i] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_state</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Returns board state as an integer&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> reduce(<span class="keyword">lambda</span> a, x: a * <span class="number">3</span> + x, self.buf)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">set</span>(<span class="params">self, x, y, c</span>):</span></span><br><span class="line">    i = x + y * <span class="number">3</span></span><br><span class="line">    <span class="keyword">if</span> self.buf[i] != <span class="number">0</span>:</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    self.buf[x + y * <span class="number">3</span>] = c</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_spaces</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Returns open spaces&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>) <span class="keyword">if</span> self.buf[i] == <span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_over</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;None=Not yet, 1=Player1, 2=Player2, 3=Draw&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> lines:</span><br><span class="line">      c = self.buf[line[<span class="number">0</span>]]</span><br><span class="line">      <span class="keyword">if</span> c == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">      <span class="keyword">if</span> <span class="built_in">all</span>([self.buf[i] == c <span class="keyword">for</span> i <span class="keyword">in</span> line]):</span><br><span class="line">        <span class="keyword">return</span> c</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">all</span>([c != <span class="number">0</span> <span class="keyword">for</span> c <span class="keyword">in</span> self.buf]):</span><br><span class="line">      <span class="keyword">return</span> <span class="number">3</span>  <span class="comment"># Draw</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">disp</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Debug display&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;&#x27;</span>.join([piece[self.buf[j + i * <span class="number">3</span>]] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">3</span>)]))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Board#get_state</code> メソッドで、盤面の配置を強化学習の状態を表す数値に変換できる</li>
+</ul>
+<p>環境：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TicTacToeEnvironment</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, opponent</span>):</span></span><br><span class="line">    self.board = Board()</span><br><span class="line">    self.opponent = opponent</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_state_count</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">3</span> ** <span class="number">9</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_action_count</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">9</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_board</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> self.board</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">reset</span>(<span class="params">self</span>):</span></span><br><span class="line">    self.board.reset()</span><br><span class="line">    self.opponent.reset()</span><br><span class="line">    self.winner = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">return</span> self.board.get_state()</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_possible_actions</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> self.board.get_spaces()</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, action</span>):</span></span><br><span class="line">    <span class="comment">#print(&#x27;step: action=&#123;&#125;&#x27;.format(action))</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> self.board.<span class="built_in">set</span>(action % <span class="number">3</span>, action // <span class="number">3</span>, <span class="number">1</span>):</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;Invalid action: &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(action), file=sys.stderr)</span><br><span class="line">      self.board.disp()</span><br><span class="line">      sys.exit(<span class="number">1</span>)</span><br><span class="line">    winner = self.board.is_over()</span><br><span class="line">    <span class="comment">#print(&#x27;====&#x27;)</span></span><br><span class="line">    <span class="comment">#self.board.disp()</span></span><br><span class="line">    <span class="keyword">if</span> winner:</span><br><span class="line">      self.winner = winner</span><br><span class="line">      <span class="comment">#print(&#x27;  winner=&#123;&#125;&#x27;.format(winner))</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        oa = self.opponent.get_action(self, self.board.get_state())</span><br><span class="line">        <span class="keyword">if</span> self.board.<span class="built_in">set</span>(oa % <span class="number">3</span>, oa // <span class="number">3</span>, <span class="number">2</span>):</span><br><span class="line">          <span class="keyword">break</span></span><br><span class="line">      <span class="comment">#print(&#x27;  opponent-action=&#123;&#125;&#x27;.format(oa))</span></span><br><span class="line">      <span class="comment">#print(&#x27;====&#x27;)</span></span><br><span class="line">      <span class="comment">#self.board.disp()</span></span><br><span class="line">      winner = self.board.is_over()</span><br><span class="line">      <span class="keyword">if</span> winner:</span><br><span class="line">        <span class="comment">#print(&#x27;  winner=&#123;&#125;&#x27;.format(winner))</span></span><br><span class="line">        self.winner = winner</span><br><span class="line"></span><br><span class="line">    done = <span class="literal">False</span></span><br><span class="line">    reward = <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> self.winner:</span><br><span class="line">      done = <span class="literal">True</span></span><br><span class="line">      <span class="keyword">if</span> self.winner == <span class="number">1</span>:</span><br><span class="line">        reward = <span class="number">1.0</span></span><br><span class="line">      <span class="keyword">elif</span> self.winner == <span class="number">2</span>:</span><br><span class="line">        reward = -<span class="number">1.0</span></span><br><span class="line">      <span class="comment"># Draw: reward = 0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> self.board.get_state(), reward, done, ()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>対戦相手も環境の一部として扱う</li>
+<li><code>reset</code>, <code>step</code> はOpenAI Gymの環境と同様にした</li>
+<li>報酬は、勝ち+1、負け-1、引き分け0とした</li>
+</ul>
+<p>エージェント：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BaseAgent</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">reset</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_action</span>(<span class="params">self, env, _observation</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RandomAgent</span>(<span class="params">BaseAgent</span>):</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_action</span>(<span class="params">self, env, _observation</span>):</span></span><br><span class="line">    <span class="keyword">return</span> random.choice(env.get_possible_actions())</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EGreedyAgent</span>(<span class="params">RandomAgent</span>):</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, epsilon, agent</span>):</span></span><br><span class="line">    self.epsilon = epsilon</span><br><span class="line">    self.agent = agent</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_action</span>(<span class="params">self, env, observation</span>):</span></span><br><span class="line">    r = np.random.uniform()</span><br><span class="line">    <span class="keyword">if</span> r &lt; self.epsilon:</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">super</span>().get_action(env, observation)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      <span class="keyword">return</span> self.agent.get_action(env, observation)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">learn</span>(<span class="params">self, discount_factor, observation, action, reward, next_observation</span>):</span></span><br><span class="line">    <span class="comment"># Pass to the actual agent.</span></span><br><span class="line">    self.agent.learn(discount_factor, observation, action, reward, next_observation)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QLearningAgent</span>(<span class="params">BaseAgent</span>):</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, state_count, action_count, learning_rate</span>):</span></span><br><span class="line">    self.learning_rate = learning_rate</span><br><span class="line">    self.QTable = np.zeros((state_count, action_count))</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_action</span>(<span class="params">self, env, observation</span>):</span></span><br><span class="line">    state = observation</span><br><span class="line">    possible_actions = env.get_possible_actions()</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">      best_action = self.QTable[state].argmax()</span><br><span class="line">      <span class="keyword">if</span> best_action <span class="keyword">in</span> possible_actions:</span><br><span class="line">        <span class="keyword">return</span> best_action</span><br><span class="line">      self.QTable[state, best_action] = <span class="built_in">min</span>(self.QTable[state]) - <span class="number">1.0</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">learn</span>(<span class="params">self, discount_factor, observation, action, reward, next_observation</span>):</span></span><br><span class="line">    learning_rate = self.learning_rate</span><br><span class="line">    q_table = self.QTable</span><br><span class="line">    state = observation</span><br><span class="line">    next_state = next_observation</span><br><span class="line"></span><br><span class="line">    next_action = q_table[next_state].argmax()</span><br><span class="line">    gain = reward + discount_factor * q_table[next_state, next_action]</span><br><span class="line">    estimated = q_table[state, action]</span><br><span class="line">    q_table[state, action] += learning_rate * (gain - estimated)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">save</span>(<span class="params">self, filename</span>):</span></span><br><span class="line">    np.save(filename, self.QTable)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">load</span>(<span class="params">self, filename</span>):</span></span><br><span class="line">    self.QTable = np.load(filename)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InteractiveAgent</span>(<span class="params">BaseAgent</span>):</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_action</span>(<span class="params">self, env, _observation</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;====&#x27;</span>)</span><br><span class="line">    env.get_board().disp()</span><br><span class="line"></span><br><span class="line">    possible_actions = env.get_possible_actions()</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">      line = sys.stdin.readline()</span><br><span class="line">      action = <span class="built_in">int</span>(line)</span><br><span class="line">      <span class="keyword">if</span> action <span class="keyword">in</span> possible_actions:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;Invalid&#x27;</span>, file=sys.stderr)</span><br><span class="line">    <span class="keyword">return</span> action</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ここでは観測結果＝状態となる</li>
+<li>打てない場所が選ばれた場合にはQ値をいじって選ばれないようにして再度行動を選択する</li>
+</ul>
+<p>訓練：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trainer</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">run_episode</span>(<span class="params">self, env, agent, discount_factor</span>):</span></span><br><span class="line">    observation = env.reset()</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">      action = agent.get_action(env, observation)</span><br><span class="line">      next_observation, reward, done, info = env.step(action)</span><br><span class="line">      agent.learn(discount_factor, observation, action, reward, next_observation)</span><br><span class="line">      <span class="keyword">if</span> done:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      observation = next_observation</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">battle</span>(<span class="params">self, env, agent, first_random</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;No learning&quot;&quot;&quot;</span></span><br><span class="line">    observation = env.reset()</span><br><span class="line">    first = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">      <span class="keyword">if</span> first <span class="keyword">and</span> first_random:</span><br><span class="line">        action = random.choice(env.get_possible_actions())</span><br><span class="line">        first = <span class="literal">False</span></span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">        action = agent.get_action(env, observation)</span><br><span class="line">      next_observation, reward, done, info = env.step(action)</span><br><span class="line">      <span class="keyword">if</span> done:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      observation = next_observation</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>実際の学習はエージェント側で処理するので、呼び出すだけ</li>
+<li>最初の一手をランダムに選択する <code>battle</code> も用意</li>
+</ul>
+<p>メイン：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  <span class="keyword">import</span> matplotlib</span><br><span class="line">  <span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">  <span class="keyword">import</span> optparse</span><br><span class="line"></span><br><span class="line">  SAVE_FILE_NAME = <span class="string">&#x27;tictactoe.qtable.npy&#x27;</span></span><br><span class="line"></span><br><span class="line">  parser  = optparse.OptionParser()</span><br><span class="line">  parser.add_option(<span class="string">&#x27;--episode&#x27;</span>, <span class="built_in">type</span>=<span class="string">&#x27;int&#x27;</span>, default=<span class="number">1000</span>)</span><br><span class="line">  parser.add_option(<span class="string">&#x27;--learning-rate&#x27;</span>, <span class="built_in">type</span>=<span class="string">&#x27;float&#x27;</span>, default=<span class="number">0.5</span>)</span><br><span class="line">  parser.add_option(<span class="string">&#x27;--discount-factor&#x27;</span>, <span class="built_in">type</span>=<span class="string">&#x27;float&#x27;</span>, default=<span class="number">0.999</span>)</span><br><span class="line">  parser.add_option(<span class="string">&#x27;--epsilon&#x27;</span>, <span class="built_in">type</span>=<span class="string">&#x27;float&#x27;</span>, default=<span class="number">0.05</span>)</span><br><span class="line">  parser.add_option(<span class="string">&#x27;--load&#x27;</span>, action=<span class="string">&#x27;store_true&#x27;</span>, default=<span class="literal">False</span>)</span><br><span class="line">  parser.add_option(<span class="string">&#x27;--test-play&#x27;</span>, action=<span class="string">&#x27;store_true&#x27;</span>, default=<span class="literal">False</span>)</span><br><span class="line">  parser.add_option(<span class="string">&#x27;--test-first-random&#x27;</span>, action=<span class="string">&#x27;store_true&#x27;</span>, default=<span class="literal">False</span>)</span><br><span class="line">  options, _ = parser.parse_args()</span><br><span class="line"></span><br><span class="line">  env = TicTacToeEnvironment(RandomAgent())</span><br><span class="line">  q_agent = QLearningAgent(<span class="number">3</span> ** <span class="number">9</span>, <span class="number">9</span>, options.learning_rate)</span><br><span class="line">  e_agent = EGreedyAgent(options.epsilon, q_agent)</span><br><span class="line">  trainer = Trainer()</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">training</span>(<span class="params">episode_count, agent, win_counts</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(episode_count):</span><br><span class="line">      trainer.run_episode(env, agent, options.discount_factor)</span><br><span class="line">      winner = env.winner</span><br><span class="line">      win_counts[winner - <span class="number">1</span>] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">test_play</span>():</span></span><br><span class="line">    env2 = TicTacToeEnvironment(InteractiveAgent())</span><br><span class="line">    trainer.battle(env2, q_agent, options.test_first_random)</span><br><span class="line">    <span class="comment">#trainer.run_episode(env2, q_agent, options.discount_factor)</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;=== Result&#x27;</span>)</span><br><span class="line">    env2.get_board().disp()</span><br><span class="line">    winner = env2.winner</span><br><span class="line">    <span class="keyword">if</span> winner == <span class="number">1</span>:</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;COM win!&#x27;</span>)</span><br><span class="line">    <span class="keyword">elif</span> winner == <span class="number">2</span>:</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;You win!&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;Draw&#x27;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> options.load:</span><br><span class="line">    q_agent.load(SAVE_FILE_NAME)</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    history = [<span class="number">0.0</span>]</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;### Training&#x27;</span>)</span><br><span class="line">    batch = <span class="number">100</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(options.episode):</span><br><span class="line">      win_counts = [<span class="number">0</span>] * <span class="number">3</span></span><br><span class="line">      training(batch, e_agent, win_counts)</span><br><span class="line">      win_rate = win_counts[<span class="number">0</span>] / batch</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&#x27;Win count&#x27;</span>,  win_counts, win_rate)</span><br><span class="line">      history.append(win_rate)</span><br><span class="line"></span><br><span class="line">    q_agent.save(SAVE_FILE_NAME)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;### Examine&#x27;</span>)</span><br><span class="line">    win_counts = [<span class="number">0</span>] * <span class="number">3</span></span><br><span class="line">    training(<span class="number">1000</span>, q_agent, win_counts)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Win count&#x27;</span>,  win_counts, win_counts[<span class="number">0</span>] / <span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">    plt.figure(figsize=(<span class="number">5</span>, <span class="number">4</span>))</span><br><span class="line">    plt.plot(history)</span><br><span class="line">    plt.axhline(y=<span class="number">0.0</span>, color=<span class="string">&#x27;gray&#x27;</span>, linestyle=<span class="string">&#x27;--&#x27;</span>, linewidth=<span class="number">0.5</span>)</span><br><span class="line">    plt.axhline(y=<span class="number">1.0</span>, color=<span class="string">&#x27;gray&#x27;</span>, linestyle=<span class="string">&#x27;--&#x27;</span>, linewidth=<span class="number">0.5</span>)</span><br><span class="line">    plt.xlabel(<span class="string">&#x27;x &#123;&#125; game&#x27;</span>.<span class="built_in">format</span>(batch))</span><br><span class="line">    plt.ylabel(<span class="string">&#x27;Win rate&#x27;</span>)</span><br><span class="line">    plt.title(<span class="string">&#x27;Q-learning for Tic Tac Toe&#x27;</span>)</span><br><span class="line">    plt.savefig(<span class="string">&#x27;tic-tac-toe-qlearning.png&#x27;</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> options.test_play:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;### Play with human&#x27;</span>)</span><br><span class="line">    test_play()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>いろいろオプションでハイパーパラメータを変更できる</li>
+<li><code>--test-play</code> で学習後に対戦できる<ul>
+<li><code>--test-first-random</code> で初手にランダムな手を選ぶ</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://www.cs.rhul.ac.uk/~chrisw/thesis.html">PhD Thesis: Learning from Delayed Rewards</a>, Watkins, C.J.C.H., 1989　Q学習の論文</li>
+</ul>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=tyfkda-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=4065142989&linkId=254095acb3680859ae2657f12433ca3b"></iframe>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

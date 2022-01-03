@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Raspberry PiでRaspbianを入れて動かすと普通にLinuxとして使えるけどまあそれじゃ特に普通のPCと変わらないよね…
+ということでゆくゆくはオレオレOSを…などと考えてコンテキストスイッチをベアメタルでやってみることにした。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Raspberry Pi Zeroでベアメタルコンテキストスイッチ"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Raspberry Pi Zeroでベアメタルコンテキストスイッチ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2018/12/27/baremetal-ctxswtch-rpz.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Raspberry Pi Zeroでベアメタルコンテキストスイッチ</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2018-12-27
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/os/">#os</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Raspberry Piで<a href="https://www.raspbian.org/">Raspbian</a>を入れて動かすと普通にLinuxとして使えるけどまあそれじゃ特に普通のPCと変わらないよね…
+ということでゆくゆくはオレオレOSを…などと考えてコンテキストスイッチをベアメタルでやってみることにした。</p>
+<span id="more"></span>
+
+
+<h2 id="環境構築"><a href="#環境構築" class="headerlink" title="環境構築"></a>環境構築</h2><p>Linux(Ubuntu)にARM用のクロスコンパイラをインストールする</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ sudo apt install gcc-arm-none-eabi</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="元にするプロジェクト"><a href="#元にするプロジェクト" class="headerlink" title="元にするプロジェクト"></a>元にするプロジェクト</h2><p><a href="https://blog.boochow.com/article/455127381.html">Raspberry Pi Zero WでベアメタルLチカ – 楽しくやろう。</a>で公開されている
+<a href="https://github.com/boochow/bare_matal_rpi_zero/tree/master/led_blynk">led_blynk</a>がシンプルでわかりやすかった。
+ビルドするとkernel.imgが作成される。
+（Makefileのクロスコンパイル設定が<code>arm-eabi-</code>なので<code>arm-none-eabi-</code>に変更する）</p>
+<p>このブログなどをいろいろ見たところによると、Raspberry Pi Zero(ARM)はファームウェアの起動後、kernel.imgが<code>0x8000</code>から実行されるらしい。</p>
+<h2 id="SD-Cardに書き込んでRaspberry-Pi-Zeroで動かす"><a href="#SD-Cardに書き込んでRaspberry-Pi-Zeroで動かす" class="headerlink" title="SD Cardに書き込んでRaspberry Pi Zeroで動かす"></a>SD Cardに書き込んでRaspberry Pi Zeroで動かす</h2><p>ブログ記事によると</p>
+<blockquote>
+<p>makeするとkernel.imgが作成されますので、これをbootcode.binおよびstart.elfと共にSDカードへコピーするとLチカが動作します。<br>
+最新のbootcode.binとstart.elfは<a href="https://github.com/raspberrypi/firmware/tree/master/boot">Raspberry PiのGitHub</a>からダウンロードして下さい。</p>
+</blockquote>
+<p>と書かれているが、まっさらの状態からのSD Cardの書き込み方がよくわからなかった…。</p>
+<p>フォーマットした状態のSD CardにいったんRaspbianのイメージを書き込んで起動させるとあれこれと<a href="https://github.com/raspberrypi/firmware/tree/master/boot">ファームとなるファイルたち？</a>が作られるので、その状態でから始める。
+MacでSD Cardの口に挿入すると /Volumes/boot/ に見えるので、ビルドした kernel.img をコピーしてやる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ cp kernel.img /Volumes/boot/  <span class="comment"># kernel.imgをSD Cardにコピー</span></span><br><span class="line">$ diskutil umount /Volumes/boot/  <span class="comment"># アンマウントしてからSD Cardを取り出す</span></span><br></pre></td></tr></table></figure>
+
+<p>書き込んだらSD CardをRaspberry Pi Zeroに差し替えて起動するとLチカが動いた。</p>
+<h2 id="QEMUで動かす"><a href="#QEMUで動かす" class="headerlink" title="QEMUで動かす"></a>QEMUで動かす</h2><p>最終的に実機で動かすというのはいいんだけど、コードを修正して試すたびにSD Cardにコピーして差し替えて起動させるというのを毎回行うのは面倒だから、エミュレータ環境で動かせると便利。
+led_blynkのリポジトリにある別ディレクトリの<a href="https://github.com/boochow/bare_matal_rpi_zero/tree/master/qemu-arm">qemu-arm</a>がQEMUのARMエミュレータを使って動かせるものになっている。
+<a href="https://github.com/boochow/bare_matal_rpi_zero/blob/master/qemu-arm/rpi.ld">rpi.ld</a>を比べてみると、エミュレータでは開始アドレスが<code>0x8000</code>じゃなくて<code>0x10000</code>になるらしい。</p>
+<p>ARMをエミュレートするMac用のQEMUのインストールは <code>brew install qemu</code> だけでいいのかな？忘れた…。
+<code>qemu-system-arm</code> が動けばよし。
+起動は：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ qemu-system-arm \</span><br><span class="line">	-kernel kernel.img \</span><br><span class="line">	-append <span class="string">&quot;qemu&quot;</span> \</span><br><span class="line">	-cpu arm1176 \</span><br><span class="line">	-M versatilepb \</span><br><span class="line">	-m 256 \</span><br><span class="line">	-no-reboot \</span><br><span class="line">	-nographic \</span><br><span class="line">	-monitor null \</span><br><span class="line">	-serial stdio \</span><br></pre></td></tr></table></figure>
+
+<p>UARTの出力をターミナルで受け取れる、便利。
+<del>ただターミナルからの入力はエコーバックされなかった…なぜだ。</del> エコーバックされていた、自然すぎてターミナルが行っているものかと思った。</p>
+<p>また実機ではUARTのアドレスが違うかも？ということと、またどう接続すればやりとりできるのかわかってないので今のところUARTはエミュレータでしか試せてない。</p>
+<h2 id="ベアメタルコンテキストスイッチ"><a href="#ベアメタルコンテキストスイッチ" class="headerlink" title="ベアメタルコンテキストスイッチ"></a>ベアメタルコンテキストスイッチ</h2><p>さて動かせる環境が整ったので、ベアメタルでコンテキストスイッチさせてみる。
+語句の厳密の定義はともかく、ここではベアメタルというのはOS上じゃなくてCPU直接のまっさらな状態、
+コンテキストスイッチは1つのCPUだけど複数のCPUがあるかのように実行を切り替えて並行に動かす、程度の意味。</p>
+<p>コンテキストスイッチは本当に実行を切り替えるだけで、仮想アドレスとかカーネル／ユーザモードの切替、メモリの保護とかの処理はまったくしないことにする。
+またコンテキストスイッチは自動には行われず、ある関数を明示的に呼び出して行うことにする（ノンプリエンプティブ、協調的）。</p>
+<h3 id="起動ルーチン"><a href="#起動ルーチン" class="headerlink" title="起動ルーチン"></a>起動ルーチン</h3><p>ブートして呼び出される関数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> _start(<span class="keyword">void</span>) &#123;</span><br><span class="line">  uart0_init();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i)</span><br><span class="line">    spawn(childfunc, i);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    uart_print(<span class="string">&quot;Parent\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    wait();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>spawn</code>でプロセス（的なもの）を作成し、あとは無限ループ。
+<code>wait</code>でコンテキストスイッチする。</p>
+<h3 id="子プロセス"><a href="#子プロセス" class="headerlink" title="子プロセス"></a>子プロセス</h3><p>便宜上「子」と呼んでいるが、親子関係があるわけではない：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">childfunc</span><span class="params">(<span class="keyword">int</span> no)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    uart_print(<span class="string">&quot;Child &quot;</span>);</span><br><span class="line">    uart_putint(no);</span><br><span class="line">    uart_print(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    wait();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>spawn</code>される子プロセスも大本のプロセスと内容は変わらず、無限ループで自分の処理を行える。</p>
+<h3 id="プロセス情報とテーブル"><a href="#プロセス情報とテーブル" class="headerlink" title="プロセス情報とテーブル"></a>プロセス情報とテーブル</h3><p>プロセスが管理する情報と、そのテーブル：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="keyword">uintptr_t</span> sp;</span><br><span class="line">&#125; Proc;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PROCMAX  (16)</span></span><br><span class="line"></span><br><span class="line">Proc ptable[PROCMAX];</span><br><span class="line"><span class="keyword">int</span> nproc = <span class="number">1</span>;  <span class="comment">// 0 is reserved for original stack.</span></span><br><span class="line"><span class="keyword">int</span> curProcIdx;</span><br></pre></td></tr></table></figure>
+
+<p>プロセス情報としては単にスタックポインタだけを保持するが、実際にはプロセスごとにスタック領域を割り当てる。
+そしてコンテキスト情報の保存・復帰にスタックが利用される。</p>
+<p>テーブルはプロセスの配列と個数、現在実行中の番号。</p>
+<h3 id="プロセスの生成"><a href="#プロセスの生成" class="headerlink" title="プロセスの生成"></a>プロセスの生成</h3><p>プロセスを生成する<code>spawn</code>関数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">swtch</span><span class="params">(Proc* curr, Proc *next)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">spawn</span><span class="params">(<span class="keyword">void</span> (*func)(), <span class="keyword">uintptr_t</span> arg)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> i = nproc++;</span><br><span class="line">  Proc* proc = &amp;ptable[i];</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">int</span> STACK_SIZE = <span class="number">1024</span>;</span><br><span class="line">  <span class="keyword">void</span>* <span class="built_in">stack</span> = <span class="built_in">malloc</span>(STACK_SIZE);</span><br><span class="line">  <span class="keyword">uintptr_t</span> stackbottom = ((<span class="keyword">uintptr_t</span>)<span class="built_in">stack</span>) + STACK_SIZE;</span><br><span class="line">  <span class="keyword">uintptr_t</span>* sp = (<span class="keyword">uintptr_t</span>*)stackbottom;</span><br><span class="line">  *(--sp) = (<span class="keyword">uintptr_t</span>)func;  <span class="comment">// Set function pointer as a return address.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; ++i)  <span class="comment">// R4~R11</span></span><br><span class="line">    *(--sp) = <span class="number">0</span>;</span><br><span class="line">  *(--sp) = arg;  <span class="comment">// R0</span></span><br><span class="line">  proc-&gt;sp = (<span class="keyword">uintptr_t</span>)sp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>スタックを確保してけつに呼び出す関数を積む。
+また初期のコンテキスト（退避レジスタ）と初期の引数を積んで、最終的なスタックポインタをプロセス情報として保持。</p>
+<p>ベアメタルに<code>malloc</code>関数は存在しないので自作する必要があるが、本題とは外れるので適当に：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> heap[<span class="number">65536</span>] __attribute__ ((aligned (<span class="number">16</span>)));</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">char</span>* heapp = heap;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">malloc</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">int</span> ALIGN = <span class="number">16</span>;</span><br><span class="line">  <span class="keyword">void</span>* p = heapp;</span><br><span class="line">  heapp += (size + ALIGN - <span class="number">1</span>) &amp; -ALIGN;  <span class="comment">// アライメント</span></span><br><span class="line">  <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="プロセス（コンテキスト）切り替え"><a href="#プロセス（コンテキスト）切り替え" class="headerlink" title="プロセス（コンテキスト）切り替え"></a>プロセス（コンテキスト）切り替え</h3><p>プロセスを切り替える<code>wait</code>関数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">wait</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> nextIdx = curProcIdx + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (nextIdx &gt;= nproc)</span><br><span class="line">    nextIdx = <span class="number">0</span>;</span><br><span class="line">  Proc* curr = &amp;ptable[curProcIdx];</span><br><span class="line">  Proc* next = &amp;ptable[nextIdx];</span><br><span class="line">  curProcIdx = nextIdx;</span><br><span class="line">  swtch(curr, next);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>単純に配列の順に進めてプロセスを切り替える。
+コンテキスト切り替えの<code>swtch</code>関数に現在と次のプロセスを渡して切り替える。</p>
+<p><code>swtch</code>はCレベルでは書けないので、ARM用にアセンブラで書く：</p>
+<figure class="highlight as"><table><tr><td class="code"><pre><span class="line"><span class="comment">// swtch.s</span></span><br><span class="line">.globl swtch</span><br><span class="line"></span><br><span class="line"><span class="comment">// void swtch(Proc* curr, Proc* next);</span></span><br><span class="line">swtch:</span><br><span class="line">        push &#123;r0, r4, r5, r6, r7, r8, r9, r10, r11, lr&#125;  <span class="comment">// Save context and return address to the current stack.</span></span><br><span class="line">        str sp, [r0]  <span class="comment">// Save stack pointer to the current proc.</span></span><br><span class="line">        ldr sp, [r1]  <span class="comment">// Restore stack pointer from the next proc.</span></span><br><span class="line">        pop &#123;r0, r4, r5, r6, r7, r8, r9, r10, r11, pc&#125;  <span class="comment">// Restore context and return to the saved address.</span></span><br></pre></td></tr></table></figure>
+
+<p>今回のコンテキストスイッチはノンプリエンプティブ、関数呼び出して切り替えるので、保存する必要があるレジスタはARMの呼び出し規約によれば<code>r4</code>~`r11<code>。 ARMは関数を呼び出す際に戻りアドレスを保存するのにスタックではなく</code>lr`レジスタを使用するので、それもスタックに対比する。
+その時点のスタックポインタを現在のプロセス情報として保存する。</p>
+<p>そして次のプロセスに切り替える。
+次のプロセスのスタックポインタを取り出して<code>pop</code>でコンテキストを復帰して、また<code>lr</code>を<code>pc</code>に<code>pop</code>することで実行を再開する。</p>
+<p><code>r0</code>は保存する必要はないが、<code>spawn</code>で生成したプロセスが最初に呼び出す関数への引数として渡すためだけに追加している。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>ベアメタルでもコンテキストスイッチだけなら結構簡単に書ける。
+C言語に慣れているとスタックポインタをいじってしまうなんてことしていいの？と感じるんだけど、CPUにとってみれば別にタブーではないのであった。</p>
+<h3 id="余談"><a href="#余談" class="headerlink" title="余談"></a>余談</h3><p>*nix標準の<code>fork</code>形式にしようと思ったが、仮想アドレスを実装して分岐したプロセスが同じアドレスを指せるようじゃないとアドレスをずらす必要があって面倒なことになるため見送った。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/11/build-linux.html" title="Linuxカーネルをビルドしてみる" rel="bookmark">Linuxカーネルをビルドしてみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/18/data-segment.html" title="はりぼてOSアプリのメモリレイアウト" rel="bookmark">はりぼてOSアプリのメモリレイアウト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/23/fin-hariboteos.html" title="「OS自作入門」とりあえず完了" rel="bookmark">「OS自作入門」とりあえず完了</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/11/gcc-os.html" title="gccのみでOS自作入門" rel="bookmark">gccのみでOS自作入門</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

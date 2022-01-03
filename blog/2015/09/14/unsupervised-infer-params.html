@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="続・わかりやすい　パターン認識第５章　教師付き学習と教師なし学習5.5 教師なし学習の実習 (p.95)例題5.2(p.83)での教師付き学習でのパラメータの推定の教師の存在を取り払い、例題5.3(p.86)を「教師なし学習アルゴリズム（p.93）」でパラメータの推定を行う">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="教師なし学習でパラメータの推定"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>教師なし学習でパラメータの推定 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/09/14/unsupervised-infer-params.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>教師なし学習でパラメータの推定</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-09-14
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/probability/">#probability</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <h1 id="続・わかりやすい-パターン認識"><a href="#続・わかりやすい-パターン認識" class="headerlink" title="続・わかりやすい　パターン認識"></a>続・わかりやすい　パターン認識</h1><h2 id="第５章-教師付き学習と教師なし学習"><a href="#第５章-教師付き学習と教師なし学習" class="headerlink" title="第５章　教師付き学習と教師なし学習"></a>第５章　教師付き学習と教師なし学習</h2><h3 id="5-5-教師なし学習の実習-p-95"><a href="#5-5-教師なし学習の実習-p-95" class="headerlink" title="5.5 教師なし学習の実習 (p.95)"></a>5.5 教師なし学習の実習 (p.95)</h3><a href="/blog/2015/10/12/supervised-infer-params.html" title="例題5.2(p.83)での教師付き学習でのパラメータの推定">例題5.2(p.83)での教師付き学習でのパラメータの推定</a>の教師の存在を取り払い、例題5.3(p.86)を「教師なし学習アルゴリズム（p.93）」でパラメータの推定を行う
+
+<span id="more"></span>
+
+<p>例題5.3：</p>
+<ul>
+<li>箱に見分けの付かない<script type="math/tex">c</script>種類のサイコロ（<script type="math/tex">\omega_1</script>〜<script type="math/tex">\omega_c</script>）が大量に入っていて、それぞれの含有率（<script type="math/tex">\pi_i</script>）は不明</li>
+<li>サイコロの種類によって各目の出易さが違う（<script type="math/tex">\theta_{ik}</script>） （これも不明）</li>
+<li>箱からサイコロを取り出して投げ、出た目<script type="math/tex">x_t</script>を観測して元の箱に戻す、という操作を<script type="math/tex">n</script>回繰り返す</li>
+<li>観測結果から含有率（<script type="math/tex">\pi_i</script>）及び目の出易さ（<script type="math/tex">\theta_{ik}</script>）を最尤推定で推定せよ</li>
+</ul>
+<p>上記の例題に対する教師なし学習の実験として、3種類のサイコロ、目は奇数か偶数の2種類、<script type="math/tex">\theta</script>は既知で<script type="math/tex">\pi</script>のみを推定する。教師なしなので観測結果は出た目（<script type="math/tex">\vec{x}</script>）だけで、各回に投げたサイコロがどのサイコロだったか（<script type="math/tex">\vec{s}</script>）は不明とする（実際には使用するのはサイコロの目それぞれの出現回数を集計した <script type="math/tex">\vec{r}</script> だけ）。</p>
+<h3 id="変数表"><a href="#変数表" class="headerlink" title="変数表"></a>変数表</h3><table>
+<thead>
+<tr>
+<th align="center">内容</th>
+<th align="center">変数名</th>
+<th align="center">備考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">サイコロの種類</td>
+<td align="center"><script type="math/tex">\omega_1, \omega_2, \ldots, \omega_c</script></td>
+<td align="center"><script type="math/tex">c</script>種類　ループ変数<script type="math/tex">i</script></td>
+</tr>
+<tr>
+<td align="center">各サイコロの目（共通）</td>
+<td align="center"><script type="math/tex">v_1, v_2, \ldots, v_m</script></td>
+<td align="center"><script type="math/tex">m</script>種類　ループ変数<script type="math/tex">k</script></td>
+</tr>
+<tr>
+<td align="center"><script type="math/tex">n</script>回振った各サイコロの種類の時系列データ</td>
+<td align="center"><script type="math/tex">s_1, s_2, \ldots, s_n</script></td>
+<td align="center">各要素<script type="math/tex">s_t</script>はサイコロの種類、なので<script type="math/tex">\omega_1</script>〜<script type="math/tex">\omega_c</script>のどれか　（教師なしなので知ることはできない）</td>
+</tr>
+<tr>
+<td align="center"><script type="math/tex">n</script>回振って出たサイコロの目の時系列データ</td>
+<td align="center"><script type="math/tex">x_1, x_2, \ldots, x_n</script></td>
+<td align="center">各要素<script type="math/tex">x_t</script>はサイコロの目、なので<script type="math/tex">v_1</script>〜<script type="math/tex">v_m</script>のどれか　ループ変数<script type="math/tex">t</script></td>
+</tr>
+<tr>
+<td align="center"><script type="math/tex">n</script>回の試行でサイコロの各目が何回出たかの集計</td>
+<td align="center"><script type="math/tex">r_1, r_2, \ldots, r_m</script></td>
+<td align="center"><script type="math/tex">\vec{x}</script>より集計できる</td>
+</tr>
+<tr>
+<td align="center">箱の中のサイコロの含有率（<strong>未知</strong>）</td>
+<td align="center"><script type="math/tex">\pi_1, \pi_2, \ldots, \pi_c</script></td>
+<td align="center"><script type="math/tex">c</script>種類　定義により<script type="math/tex">\pi_i = P(\omega_i)</script></td>
+</tr>
+<tr>
+<td align="center">各サイコロを投げて各目が出る確率（<strong>未知</strong>（本来は、しかし5.5では既知として扱う））</td>
+<td align="center"><script type="math/tex">\theta_{ik}</script></td>
+<td align="center"><script type="math/tex">i</script>がサイコロの種類、<script type="math/tex">k</script>が目の種類</td>
+</tr>
+</tbody></table>
+<p>変数と添字が多くてわけわからなくなるんだよね…</p>
+<h3 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h3><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># param_infer_unsupervised.rb</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span></span></span><br><span class="line">  <span class="comment"># πi: それぞれのサイコロが箱の中にどのような割合で混ざっているか</span></span><br><span class="line">  pi = [<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.5</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># θi: それぞれのサイコロを投げた時に表が出る確率</span></span><br><span class="line">  theta = [[<span class="number">0.8</span>, <span class="number">0.2</span>],</span><br><span class="line">           [<span class="number">0.6</span>, <span class="number">0.4</span>],</span><br><span class="line">           [<span class="number">0.3</span>, <span class="number">0.7</span>]]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 試行回数</span></span><br><span class="line">  n = <span class="number">10000</span></span><br><span class="line">  r = make_trial(n, pi, theta)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 推定する含有率πの初期値</span></span><br><span class="line">  initial_infer_pi = [<span class="number">0.3</span>, <span class="number">0.5</span>, <span class="number">0.2</span>]</span><br><span class="line"></span><br><span class="line">  pis, log_likelihoods = infer_params_unsupervised(r, theta, initial_infer_pi)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 結果表示</span></span><br><span class="line">  pis.size.times &#123;<span class="params">|i|</span> puts <span class="string">&quot;<span class="subst">#&#123;i&#125;</span>: <span class="subst">#&#123;pis[i].inspect&#125;</span>&#125;, <span class="subst">#&#123;log_likelihoods[i]&#125;</span>&quot;</span>&#125;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 教師なし学習アルゴリズムでパラメータの推定を行う</span></span><br><span class="line"><span class="comment"># _r_ :: サイコロの各目が出た回数 r_k</span></span><br><span class="line"><span class="comment"># _theta_ :: 各サイコロの、各目の出る確率</span></span><br><span class="line"><span class="comment"># _initial_pi_ :: 推定する、サイコロの含有率の初期値</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">infer_params_unsupervised</span><span class="params">(r, theta, initial_pi)</span></span></span><br><span class="line">  <span class="comment"># 試行で出た目だけを使って（どのサイコロだったかはわからない状態で）</span></span><br><span class="line">  <span class="comment"># サイコロのそれぞれの含有率piを推定する</span></span><br><span class="line">  <span class="comment"># 各サイコロを振った時に出る目の割合は既知(theta)とする</span></span><br><span class="line"></span><br><span class="line">  c = theta.size  <span class="comment"># サイコロの種類数</span></span><br><span class="line">  m = theta[<span class="number">0</span>].size  <span class="comment"># サイコロの出る目の種類数</span></span><br><span class="line">  n = r.inject(<span class="symbol">:+</span>)  <span class="comment"># 試行回数：各目が出た回数の合計</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Step 1: πi, θikの初期値を与える</span></span><br><span class="line">  pi = initial_pi</span><br><span class="line"></span><br><span class="line">  pis = []</span><br><span class="line">  log_likelihoods = []</span><br><span class="line">  <span class="number">50</span>.times <span class="keyword">do</span></span><br><span class="line">    <span class="comment"># Step 2: ベイズの定理により、P(ωi|vk)を計算する</span></span><br><span class="line">    p_wi_vk = (<span class="number">0</span>...c).map <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">      (<span class="number">0</span>...m).map <span class="keyword">do</span> <span class="params">|k|</span></span><br><span class="line">        prob = sigma(<span class="number">0</span>...c) <span class="keyword">do</span> <span class="params">|j|</span></span><br><span class="line">          pi[j] * theta[j][k]</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        pi[i] * theta[i][k] / prob</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment"># Step 3-1: この値を用いてπiを更新し、以下の^πiを求める</span></span><br><span class="line">    pi_hat = (<span class="number">0</span>...c).map <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">      sigma(<span class="number">0</span>...m) <span class="keyword">do</span> <span class="params">|k|</span></span><br><span class="line">        r[k] * p_wi_vk[i][k] / n</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Step 4: πi = ^πi, θik = ^θikと設定する</span></span><br><span class="line">    pi = pi_hat</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 式(5.8)、(5.51)より対数尤度logP(x)を求め、その増分が予め定めた</span></span><br><span class="line">    <span class="comment"># 閾値以下なら終了し、さもなければ、Step 2に戻って同じ処理を繰り返す。</span></span><br><span class="line">    p_vk = (<span class="number">0</span>...m).map <span class="keyword">do</span> <span class="params">|k|</span>  <span class="comment"># 式(5.8): サイコロの目vkが出る確率</span></span><br><span class="line">      sigma(<span class="number">0</span>...c) <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">        pi[i] * theta[i][k]</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    log_px = sigma(<span class="number">0</span>...m) <span class="keyword">do</span> <span class="params">|k|</span>  <span class="comment"># 式(5.51): 対数尤度logP(x)</span></span><br><span class="line">      r[k] * Math::log(p_vk[k])</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    pis.push(pi)</span><br><span class="line">    log_likelihoods.push(log_px)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">return</span> pis, log_likelihoods</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 箱からサイコロを取り出して投げる、という試行をn回行い、</span></span><br><span class="line"><span class="comment"># その結果サイコロの各目が出た回数を配列で返す</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_trial</span><span class="params">(n, pi, theta)</span></span></span><br><span class="line">  m = theta[<span class="number">0</span>].size  <span class="comment"># 出る目の種類の数</span></span><br><span class="line">  r = Array.new(m) &#123;<span class="number">0</span>&#125;</span><br><span class="line">  n.times <span class="keyword">do</span></span><br><span class="line">    st = pick_dice(pi)</span><br><span class="line">    xt = roll_dice(theta[st])</span><br><span class="line">    r[xt] += <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">return</span> r</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 箱からサイコロを無作為に取り出す</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pick_dice</span><span class="params">(pi)</span></span></span><br><span class="line">  random_choise(pi)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># サイコロを投げてどの目が出たかを返す</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">roll_dice</span><span class="params">(theta)</span></span></span><br><span class="line">  random_choise(theta)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 確率でランダムに選び、選んだインデクスを返す</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">random_choise</span><span class="params">(probs)</span></span></span><br><span class="line">  r = rand</span><br><span class="line">  probs.each_with_index <span class="keyword">do</span> <span class="params">|p, i|</span></span><br><span class="line">    <span class="keyword">return</span> i <span class="keyword">if</span> r &lt; p</span><br><span class="line">    r -= p</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">return</span> probs.size - <span class="number">1</span>  <span class="comment"># 誤差対策</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Rangeに対してブロックを呼び出し、その結果の和を返す：∑</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigma</span><span class="params">(range, &amp;block)</span></span></span><br><span class="line">  range.map <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">    block.call(i)</span><br><span class="line">  <span class="keyword">end</span>.inject(<span class="symbol">:+</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">main</span><br></pre></td></tr></table></figure>
+
+<h3 id="50回の繰り返しの結果"><a href="#50回の繰り返しの結果" class="headerlink" title="50回の繰り返しの結果"></a>50回の繰り返しの結果</h3><h4 id="対数尤度-（図-5-2相当）"><a href="#対数尤度-（図-5-2相当）" class="headerlink" title="対数尤度　（図 5.2相当）"></a>対数尤度　（図 5.2相当）</h4><p><img src="https://chart.googleapis.com/chart?chs=550x400&cht=lc&chxt=x,y&chxr=0,0,50,10%7C1,-7200,-6900,100&chd=t:17.1,35.4,49.6,60.3,68.4,74.5,79.0,82.4,84.9,86.8,88.2,89.3,90.1,90.6,91.1,91.4,91.6,91.8,92.0,92.1,92.1,92.2,92.2,92.3,92.3,92.3,92.3,92.3,92.3,92.3,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4,92.4" alt="log_likelihood"></p>
+<h4 id="各サイコロの推定含有率-（図-5-3相当）"><a href="#各サイコロの推定含有率-（図-5-3相当）" class="headerlink" title="各サイコロの推定含有率　（図 5.3相当）"></a>各サイコロの推定含有率　（図 5.3相当）</h4><p><img src="https://chart.googleapis.com/chart?chs=600x400&cht=lc&chco=ff0000,00ff00,0000ff&chdl=Dice1%7CDice2%7CDice3&chxt=x,y&chxr=0,0,50,10%7C1,0,0.6,0.1&chd=t:45.0,40.8,37.3,34.4,31.9,29.9,28.3,26.9,25.7,24.7,23.9,23.2,22.6,22.1,21.6,21.3,20.9,20.7,20.4,20.2,20.1,19.9,19.8,19.7,19.6,19.5,19.4,19.4,19.3,19.3,19.2,19.2,19.2,19.1,19.1,19.1,19.1,19.1,19.0,19.0,19.0,19.0,19.0,19.0,19.0,19.0,19.0,19.0,19.0,19.0%7C83.3,82.8,81.9,80.8,79.6,78.5,77.4,76.3,75.3,74.5,73.7,73.0,72.3,71.8,71.3,70.9,70.5,70.2,69.9,69.7,69.4,69.3,69.1,68.9,68.8,68.7,68.6,68.5,68.5,68.4,68.4,68.3,68.3,68.2,68.2,68.2,68.2,68.1,68.1,68.1,68.1,68.1,68.1,68.1,68.1,68.0,68.0,68.0,68.0,68.0%7C38.4,43.1,47.5,51.5,55.1,58.3,61.1,63.5,65.6,67.5,69.1,70.5,71.8,72.8,73.7,74.5,75.2,75.8,76.3,76.8,77.2,77.5,77.8,78.0,78.3,78.5,78.6,78.8,78.9,79.0,79.1,79.2,79.2,79.3,79.4,79.4,79.4,79.5,79.5,79.5,79.6,79.6,79.6,79.6,79.6,79.6,79.6,79.6,79.7,79.7" alt="dice_probability"></p>
+<h2 id="式-5-53-から求めてみる"><a href="#式-5-53-から求めてみる" class="headerlink" title="式(5.53)から求めてみる"></a>式(5.53)から求めてみる</h2><p>p.94に、</p>
+<blockquote>
+<p>例題5.3で求められている最適なパラメータは、すでに式(5.53)で示されており、あえて上記繰返し演算を適用する必要はない</p>
+</blockquote>
+<p>と書かれている。なので式(5.53)から求めてみる：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+P(v_k) = \sum_{i=1}^c \pi_i \cdot \theta_{ik} = \frac{r_k}{n}
+\tag{5.53}
+%]]></script>
+
+<p>書き下すと</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\pi_1 \cdot \theta_{1,odd} + \pi_2 \cdot \theta_{2,odd} + \pi_3 \cdot \theta_{3,odd} &= \frac{r_{odd}}{n} \\
+\pi_1 \cdot \theta_{1,even} + \pi_2 \cdot \theta_{2,even} + \pi_3 \cdot \theta_{3,even} &= \frac{r_{even}}{n}
+\end{align}
+%]]></script>
+
+<p><code>srand(0)</code> で試した所、１万回中 <script type="math/tex">r_{odd} = 4793</script>、<script type="math/tex">r_{even} = 5207</script> だった。未知の変数は <script type="math/tex">pi</script> の3、方程式は2つなので一意に解けない。仮に <script type="math/tex">\pi_1 = 0.1139</script> とわかったとして計算すると、 <script type="math/tex">\pi_2 = 0.4078</script>, <script type="math/tex">\pi_3 = 0.4783</script> となり、繰り返し計算で求めた値と近い値が得られた。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/05/bayes-error.html" title="ベイズ誤り確率の計算" rel="bookmark">ベイズ誤り確率の計算</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/07/23/bayes-graphical-model.html" title="ベイズ推定とグラフィカルモデル：コンピュータビジョン基礎" rel="bookmark">ベイズ推定とグラフィカルモデル：コンピュータビジョン基礎</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/02/coin-toss-bayes-update.html" title="コインを投げるごとにどのコインなのかの確率を計算（ベイズ更新）" rel="bookmark">コインを投げるごとにどのコインなのかの確率を計算（ベイズ更新）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/02/coin-toss.html" title="コインを投げて表が出た時に、どのコインだったかの確率" rel="bookmark">コインを投げて表が出た時に、どのコインだったかの確率</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/02/multiple-coin-toss.html" title="同じコインを複数回投げた結果から、どのコインだったかの確率" rel="bookmark">同じコインを複数回投げた結果から、どのコインだったかの確率</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

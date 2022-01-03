@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="昔Automatorで動かしていたものが動かなくなっていたのでググったらいいものが見つかった：automatorの標準動作エラーについて | Apple サポートコミュニティ">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="MacでPDFに画像を追加する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>MacでPDFに画像を追加する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/08/31/pdf-image.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>MacでPDFに画像を追加する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-08-31
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>昔Automatorで動かしていたものが動かなくなっていたのでググったらいいものが見つかった：<a href="https://discussionsjapan.apple.com/thread/10158889">automatorの標準動作エラーについて | Apple サポートコミュニティ</a></p>
+<span id="more"></span>
+
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># Watermark each page in a PDF document</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> getopt</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">from</span> Quartz.CoreGraphics <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> Quartz.ImageIO <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">drawWatermark</span>(<span class="params">ctx, image, xOffset, yOffset, angle, scale, opacity</span>):</span></span><br><span class="line">    <span class="keyword">if</span> image:</span><br><span class="line">        imageWidth = CGImageGetWidth(image)</span><br><span class="line">        imageHeight = CGImageGetHeight(image)</span><br><span class="line">        imageBox = CGRectMake(<span class="number">0</span>, <span class="number">0</span>, imageWidth, imageHeight)</span><br><span class="line"></span><br><span class="line">        CGContextSaveGState(ctx)</span><br><span class="line">        CGContextSetAlpha(ctx, opacity)</span><br><span class="line">        CGContextTranslateCTM(ctx, xOffset, yOffset)</span><br><span class="line">        CGContextScaleCTM(ctx, scale, scale)</span><br><span class="line">        CGContextTranslateCTM(ctx, imageWidth / <span class="number">2</span>, imageHeight / <span class="number">2</span>)</span><br><span class="line">        CGContextRotateCTM(ctx, angle * math.pi / <span class="number">180</span>)</span><br><span class="line">        CGContextTranslateCTM(ctx, -imageWidth / <span class="number">2</span>, -imageHeight / <span class="number">2</span>)</span><br><span class="line">        CGContextDrawImage(ctx, imageBox, image)</span><br><span class="line">        CGContextRestoreGState(ctx)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createImage</span>(<span class="params">imagePath</span>):</span></span><br><span class="line">    image = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># provider = CGDataProviderCreateWithFilename(imagePath)    # FIXED: replaced by the following CGDataProviderCreateWithURL()</span></span><br><span class="line">    url = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, imagePath, <span class="built_in">len</span>(imagePath), <span class="literal">False</span>)</span><br><span class="line">    provider = CGDataProviderCreateWithURL(url)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> provider:</span><br><span class="line">        imageSrc = CGImageSourceCreateWithDataProvider(provider, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">if</span> imageSrc:</span><br><span class="line">            image = CGImageSourceCreateImageAtIndex(imageSrc, <span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> image:</span><br><span class="line">        sys.stderr.write(<span class="string">&quot;Cannot import the image from file: %s\n&quot;</span> % imagePath)</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> image</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">watermark</span>(<span class="params">inputFile, watermarkFiles, outputFile, under, xOffset, yOffset, angle, scale, opacity, verbose</span>):</span></span><br><span class="line">    images = <span class="built_in">map</span>(createImage, watermarkFiles)</span><br><span class="line">    ctx = CGPDFContextCreateWithURL(CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, outputFile, <span class="built_in">len</span>(outputFile), <span class="literal">False</span>), <span class="literal">None</span>, <span class="literal">None</span>)</span><br><span class="line">    <span class="keyword">if</span> ctx:</span><br><span class="line">        pdf = CGPDFDocumentCreateWithURL(CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, inputFile, <span class="built_in">len</span>(inputFile), <span class="literal">False</span>))</span><br><span class="line">        <span class="keyword">if</span> pdf:</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, CGPDFDocumentGetNumberOfPages(pdf) + <span class="number">1</span>):</span><br><span class="line">                image = images[i % <span class="built_in">len</span>(images) - <span class="number">1</span>]</span><br><span class="line">                page = CGPDFDocumentGetPage(pdf, i)</span><br><span class="line">                <span class="keyword">if</span> page:</span><br><span class="line">                    mediaBox = CGPDFPageGetBoxRect(page, kCGPDFMediaBox)</span><br><span class="line">                    <span class="keyword">if</span> CGRectIsEmpty(mediaBox):</span><br><span class="line">                        mediaBox = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">                    CGContextBeginPage(ctx, mediaBox)</span><br><span class="line">                    <span class="keyword">if</span> under:</span><br><span class="line">                        drawWatermark(ctx, image, xOffset, yOffset, angle, scale, opacity)</span><br><span class="line">                    CGContextDrawPDFPage(ctx, page)</span><br><span class="line">                    <span class="keyword">if</span> <span class="keyword">not</span> under:</span><br><span class="line">                        drawWatermark(ctx, image, xOffset, yOffset, angle, scale, opacity)</span><br><span class="line">                    CGContextEndPage(ctx)</span><br><span class="line">            <span class="keyword">del</span> pdf</span><br><span class="line">        CGPDFContextClose(ctx)</span><br><span class="line">        <span class="keyword">del</span> ctx</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">argv</span>):</span></span><br><span class="line">    verbose = <span class="literal">False</span></span><br><span class="line">    readFilename = <span class="literal">None</span></span><br><span class="line">    writeFilename = <span class="literal">None</span></span><br><span class="line">    under = <span class="literal">False</span></span><br><span class="line">    xOffset = <span class="number">0.0</span>   <span class="comment"># FIXED: changed to float value</span></span><br><span class="line">    yOffset = <span class="number">0.0</span>   <span class="comment"># FIXED: changed to float value</span></span><br><span class="line">    angle = <span class="number">0.0</span>     <span class="comment"># FIXED: changed to float value</span></span><br><span class="line">    scale = <span class="number">1.0</span>     <span class="comment"># FIXED: added</span></span><br><span class="line">    opacity = <span class="number">1.0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Parse the command line options</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        options, args = getopt.getopt(argv, <span class="string">&quot;vutx:y:a:p:s:i:o:&quot;</span>, [<span class="string">&quot;verbose&quot;</span>, <span class="string">&quot;under&quot;</span>, <span class="string">&quot;over&quot;</span>, <span class="string">&quot;xOffset=&quot;</span>, <span class="string">&quot;yOffset=&quot;</span>, <span class="string">&quot;angle=&quot;</span>, <span class="string">&quot;opacity=&quot;</span>, <span class="string">&quot;scale=&quot;</span>, <span class="string">&quot;input=&quot;</span>, <span class="string">&quot;output=&quot;</span>, ])</span><br><span class="line">    <span class="keyword">except</span> getopt.GetoptError:</span><br><span class="line">        usage()</span><br><span class="line">        sys.exit(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> option, arg <span class="keyword">in</span> options:</span><br><span class="line">        <span class="keyword">if</span> option <span class="keyword">in</span> (<span class="string">&quot;-i&quot;</span>, <span class="string">&quot;--input&quot;</span>) :</span><br><span class="line">            <span class="keyword">if</span> verbose:</span><br><span class="line">                <span class="built_in">print</span> <span class="string">&quot;Reading pages from %s.&quot;</span> % (arg)</span><br><span class="line">            readFilename = arg</span><br><span class="line">        <span class="keyword">elif</span> option <span class="keyword">in</span> (<span class="string">&quot;-o&quot;</span>, <span class="string">&quot;--output&quot;</span>) :</span><br><span class="line">            <span class="keyword">if</span> verbose:</span><br><span class="line">                <span class="built_in">print</span> <span class="string">&quot;Setting %s as the output.&quot;</span> % (arg)</span><br><span class="line">            writeFilename = arg</span><br><span class="line">        <span class="keyword">elif</span> option <span class="keyword">in</span> (<span class="string">&quot;-v&quot;</span>, <span class="string">&quot;--verbose&quot;</span>) :</span><br><span class="line">            <span class="keyword">if</span> verbose:</span><br><span class="line">                <span class="built_in">print</span> <span class="string">&quot;Verbose mode enabled.&quot;</span></span><br><span class="line">            verbose = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">elif</span> option <span class="keyword">in</span> (<span class="string">&quot;-u&quot;</span>, <span class="string">&quot;--under&quot;</span>):</span><br><span class="line">            <span class="keyword">if</span> verbose:</span><br><span class="line">                <span class="built_in">print</span> <span class="string">&quot;watermark under PDF&quot;</span></span><br><span class="line">            under = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">elif</span> option <span class="keyword">in</span> (<span class="string">&quot;-t&quot;</span>, <span class="string">&quot;--over&quot;</span>):    <span class="comment"># FIXED: changed to &quot;-t&quot; from &quot;t&quot;</span></span><br><span class="line">            <span class="keyword">if</span> verbose:</span><br><span class="line">                <span class="built_in">print</span> <span class="string">&quot;watermark over PDF&quot;</span></span><br><span class="line">            under = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">elif</span> option <span class="keyword">in</span> (<span class="string">&quot;-x&quot;</span>, <span class="string">&quot;--xOffset&quot;</span>):</span><br><span class="line">            xOffset = <span class="built_in">float</span>(arg)</span><br><span class="line">        <span class="keyword">elif</span> option <span class="keyword">in</span> (<span class="string">&quot;-y&quot;</span>, <span class="string">&quot;--yOffset&quot;</span>):</span><br><span class="line">            yOffset = <span class="built_in">float</span>(arg)</span><br><span class="line">        <span class="keyword">elif</span> option <span class="keyword">in</span> (<span class="string">&quot;-a&quot;</span>, <span class="string">&quot;--angle&quot;</span>):</span><br><span class="line">            angle = -<span class="built_in">float</span>(arg)</span><br><span class="line">        <span class="keyword">elif</span> option <span class="keyword">in</span> (<span class="string">&quot;-s&quot;</span>, <span class="string">&quot;--scale&quot;</span>):</span><br><span class="line">            scale = <span class="built_in">float</span>(arg)</span><br><span class="line">        <span class="keyword">elif</span> option <span class="keyword">in</span> (<span class="string">&quot;-p&quot;</span>, <span class="string">&quot;--opacity&quot;</span>):</span><br><span class="line">            opacity = <span class="built_in">float</span>(arg)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            sys.stderr.write(<span class="string">&quot;Unknown argument: %s\n&quot;</span> % (option))</span><br><span class="line">            sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(args) &gt; <span class="number">0</span>:</span><br><span class="line">        watermark(readFilename, args, writeFilename, under, xOffset, yOffset, angle, scale, opacity, verbose);</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        shutil.copyfile(readFilename, writeFilename);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">usage</span>():</span></span><br><span class="line">    sys.stderr.write(<span class="string">&quot;Usage: watermark --input &lt;file&gt; --output &lt;file&gt; &lt;watermark files&gt;...\n&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main(sys.argv[<span class="number">1</span>:])</span><br></pre></td></tr></table></figure>
+
+<p>これを</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">./watermark.py --input original.pdf --output watermarked.pdf --over --xOffset 500 --yOffset 650 --scale 0.05 watermark.png</span><br></pre></td></tr></table></figure>
+
+<p>などと実行してやればよい。Automator使うより楽だな。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

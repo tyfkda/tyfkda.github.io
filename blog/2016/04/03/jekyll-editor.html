@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Jekyllはmarkdown形式で書けて、Githubに内容をプッシュするだけで公開できるのでとても便利なんだけど、いちいち日付からファイル名をつけたり先頭部にあれこれ情報を書く必要があって面倒だ。そこでブラウザ上で動くフロントエンドを作ることにした。ただしそれ専用にサーバプロセスを起動するのも面倒なので、ApacheのCGIで動かせるようににした。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Jekyllのフロントエンドを作り始めた"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Jekyllのフロントエンドを作り始めた - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/04/03/jekyll-editor.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Jekyllのフロントエンドを作り始めた</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-04-03
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/angular/">#angular</a> <a href="/tags/jekyll/">#jekyll</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://jekyllrb.com/">Jekyll</a>はmarkdown形式で書けて、Githubに内容をプッシュするだけで公開できるのでとても便利なんだけど、いちいち日付からファイル名をつけたり先頭部にあれこれ情報を書く必要があって面倒だ。そこでブラウザ上で動くフロントエンドを作ることにした。ただしそれ専用にサーバプロセスを起動するのも面倒なので、ApacheのCGIで動かせるようににした。</p>
+<span id="more"></span>
+
+<p><a href="https://github.com/tyfkda/JekyllEditor">tyfkda/JekyllEditor</a></p>
+<p>フロントエンドはAngularJS1.5。バックエンドは開発時にはRubyのSinatra、リリース時にはApacheのCGIを使う。</p>
+<p>バックエンドにAPIを用意してフロントエンドから叩く。操作をCRUDに対応させてRailsのようなURL規約で扱いたいが、CGIで動かしたいのでAPIのエンドポイントは固定にして、操作対象をクエリ文字列として指定することにした。しかしRuby標準のCGIモジュールがPOSTの場合にクエリ文字列を受け取れないという問題があって、しかたがないので<a href="https://github.com/tyfkda/JekyllEditor/blob/master/server%2Fmycgi.rb">自作</a>した。</p>
+<p><a href="https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0">Github pagesでのJekyllのmarkdownはkramdownとRougeが使われる</a>とのことで、エディタのプレビューでもそれぞれのgemを使って変換してやる：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;kramdown&#x27;</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;rouge&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert_markdown_to_html</span><span class="params">(contents)</span></span></span><br><span class="line">  Kramdown::Document.new(contents, &#123;</span><br><span class="line">      <span class="symbol">syntax_highlighter:</span> <span class="string">&#x27;rouge&#x27;</span>,</span><br><span class="line">      <span class="symbol">syntax_highlighter_opts:</span> &#123;</span><br><span class="line">        <span class="symbol">default_lang:</span> <span class="string">&#x27;ruby&#x27;</span>,</span><br><span class="line">        <span class="symbol">formatter:</span> Rouge::Formatters::HTML,</span><br><span class="line">        <span class="string">&#x27;bold_every&#x27;</span> =&gt; <span class="number">8</span>, <span class="string">&#x27;css&#x27;</span> =&gt; <span class="symbol">:class</span></span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      <span class="string">&#x27;auto_ids&#x27;</span>       =&gt; <span class="literal">true</span>,</span><br><span class="line">      <span class="string">&#x27;toc_levels&#x27;</span>     =&gt; <span class="string">&#x27;1..6&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;entity_output&#x27;</span>  =&gt; <span class="string">&#x27;as_char&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;smart_quotes&#x27;</span>   =&gt; <span class="string">&#x27;lsquo,rsquo,ldquo,rdquo&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;input&#x27;</span>          =&gt; <span class="string">&quot;GFM&quot;</span>,</span><br><span class="line">      <span class="string">&#x27;hard_wrap&#x27;</span>      =&gt; <span class="literal">false</span>,</span><br><span class="line">      <span class="string">&#x27;footnote_nr&#x27;</span>    =&gt; <span class="number">1</span>,</span><br><span class="line">    &#125;).to_html</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>あとはドラッグドロップで画像をリポジトリに追加＆記事に埋め込めるようにしたい（Qiitaと同様に）。</p>
+<p>記事を編集した結果をリポジトリにコミット・プッシュするのもフロントエンドからできると便利かもだけど、その辺は未定。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/21/access-directive-from-transclude.html" title="Transclude内からディレクティブにアクセスする" rel="bookmark">Transclude内からディレクティブにアクセスする</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/14/angular1-component.html" title="AngularJS1.5で親子コンポーネント間のやりとり" rel="bookmark">AngularJS1.5で親子コンポーネント間のやりとり</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/28/angularjs-page-transition-3d.html" title="AngularJSでページ遷移時に3D風アニメーションを入れてみた" rel="bookmark">AngularJSでページ遷移時に3D風アニメーションを入れてみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/24/custom-selector.html" title="AngularJS1で独自の選択ボックスを作る" rel="bookmark">AngularJS1で独自の選択ボックスを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/15/ng-click.html" title="ディレクティブのテンプレートでng-clickを使う" rel="bookmark">ディレクティブのテンプレートでng-clickを使う</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

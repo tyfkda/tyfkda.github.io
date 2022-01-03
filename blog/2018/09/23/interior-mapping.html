@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ツイッターのタイムラインでなんかスパイダーマンのゲームがすごそうだと話題になってるなーと眺めている中で、大前さんのツイート
+スパイダーマンの建物の中、どうやってレンダリングされてるか興味ある？→ Interior Mapping テクニック解説！Unityのサンプルも載ってる｜Shader Showcase Saturday #9: Interior Mapping https://t.co/BBCuhNRf2f via @AlanZucconi&amp;mdash; h.omae (@pigeon6) September 11, 2018 
+
+でインテリアマッピングというのを初めて知った。
+面白そうなので試してみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Unity】Shader Graphでインテリアマッピング"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Unity】Shader Graphでインテリアマッピング - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2018/09/23/interior-mapping.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Unity】Shader Graphでインテリアマッピング</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2018-09-23
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unity/">#unity</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ツイッターのタイムラインでなんかスパイダーマンのゲームがすごそうだと話題になってるなーと眺めている中で、<a href="https://twitter.com/pigeon6/status/1039350507003736064">大前さんのツイート</a></p>
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">スパイダーマンの建物の中、どうやってレンダリングされてるか興味ある？→ Interior Mapping テクニック解説！Unityのサンプルも載ってる｜Shader Showcase Saturday #9: Interior Mapping <a href="https://t.co/BBCuhNRf2f">https://t.co/BBCuhNRf2f</a> via <a href="https://twitter.com/AlanZucconi?ref_src=twsrc%5Etfw">@AlanZucconi</a></p>&mdash; h.omae (@pigeon6) <a href="https://twitter.com/pigeon6/status/1039350507003736064?ref_src=twsrc%5Etfw">September 11, 2018</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>でインテリアマッピングというのを初めて知った。
+面白そうなので試してみた。</p>
+<span id="more"></span>
+
+<h3 id="先に結果画面"><a href="#先に結果画面" class="headerlink" title="先に結果画面"></a>先に結果画面</h3><p>リポジトリ：<a href="https://github.com/tyfkda/InteriorMapping">https://github.com/tyfkda/InteriorMapping</a></p>
+<center>
+![interiormapping](/assets/interiormapping.jpg)
+</center>
+
+<p>ビルは単なる立方体をスケールした６面の箱で、シェーダーで内部に部屋があるように見せかけているところが面白い。</p>
+<h3 id="準備：Scriptable-Render-Pipelineの導入"><a href="#準備：Scriptable-Render-Pipelineの導入" class="headerlink" title="準備：Scriptable Render Pipelineの導入"></a>準備：Scriptable Render Pipelineの導入</h3><p>Unityでシェーダー使う場合にGUIで簡単に扱えるような環境ないかな…と思ってググってみると、Shader Graphというのがあるらしい。
+Unity2018以降で使えるというのでそれにしてみた。</p>
+<p>Shader Graphを使うにはデフォルトのレンダリング方式ではなく、Scriptable Render Pipelineというものを使う必要がある。
+high-definitionとlightweightの２種類があって、名前からしてhigh-definitionのほうがいいのかと思って最初そちらを入れたのだけど入れただけでエラーが吐かれてしまいうまく動かないので、lightweightを使うのがよさそう。
+Core Libraryというのと合わせてインストールする。</p>
+<p>パイプラインをAssets &gt; Create &gt; Rendering &gt; Lightweight Pipeline Asset で作成、
+それをEdit &gt; Project Settings &gt; GraphicsのScriptable Render Pipeline Settingsという項目に指定することで使えるようになる。</p>
+<h3 id="Shader-Graph"><a href="#Shader-Graph" class="headerlink" title="Shader Graph"></a>Shader Graph</h3><p>Shader Graphもパッケージからインストールする。
+Assets &gt; Create &gt; Shaderに「ほにゃらら Graph」という3項目が追加されるので、とりあえず「PBR Graph」でわけもわからず作ってみる。
+（あとから考えるとインテリアマッピングではジオメトリの法線とは全く違う内容が必要なので、ライティングを行わない「Unlit」のほうがいいのではないかと思う）。</p>
+<p>作成されたアセットをダブルクリックまたは「Open Shader Editor」でシェーダーグラフのエディタが開くので、ノードを作成したりつないでやったりして作っていく。
+ノードベースのシェーダー作成は初体験だけど、結構直感的にそのまま使えてすごい。</p>
+<p>しかし「PBR Master」や右下のプレビューに何も表示されない。
+中間のノードやPreviewノードで見れるとはいえ、
+いちいち「Save Asset」で保存してシーンで確認する必要があって不便だ。</p>
+<p>作成したシェーダーグラフをマテリアルに指定して、それをメッシュレンダラに指定することで実際の画面に反映される。</p>
+<h3 id="Interior-Mapping-部屋の描画"><a href="#Interior-Mapping-部屋の描画" class="headerlink" title="Interior Mapping: 部屋の描画"></a>Interior Mapping: 部屋の描画</h3><p><a href="http://interiormapping.oogst3d.net/">Interior Mapping</a>自体は2008年頃に発表されたものとのこと。
+それまでゲームに出てくるビルというと窓枠が不透明で中が見えなかったがそれだと見栄えがよくないので中に部屋があるようにジオメトリを使わずにシェーダーで描画してやろう、という内容。</p>
+<p>ビルの内部の部屋の描画は、部屋がXYZ軸に平行な固定のグリッドで部屋分けされているものとして、視線がXYZの各平面のどこにヒットするかをそれぞれ調べて一番近い点に対応する面のテクスチャを参照することで実現する。
+視線方向がプラスとマイナスの方向があるのでそれらの場合分けも必要。</p>
+<p>Shader Graphで実装する際には、以下のようなノードを組み合わせて作った：</p>
+<table>
+<thead>
+<tr>
+<th>やりたい内容</th>
+<th>対応するノード</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ベクトルを各要素に分解して参照</td>
+<td><code>Split</code></td>
+</tr>
+<tr>
+<td>判定</td>
+<td><code>Comparison</code></td>
+</tr>
+<tr>
+<td>条件分岐</td>
+<td><code>Branch</code></td>
+</tr>
+<tr>
+<td>座標系の変換</td>
+<td><code>Transformation Matrix</code></td>
+</tr>
+<tr>
+<td>ノイズの生成</td>
+<td><code>Simple Noise</code></td>
+</tr>
+</tbody></table>
+<p>交点がグリッド内のどこに位置するかの計算に<code>Modulo</code>を使おうとしたが負の場合に結果も負になってしまう？のかうまくいかないので<code>Fraction</code>で対処した。</p>
+<center>
+![interiormapping](/assets/interiormapping_shadergraph.jpg)
+</center>
+
+<p>頂点シェーダーとフラグメントシェーダーの差を全然意識しないんだけどどうなってるんだろう？</p>
+<h3 id="Interior-Mapping-その他"><a href="#Interior-Mapping-その他" class="headerlink" title="Interior Mapping: その他"></a>Interior Mapping: その他</h3><p>論文では部屋の描画以外にもいくつか項目が書かれている：</p>
+<ul>
+<li>外壁のデカールや窓枠の反射</li>
+<li>内部に家具や人を平面として配置</li>
+<li>部屋の電気がついているか、また部屋のテクスチャをランダムに変える</li>
+<li>部屋のサイズを変える</li>
+</ul>
+<p>このあたりは試してなくて、今後の課題ということで…。</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ul>
+<li>論文：<a href="http://www.proun-game.com/Oogst3D/CODING/InteriorMapping/InteriorMapping.pdf">Interior Mapping: A new technique for rendering realistic buildings</a>, Joost van Dongen, 2008</li>
+<li>ホームページ：<a href="http://interiormapping.oogst3d.net/">Oogst 3D: Oogst’s portfolio website</a>　デモやソースコードもあったんだけどあまり見なかった…</li>
+<li>紹介記事：<a href="https://www.alanzucconi.com/2018/09/10/shader-showcase-9/">Shader Showcase Saturday #9: Interior Mapping - Alan Zucconi</a></li>
+<li>Shader Graph：<ul>
+<li><a href="https://github.com/Unity-Technologies/ScriptableRenderPipeline/wiki/Shader-Graph">Shader Graph · Unity-Technologies/ScriptableRenderPipeline Wiki</a> ドキュメント</li>
+<li><a href="https://www.youtube.com/watch?v=9OP6s5RFNkQ">【Unite Tokyo 2018】新機能Shader Graphを使えばプログラミング無しにシェーダーが作れるようになります！ - YouTube</a> 使い方の説明からかっこいいエフェクトの作成まで</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/19/cache-http.html" title="Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する" rel="bookmark">Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/14/fixed-font.html" title="【Unity】固定幅ビットマップフォントを使う" rel="bookmark">【Unity】固定幅ビットマップフォントを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/11/generate-prefabs.html" title="【Unity】スクリプトでプレハブを大量生産する" rel="bookmark">【Unity】スクリプトでプレハブを大量生産する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/09/modify-xcproj.html" title="【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する" rel="bookmark">【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/13/replace-font-unity.html" title="【Unity】全てのシーンのフォントを一括で置き換える" rel="bookmark">【Unity】全てのシーンのフォントを一括で置き換える</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Tensorflowで多クラス分類で出力するクラスを制限したい場合にどうするか。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="多クラス分類の出力をマスクする"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>多クラス分類の出力をマスクする - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/10/06/tf-mask-multi-class.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>多クラス分類の出力をマスクする</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-10-06
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/machine-learning/">#machine learning</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Tensorflowで多クラス分類で出力するクラスを制限したい場合にどうするか。</p>
+<span id="more"></span>
+
+<p>ニューラルネットワークで多クラス分類する場合、出力層の活性関数にソフトマックスを使用することが多いと思うが、条件によって有効なクラスを制限したい、といった場合にどうするか。</p>
+<p>ソフトマックスを計算した後に無効なクラスに0を掛けてマスクするのは、全出力の合計が１ではなくなり、出力がもはや確率として解釈できなくなってしまうのでよくない。</p>
+<p>そこで<a href="https://tyfkda.github.io/blog/2015/12/20/softmax.html">ソフトマックスの計算</a>の途中、各入力の指数を取った後に無効なクラスを0にしてその後合計値で割るという具合で、じまえで計算するとうまく無効化できる。</p>
+<h3 id="マスクなしでビルトインのsoftmax関数を使う"><a href="#マスクなしでビルトインのsoftmax関数を使う" class="headerlink" title="マスクなしでビルトインのsoftmax関数を使う"></a>マスクなしでビルトインのsoftmax関数を使う</h3><p>じまえでソフトマックスの計算をする前に、ビルトインの<a href="https://www.tensorflow.org/versions/master/api_docs/python/nn.html#softmax">tf.nn.softmax</a>の計算を出力して、じまえの計算がビルトインの計算と同じかどうか確認できるようにしてみる。</p>
+<p>仮に分類したいクラスの数を3として：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">NCLASS = <span class="number">3</span></span><br><span class="line">x = tf.placeholder(tf.float32, [<span class="literal">None</span>, NCLASS])</span><br></pre></td></tr></table></figure>
+
+<p>適当に食わせてみる：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">builtin_softmax</span>(<span class="params">x, <span class="built_in">input</span></span>):</span></span><br><span class="line">  output = tf.nn.softmax(x)</span><br><span class="line">  <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    <span class="built_in">print</span> sess.run(output, feed_dict=&#123;x: <span class="built_in">input</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 適当な入力</span></span><br><span class="line"><span class="built_in">input</span> = [[<span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>],</span><br><span class="line">         [<span class="number">1</span>, <span class="number">0</span>, -<span class="number">1</span>]]</span><br><span class="line">builtin_softmax(x, <span class="built_in">input</span>)</span><br><span class="line"><span class="comment"># [[ 0.09003057  0.66524088  0.24472845]</span></span><br><span class="line"><span class="comment">#  [ 0.66524094  0.24472848  0.09003057]]</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="じまえでソフトマックスを計算"><a href="#じまえでソフトマックスを計算" class="headerlink" title="じまえでソフトマックスを計算"></a>じまえでソフトマックスを計算</h3><p><a href="https://www.tensorflow.org/versions/master/api_docs/python/math_ops.html#exp">exp</a>、<a href="https://www.tensorflow.org/versions/master/api_docs/python/math_ops.html#reduce_sum">reduce_sum</a>、<a href="https://www.tensorflow.org/versions/master/api_docs/python/math_ops.html#div">div</a>を使ってじまえでソフトマックスを計算する：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">manual_softmax</span>(<span class="params">x, <span class="built_in">input</span></span>):</span></span><br><span class="line">  <span class="built_in">max</span> = tf.reduce_max(x)</span><br><span class="line">  exps = tf.exp(x - <span class="built_in">max</span>)</span><br><span class="line">  output = tf.div(exps, tf.reduce_sum(exps, <span class="number">1</span>, keep_dims=<span class="literal">True</span>))</span><br><span class="line">  <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    <span class="built_in">print</span> sess.run(output, feed_dict=&#123;x: <span class="built_in">input</span>&#125;)</span><br><span class="line"></span><br><span class="line">manual_softmax(x, <span class="built_in">input</span>)</span><br><span class="line"><span class="comment"># [[ 0.09003057  0.66524088  0.24472846]</span></span><br><span class="line"><span class="comment">#  [ 0.66524094  0.24472848  0.09003058]]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>出力微妙に異なる、でもほぼ同じ</li>
+<li>ミニバッチで計算する場合のために、<code>x</code>の各行ごとに合計値を計算するよう<code>reduce_sum</code>の2番目の引数<code>reduction_indices</code>を<code>1</code>として、さらに<code>keep_dims=True</code>を指定する</li>
+<li><code>/</code>演算子も使えるけど、名前をつけたいといった場合に<code>div</code>が使える</li>
+<li>要素内の最大値で引くことによって、数値の発散を抑える</li>
+</ul>
+<h3 id="マスクする"><a href="#マスクする" class="headerlink" title="マスクする"></a>マスクする</h3><p>上記のじまえソフトマックス計算を元にして、途中で値を0にマスクして特定のクラスが選ばれないようにする：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">masked_softmax</span>(<span class="params">x, mask, <span class="built_in">input</span>, mask_values</span>):</span></span><br><span class="line">  exps = tf.exp(x)</span><br><span class="line">  masked = exps * mask</span><br><span class="line">  output = tf.div(masked, tf.reduce_sum(masked, <span class="number">1</span>, keep_dims=<span class="literal">True</span>))</span><br><span class="line">  <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    <span class="built_in">print</span> sess.run(output, feed_dict=&#123;x: <span class="built_in">input</span>, mask: mask_values&#125;)</span><br><span class="line"></span><br><span class="line">mask = tf.placeholder(tf.float32, shape=[x.get_shape()[-<span class="number">1</span>]])</span><br><span class="line">mask_values = [<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]</span><br><span class="line">masked_softmax(x, mask, <span class="built_in">input</span>, mask_values)</span><br><span class="line"><span class="comment"># [[ 0.2689414   0.          0.7310586 ]</span></span><br><span class="line"><span class="comment">#  [ 0.88079709  0.          0.11920293]]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>mask_values</code>に、有効なクラスは1、無効なクラスは0を与えてもらうようにして、<code>reduce_sum</code>前に乗算して最終的な結果が必ず0になるようにする</li>
+<li>各行の2列目の出力値が0となっていてマスクされていることがわかる</li>
+</ul>
+<h3 id="番外編：マイナス無限大を使う"><a href="#番外編：マイナス無限大を使う" class="headerlink" title="番外編：マイナス無限大を使う"></a>番外編：マイナス無限大を使う</h3><p>ビルトインの<code>softmax</code>に渡す値をマイナス無限大にしてやることで無効にすることもできる：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">masked_softmax_infinity</span>(<span class="params">x, mask, <span class="built_in">input</span>, mask_values</span>):</span></span><br><span class="line">  masked = x - <span class="number">1</span> / mask</span><br><span class="line">  output = tf.nn.softmax(masked)</span><br><span class="line">  <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    <span class="built_in">print</span> sess.run(output, feed_dict=&#123;x: <span class="built_in">input</span>, mask: mask_values&#125;)</span><br><span class="line"></span><br><span class="line">masked_softmax_infinity(x, mask, <span class="built_in">input</span>, mask_values)</span><br><span class="line"><span class="comment"># [[ 0.26894143  0.          0.7310586 ]</span></span><br><span class="line"><span class="comment">#  [ 0.88079703  0.          0.11920291]]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>マイナス無限大の指数が0になるので</li>
+<li>0除算、マイナス無限大が気持ち悪くなければこれでも良さげ</li>
+<li>上の場合と微妙に値が違う（<code>1.0e-8</code>）、しかし2列目の値については<code>==0</code>が成り立っていた</li>
+<li>GPUで試してない</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

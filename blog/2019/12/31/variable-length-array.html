@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="C99だと**可変長配列(Variable-length array: VLA)**というものが使えるということをいまさらながら知ったので、調べてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【C99】可変長配列を試してみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【C99】可変長配列を試してみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2019/12/31/variable-length-array.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【C99】可変長配列を試してみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-12-31
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/c/">#c</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>C99だと**可変長配列(Variable-length array: VLA)**というものが使えるということをいまさらながら知ったので、調べてみた。</p>
+<span id="more"></span>
+
+<h3 id="可変長配列"><a href="#可変長配列" class="headerlink" title="可変長配列"></a>可変長配列</h3><p>C言語で配列を宣言する際に従来は配列の要素数は定数である必要があり、実行時にサイズが決定する場合には <code>malloc</code> で領域を確保する必要があった。
+別の選択肢として、<code>malloc</code> の代わりに <code>alloca</code> を使用すると関数を抜ける時点で自動的に解放されるので便利
+（ただしANSI Cではない）。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> *<span class="built_in">array</span> = alloca(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * len);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>これがC99では可変長配列が使えるとのこと：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> <span class="built_in">array</span>[len];</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h3><p>「ああ、これは <code>alloca</code> みたいなもんでしょ」と安易に思っていたところ、<a href="https://en.cppreference.com/w/c/language/array">cppreference.com</a>にいろいろ難しい例が載っていた：</p>
+<ul>
+<li><code>sizeof</code> でサイズを取得できる</li>
+<li><code>goto</code> で戻って繰り返せる</li>
+<li>関数のプロトタイプ宣言ではサイズに <code>*</code> を指定できる<ul>
+<li>関数の実体定義時には値に式を指定する</li>
+</ul>
+</li>
+<li>スコープ内の型宣言に使える<ul>
+<li><code>typedef int VLA[m][m];</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="動作・実装の確認"><a href="#動作・実装の確認" class="headerlink" title="動作・実装の確認"></a>動作・実装の確認</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">use_in_loop</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">    <span class="keyword">int</span> buf[i];</span><br><span class="line">    buf[<span class="number">0</span>] = i;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;buf=%p, size=%zu\n&quot;</span>, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">use_with_goto</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">label:;</span><br><span class="line">  <span class="keyword">int</span> buf[i];</span><br><span class="line">  buf[<span class="number">0</span>] = i;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;buf=%p, size=%zu\n&quot;</span>, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  <span class="keyword">if</span> (++i &lt;= n)</span><br><span class="line">    <span class="keyword">goto</span> label;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  use_in_loop(<span class="number">3</span>);</span><br><span class="line"><span class="comment">/* 実行結果：すべて同じアドレス</span></span><br><span class="line"><span class="comment">buf=0x7ffdc95b5030, size=4</span></span><br><span class="line"><span class="comment">buf=0x7ffdc95b5030, size=8</span></span><br><span class="line"><span class="comment">buf=0x7ffdc95b5030, size=12</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">  use_with_goto(<span class="number">3</span>);</span><br><span class="line"><span class="comment">/* goto版も同じ！</span></span><br><span class="line"><span class="comment">buf=0x7ffdc95b5030, size=4</span></span><br><span class="line"><span class="comment">buf=0x7ffdc95b5030, size=8</span></span><br><span class="line"><span class="comment">buf=0x7ffdc95b5030, size=12</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>forループのスコープ内で使用した場合にはバッファが同じアドレスになるのはまあわかるとしても、gotoでも同じ動作になるとは「え、どうなってるの？スコープを抜けるわけじゃないのになんで戻るの？」という感じだった。</p>
+<p>objdumpでコンパイル結果を見てみた：</p>
+<figure class="highlight as"><table><tr><td class="code"><pre><span class="line">$ clang -O2 -c vla.c &amp;&amp; objdump -S vla.o</span><br><span class="line"></span><br><span class="line">vla.o:     file format elf64-x86<span class="number">-64</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disassembly of section .text:</span><br><span class="line"></span><br><span class="line"><span class="number">0000000000000000</span> &lt;use_in_loop&gt;:</span><br><span class="line">   <span class="number">0</span>:	<span class="number">55</span>                   	push   %rbp</span><br><span class="line">   <span class="number">1</span>:	<span class="number">48</span> <span class="number">89</span> e5             	mov    %rsp,%rbp</span><br><span class="line">   <span class="number">4</span>:	<span class="number">41</span> <span class="number">57</span>                	push   %r15</span><br><span class="line">   <span class="number">6</span>:	<span class="number">41</span> <span class="number">56</span>                	push   %r14</span><br><span class="line">   <span class="number">8</span>:	<span class="number">41</span> <span class="number">54</span>                	push   %r12</span><br><span class="line">   a:	<span class="number">53</span>                   	push   %rbx</span><br><span class="line">   b:	<span class="number">41</span> <span class="number">89</span> fe             	mov    %edi,%r14d</span><br><span class="line">   e:	<span class="number">45</span> <span class="number">85</span> f6             	test   %r14d,%r14d</span><br><span class="line">  <span class="number">11</span>:	<span class="number">7</span>e <span class="number">5</span>d                	jle    <span class="number">70</span> &lt;use_in_loop+<span class="number">0x70</span>&gt;</span><br><span class="line">  <span class="number">13</span>:	<span class="number">41</span> <span class="number">83</span> c6 <span class="number">01</span>          	add    $<span class="number">0x1</span>,%r14d</span><br><span class="line">  <span class="number">17</span>:	bb <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>       	mov    $<span class="number">0x1</span>,%ebx      <span class="comment">// %ebx = n</span></span><br><span class="line">  <span class="number">1</span>c:	<span class="number">41</span> bf <span class="number">04</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>    	mov    $<span class="number">0x4</span>,%r15d     <span class="comment">// %r15 = 確保する領域のサイズ n * 4</span></span><br><span class="line">  <span class="number">22</span>:	<span class="number">66</span> <span class="number">66</span> <span class="number">66</span> <span class="number">66</span> <span class="number">66</span> <span class="number">2</span>e <span class="number">0</span>f 	data16 data16 data16 data16 nopw %cs:<span class="number">0x0</span>(%rax,%rax,<span class="number">1</span>)</span><br><span class="line">  <span class="number">29</span>:	<span class="number">1</span>f <span class="number">84</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span></span><br><span class="line">  <span class="number">30</span>:	<span class="number">49</span> <span class="number">89</span> e4             	mov    %rsp,%r12      <span class="comment">// 元々のスタックポインタを%r12に退避</span></span><br><span class="line">  <span class="number">33</span>:	<span class="number">48</span> <span class="number">89</span> e0             	mov    %rsp,%rax</span><br><span class="line">  <span class="number">36</span>:	<span class="number">48</span> <span class="number">8</span>d <span class="number">0</span>c <span class="number">9</span>d <span class="number">0</span>f <span class="number">00</span> <span class="number">00</span> 	lea    <span class="number">0xf</span>(,%rbx,<span class="number">4</span>),%rcx         <span class="comment">// %rcx = n * 4 + 15</span></span><br><span class="line">  <span class="number">3</span>d:	<span class="number">00</span></span><br><span class="line">  <span class="number">3</span>e:	<span class="number">48</span> <span class="number">83</span> e1 f0          	and    $<span class="number">0xfffffffffffffff0</span>,%rcx  <span class="comment">// 16バイト境界にアライメントする</span></span><br><span class="line">  <span class="number">42</span>:	<span class="number">48</span> <span class="number">89</span> c6             	mov    %rax,%rsi</span><br><span class="line">  <span class="number">45</span>:	<span class="number">48</span> <span class="number">29</span> ce             	sub    %rcx,%rsi      <span class="comment">// %rsi = 元のスタックポインタ - (n * 4 + 15) &amp; -16</span></span><br><span class="line">  <span class="number">48</span>:	<span class="number">48</span> <span class="number">89</span> f4             	mov    %rsi,%rsp      <span class="comment">// スタックポインタをずらす</span></span><br><span class="line">  <span class="number">4</span>b:	<span class="number">48</span> f7 d9             	neg    %rcx</span><br><span class="line">  <span class="number">4</span>e:	<span class="number">89</span> <span class="number">1</span>c <span class="number">08</span>             	mov    %ebx,(%rax,%rcx,<span class="number">1</span>))  <span class="comment">// buf[0] = n; %raxが元のスタックポインタ、%rcxが-((n * 4 + 15) &amp; -16)</span></span><br><span class="line">  <span class="number">51</span>:	bf <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>       	mov    $<span class="number">0x0</span>,%edi      <span class="comment">// 第1引数 %edi: フォーマット文字列</span></span><br><span class="line">  <span class="number">56</span>:	<span class="number">31</span> c0                	xor    %eax,%eax</span><br><span class="line">  <span class="number">58</span>:	<span class="number">4</span>c <span class="number">89</span> fa             	mov    %r15,%rdx      <span class="comment">// 第3引数 %rdx: %r15 = sizeof(buf)</span></span><br><span class="line">  <span class="number">5</span>b:	e8 <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>       	callq  <span class="number">60</span> &lt;use_in_loop+<span class="number">0x60</span>&gt;  <span class="comment">// printf呼び出し：第2引数%rsiはスタック操作結果(=buf)になっている</span></span><br><span class="line">  <span class="number">60</span>:	<span class="number">4</span>c <span class="number">89</span> e4             	mov    %r12,%rsp      <span class="comment">// スタックをVLA操作前に戻す</span></span><br><span class="line">  <span class="number">63</span>:	<span class="number">48</span> <span class="number">83</span> c3 <span class="number">01</span>          	add    $<span class="number">0x1</span>,%rbx</span><br><span class="line">  <span class="number">67</span>:	<span class="number">49</span> <span class="number">83</span> c7 <span class="number">04</span>          	add    $<span class="number">0x4</span>,%r15</span><br><span class="line">  <span class="number">6</span>b:	<span class="number">49</span> <span class="number">39</span> de             	cmp    %rbx,%r14</span><br><span class="line">  <span class="number">6</span>e:	<span class="number">75</span> c0                	jne    <span class="number">30</span> &lt;use_in_loop+<span class="number">0x30</span>&gt;</span><br><span class="line">  <span class="number">70</span>:	<span class="number">48</span> <span class="number">8</span>d <span class="number">65</span> e0          	lea    <span class="number">-0x20</span>(%rbp),%rsp</span><br><span class="line">  <span class="number">74</span>:	<span class="number">5</span>b                   	pop    %rbx</span><br><span class="line">  <span class="number">75</span>:	<span class="number">41</span> <span class="number">5</span>c                	pop    %r12</span><br><span class="line">  <span class="number">77</span>:	<span class="number">41</span> <span class="number">5</span>e                	pop    %r14</span><br><span class="line">  <span class="number">79</span>:	<span class="number">41</span> <span class="number">5</span>f                	pop    %r15</span><br><span class="line">  <span class="number">7</span>b:	<span class="number">5</span>d                   	pop    %rbp</span><br><span class="line">  <span class="number">7</span>c:	c3                   	retq</span><br><span class="line">  <span class="number">7</span>d:	<span class="number">0</span>f <span class="number">1</span>f <span class="number">00</span>             	nopl   (%rax)</span><br><span class="line"></span><br><span class="line"><span class="number">0000000000000080</span> &lt;use_with_goto&gt;:</span><br><span class="line">  <span class="number">80</span>:	<span class="number">55</span>                   	push   %rbp</span><br><span class="line">  <span class="number">81</span>:	<span class="number">48</span> <span class="number">89</span> e5             	mov    %rsp,%rbp</span><br><span class="line">  <span class="number">84</span>:	<span class="number">41</span> <span class="number">57</span>                	push   %r15</span><br><span class="line">  <span class="number">86</span>:	<span class="number">41</span> <span class="number">56</span>                	push   %r14</span><br><span class="line">  <span class="number">88</span>:	<span class="number">41</span> <span class="number">54</span>                	push   %r12</span><br><span class="line">  <span class="number">8</span>a:	<span class="number">53</span>                   	push   %rbx</span><br><span class="line">  <span class="number">8</span>b:	<span class="number">4</span>c <span class="number">63</span> f7             	movslq %edi,%r14</span><br><span class="line">  <span class="number">8</span>e:	bb <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>       	mov    $<span class="number">0x1</span>,%ebx</span><br><span class="line">  <span class="number">93</span>:	<span class="number">41</span> bf <span class="number">04</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>    	mov    $<span class="number">0x4</span>,%r15d</span><br><span class="line">  <span class="number">99</span>:	<span class="number">0</span>f <span class="number">1</span>f <span class="number">80</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> 	nopl   <span class="number">0x0</span>(%rax)</span><br><span class="line">  a0:	<span class="number">49</span> <span class="number">89</span> e4             	mov    %rsp,%r12</span><br><span class="line">  a3:	<span class="number">48</span> <span class="number">89</span> e0             	mov    %rsp,%rax</span><br><span class="line">  a6:	<span class="number">48</span> <span class="number">8</span>d <span class="number">0</span>c <span class="number">9</span>d <span class="number">0</span>f <span class="number">00</span> <span class="number">00</span> 	lea    <span class="number">0xf</span>(,%rbx,<span class="number">4</span>),%rcx</span><br><span class="line">  ad:	<span class="number">00</span></span><br><span class="line">  ae:	<span class="number">48</span> <span class="number">83</span> e1 f0          	and    $<span class="number">0xfffffffffffffff0</span>,%rcx</span><br><span class="line">  b2:	<span class="number">48</span> <span class="number">89</span> c6             	mov    %rax,%rsi</span><br><span class="line">  b5:	<span class="number">48</span> <span class="number">29</span> ce             	sub    %rcx,%rsi</span><br><span class="line">  b8:	<span class="number">48</span> <span class="number">89</span> f4             	mov    %rsi,%rsp</span><br><span class="line">  bb:	<span class="number">48</span> f7 d9             	neg    %rcx</span><br><span class="line">  be:	<span class="number">89</span> <span class="number">1</span>c <span class="number">08</span>             	mov    %ebx,(%rax,%rcx,<span class="number">1</span>)</span><br><span class="line">  c1:	bf <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>       	mov    $<span class="number">0x0</span>,%edi</span><br><span class="line">  c6:	<span class="number">31</span> c0                	xor    %eax,%eax</span><br><span class="line">  c8:	<span class="number">4</span>c <span class="number">89</span> fa             	mov    %r15,%rdx</span><br><span class="line">  cb:	e8 <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>       	callq  d0 &lt;use_with_goto+<span class="number">0x50</span>&gt;</span><br><span class="line">  d0:	<span class="number">4</span>c <span class="number">89</span> e4             	mov    %r12,%rsp      <span class="comment">// スタックをVLA操作前に戻す</span></span><br><span class="line">  d3:	<span class="number">49</span> <span class="number">83</span> c7 <span class="number">04</span>          	add    $<span class="number">0x4</span>,%r15</span><br><span class="line">  d7:	<span class="number">4</span>c <span class="number">39</span> f3             	cmp    %r14,%rbx</span><br><span class="line">  da:	<span class="number">48</span> <span class="number">8</span>d <span class="number">5</span>b <span class="number">01</span>          	lea    <span class="number">0x1</span>(%rbx),%rbx</span><br><span class="line">  de:	<span class="number">7</span>c c0                	jl     a0 &lt;use_with_goto+<span class="number">0x20</span>&gt;  <span class="comment">// gotoで戻る</span></span><br><span class="line">  e0:	<span class="number">48</span> <span class="number">8</span>d <span class="number">65</span> e0          	lea    <span class="number">-0x20</span>(%rbp),%rsp</span><br><span class="line">  e4:	<span class="number">5</span>b                   	pop    %rbx</span><br><span class="line">  e5:	<span class="number">41</span> <span class="number">5</span>c                	pop    %r12</span><br><span class="line">  e7:	<span class="number">41</span> <span class="number">5</span>e                	pop    %r14</span><br><span class="line">  e9:	<span class="number">41</span> <span class="number">5</span>f                	pop    %r15</span><br><span class="line">  eb:	<span class="number">5</span>d                   	pop    %rbp</span><br><span class="line">  ec:	c3                   	retq</span><br><span class="line">  ed:	<span class="number">0</span>f <span class="number">1</span>f <span class="number">00</span>             	nopl   (%rax)</span><br></pre></td></tr></table></figure>
+
+<p>どちらもコンパイル結果は大体同じで、</p>
+<ul>
+<li>VLAでの操作前のスタックポインタを退避（<code>%r12</code>）しておき、戻る前に復帰させる</li>
+<li>VLAのsizeofは実行時にどこかの領域に格納しているんではなく、確保時の式と同じ値を使用する</li>
+</ul>
+<p><code>alloca</code> のように関数から抜けるときに一括でスタックポインタが巻き戻されるんじゃなく、ちゃんとスコープやラベルに応じて増減される。</p>
+<h3 id="雑多"><a href="#雑多" class="headerlink" title="雑多"></a>雑多</h3><p>C99の後、C11で必須の仕様ではなくオプション扱いになったとのこと。
+サポートされてない場合には <code>__STDC_NO_VLA__</code> が定義されている。</p>
+<p>またC++でもサポートされてない（VLAとは違う可変長配列の仕様となっているらしい）。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://en.cppreference.com/w/c/language/array">Array declaration - cppreference.com</a></li>
+<li><a href="https://www.quora.com/Why-does-C-not-support-a-variable-length-array-and-restrict-it-as-supported-in-C">Why does C++ not support a variable length array and restrict it as supported in C? - Quora</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Variable-length_array#C99">Variable-length array - Wikipedia</a><ul>
+<li>Linus TorvaldsはVLAの使用を削除したとのこと: <a href="https://lkml.org/lkml/2018/3/7/621">“USING VLA’S IS ACTIVELY STUPID! It generates much more code, and much slower code (and more fragile code), than just using a fixed key size would have done.”</a></li>
+<li>て別にこの使用例がおかしかっただけだった。固定長で済むんだったらそれに越したことはない。</li>
+<li><a href="https://www.phoronix.com/scan.php?page=news_item&px=Linux-Kills-The-VLA">The Linux Kernel Is Now VLA-Free: A Win For Security, Less Overhead &amp; Better For Clang - Phoronix</a></li>
+</ul>
+</li>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variable-Length.html">Using the GNU Compiler Collection (GCC): Variable Length</a><ul>
+<li>ジャンプで飛び入るのは禁止とのこと、ぐぬぬ…。</li>
+<li>gcc拡張で、構造体のメンバにも使えるとのこと…。</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/08/14/c-const.html" title="【C】constポインタは何が上書き不可なのか" rel="bookmark">【C】constポインタは何が上書き不可なのか</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/23/mark-sweep.html" title="マーク＆スイープ法をテスト実装してみる" rel="bookmark">マーク＆スイープ法をテスト実装してみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/20/parsing-func-returning-func.html" title="関数ポインタを返す関数のパースと型の構築" rel="bookmark">関数ポインタを返す関数のパースと型の構築</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/printf-arg-index.html" title="【C】printfで引数の順番を指定して参照する" rel="bookmark">【C】printfで引数の順番を指定して参照する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/printf-substring.html" title="【C】printfで文字列の一部を表示する（最長制限）" rel="bookmark">【C】printfで文字列の一部を表示する（最長制限）</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

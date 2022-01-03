@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="UnityのNGUIを使ってるプロジェクトで使用するフォントを変更したいことがあったのだが、全てのシーンを開いて手作業で変更していくのは辛いのでスクリプトを書いた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Unity】全てのシーンのフォントを一括で置き換える"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Unity】全てのシーンのフォントを一括で置き換える - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/06/13/replace-font-unity.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Unity】全てのシーンのフォントを一括で置き換える</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-06-13
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unity/">#unity</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>UnityのNGUIを使ってるプロジェクトで使用するフォントを変更したいことがあったのだが、全てのシーンを開いて手作業で変更していくのは辛いのでスクリプトを書いた。</p>
+<span id="more"></span>
+
+<p>今回はNGUIの<code>UILabel</code>を使ったものに対して行ったが、uGUIの<code>Text</code>に対しても同様にできることでしょう。</p>
+<h3 id="メニューにウィンドウを開く項目を追加"><a href="#メニューにウィンドウを開く項目を追加" class="headerlink" title="メニューにウィンドウを開く項目を追加"></a>メニューにウィンドウを開く項目を追加</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Assets/Editor/FontReplacer.cs</span></span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">FontReplacer</span> : <span class="title">EditorWindow</span> &#123;</span><br><span class="line">	[<span class="meta">MenuItem(<span class="meta-string">&quot;Tools/Replace Font&quot;</span>)</span>]</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ReplaceFont</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">		EditorWindow.GetWindow(<span class="keyword">typeof</span>(FontReplacer)).Show();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="http://docs.unity3d.com/jp/current/ScriptReference/MenuItem.html">MenuItem</a>という属性でUnityのメニューに項目を追加できる</li>
+<li><a href="http://docs.unity3d.com/ScriptReference/EditorWindow.html">EditWidnow</a> を継承したクラスで、独自のウィンドウを作成できる</li>
+</ul>
+<h3 id="ウィンドウにフォントを選択する項目と置き換え開始ボタンを配置"><a href="#ウィンドウにフォントを選択する項目と置き換え開始ボタンを配置" class="headerlink" title="ウィンドウにフォントを選択する項目と置き換え開始ボタンを配置"></a>ウィンドウにフォントを選択する項目と置き換え開始ボタンを配置</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Assets/Editor/FontReplacer.cs</span></span><br><span class="line">	<span class="keyword">private</span> Font font;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">		font = EditorGUILayout.ObjectField(<span class="string">&quot;Font&quot;</span>, font, <span class="keyword">typeof</span>(Font), <span class="literal">true</span>) <span class="keyword">as</span> Font;</span><br><span class="line">		<span class="keyword">if</span> (font != <span class="literal">null</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span> (GUILayout.Button(<span class="string">&quot;Replace font in all scenes&quot;</span>)) &#123;</span><br><span class="line">				<span class="built_in">string</span> title = <span class="string">&quot;Replacing [&quot;</span> + font.name + <span class="string">&quot;]&quot;</span>;</span><br><span class="line">				EachScene(title, (<span class="built_in">string</span> path) =&gt; &#123;</span><br><span class="line">					<span class="keyword">return</span> ReplaceLabelsFontInScene(font);</span><br><span class="line">				&#125;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>OnGUI</code>メソッド中で<code>GUILayout</code>などでボタンなどを配置する</li>
+</ul>
+<h3 id="シーン中のUILabelのfontを置き換える"><a href="#シーン中のUILabelのfontを置き換える" class="headerlink" title="シーン中のUILabelのfontを置き換える"></a>シーン中のUILabelのfontを置き換える</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Assets/Editor/FontReplacer.cs</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">ReplaceLabelsFontInScene</span>(<span class="params">Font font</span>)</span> &#123;</span><br><span class="line">		UILabel[] labels = Object.FindObjectsOfType(<span class="keyword">typeof</span>(UILabel)) <span class="keyword">as</span> UILabel[];</span><br><span class="line">		<span class="keyword">if</span> (labels.Length == <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">		<span class="keyword">foreach</span> (UILabel label <span class="keyword">in</span> labels)</span><br><span class="line">			label.trueTypeFont = font;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>実質の本体</li>
+</ul>
+<h3 id="全てのシーンを順に開いてなにかするメソッド"><a href="#全てのシーンを順に開いてなにかするメソッド" class="headerlink" title="全てのシーンを順に開いてなにかするメソッド"></a>全てのシーンを順に開いてなにかするメソッド</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">delegate</span> <span class="built_in">bool</span> <span class="title">OnScene</span>(<span class="params"><span class="built_in">string</span> path</span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">EachScene</span>(<span class="params"><span class="built_in">string</span> title, OnScene onScene</span>)</span> &#123;</span><br><span class="line">	<span class="built_in">string</span> currentScene = EditorApplication.currentScene;</span><br><span class="line">	<span class="built_in">string</span>[] sceneGuids = AssetDatabase.FindAssets(<span class="string">&quot;t:Scene&quot;</span>);</span><br><span class="line">	<span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; sceneGuids.Length; ++i) &#123;</span><br><span class="line">		<span class="built_in">string</span> guid = sceneGuids[i];</span><br><span class="line">		<span class="built_in">string</span> path = AssetDatabase.GUIDToAssetPath(guid);</span><br><span class="line">		EditorUtility.DisplayProgressBar(title, path, (<span class="built_in">float</span>)i / (<span class="built_in">float</span>)sceneGuids.Length);</span><br><span class="line">		EditorApplication.OpenScene(path);</span><br><span class="line">		<span class="keyword">if</span> (onScene(path))</span><br><span class="line">			EditorApplication.SaveScene();</span><br><span class="line">	&#125;</span><br><span class="line">	EditorUtility.ClearProgressBar();</span><br><span class="line">	<span class="keyword">if</span> (!<span class="built_in">string</span>.IsNullOrEmpty(currentScene))</span><br><span class="line">		EditorApplication.OpenScene(currentScene);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>処理中はプログレスバーを表示</li>
+<li><code>onScene</code>から<code>true</code>が返された場合、シーンに更新があったものとして保存する</li>
+<li><a href="http://docs.unity3d.com/ScriptReference/AssetDatabase.FindAssets.html">AssetDatabase.FindAssets</a>でシーンを列挙</li>
+</ul>
+<hr>
+<ul>
+<li>シーンに存在する <code>UILabel</code> のフォントを置き換えるが、プレハブ化してあるものはノータッチなので、別途処理する必要がある</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/19/cache-http.html" title="Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する" rel="bookmark">Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/14/fixed-font.html" title="【Unity】固定幅ビットマップフォントを使う" rel="bookmark">【Unity】固定幅ビットマップフォントを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/11/generate-prefabs.html" title="【Unity】スクリプトでプレハブを大量生産する" rel="bookmark">【Unity】スクリプトでプレハブを大量生産する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/23/interior-mapping.html" title="【Unity】Shader Graphでインテリアマッピング" rel="bookmark">【Unity】Shader Graphでインテリアマッピング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/09/modify-xcproj.html" title="【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する" rel="bookmark">【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

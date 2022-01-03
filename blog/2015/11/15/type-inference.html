@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="突如として、型推論はどんな風にしたら実装できるのか知りたくなった。型理論とか全く知らないが、実装して動かしてみて原理を知りたいと思った。そこであれこれググる：">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Haskell】型推論を実装してみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Haskell】型推論を実装してみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/11/15/type-inference.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Haskell】型推論を実装してみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-11-15
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/haskell/">#haskell</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>突如として、型推論はどんな風にしたら実装できるのか知りたくなった。型理論とか全く知らないが、実装して動かしてみて原理を知りたいと思った。そこであれこれググる：</p>
+<span id="more"></span>
+
+<ul>
+<li><a href="http://d.hatena.ne.jp/takuto_h/20110401/impl">JavaScript による型推論器の実装 - takuto_hの日記</a><ul>
+<li>型推論に関して丁寧に説明されていて、また<a href="http://d.hatena.ne.jp/takuto_h/20110408/visualize">型推論の可視化ツール</a>がブラウザ上でステップずつ動作を追うことができて、感じがつかみやすい</li>
+</ul>
+</li>
+<li><a href="http://qiita.com/lambdataro/items/b74fc9944ab66e0f6333">Mokkosuで型推論器を作ってみた - Qiita</a><ul>
+<li>構文木の内部表現をどうするかとか、型をどういう形で持つか、あと実際に型推論はどうやってやるかを説明していてわかりやすい</li>
+<li><a href="http://qiita.com/lambdataro/items/1e4d795d3dd97a94c8f3">MokkosuでHaskellの型システムを作る (その1) - Qiita</a>によると<a href="http://web.cecs.pdx.edu/~mpj/thih/">Typing Haskell in Haskell</a>という論文を参考にしているらしい。そっちも読んだほうがいいんだろうけど、ひとまずスルー</li>
+</ul>
+</li>
+<li><a href="http://route477.net/d/?date=20140605">型推論のある言語作った - Route 477(2014-06-05)</a><ul>
+<li><a href="http://estore.ohmsha.co.jp/titles/978427406911P">型システム入門</a>という本を元にしているらしい。厚いし多分読んでもムズくて理解できないんだよね…</li>
+</ul>
+</li>
+</ul>
+<h2 id="Haskellで実装してみる"><a href="#Haskellで実装してみる" class="headerlink" title="Haskellで実装してみる"></a>Haskellで実装してみる</h2><p>上記のリンクたちを参考にして、Haskellで構文木を渡すとその型を推論する関数を作ってみる。言語として使えるようになるまでにするには敷居が高いので、ひとまず型の推論だけで、型検査などは行わない。</p>
+<p>評価したい式の構文木は構築されていて与えられるものとして、パーサなどの実装も行わない（パーサ編は<a href="/blog/2015/11/15/parsec-ast.html" title="こちら">こちら</a>）</p>
+<p>（内容はほとんど上記の参照したサイトで解説されている内容そのままで、主にHaskellでどうやって型変数を扱うのか、どうやってSTモナドを扱うかと格闘していた気がする。）</p>
+<h3 id="構文木のノードの定義"><a href="#構文木のノードの定義" class="headerlink" title="構文木のノードの定義"></a>構文木のノードの定義</h3><p>ひとまず扱える基本的な型は整数のみで、構文は１引数の関数とその呼び出し、また変数の参照のみ、とする：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- Node.hs</span></span><br><span class="line"><span class="keyword">module</span> Node (<span class="type">Expr(..)</span>) <span class="keyword">where</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Expr</span> = <span class="type">Natural</span> <span class="type">Integer</span>  <span class="comment">-- 整数：値</span></span></span><br><span class="line">          | <span class="type">Var</span> <span class="type">String</span>       <span class="comment">-- 変数：名前</span></span><br><span class="line">          | <span class="type">Fun</span> <span class="type">String</span> <span class="type">Expr</span>  <span class="comment">-- 関数：パラメータ名、結果の式</span></span><br><span class="line">          | <span class="type">App</span> <span class="type">Expr</span> <span class="type">Expr</span>    <span class="comment">-- 適用：関数、引数</span></span><br><span class="line">  <span class="keyword">deriving</span> (<span class="type">Show</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>関数は全て引数は１つのみで、カリー化されてるものとする</li>
+<li>関数適用も同様に、１度に１つしか適用しないものとする</li>
+</ul>
+<h3 id="型の定義"><a href="#型の定義" class="headerlink" title="型の定義"></a>型の定義</h3><p>式が持つ型は、整数型<code>TInt</code>と関数型<code>TFun</code>（引数の型と結果の型を持つ）と、型変数<code>TVar</code>（識別番号を持つ）。</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- Type.hs</span></span><br><span class="line"><span class="keyword">module</span> Type (<span class="type">Type(..)</span>) <span class="keyword">where</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Type</span> = <span class="type">TInt</span>            <span class="comment">-- 整数</span></span></span><br><span class="line">          | <span class="type">TFun</span> <span class="type">Type</span> <span class="type">Type</span>  <span class="comment">-- 関数：引数の型、結果の型</span></span><br><span class="line">          | <span class="type">TVar</span> <span class="type">Int</span>        <span class="comment">-- 型変数：識別番号</span></span><br><span class="line">  <span class="keyword">deriving</span> (<span class="type">Eq</span>)</span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">Show</span> <span class="type">Type</span> <span class="keyword">where</span></span></span><br><span class="line">  show <span class="type">TInt</span>        = <span class="string">&quot;Int&quot;</span></span><br><span class="line">  show (<span class="type">TFun</span> p e)  = pp p ++ <span class="string">&quot; -&gt; &quot;</span> ++ show e</span><br><span class="line">    <span class="keyword">where</span> pp fun@(<span class="type">TFun</span> _ _) = <span class="string">&quot;(&quot;</span> ++ show fun ++ <span class="string">&quot;)&quot;</span></span><br><span class="line">          pp t              = show t</span><br><span class="line">  show (<span class="type">TVar</span> i)    = <span class="string">&quot;t&quot;</span> ++ show i</span><br></pre></td></tr></table></figure>
+
+<p><code>TVar</code>は未確定の型を保持する型変数で、後述の単一化(<code>unify</code>)で決定されることになる（決定せずに残る場合もある）。</p>
+<p>型変数の型が確定した場合にその型を保持するのは別テーブルで管理し、識別番号で参照する。</p>
+<h3 id="型推論"><a href="#型推論" class="headerlink" title="型推論"></a>型推論</h3><p>型推論を行う関数<code>infer</code>は、組み込み関数など型の確定しているグローバルな環境<code>[(String, Type)]</code>と、推論したい式の構文木<code>Expr</code>を受け取り、推論した型<code>Type</code>を返す：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- TypeInferencer.hs</span></span><br><span class="line"><span class="keyword">module</span> TypeInferencer (<span class="title">infer</span>) <span class="keyword">where</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Prelude <span class="keyword">hiding</span> (<span class="title">lookup</span>)</span><br><span class="line"><span class="keyword">import</span> Control.Monad.ST (<span class="type">ST</span>, <span class="title">runST</span>)</span><br><span class="line"><span class="keyword">import</span> Data.Map (<span class="title">empty</span>, <span class="title">fromList</span>, <span class="title">insert</span>, <span class="title">lookup</span>, <span class="type">Map</span>)</span><br><span class="line"><span class="keyword">import</span> Data.STRef (<span class="title">newSTRef</span>, <span class="title">readSTRef</span>, <span class="title">writeSTRef</span>, <span class="type">STRef</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Node (<span class="type">Expr(..)</span>)</span><br><span class="line"><span class="keyword">import</span> Type (<span class="type">Type(..)</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- Environment</span></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="type">Env</span> = <span class="type">Map</span> <span class="type">String</span> <span class="type">Type</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- (next var index, &#123;index=&gt;type&#125;)</span></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="type">VarInfo</span> = (<span class="type">Int</span>, <span class="type">Map</span> <span class="type">Int</span> <span class="type">Type</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="title">infer</span> :: [(<span class="type">String</span>, <span class="type">Type</span>)] -&gt; <span class="type">Expr</span> -&gt; <span class="type">Type</span></span><br><span class="line"><span class="title">infer</span> env expr = runST $ <span class="keyword">do</span></span><br><span class="line">  varInfoRef &lt;- newSTRef (<span class="number">0</span>, empty)</span><br><span class="line">  t &lt;- doInfer (fromList env) varInfoRef expr</span><br><span class="line">  (_, varDict) &lt;- readSTRef varInfoRef</span><br><span class="line">  return $ refer t varDict</span><br><span class="line"></span><br><span class="line"><span class="title">doInfer</span> :: <span class="type">Env</span> -&gt; <span class="type">STRef</span> s <span class="type">VarInfo</span> -&gt; <span class="type">Expr</span> -&gt; <span class="type">ST</span> s <span class="type">Type</span></span><br><span class="line"><span class="title">doInfer</span> env varInfoRef expr =</span><br><span class="line">  <span class="keyword">case</span> expr <span class="keyword">of</span></span><br><span class="line">    <span class="type">Natural</span> i  -&gt; return <span class="type">TInt</span></span><br><span class="line">    <span class="type">Var</span> x -&gt; <span class="keyword">do</span></span><br><span class="line">      <span class="keyword">case</span> lookup x env <span class="keyword">of</span></span><br><span class="line">        <span class="type">Just</span> t  -&gt; return t</span><br><span class="line">        <span class="type">Nothing</span> -&gt; error (<span class="string">&quot;not found: &quot;</span> ++ x)</span><br><span class="line">    <span class="type">Fun</span> parm e -&gt; <span class="keyword">do</span></span><br><span class="line">      tparm &lt;- createVar varInfoRef</span><br><span class="line">      te &lt;- doInfer (insert parm tparm env) varInfoRef e</span><br><span class="line">      return $ <span class="type">TFun</span> tparm te</span><br><span class="line">    <span class="type">App</span> f arg -&gt; <span class="keyword">do</span></span><br><span class="line">      funType &lt;- doInfer env varInfoRef f</span><br><span class="line">      argType &lt;- doInfer env varInfoRef arg</span><br><span class="line">      retType &lt;- createVar varInfoRef</span><br><span class="line">      unify funType (<span class="type">TFun</span> argType retType) varInfoRef</span><br><span class="line">      return retType</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>型変数の値が決定した時に状態を書き換えるために、<a href="http://hackage.haskell.org/packages/archive/base/latest/doc/html/Control-Monad-ST.html"><code>ST</code>モナド</a>を使用することにして、実際の型推論 <code>doInfer</code> ではSTモナド内で行う<ul>
+<li>結果は <a href="http://hackage.haskell.org/packages/archive/base/latest/doc/html/Control-Monad-ST.html#v:runST"><code>runST</code></a> で取り出す</li>
+</ul>
+</li>
+<li>型の推論は、関数の適用時に関数の引数の型から単一化して、どちらかが型変数の場合には反映させる</li>
+</ul>
+<p>単一化</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- TypeInferencer.hs</span></span><br><span class="line"><span class="title">unify</span> :: <span class="type">Type</span> -&gt; <span class="type">Type</span> -&gt; <span class="type">STRef</span> s <span class="type">VarInfo</span> -&gt; <span class="type">ST</span> s ()</span><br><span class="line"><span class="title">unify</span> (<span class="type">TFun</span> p1 e1) (<span class="type">TFun</span> p2 e2) varInfoRef = <span class="keyword">do</span></span><br><span class="line">  unify p1 p2 varInfoRef</span><br><span class="line">  unify e1 e2 varInfoRef</span><br><span class="line"><span class="title">unify</span> t1@(<span class="type">TVar</span> i1) t2@(<span class="type">TVar</span> i2) varInfoRef</span><br><span class="line">  | i1 == i2  = return ()</span><br><span class="line"><span class="title">unify</span> (<span class="type">TVar</span> i1) t2 varInfoRef = unifyVar i1 t2 varInfoRef</span><br><span class="line"><span class="title">unify</span> t1 (<span class="type">TVar</span> i2) varInfoRef = unifyVar i2 t1 varInfoRef</span><br><span class="line"><span class="title">unify</span> t1 t2 varInfoRef</span><br><span class="line">  | t1 == t2  = return ()</span><br><span class="line">  | otherwise = cannotUnify t1 t2 varInfoRef</span><br><span class="line"></span><br><span class="line"><span class="title">unifyVar</span> :: <span class="type">Int</span> -&gt; <span class="type">Type</span> -&gt; <span class="type">STRef</span> s <span class="type">VarInfo</span> -&gt; <span class="type">ST</span> s ()</span><br><span class="line"><span class="title">unifyVar</span> index type2 varInfoRef = <span class="keyword">do</span></span><br><span class="line">  isOccur &lt;- occur type2 index varInfoRef</span><br><span class="line">  <span class="keyword">if</span> isOccur</span><br><span class="line">    <span class="keyword">then</span>  error <span class="string">&quot;occurs error&quot;</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">do</span></span><br><span class="line">      (nextIdx, varMap) &lt;- readSTRef varInfoRef</span><br><span class="line">      <span class="keyword">case</span> lookup index varMap <span class="keyword">of</span></span><br><span class="line">        <span class="type">Just</span> vt  -&gt; unify vt type2 varInfoRef</span><br><span class="line">        <span class="type">Nothing</span>  -&gt; writeSTRef varInfoRef (nextIdx, insert index type2 varMap)</span><br></pre></td></tr></table></figure>
+
+<p>出現確認</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- TypeInferencer.hs</span></span><br><span class="line"><span class="title">occur</span> :: <span class="type">Type</span> -&gt; <span class="type">Int</span> -&gt; <span class="type">STRef</span> s <span class="type">VarInfo</span> -&gt; <span class="type">ST</span> s <span class="type">Bool</span></span><br><span class="line"><span class="title">occur</span> (<span class="type">TFun</span> p e) n varInfoRef = (||) &lt;$&gt; occur p n varInfoRef &lt;*&gt; occur e n varInfoRef</span><br><span class="line"><span class="title">occur</span> (<span class="type">TVar</span> i) n varInfoRef</span><br><span class="line">  | i == n    = return <span class="type">True</span></span><br><span class="line">  | otherwise = <span class="keyword">do</span></span><br><span class="line">      (_, varMap) &lt;- readSTRef varInfoRef</span><br><span class="line">      <span class="keyword">case</span> lookup i varMap <span class="keyword">of</span></span><br><span class="line">        <span class="type">Just</span> vt  -&gt; occur vt n varInfoRef</span><br><span class="line">        <span class="type">Nothing</span>  -&gt; return <span class="type">False</span></span><br><span class="line"><span class="title">occur</span> _ _ _   = return <span class="type">False</span></span><br></pre></td></tr></table></figure>
+
+<p>細々</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- TypeInferencer.hs</span></span><br><span class="line"><span class="title">createVar</span> :: <span class="type">STRef</span> s <span class="type">VarInfo</span> -&gt; <span class="type">ST</span> s <span class="type">Type</span></span><br><span class="line"><span class="title">createVar</span> varInfoRef = <span class="keyword">do</span></span><br><span class="line">  (nextIdx, varMap) &lt;- readSTRef varInfoRef</span><br><span class="line">  writeSTRef varInfoRef (nextIdx + <span class="number">1</span>, varMap)</span><br><span class="line">  return $ <span class="type">TVar</span> nextIdx</span><br><span class="line"></span><br><span class="line"><span class="title">refer</span> :: <span class="type">Type</span> -&gt; <span class="type">Map</span> <span class="type">Int</span> <span class="type">Type</span> -&gt; <span class="type">Type</span></span><br><span class="line"><span class="title">refer</span> (<span class="type">TFun</span> p e) varMap = <span class="type">TFun</span> (refer p varMap) (refer e varMap)</span><br><span class="line"><span class="title">refer</span> t@(<span class="type">TVar</span> v) varMap = <span class="keyword">case</span> lookup v varMap <span class="keyword">of</span></span><br><span class="line">  <span class="type">Just</span> vt  -&gt; refer vt varMap</span><br><span class="line">  <span class="type">Nothing</span>  -&gt; t</span><br><span class="line"><span class="title">refer</span> t varMap          = t</span><br><span class="line"></span><br><span class="line"><span class="title">cannotUnify</span> t1 t2 varInfoRef = <span class="keyword">do</span></span><br><span class="line">  (_, varMap) &lt;- readSTRef varInfoRef</span><br><span class="line">  error (<span class="string">&quot;cannot unify: &quot;</span> ++ show (refer t1 varMap) ++ <span class="string">&quot; &lt;=&gt; &quot;</span> ++ show (refer t2 varMap))</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="動かしてみる"><a href="#動かしてみる" class="headerlink" title="動かしてみる"></a>動かしてみる</h3><figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="type">Prelude</span>&gt; :l <span class="type">TypeInferencer</span>.hs</span><br><span class="line">[<span class="number">1</span> <span class="keyword">of</span> <span class="number">3</span>] <span class="type">Compiling</span> <span class="type">Node</span>             ( <span class="type">Node</span>.hs, interpreted )</span><br><span class="line">[<span class="number">2</span> <span class="keyword">of</span> <span class="number">3</span>] <span class="type">Compiling</span> <span class="type">Type</span>             ( <span class="type">Type</span>.hs, interpreted )</span><br><span class="line">[<span class="number">3</span> <span class="keyword">of</span> <span class="number">3</span>] <span class="type">Compiling</span> <span class="type">TypeInferencer</span>   ( <span class="type">TypeInferencer</span>.hs, interpreted )</span><br><span class="line"><span class="type">Ok</span>, modules loaded: <span class="type">Type</span>, <span class="type">TypeInferencer</span>, <span class="type">Node</span>.</span><br><span class="line">*<span class="type">TypeInferencer</span>&gt; <span class="keyword">let</span> globalEnv = [(<span class="string">&quot;+&quot;</span>, <span class="type">TFun</span> <span class="type">TInt</span> (<span class="type">TFun</span> <span class="type">TInt</span> <span class="type">TInt</span>))]  <span class="comment">-- (+) :: Int -&gt; (Int -&gt; Int)</span></span><br><span class="line">*<span class="type">TypeInferencer</span>&gt; infer globalEnv $ <span class="type">Natural</span> <span class="number">123</span></span><br><span class="line"><span class="type">Int</span>  <span class="comment">-- 123 :: Int</span></span><br><span class="line">*<span class="type">TypeInferencer</span>&gt; infer globalEnv $ <span class="type">Fun</span> <span class="string">&quot;x&quot;</span> (<span class="type">App</span> (<span class="type">App</span> (<span class="type">Var</span> <span class="string">&quot;+&quot;</span>) (<span class="type">Var</span> <span class="string">&quot;x&quot;</span>)) (<span class="type">Natural</span> <span class="number">1</span>))</span><br><span class="line"><span class="type">Int</span> -&gt; <span class="type">Int</span>  <span class="comment">-- \x -&gt; x + 1 :: Int -&gt; Int</span></span><br></pre></td></tr></table></figure>
+
+<p>関数合成の型を推論してみる：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line">*<span class="type">TypeInferencer</span>&gt; infer globalEnv $ <span class="type">Fun</span> <span class="string">&quot;f&quot;</span> (<span class="type">Fun</span> <span class="string">&quot;g&quot;</span> (<span class="type">Fun</span> <span class="string">&quot;x&quot;</span> (<span class="type">App</span> (<span class="type">Var</span> <span class="string">&quot;f&quot;</span>) (<span class="type">App</span> (<span class="type">Var</span> <span class="string">&quot;g&quot;</span>) (<span class="type">Var</span> <span class="string">&quot;x&quot;</span>)))))</span><br><span class="line">(t3 -&gt; t4) -&gt; (t2 -&gt; t3) -&gt; t2 -&gt; t4  <span class="comment">-- \f -&gt; \g -&gt; \x -&gt; f (g x) :: (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c</span></span><br><span class="line">*<span class="type">TypeInferencer</span>&gt; :t (.)</span><br><span class="line">(.) :: (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c</span><br></pre></td></tr></table></figure>
+
+
+<p>ソースは<a href="https://github.com/tyfkda/TypeInferencer">こちら</a></p>
+<h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><ul>
+<li>確かに、ここまでだけだと実装は非常に簡単にできる<ul>
+<li>関数が常に引数が１つという制約でかなり簡略化されてると思う</li>
+</ul>
+</li>
+<li>実際に型検査しようとすると、型クラスを導入する必要があるんじゃないかと思い、そうなると結構大変になるんじゃないかと想像</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

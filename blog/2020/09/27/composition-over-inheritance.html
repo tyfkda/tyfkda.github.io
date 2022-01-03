@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Rustでゲームを作ってみた 際に、Rustには `class` という機能はないが、
+struct で独自のデータ型を定義できて、
+そして impl でその型に関連するメソッドを定義することでオブジェクト指向のようにコードを分割できるということでそのように組んでみた。
+しかしどうもC++など一般的なクラスベースのOOP的な考え方で作ろうと思ってもうまくいかないように感じた。
+というのも 継承 という機能がないからだ。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="「継承より合成（移譲）」について"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>「継承より合成（移譲）」について - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/09/27/composition-over-inheritance.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>「継承より合成（移譲）」について</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-09-27
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/oop/">#oop</a> <a href="/tags/rust/">#rust</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2020/09/17/galangua.html" title="Rustでゲームを作ってみた">Rustでゲームを作ってみた</a> 際に、Rustには `class` という機能はないが、
+<p><a href="https://doc.rust-jp.rs/book/second-edition/ch05-01-defining-structs.html"><code>struct</code></a> で独自のデータ型を定義できて、
+そして <a href="https://doc.rust-lang.org/std/keyword.impl.html"><code>impl</code></a> でその型に関連するメソッドを定義することでオブジェクト指向のようにコードを分割できるということでそのように組んでみた。</p>
+<p>しかしどうもC++など一般的なクラスベースのOOP的な考え方で作ろうと思ってもうまくいかないように感じた。
+というのも <strong>継承</strong> という機能がないからだ。</p>
+<span id="more"></span>
+
+<h3 id="構造体、impl、トレイト"><a href="#構造体、impl、トレイト" class="headerlink" title="構造体、impl、トレイト"></a>構造体、impl、トレイト</h3><p>例えばいろんな種類の敵が登場する場合、従来だとベースクラスを作成してそれを継承した個別のクラスを作成する、というのが常套手段だったと思う。
+共通する処理はベースクラスにメソッドを持たせて、特殊化したい機能を仮想関数でオーバーライドする、などとしていた。
+しかしRustでは継承ができないので、結局すべての敵を<a href="https://github.com/tyfkda/galangua/blob/v0.9.0/galangua-core/src/app/game/enemy/enemy.rs#L56-L78">同じ構造体</a>で扱うという、なんともひどい方法で対処した。</p>
+<p>敵の種類ごとに構造体を分けるには <a href="https://doc.rust-jp.rs/book/second-edition/ch10-02-traits.html"><code>trait</code></a> でデータ型が実装すべきメソッドを規定して、各構造体で個別に実装してやればよい。
+管理する側ではそれらのメソッドを介して扱うことができる。</p>
+<p>ただそうした場合、敵のある機能（例えば描画など）が共通化できる・したい、という場合にもコードを共有することができない。
+<code>trait</code> はJavaでいう <code>interface</code> のようにメソッドは規定できるけどフィールドを持てないので、
+位置や表示パターンなどの情報を参照できないからだ
+（それらも <code>trait</code> のメソッド経由で取得できるようにして、<code>trait</code> のデフォルト実装とすればできなくはないが）。</p>
+<h3 id="継承より合成-Composition-over-inheritance"><a href="#継承より合成-Composition-over-inheritance" class="headerlink" title="継承より合成 (Composition over inheritance)"></a>継承より合成 (Composition over inheritance)</h3><p>他にどういうふうに組むのがいいんだろうかと思いながらうろついていたら、
+そもそもクラスベースのOOPでも昨今では<a href="https://en.wikipedia.org/wiki/Composition_over_inheritance#:~:text=Composition%20over%20inheritance%20(or%20composite,than%20inheritance%20from%20a%20base">継承より合成</a>
+が望ましい、ということになっているということを知った（今さら…）。
+継承では「親クラス」を指定してその機能を利用・拡張するのに対して、
+合成は構造体のフィールドとして別の構造体を保持して利用する。</p>
+<p>よくいわれる、<a href="https://ja.wikipedia.org/wiki/Is-a">継承はis-a</a>、合成はhas-aを表現するが、自然言語では言い方によってはどちらにも表現できるので間違って使ってしまうとおかしなことになる、
+ということだと思ってたんだけど、is-aでも合成のほうが望ましいということなんだろうか？
+どちらにせよ、Rustでは継承が使えないから常に合成を使うしかない。</p>
+<h3 id="合成を使用する際の問題点と利点"><a href="#合成を使用する際の問題点と利点" class="headerlink" title="合成を使用する際の問題点と利点"></a>合成を使用する際の問題点と利点</h3><h4 id="問題点"><a href="#問題点" class="headerlink" title="問題点"></a>問題点</h4><p>is-aを表現する場合にも合成を使用する際の面倒な点として、移譲するコードを書く必要がある。
+継承であれば親クラスのメソッドが自動的に呼び出されるのに対して、合成の場合には明示的に記述する必要がある。</p>
+<p>また実装上の問題点として継承では処理の大部分は共通で一部だけ特殊化したいといったときにメソッドをオーバーライドすることで実現できるが、合成ではできない
+（別のカプセルになっているので）。
+コールバックを渡すとかすればある程度できなくはないが、Rustだとコールバック内で書き換えができないので制限がある。
+とすると特殊化するには処理をうまく切り分けて個別に呼び分けるか、コードを重複（コピペで一部変更）させる必要がある。</p>
+<h4 id="利点"><a href="#利点" class="headerlink" title="利点"></a>利点</h4><p>継承の場合に発生する以下の問題が、合成では回避できる：</p>
+<ul>
+<li>親クラスを（たいてい）１つしか指定できないので複数の機能を使いたくてもクラス階層構造の構成上できなかったりする</li>
+<li>親子のクラスが密結合して複雑化する</li>
+<li>あらゆる機能を持つ親クラスができ上がる</li>
+</ul>
+<p>ということで継承を使えば実装上楽できていたところが多少面倒になるけど、それを補って設計上の問題が回避できる、ということになるかもしれない。
+継承は便利だけど強力すぎて間違った利用を引き起こす事が多く、合成では機能は制限されるけどその分各クラスが１つの役割に責任を持つ設計になる、のかもしれない。</p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://www.reddit.com/r/rust/comments/9h1xy8/how_to_avoidtranslate_oopalike_thinking_when/">How to avoid/translate OOP-alike thinking when writing in Rust? : rust</a></li>
+<li>Wikipedia: <a href="https://ja.wikipedia.org/wiki/%E7%B6%99%E6%89%BF_(%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%29">継承 (プログラミング)</a>、
+<a href="https://ja.wikipedia.org/wiki/%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E6%8C%87%E5%90%91%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0">オブジェクト指向プログラミング</a></li>
+<li>Wikipedia: <a href="https://en.wikipedia.org/wiki/Composition_over_inheritance">Composition over inheritance</a></li>
+<li><a href="https://postd.cc/why-composition-is-often-better-than-inheritance/">クラスの「継承」より「合成」がよい理由とは？ゲーム開発におけるコードのフレキシビリティと可読性の向上 | POSTD</a></li>
+<li><a href="https://softwareengineering.stackexchange.com/questions/75189/why-avoid-java-inheritance-extends">design - Why avoid Java Inheritance “Extends” - Software Engineering Stack Exchange</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/03/ecs-in-rust.html" title="【Rust】ECSを使ってみる(Specs)" rel="bookmark">【Rust】ECSを使ってみる(Specs)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/21/legion-ecs.html" title="【Rust】Legion ECSを触ってみた" rel="bookmark">【Rust】Legion ECSを触ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか" rel="bookmark">Rustで状態管理や相互参照をどうするか</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/02/rewindable-slice.html" title="【Rust】生ポインタとその演算（戻せるスライスの実装）" rel="bookmark">【Rust】生ポインタとその演算（戻せるスライスの実装）</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

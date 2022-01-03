@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="今までだいたい手書きでスキャナを書いてたんだけど、re2cというスキャナ生成ツールがあって、flexや手書きよりも高速なスキャナが生成できるという話なので試してみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="re2cで字句解析（fillについて）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>re2cで字句解析（fillについて） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/01/28/re2c-fill.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>re2cで字句解析（fillについて）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2014-01-28
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>今までだいたい手書きでスキャナを書いてたんだけど、re2cというスキャナ生成ツールがあって、flexや手書きよりも高速なスキャナが生成できるという話なので試してみた。</p>
+<span id="more"></span>
+
+<p>Macでのre2cのインストール：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ brew install re2c</span><br></pre></td></tr></table></figure>
+
+<p>使い方：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ re2c -o 出力ファイル名 入力ファイル名</span><br></pre></td></tr></table></figure>
+
+<p>re2cではflexなどと同様に正規表現でルールを書いて、それにマッチした時に行うアクションやトークンの種類などを定義すると、スキャナとなるCのソースを生成してくれる。</p>
+<p>flexとの違いは、re2cではスキャンするバッファの管理を自分でする必要があるということだ。スキャナが判定するための入力文字が必要となった時、<code>YYFILL</code>という関数（？）が呼び出されるので、バッファに必要な文字を読み込んで返す必要がある。しかしこれがどうにもややこしい。なにがわかりづらいかというと、いくつものポインタを操作しなくちゃならないのと、そもそも<code>YYFILL</code>に渡される値が「追加で何文字必要」という数ではないことだと思う。</p>
+<p>というわけで、試したソースはこちら：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span>  <span class="comment">// memmove</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Tokens</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Token</span> &#123;</span></span><br><span class="line">  ERROR = <span class="number">-2</span>,</span><br><span class="line">  EOS = <span class="number">-1</span>,</span><br><span class="line">  LPAR = <span class="number">1</span>,</span><br><span class="line">  RPAR,</span><br><span class="line">  DOT,</span><br><span class="line">  INT,</span><br><span class="line">  SYMBOL,</span><br><span class="line">  STRING,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Scanner</span> &#123;</span></span><br><span class="line">  FILE* fp_;            <span class="comment">// Input file handler.</span></span><br><span class="line">  <span class="keyword">char</span>* buffer_;        <span class="comment">// Read buffer.</span></span><br><span class="line">  <span class="keyword">size_t</span> bufferSize_;   <span class="comment">// Buffer size.</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span>* token_;   <span class="comment">// Beginning of token.</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span>* cursor_;  <span class="comment">// Looking point.</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span>* marker_;  <span class="comment">// Backtrack information.</span></span><br><span class="line">  <span class="keyword">char</span>* limit_;         <span class="comment">// Character loaded point.</span></span><br><span class="line">  <span class="keyword">bool</span> eof_;            <span class="comment">// is end of file?</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Scanner</span>(FILE* fp)</span><br><span class="line">    : <span class="built_in">fp_</span>(fp), <span class="built_in">buffer_</span>(<span class="literal">NULL</span>), <span class="built_in">bufferSize_</span>(<span class="number">0</span>),</span><br><span class="line">      <span class="built_in">token_</span>(<span class="literal">NULL</span>), <span class="built_in">cursor_</span>(<span class="literal">NULL</span>), <span class="built_in">marker_</span>(<span class="literal">NULL</span>), <span class="built_in">limit_</span>(<span class="literal">NULL</span>),</span><br><span class="line">      <span class="built_in">eof_</span>(<span class="literal">false</span>) &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ~<span class="built_in">Scanner</span>() &#123;</span><br><span class="line">    <span class="keyword">delete</span>[] buffer_;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function">Token <span class="title">scan</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">const</span> <span class="keyword">char</span>* <span class="title">getToken</span><span class="params">()</span> <span class="keyword">const</span>  </span>&#123; <span class="keyword">return</span> token_; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">const</span> <span class="keyword">char</span>* <span class="title">getLimit</span><span class="params">()</span> <span class="keyword">const</span>  </span>&#123; <span class="keyword">return</span> limit_; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">getLength</span><span class="params">()</span> <span class="keyword">const</span>  </span>&#123; <span class="keyword">return</span> cursor_ - token_; &#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">fill</span><span class="params">(<span class="keyword">int</span> n)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">shiftBuffer</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">expandBuffer</span><span class="params">(<span class="keyword">int</span> n)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Token <span class="title">Scanner::scan</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> initial:</span><br><span class="line">  token_ = cursor_;</span><br><span class="line">  <span class="comment">/*!re2c</span></span><br><span class="line"><span class="comment">    re2c:define:YYCTYPE = &quot;char&quot;;</span></span><br><span class="line"><span class="comment">    re2c:define:YYCURSOR = cursor_;</span></span><br><span class="line"><span class="comment">    re2c:define:YYLIMIT = limit_;</span></span><br><span class="line"><span class="comment">    re2c:define:YYMARKER = marker_;</span></span><br><span class="line"><span class="comment">    re2c:define:YYFILL:naked = 1;</span></span><br><span class="line"><span class="comment">    re2c:define:YYFILL@len = #;</span></span><br><span class="line"><span class="comment">    re2c:define:YYFILL = &quot;if (!fill(#)) &#123; return EOS; &#125;&quot;;</span></span><br><span class="line"><span class="comment">    re2c:yyfill:enable = 1;</span></span><br><span class="line"><span class="comment">    re2c:indent:top = 1;</span></span><br><span class="line"><span class="comment">    re2c:indent:string = &quot;  &quot;;</span></span><br><span class="line"><span class="comment">    SYMBOL_CHAR = [^ \t\n\000&quot;];</span></span><br><span class="line"><span class="comment">    STRING_CHAR = [^&quot;\000\n];</span></span><br><span class="line"><span class="comment">    OTHER = .;</span></span><br><span class="line"><span class="comment">    &quot;\000&quot;          &#123; return EOS; &#125;</span></span><br><span class="line"><span class="comment">    &quot;\n&quot;            &#123; goto initial; &#125;</span></span><br><span class="line"><span class="comment">    [ \t]+          &#123; goto initial; &#125;</span></span><br><span class="line"><span class="comment">    [0-9]+          &#123; return INT; &#125;</span></span><br><span class="line"><span class="comment">    &quot;(&quot;             &#123; return LPAR; &#125;</span></span><br><span class="line"><span class="comment">    &quot;)&quot;             &#123; return RPAR; &#125;</span></span><br><span class="line"><span class="comment">    &quot;\.&quot;            &#123; return DOT; &#125;</span></span><br><span class="line"><span class="comment">    [&quot;] STRING_CHAR* [&quot;] &#123; return STRING; &#125;</span></span><br><span class="line"><span class="comment">    SYMBOL_CHAR+    &#123; return SYMBOL; &#125;</span></span><br><span class="line"><span class="comment">    OTHER           &#123; return ERROR; &#125;</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">Scanner::fill</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (eof_ &amp;&amp; (limit_ - cursor_) &lt;= <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">size_t</span> need = n - (limit_ - cursor_);</span><br><span class="line">  <span class="keyword">size_t</span> offset = limit_ - buffer_;</span><br><span class="line">  <span class="keyword">if</span> (offset + need &gt; bufferSize_) &#123;  <span class="comment">// Need more buffer for read.</span></span><br><span class="line">    <span class="keyword">size_t</span> dust = token_ - buffer_;  <span class="comment">// Size of consumed characters.</span></span><br><span class="line">    <span class="keyword">if</span> (offset + need - dust &lt;= bufferSize_)</span><br><span class="line">      <span class="built_in">shiftBuffer</span>();</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">expandBuffer</span>(need);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">size_t</span> readSize = <span class="built_in">fread</span>((<span class="keyword">void</span>*)limit_, <span class="number">1</span>, need, fp_);</span><br><span class="line">  limit_ += readSize;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = readSize; i &lt; need; ++i)</span><br><span class="line">    limit_[i] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">  <span class="keyword">if</span> (readSize &lt; need)</span><br><span class="line">    eof_ = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Scanner::shiftBuffer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> dust = token_ - buffer_;</span><br><span class="line">  <span class="built_in">memmove</span>(buffer_, token_, limit_ - token_);</span><br><span class="line">  token_ = buffer_;</span><br><span class="line">  limit_ -= dust;</span><br><span class="line">  cursor_ -= dust;</span><br><span class="line">  marker_ -= dust;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Scanner::expandBuffer</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">int</span> MIN_EXPAND_SIZE = <span class="number">16</span>;</span><br><span class="line">  <span class="keyword">size_t</span> dust = token_ - buffer_;</span><br><span class="line">  <span class="keyword">size_t</span> newSize = bufferSize_ + (n &gt; MIN_EXPAND_SIZE ? n : MIN_EXPAND_SIZE);</span><br><span class="line">  <span class="keyword">char</span>* newBuffer = <span class="keyword">new</span> <span class="keyword">char</span>[newSize];</span><br><span class="line">  <span class="keyword">if</span> (bufferSize_ &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="built_in">memmove</span>(newBuffer, token_, bufferSize_ - dust);</span><br><span class="line">  <span class="comment">// Change pointers to point new buffer.</span></span><br><span class="line">  cursor_ = &amp;newBuffer[(cursor_ - buffer_) - dust];</span><br><span class="line">  limit_ = &amp;newBuffer[(limit_ - buffer_) - dust];</span><br><span class="line">  token_ = &amp;newBuffer[(token_ - buffer_) - dust];</span><br><span class="line">  marker_ = &amp;newBuffer[(marker_ - buffer_) - dust];</span><br><span class="line">  <span class="comment">// Switch to new buffer.</span></span><br><span class="line">  <span class="keyword">delete</span>[] buffer_;</span><br><span class="line">  buffer_ = newBuffer;</span><br><span class="line">  bufferSize_ = newSize;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">Scanner <span class="title">scanner</span><span class="params">(stdin)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">bool</span> loop = <span class="literal">true</span>; loop; ) &#123;</span><br><span class="line">    Token tok = scanner.<span class="built_in">scan</span>();</span><br><span class="line">    <span class="keyword">int</span> len = scanner.<span class="built_in">getLength</span>();</span><br><span class="line">    <span class="built_in"><span class="keyword">switch</span></span> (tok) &#123;</span><br><span class="line">    <span class="keyword">case</span> EOS:</span><br><span class="line">      loop = <span class="literal">false</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> ERROR:</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;illegal [%.*s]\n&quot;</span>,</span><br><span class="line">             (<span class="keyword">int</span>)(scanner.<span class="built_in">getLimit</span>() - scanner.<span class="built_in">getToken</span>()), scanner.<span class="built_in">getToken</span>());</span><br><span class="line">      loop = <span class="literal">false</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> LPAR:</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;(&quot;</span>);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> RPAR:</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;)&quot;</span>);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> DOT:</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> INT:</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;INT    [%.*s]\n&quot;</span>, len, scanner.<span class="built_in">getToken</span>());</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> SYMBOL:</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;SYMBOL [%.*s]\n&quot;</span>, len, scanner.<span class="built_in">getToken</span>());</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> STRING:</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;STRING [%.*s]\n&quot;</span>, len, scanner.<span class="built_in">getToken</span>());</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>マニュアルとかサンプルとか難しくてちゃんと読んでないけど、とりあえず動きます。</p>
+<p>まず、re2cで生成されたスキャナは<code>YYCURSOR</code>, <code>YYLIMIT</code>, <code>YYMARKER</code>という3つのポインタを必要とする。<code>YYCURSOR</code>はスキャナが今見ているトークンのポイント（トークンの先頭ではない）、<code>YYLIMIT</code>は読み込まれたバッファの上限、<code>YYMARKER</code>はなんかわからないけどバックトラックの情報らしい（ルールによっては使われない場合もある）。</p>
+<p>re2cではスキャンを進めるごとにポインタを進めていってしまい、トークンが受理された時にはそのトークンがどういう文字列だったかという情報は管理していない。必要な場合には利用する側で管理する必要がある(上記のプログラムではtoken_というメンバ変数で保持している)。</p>
+<p><code>YYFILL</code>に渡ってくる値は「次に何文字必要か」じゃなくて、「現在見ている<code>YYCURSOR</code>から何文字必要か」なので、新たに読み込む必要のある文字数は <code>n - (YYLIMIT - YYCURSOR)</code> となる。</p>
+<p>でその数が確保しているバッファ(<code>buffer_</code>)に収まりきらない場合にはバッファを操作する必要がある。バッファの前半部分にはすでに消費済みの領域がある場合があるので、メモリの動的確保を最小限にするため、それを詰めて入るようだったら詰める(<code>shiftBuffer</code>)。詰めても入らないようであればバッファ自体を拡張してやる(<code>expandBuffer</code>)。で必要な文字数がバッファに収まるようになったので、<code>YYLIMIT</code>から必要な文字数分だけ読み込んでやり、<code>YYLIMIT</code>を末尾にあわせる。</p>
+<p>バッファをシフトする場合は、トークンの開始位置(<code>token_</code>)から上限(<code>YYLIMIT</code>)までをバッファの先頭に移動する。バッファを拡張する場合は、新しいバッファを確保して古いバッファから必要な内容をコピーする。どちらも管理しているポインタを新しいバッファの位置を指すように調整する必要がある。</p>
+<p>使用する側は定義したスキャン関数(<code>scan</code>)を呼び出すと対応するトークンが返ってくる。トークンの値が必要な場合には、スキャナのアクションで<code>token_</code>から<code>YYCURSOR</code>までを使って、<code>atoi</code>なりなんなりして、<code>yylval</code>などという共用体を作って値を格納しておけばよろしいかと。</p>
+<p>生成されたスキャナが高速化どうかの比較などは試してない。またre2cの導入は、Lispではリードマクロで読み込みの動作を変えることができてしまい、その際にスキャナ側に先読みされた文字をポート側に<code>ungetc</code>したりする必要が発生するのではないかということで、ためらっている。自作の言語を作る場合には使ってみようかな。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

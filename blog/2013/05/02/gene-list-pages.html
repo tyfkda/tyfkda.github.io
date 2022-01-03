@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ICFP2007の続き。85ページのField-repairing Fuunsには遺伝子を有効にする方法が書かれている。Adapterとういものを使えば簡単にできるとのこと。緑ゾーンの遺伝子を呼び出すには、IFPICFPPCCCというマーカー2つの間のDNAを先頭にコピーして、続けてオフセットを整数にエンコーディング、続けて遺伝子のサイズ、とすればいいらしい。呼び出し終わるとDNAの先頭から緑ゾーンのアダプタの起動までは復元されるとのこと。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Gene listの残りのページを見る"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Gene listの残りのページを見る - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/05/02/gene-list-pages.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Gene listの残りのページを見る</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-05-02
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ICFP2007の続き。85ページのField-repairing Fuunsには遺伝子を有効にする方法が書かれている。Adapterとういものを使えば簡単にできるとのこと。緑ゾーンの遺伝子を呼び出すには、<code>IFPICFPPCCC</code>というマーカー2つの間のDNAを先頭にコピーして、続けてオフセットを整数にエンコーディング、続けて遺伝子のサイズ、とすればいいらしい。呼び出し終わるとDNAの先頭から緑ゾーンのアダプタの起動までは復元されるとのこと。</p>
+<span id="more"></span>
+
+<p>なにか情報を渡したい場合には青ゾーン(<code>IFPICFPPCFIPP</code>)の先頭に置くこと。</p>
+<p>例の、整数42を青ゾーンの先頭にコピーするprefix、<code>IIPIFFCPICCFPICICFPCICICIICIICIPPPCFCFCFCCCCCCCCCCCCCCCCCICIIC</code> は、デコードすると</p>
+<p>| Pattern | <code>(?&quot;IFPICFPPCFIPP&quot;)</code> |
+| Template | <code>&#123;0_0&#125;ICICICIIIIIIIIIIIIIIIIIP</code> |</p>
+<p>となる。パターンで青ゾーンを探して、テンプレートで青ゾーンまでをそのままコピー、42をエンコードしたものを挿入する、という内容。</p>
+<p>真偽値をコピーするprefix、<code>IIPIFFCPICCFPICICFPCICICIICIICIPPPPIIC</code> も同様に、</p>
+<p>| Pattern | <code>(?&quot;IFPICFPPCFIPP&quot;)</code> |
+| Template | <code>&#123;0_0&#125;F</code> |</p>
+<p>となる。</p>
+<p>緑ゾーンからオフセット1234にある500の遺伝子を有効にするprefix、<code>IIPIFFCPICCFPICICFFFIIPIFFCPICCFPICICFFFIICIICIICIPPPCFCCFCFFCCFICCCFCFFFFFICIPPCPIIC</code> は、</p>
+<p>| Pattern | <code>(?&quot;IFPICFPPCCC&quot;(?&quot;IFPICFPPCCC&quot;))</code> |
+| Template | <code>&#123;0_0&#125;ICIICICCIICPIICICCCCCP&#123;1_0&#125;</code> |</p>
+<p>で、パターンでアダプタの2つのマーカー<code>IFPICFPPCCC</code>を探して、テンプレートでオフセット1234=0b010011010010、サイズ500=0b111110100をアダプタに渡している。</p>
+<p>試しになにか動かしてみたいと思って、42ページのGene listに書かれている、<code>appletree</code>(オフセット:0x3c870e, サイズ:0x00372b)を呼び出してみようと、<code>IIPIFFCPICCFPICICFFFIIPIFFCPICCFPICICFFFIICIICIICIPPPCFFFCCCCFFFCCCCFCCFFFFICFFCFCFCCFFFCFFICIPPCPIIC</code> (Pattern: <code>(?&quot;IFPICFPPCCC&quot;(?&quot;IFPICFPPCCC&quot;))</code>, Template: <code>&#123;0_0&#125;ICCCIIIICCCIIIICIICCCCPCCICICIICCCICCP&#123;1_0&#125;</code>) というprefixを渡すと、出力されるRNAの最初の5200くらいで林檎の木が左上に描かれた！</p>
+<p>なにか引数を与える遺伝子でも試してみたい、けどGene listには遺伝子の名前しか書かれてないのでなにを有効にしたらいいのかわからないなぁ。Gene listは14ページ中の1ページ目だけなので、残りの13ページを見るにはどうしたらいいのか。先頭のサイズ24のAAA_geneTablePageNrというのが怪しそう、だけどどうしたらいいのかわからなかったので、いんちきしてググって<a href="http://blog.goo.ne.jp/sim00/e/1eaabcd52558b8a18a070c9ffcdb3fad">ICFP2007 (6) gene table - Sim’s blog</a>のページを見つけた。<code>AAA_geneTablePageNr</code>の中身を書き換えてやれば他のページが見れるらしい。じゃあっつって、修理ガイドの42ページを見るための「<code>(?&quot;IFPCFFP&quot;)IIIIII</code>, <code>&#123;0_0&#125;int(42)</code>」のパターンとテンプレートに緑ゾーンを探してオフセット0x510（実際には、マーカーのサイズ13を引く必要がある）、サイズ24を書き換えるコードを追加したが、うまく動かない。位置を調べてみると、<code>IFPCFFP</code>はDNAの先頭から14860の位置、緑ゾーン<code>IFPICFPPCFFPP</code>は13615からなので、緑ゾーンの先頭のほうが前にある。なので先に緑ゾーンを探すようにしてみたが、それでも動かない。なんでかなーと考えたら、13615+0x510(=1296)-13=14898で、<code>IFPCFFP</code>マーカーより後ろにある。なのでどちらにしてもサーチに失敗してしまっていた。ここはおとなしく参照先のページのように、<code>IFPFIP</code>を探すように修正してみるとめでたく他のページも表示されるようになった。</p>
+<p>他のページを見るためのprefixを生成するツール：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!ruby</span></span><br><span class="line"><span class="comment"># asnat, protectはドキュメント通り</span></span><br><span class="line"></span><br><span class="line">GeneTablePageNum = <span class="number">42</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">intcode</span><span class="params">(x)</span></span></span><br><span class="line">  protect(<span class="number">1</span>, asnat(x))</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">skip_length</span><span class="params">(n)</span></span></span><br><span class="line">  <span class="string">&quot;IP<span class="subst">#&#123;asnat(intcode(n).length)&#125;</span>P&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(dna)</span></span></span><br><span class="line">  <span class="string">&quot;IFF<span class="subst">#&#123;protect(<span class="number">1</span>, dna)&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ref</span><span class="params">(n, l)</span></span></span><br><span class="line">  <span class="string">&quot;IP<span class="subst">#&#123;asnat(l)&#125;</span>P<span class="subst">#&#123;asnat(n)&#125;</span>P&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">page_no = ARGV.shift.to_i</span><br><span class="line">puts (<span class="comment"># Pattern</span></span><br><span class="line">      <span class="string">&quot;IIP<span class="subst">#&#123;search(<span class="string">&quot;IFPCFFP&quot;</span>)&#125;</span>IIC<span class="subst">#&#123;skip_length(GeneTablePageNum)&#125;</span>&quot;</span> +</span><br><span class="line">      <span class="string">&quot;IIP<span class="subst">#&#123;search(<span class="string">&quot;IFPFIP&quot;</span>)&#125;</span>IIC<span class="subst">#&#123;skip_length(page_no)&#125;</span>IIC&quot;</span> +</span><br><span class="line">      <span class="comment"># Template</span></span><br><span class="line">      <span class="string">&quot;<span class="subst">#&#123;ref(<span class="number">0</span>,<span class="number">0</span>)&#125;</span><span class="subst">#&#123;intcode(GeneTablePageNum)&#125;</span>&quot;</span> +</span><br><span class="line">      <span class="string">&quot;<span class="subst">#&#123;ref(<span class="number">1</span>,<span class="number">0</span>)&#125;</span><span class="subst">#&#123;intcode(page_no)&#125;</span>IIC&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>こいつに1〜13を与えて出てくるprefixで、2ページ〜14ページのGene tableが出力される。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

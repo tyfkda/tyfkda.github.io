@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="自作OS用のアプリケーションでC++を使う方法を調べた。使ったコンパイラはg++で、リンカはld。C++のうちの使う機能は、シンプルにクラスと継承のみ。RTTIや例外はテストしてない。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="自作OSでC++を使う方法"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>自作OSでC++を使う方法 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/03/10/use-cpp.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>自作OSでC++を使う方法</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2014-03-10
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/os/">#os</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>自作OS用のアプリケーションでC++を使う方法を調べた。使ったコンパイラはg++で、リンカはld。C++のうちの使う機能は、シンプルにクラスと継承のみ。RTTIや例外はテストしてない。</p>
+<span id="more"></span>
+
+<h3 id="new-delete"><a href="#new-delete" class="headerlink" title="new, delete"></a>new, delete</h3><p>デフォルトの<code>new</code>, <code>delete</code>で行うメモリ管理を定義する必要がある。これは単純に<code>malloc</code>, <code>free</code>を使えばいいだろう。<code>new[]</code>や<code>delete[]</code>も定義すること。</p>
+<h3 id="純粋仮想関数"><a href="#純粋仮想関数" class="headerlink" title="純粋仮想関数"></a>純粋仮想関数</h3><p>純粋仮想関数を定義しても、その仮想関数はサブクラスで上書きされて呼び出されないはずなので参照されないはずだけど、テーブルでは<code>__cxa_pure_virtual</code>という関数が参照される。
+実際に呼び出された場合には例外を投げるとかしたほうがいいかもしれないけど、基本的には呼び出されないはずなので空の関数でいいかも。</p>
+<h3 id="グローバルコンストラクタ"><a href="#グローバルコンストラクタ" class="headerlink" title="グローバルコンストラクタ"></a>グローバルコンストラクタ</h3><p>グローバル変数でクラスのインスタンスを定義した場合、<code>main</code>関数の呼び出しよりも先にそれらのコンストラクタが呼び出される必要がある。g++はそのような変数に対する初期化コードへの関数ポインタを<code>.preinit_array</code>, <code>.init_array</code>というセクションに、また終了処理を<code>.fini_array</code>に？出力する。</p>
+<p>そこで、リンカスクリプトでこれらのデータをデータセクションに配置して、OSがアプリケーションを呼び出す際に<code>main</code>関数の呼び出し前に呼び出してやれば良い。</p>
+<p>リンカスクリプト：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SECTIONS &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    .data : &#123;</span><br><span class="line">        *(.data)</span><br><span class="line"></span><br><span class="line">        . = ALIGN(4);</span><br><span class="line">        __preinit_array_start = .;</span><br><span class="line">        *(.preinit_array)</span><br><span class="line">        __preinit_array_end = .;</span><br><span class="line"></span><br><span class="line">        __init_array_start = .;</span><br><span class="line">        *(SORT(.init_array.*))</span><br><span class="line">        *(.init_array)</span><br><span class="line">        __init_array_end = .;</span><br><span class="line"></span><br><span class="line">        __fini_array_start = .;</span><br><span class="line">        *(SORT(.fini_array.*))</span><br><span class="line">        *(.fini_array)</span><br><span class="line">        __fini_array_end = .;</span><br><span class="line">        . = ALIGN(16);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>crt0.c</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">extern</span> <span class="title">void</span> <span class="params">(*__preinit_array_start [])</span> <span class="params">(<span class="keyword">void</span>)</span> __<span class="title">attribute__</span><span class="params">((weak))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="title">void</span> <span class="params">(*__preinit_array_end [])</span> <span class="params">(<span class="keyword">void</span>)</span> __<span class="title">attribute__</span><span class="params">((weak))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="title">void</span> <span class="params">(*__init_array_start [])</span> <span class="params">(<span class="keyword">void</span>)</span> __<span class="title">attribute__</span><span class="params">((weak))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="title">void</span> <span class="params">(*__init_array_end [])</span> <span class="params">(<span class="keyword">void</span>)</span> __<span class="title">attribute__</span><span class="params">((weak))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="title">void</span> <span class="params">(*__fini_array_start [])</span> <span class="params">(<span class="keyword">void</span>)</span> __<span class="title">attribute__</span><span class="params">((weak))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="title">void</span> <span class="params">(*__fini_array_end [])</span> <span class="params">(<span class="keyword">void</span>)</span> __<span class="title">attribute__</span><span class="params">((weak))</span></span>;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">void</span> (**pp)() = __preinit_array_start; pp &lt; __preinit_array_end; ++pp)</span><br><span class="line">    (**pp)();</span><br><span class="line">  <span class="comment">// <span class="doctag">TODO:</span> Init.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">void</span> (**pp)() = __init_array_start; pp &lt; __init_array_end; ++pp)</span><br><span class="line">    (**pp)();</span><br></pre></td></tr></table></figure>
+
+<p>ただ試したところ、初期化ルーチンは<code>.init_array</code>に入っていて、<code>.preinit_array</code>には何が入るのか、また<code>.preinit_array</code>と<code>.init_array</code>の間には何を初期化する必要があるのか、また<code>.fini_array</code>も空で何が入るのかわからなかった。</p>
+<h3 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h3><ul>
+<li><a href="http://wiki.osdev.org/Calling_Global_Constructors#Using_crti.o.2C_crtbegin.o.2C_crtend.o.2C_and_crtn.o_in_a_Kernel">Calling Global Constructors - OSDev Wiki</a></li>
+<li><a href="http://www.slideshare.net/uchan_nos/cppos">C++でできる！OS自作入門</a>（<a href="http://www.youtube.com/watch?v=zHomzSznZOE">動画</a>）</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/12/27/baremetal-ctxswtch-rpz.html" title="Raspberry Pi Zeroでベアメタルコンテキストスイッチ" rel="bookmark">Raspberry Pi Zeroでベアメタルコンテキストスイッチ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/11/build-linux.html" title="Linuxカーネルをビルドしてみる" rel="bookmark">Linuxカーネルをビルドしてみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/18/data-segment.html" title="はりぼてOSアプリのメモリレイアウト" rel="bookmark">はりぼてOSアプリのメモリレイアウト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/23/fin-hariboteos.html" title="「OS自作入門」とりあえず完了" rel="bookmark">「OS自作入門」とりあえず完了</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

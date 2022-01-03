@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="例えば自分で定義した型（２次元ベクトルなど）を扱う場合に、演算子のオーバーロードが使えると計算式が簡単に書けて便利だ。
+Rustでは演算子に関連するトレイトを実装することで実現できる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Rust】演算子のオーバーロード"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Rust】演算子のオーバーロード - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/06/05/rust-op-overload.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Rust】演算子のオーバーロード</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-06-05
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/rust/">#rust</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>例えば自分で定義した型（２次元ベクトルなど）を扱う場合に、演算子のオーバーロードが使えると計算式が簡単に書けて便利だ。
+Rustでは演算子に関連するトレイトを実装することで実現できる。</p>
+<span id="more"></span>
+
+<h3 id="演算子オーバーロードの基本"><a href="#演算子オーバーロードの基本" class="headerlink" title="演算子オーバーロードの基本"></a>演算子オーバーロードの基本</h3><p>例として、ジェネリクスで任意の型が使える自作の２次元ベクトルベクトル構造体：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="meta">#[derive(Clone, Copy, Debug, PartialEq)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Vector2D</span></span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">pub</span> x: T,</span><br><span class="line">    <span class="keyword">pub</span> y: T,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>に対して<a href="https://doc.rust-lang.org/std/ops/trait.Add.html"><code>Addトレイト</code></a>を実装：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::Add;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T: Add&lt;Output = T&gt; + <span class="built_in">Copy</span>&gt; Add <span class="keyword">for</span> Vector2D&lt;T&gt; &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = Vector2D&lt;T&gt;;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">add</span></span>(<span class="keyword">self</span>, other: <span class="keyword">Self</span>) -&gt; Self::Output &#123;</span><br><span class="line">        Self::Output &#123; x: <span class="keyword">self</span>.x + other.x, y: <span class="keyword">self</span>.y + other.y &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>することで <code>+</code> 演算子が使用できるようになる：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">test_add</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> v1 = Vector2D&#123;x: <span class="number">1</span>, y: <span class="number">2</span>&#125;;</span><br><span class="line">    <span class="keyword">let</span> v2 = Vector2D&#123;x: <span class="number">3</span>, y: <span class="number">4</span>&#125;;</span><br><span class="line">    <span class="built_in">assert_eq!</span>(Vector2D&#123;x: <span class="number">4</span>, y: <span class="number">6</span>&#125;,</span><br><span class="line">               v1 + v2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=76d2c2a5ad42e4fcbbf0871971aa5619">Rust Playgroundで実行</a></p>
+<p>加算以外にも、減算など他の演算子も同様に可能。</p>
+<h3 id="参照を受け付けるようにする"><a href="#参照を受け付けるようにする" class="headerlink" title="参照を受け付けるようにする"></a>参照を受け付けるようにする</h3><p>演算子をオーバーロードする構造体が <code>Copy</code> トレイトを実装していないと演算子の使用で移動が起こってしまうのと、
+<code>Copy</code> を実装している場合にはセマンティックとしてはコピーが発生してしまう（最適化で取り除かれるのかも知れないが）。
+それがちょっと気になるので、構造体自体じゃなくて参照に対して演算子を定義してみる：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">impl</span>&lt;T: Add&lt;Output = T&gt; + <span class="built_in">Copy</span>&gt; Add <span class="keyword">for</span> &amp;Vector2D&lt;T&gt; &#123;  <span class="comment">// &lt;= &amp;</span></span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = Vector2D&lt;T&gt;;  <span class="comment">// &lt;= 出力型はVector2D&lt;T&gt;のまま</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">add</span></span>(<span class="keyword">self</span>, other: <span class="keyword">Self</span>) -&gt; Self::Output &#123;</span><br><span class="line">        Self::Output &#123; x: <span class="keyword">self</span>.x + other.x, y: <span class="keyword">self</span>.y + other.y &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">test_add2</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> v1 = Vector2D&#123;x: <span class="number">1</span>, y: <span class="number">2</span>&#125;;</span><br><span class="line">    <span class="keyword">let</span> v2 = Vector2D&#123;x: <span class="number">3</span>, y: <span class="number">4</span>&#125;;</span><br><span class="line">    <span class="built_in">assert_eq!</span>(Vector2D&#123;x: <span class="number">4</span>, y: <span class="number">6</span>&#125;,</span><br><span class="line">               &amp;v1 + &amp;v2);  <span class="comment">// &lt;= &amp;同士</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=ee6713d93e4e3cd06107397e225f6bf4">Rust Playgroundで実行</a></p>
+<p><code>Output</code> は参照じゃなく <code>Vector2D&lt;T&gt;</code> のままにする。</p>
+<p><code>+</code> 使用時に <code>&amp;</code> をつけてやる必要があるのでちょっと手間になってしまうが、まあ許容範囲でしょう。</p>
+<h3 id="別の型との演算"><a href="#別の型との演算" class="headerlink" title="別の型との演算"></a>別の型との演算</h3><p>例えばベクトルを定数倍したりする場合、スカラーとの乗算を実装する：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::Mul;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T: Mul&lt;Output = T&gt; + <span class="built_in">Copy</span>&gt; Mul&lt;T&gt; <span class="keyword">for</span> &amp;Vector2D&lt;T&gt; &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = Vector2D&lt;T&gt;;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">mul</span></span>(<span class="keyword">self</span>, rhs: T) -&gt; Self::Output &#123;</span><br><span class="line">        Self::Output &#123; x: <span class="keyword">self</span>.x * rhs, y: <span class="keyword">self</span>.y * rhs &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上記で <code>&amp;Vector2D&lt;T&gt; * T</code> が使用できる。</p>
+<p>これを逆に、 <code>T * &amp;Vector2D&lt;T&gt;</code> も使用できるようにするにはどうしたらいいか。
+個別の型に対して定義：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">impl</span> Mul&lt;&amp;Vector2D&lt;<span class="built_in">f64</span>&gt;&gt; <span class="keyword">for</span> <span class="built_in">f64</span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = Vector2D&lt;<span class="built_in">f64</span>&gt;;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">mul</span></span>(<span class="keyword">self</span>, rhs: &amp;Vector2D&lt;<span class="built_in">f64</span>&gt;) -&gt; Self::Output &#123;</span><br><span class="line">        Self::Output &#123; x: <span class="keyword">self</span> * rhs.x, y: <span class="keyword">self</span> * rhs.y &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>すれば一応使える。
+これを個別の型ごとに書かなくて済むようにジェネリクスが使えるんじゃないかと、</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 注意：コンパイルエラーになる</span></span><br><span class="line"><span class="keyword">impl</span>&lt;T: Mul&lt;Output = T&gt; + <span class="built_in">Copy</span>&gt; Mul&lt;&amp;Vector2D&lt;T&gt;&gt; <span class="keyword">for</span> T &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = Vector2D&lt;T&gt;;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">mul</span></span>(<span class="keyword">self</span>, rhs: &amp;Vector2D&lt;T&gt;) -&gt; Self::Output &#123;</span><br><span class="line">        Self::Output &#123; x: <span class="keyword">self</span> * rhs.x, y: <span class="keyword">self</span> * rhs.y &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>などとするとエラーが出る：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">error[E0210]: type parameter `T` must be used as the type parameter for some local type (e.g., `MyStruct&lt;T&gt;`)</span><br><span class="line">  --&gt; src/vec.rs:52:6</span><br><span class="line">   |</span><br><span class="line">52 | impl&lt;T&gt; Mul&lt;&amp;Vector2D&lt;T&gt;&gt; for T</span><br><span class="line">   |      ^ type parameter `T` must be used as the type parameter for some local type</span><br><span class="line">   |</span><br><span class="line">   = note: implementing a foreign trait is only possible if at least one of the types for which is it implemented is local</span><br><span class="line">   = note: only traits defined in the current crate can be implemented for a type parameter</span><br><span class="line"></span><br><span class="line">error: aborting due to previous error</span><br><span class="line"></span><br><span class="line">For more information about this error, try `rustc --explain E0210`.</span><br><span class="line">error: could not compile `vec`.</span><br><span class="line"></span><br><span class="line">To learn more, run the command again with --verbose.</span><br></pre></td></tr></table></figure>
+
+<p>どうも演算子の実装を定義できるのは自分のcrateで定義している型に対してだけらしい。
+（<code>rustc --explain E0210</code> で<a href="https://github.com/rust-lang/rust/blob/master/src/librustc_error_codes/error_codes/E0210.md">説明</a>が表示される）。</p>
+<p>というのも、別の型 <code>Foobar</code> が同じく <code>Mul</code> を実装している場合に、 <code>impl&lt;Vector2D&lt;T&gt;&gt; Mul&lt;Vector2D&lt;T&gt;&gt; for Foobar</code> とのどちらも適用可能でぶつかってしまうとのこと。</p>
+<h4 id="マクロで定義"><a href="#マクロで定義" class="headerlink" title="マクロで定義"></a>マクロで定義</h4><p>ジェネリクスが使えずに型ごとに同じ定義を繰り返し記述しなきゃならないのは面倒なので、いっちょマクロを書いてみる：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="built_in">macro_rules!</span> defmulvec &#123;</span><br><span class="line">    ( $( $t:ty ),+ ) =&gt; &#123;</span><br><span class="line">        $(</span><br><span class="line">            <span class="keyword">impl</span> Mul&lt;&amp;Vector2D&lt;$t&gt;&gt; <span class="keyword">for</span> $t &#123;</span><br><span class="line">                <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = Vector2D&lt;$t&gt;;</span><br><span class="line">                <span class="function"><span class="keyword">fn</span> <span class="title">mul</span></span>(<span class="keyword">self</span>, rhs: &amp;Vector2D&lt;$t&gt;) -&gt; Self::Output &#123;</span><br><span class="line">                    Self::Output &#123; x: <span class="keyword">self</span> * rhs.x, y: <span class="keyword">self</span> * rhs.y &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        )+</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">defmulvec![<span class="built_in">i32</span>, <span class="built_in">f64</span>];</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="代入演算子のオーバーロード"><a href="#代入演算子のオーバーロード" class="headerlink" title="代入演算子のオーバーロード"></a>代入演算子のオーバーロード</h3><p>代入演算子もオーバーロードできて、例えば加算は<a href="https://doc.rust-lang.org/std/ops/trait.AddAssign.html"><code>AddAssignトレイト</code></a>を実装する：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::AddAssign;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T: AddAssign&gt; AddAssign <span class="keyword">for</span> Vector2D&lt;T&gt; &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">add_assign</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, other: <span class="keyword">Self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.x += other.x;</span><br><span class="line">        <span class="keyword">self</span>.y += other.y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><del>これの右辺値を実体じゃなく参照にしたかったが、それはできない模様…</del>
+<del>（ <code>for</code> の後ろを参照型にできないし、右辺値の型を <code>Self</code> と同じ型じゃないとだめらしい）。</del>
+ <code>AddAssign</code> が型引数がデフォルトで <code>&lt;Rhs = Self&gt;</code> となっているのを、参照を指定すればできた：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">impl</span>&lt;T: AddAssign + <span class="built_in">Copy</span>&gt; AddAssign&lt;&amp;Vector2D&lt;T&gt;&gt; <span class="keyword">for</span> Vector2D&lt;T&gt; &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">add_assign</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, other: &amp;Vector2D&lt;T&gt;) &#123;</span><br><span class="line">        <span class="keyword">self</span>.x += other.x;</span><br><span class="line">        <span class="keyword">self</span>.y += other.y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://doc.rust-jp.rs/rust-by-example-ja/trait/ops.html">演算子のオーバーロード - Rust By Example 日本語版</a></li>
+<li><a href="https://doc.rust-lang.org/1.2.0/book/operators-and-overloading.html">Operators and Overloading</a></li>
+<li><a href="https://doc.rust-lang.org/std/ops/index.html">std::ops - Rust</a></li>
+<li><a href="http://smallcultfollowing.com/babysteps/blog/2015/01/14/little-orphan-impls/">Little Orphan Impls</a></li>
+<li><a href="https://qnighy.hatenablog.com/entry/2017/07/20/220000">Rustのコヒーレンス - 簡潔なQ</a></li>
+<li><a href="https://stackoverflow.com/questions/28005134/how-do-i-implement-the-add-trait-for-a-reference-to-a-struct/57021762#57021762">rust - How do I implement the Add trait for a reference to a struct? - Stack Overflow</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（移譲）」について" rel="bookmark">「継承より合成（移譲）」について</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/03/ecs-in-rust.html" title="【Rust】ECSを使ってみる(Specs)" rel="bookmark">【Rust】ECSを使ってみる(Specs)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/21/legion-ecs.html" title="【Rust】Legion ECSを触ってみた" rel="bookmark">【Rust】Legion ECSを触ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか" rel="bookmark">Rustで状態管理や相互参照をどうするか</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

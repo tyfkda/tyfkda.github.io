@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="学習用OSのXV6には簡易的なシェルが付属しているが、ヒストリ機能を扱えるようにしたという話。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="自作シェルでヒストリを扱えるようにする"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>自作シェルでヒストリを扱えるようにする - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2019/07/24/history-in-shell.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>自作シェルでヒストリを扱えるようにする</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-07-24
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/os/">#os</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>学習用OSのXV6には簡易的なシェルが付属しているが、ヒストリ機能を扱えるようにしたという話。</p>
+<span id="more"></span>
+
+<h3 id="シェル上でカーソルキーの入力を受け取るには"><a href="#シェル上でカーソルキーの入力を受け取るには" class="headerlink" title="シェル上でカーソルキーの入力を受け取るには"></a>シェル上でカーソルキーの入力を受け取るには</h3><p>XV6のシェルはユーザ空間で走るプログラム<a href="https://github.com/mit-pdos/xv6-public/blob/master/sh.c">sh</a>として用意されている。
+コマンドラインからの入力を１行ごとに受け取って、指定されたコマンドに従ってプログラムを起動する、ということを繰り返している。</p>
+<p>入力された行の読み込みはgetcmd関数内の<a href="https://github.com/mit-pdos/xv6-public/blob/b818915f793cd20c5d1e24f668534a9d690f3cc8/sh.c#L138">gets呼び出し</a>で行っている。
+<code>gets</code>では<a href="https://github.com/mit-pdos/xv6-public/blob/b818915f793cd20c5d1e24f668534a9d690f3cc8/ulib.c#L59">システムコール<code>read</code>を呼び出して</a>1文字ずつ読み出して、改行が入力されるまでをバッファに格納している。
+これを入力途中にカーソルキーの上下で過去に入力した行を指定、編集できるようにしたい。</p>
+<p><code>read</code>で読み込んだキャラクタがカーソル上下だったら…とすればいいかと思いきや、そう単純にはいかない。
+<code>read</code>への1バイト要求に対して、なにかキーが入力された瞬間に処理が返されるわけではなくて、<a href="https://github.com/mit-pdos/xv6-public/blob/b818915f793cd20c5d1e24f668534a9d690f3cc8/console.c#L223">カーネル内で改行が入力されるまでバッファリングされる</a>ようになっている。</p>
+<p>バックスペースによる行編集は<a href="https://github.com/mit-pdos/xv6-public/blob/0754d21c865e97582968fa5d155eac133e5829b0/console.c#L210">カーネル内で行われて</a>、最終的にENTERで確定した行がユーザ側では得られるのでその限りでは便利なんだけど、カーソル上下が押された場合に対応できない。
+カーネルにヒストリ機能を持たせてしまうのは、ヒストリ機能の変更にカーネルの修正が必要になってしまうのでよくない。</p>
+<p>そこでどうするか。
+ENTERの入力までバッファリングされる機能の有効／無効を制御できるようにして、ユーザプログラム側で1文字ずつの入力ごとに処理できるようにする。</p>
+<h3 id="termios互換を用意する"><a href="#termios互換を用意する" class="headerlink" title="termios互換を用意する"></a>termios互換を用意する</h3><p>Linuxには<a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man2/ioctl.2.html"><code>ioctl</code></a>というデバイスを制御するシステムコールがあって、これを呼び出せば標準入力のバッファリングの設定も制御できる。
+これを模したシステムコールをXV6にも用意してやって、互換性をもたせられるようにする。</p>
+<p><code>ioctl</code> を直接使ってもいいんだけど、それをラップする？ライブラリで<a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/termios.3.html">termios</a>というものがあるのでそのライブラリも合わせて用意してやる。
+<a href="https://github.com/tyfkda/xv6/blob/master/ulib/termios.c">実装</a>は<code>tcsetattr</code>と、設定を復帰させるための<code>tcgetattr</code>を簡易的に用意した。
+<code>ioctl</code>経由で受け取ったカーネル側でバッファリングやエコーバックの有無を切り替えるようにする。</p>
+<h3 id="キーボード入力でカーソルキーを扱う"><a href="#キーボード入力でカーソルキーを扱う" class="headerlink" title="キーボード入力でカーソルキーを扱う"></a>キーボード入力でカーソルキーを扱う</h3><p>XV6をqemuでのエミュレーション（や実機）で動かす場合はI/Oから受け取ったキーコードが内部で変換され、カーソルキーは<a href="https://github.com/mit-pdos/xv6-public/blob/0754d21c865e97582968fa5d155eac133e5829b0/kbd.h#L22"><code>0xe2</code>〜<code>0xe5</code></a>に割り当てられてコンソールで扱われている。
+それに対してqemuの<code>-nographic</code>オプションで動かす場合はターミナル経由になるので、エスケープシーケンス（カーソル上：<code>\x1b</code>, <code>[</code>, <code>A</code>、カーソル下：…<code>B</code>）で渡される。
+シェル上では統一して扱えるほうが都合がいいので、キーボードからの入力もコンソールに渡す際にエスケープシーケンスに変換してやる。</p>
+<h3 id="ヒストリ機能を実装する"><a href="#ヒストリ機能を実装する" class="headerlink" title="ヒストリ機能を実装する"></a>ヒストリ機能を実装する</h3><p>以上で1文字入力ごとにユーザプログラム側で受け取れるようになったので、後は好きなようにできる。</p>
+<p>バッファリングやエコーバックの切り替えは、<a href="https://github.com/antirez/kilo/blob/62b099af00b542bdb08471058d527af258a349cf/kilo.c#L203">kiloのソース</a>を参考に、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;termios.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">setRawMode</span><span class="params">(<span class="keyword">bool</span> enable, <span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">termios</span> <span class="title">orig_termios</span>;</span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">bool</span> termios_saved;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">bool</span> rawmode;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (enable) &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">termios</span> <span class="title">raw</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!isatty(fd))</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (!termios_saved) &#123;</span><br><span class="line">      <span class="keyword">if</span> (tcgetattr(fd, &amp;orig_termios) == <span class="number">-1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      termios_saved = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    raw = orig_termios;  <span class="comment">/* modify the original mode */</span></span><br><span class="line">    <span class="comment">/* input modes: no break, no CR to NL, no parity check, no strip char,</span></span><br><span class="line"><span class="comment">     * no start/stop output control. */</span></span><br><span class="line">    raw.c_iflag &amp;= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);</span><br><span class="line">    <span class="comment">/* output modes - disable post processing */</span></span><br><span class="line">    raw.c_oflag &amp;= ~OPOST;</span><br><span class="line">    <span class="comment">/* control modes - set 8 bit chars */</span></span><br><span class="line">    raw.c_cflag |= CS8;</span><br><span class="line">    <span class="comment">/* local modes - choing off, canonical off, no extended functions,</span></span><br><span class="line"><span class="comment">     * no signal chars (^Z,^C) */</span></span><br><span class="line">    raw.c_lflag &amp;= ~(ECHO | ICANON | IEXTEN | ISIG);</span><br><span class="line">    <span class="comment">/* control chars - set return condition: min number of bytes and timer. */</span></span><br><span class="line">    <span class="comment">//raw.c_cc[VMIN] = 0; /* Return each byte, or zero for timeout. */</span></span><br><span class="line">    <span class="comment">//raw.c_cc[VTIME] = 1; /* 100 ms timeout (unit is tens of second). */</span></span><br><span class="line">    raw.c_cc[VMIN] = <span class="number">1</span>; <span class="comment">/* Return each byte, or zero for timeout. */</span></span><br><span class="line">    raw.c_cc[VTIME] = <span class="number">0</span>; <span class="comment">/* 100 ms timeout (unit is tens of second). */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* put terminal in raw mode after flushing */</span></span><br><span class="line">    <span class="keyword">if</span> (tcsetattr(fd,TCSAFLUSH,&amp;raw) &lt; <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    rawmode = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (rawmode &amp;&amp; termios_saved) &#123;</span><br><span class="line">      tcsetattr(fd, TCSAFLUSH, &amp;orig_termios);</span><br><span class="line">      rawmode = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>などという関数を用意してやって、
+シェルで行入力を行う際には <code>setRawMode(true)</code> で1文字ごとに受け取れるようにして、カーソル上下キーが入力されたら編集中の入力を消去して過去に入力された行を復帰させてやればヒストリ機能が実装できる。
+行が入力されてコマンドを実行する際には <code>setRawMode(false)</code> で通常のバッファリングに戻してやる。
+またプログラム終了時に必ず戻すようにするために <code>atexit()</code> でも設定しておく。</p>
+<p>行入力を扱う関数のインタフェースは別に任意で構わないが、既存の<a href="https://en.wikipedia.org/wiki/GNU_Readline">Readline</a>に似せて作るといいかもしれない
+（できてないけど…）。</p>
+<p>そんなこんなでXV6にPOSIX的な開発環境を少し整えたので、改造した<a href="https://github.com/tyfkda/xv6/blob/master/user/sh.c">sh.c</a>はXV6で動くし、Linuxでもコンパイルして動かせる。
+機能を実装するのはLinux上で行えて便利。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/12/27/baremetal-ctxswtch-rpz.html" title="Raspberry Pi Zeroでベアメタルコンテキストスイッチ" rel="bookmark">Raspberry Pi Zeroでベアメタルコンテキストスイッチ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/11/build-linux.html" title="Linuxカーネルをビルドしてみる" rel="bookmark">Linuxカーネルをビルドしてみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/18/data-segment.html" title="はりぼてOSアプリのメモリレイアウト" rel="bookmark">はりぼてOSアプリのメモリレイアウト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/23/fin-hariboteos.html" title="「OS自作入門」とりあえず完了" rel="bookmark">「OS自作入門」とりあえず完了</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

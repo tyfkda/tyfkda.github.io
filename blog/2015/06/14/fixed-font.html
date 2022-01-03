@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Projectペインで Create &amp;gt; Custom Font を選んでフォントを作成する
+Inspectorペインで見ると、 Character Rects という項目があって、ここにアスキーコードごとにUVを指定してやれば、対応する画像の矩形が使われる。
+英数文字のみとはいえ、GUIで手">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Unity】固定幅ビットマップフォントを使う"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Unity】固定幅ビットマップフォントを使う - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/06/14/fixed-font.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Unity】固定幅ビットマップフォントを使う</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-06-14
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unity/">#unity</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <span id="more"></span>
+
+<ul>
+<li>Projectペインで <code>Create &gt; Custom Font</code> を選んでフォントを作成する</li>
+<li>Inspectorペインで見ると、 <code>Character Rects</code> という項目があって、ここにアスキーコードごとにUVを指定してやれば、対応する画像の矩形が使われる。</li>
+<li>英数文字のみとはいえ、GUIで手入力するのは辛い…</li>
+<li>でなんか適当にスクリプトをでっち上げる：</li>
+</ul>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># create_bmfont.rb</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;erb&#x27;</span></span><br><span class="line"></span><br><span class="line">HEADER = <span class="string">&lt;&lt;EOD</span></span><br><span class="line"><span class="string">%YAML 1.1</span></span><br><span class="line"><span class="string">%TAG !u! tag:unity3d.com,2011:</span></span><br><span class="line"><span class="string">--- !u!128 &amp;12800000</span></span><br><span class="line"><span class="string">Font:</span></span><br><span class="line"><span class="string">  m_ObjectHideFlags: 0</span></span><br><span class="line"><span class="string">  m_PrefabParentObject: &#123;fileID: 0&#125;</span></span><br><span class="line"><span class="string">  m_PrefabInternal: &#123;fileID: 0&#125;</span></span><br><span class="line"><span class="string">  m_Name: &lt;%=name%&gt;</span></span><br><span class="line"><span class="string">  serializedVersion: 4</span></span><br><span class="line"><span class="string">  m_AsciiStartOffset: 0</span></span><br><span class="line"><span class="string">  m_Kerning: .100000001</span></span><br><span class="line"><span class="string">  m_LineSpacing: .100000001</span></span><br><span class="line"><span class="string">  m_CharacterSpacing: 1</span></span><br><span class="line"><span class="string">  m_CharacterPadding: 0</span></span><br><span class="line"><span class="string">  m_ConvertCase: 0</span></span><br><span class="line"><span class="string">  m_DefaultMaterial:</span></span><br><span class="line"><span class="string">  m_CharacterRects:</span></span><br><span class="line"><span class="string">EOD</span></span><br><span class="line"></span><br><span class="line">FOOTER = <span class="string">&lt;&lt;EOD</span></span><br><span class="line"><span class="string">  m_Texture: &#123;fileID: 0&#125;</span></span><br><span class="line"><span class="string">  m_KerningValues: []</span></span><br><span class="line"><span class="string">  m_PixelScale: .100000001</span></span><br><span class="line"><span class="string">  m_FontData:</span></span><br><span class="line"><span class="string">  m_FontSize: 0</span></span><br><span class="line"><span class="string">  m_Ascent: 0</span></span><br><span class="line"><span class="string">  m_DefaultStyle: 0</span></span><br><span class="line"><span class="string">  m_FontNames: []</span></span><br><span class="line"><span class="string">  m_FallbackFonts: []</span></span><br><span class="line"><span class="string">  m_FontRenderingMode: 0</span></span><br><span class="line"><span class="string">EOD</span></span><br><span class="line"></span><br><span class="line">RECT_TEMPLATE = <span class="string">&lt;&lt;EOD</span></span><br><span class="line"><span class="string">  - serializedVersion: 2</span></span><br><span class="line"><span class="string">    index: &lt;%=char_code%&gt;</span></span><br><span class="line"><span class="string">    uv:</span></span><br><span class="line"><span class="string">      serializedVersion: 2</span></span><br><span class="line"><span class="string">      x: &lt;%=uv_x%&gt;</span></span><br><span class="line"><span class="string">      y: &lt;%=uv_y%&gt;</span></span><br><span class="line"><span class="string">      width: &lt;%=uv_w%&gt;</span></span><br><span class="line"><span class="string">      height: &lt;%=uv_h%&gt;</span></span><br><span class="line"><span class="string">    vert:</span></span><br><span class="line"><span class="string">      serializedVersion: 2</span></span><br><span class="line"><span class="string">      x: &lt;%=vert_x%&gt;</span></span><br><span class="line"><span class="string">      y: &lt;%=vert_y%&gt;</span></span><br><span class="line"><span class="string">      width: &lt;%=vert_w%&gt;</span></span><br><span class="line"><span class="string">      height: &lt;%=vert_h%&gt;</span></span><br><span class="line"><span class="string">    width: &lt;%=width%&gt;</span></span><br><span class="line"><span class="string">    flipped: 0</span></span><br><span class="line"><span class="string">EOD</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(name, w, h, start)</span></span></span><br><span class="line">  print ERB.new(HEADER).result(binding)</span><br><span class="line"></span><br><span class="line">  vert_x = vert_y = <span class="number">0</span></span><br><span class="line">  vert_w = <span class="number">16</span></span><br><span class="line">  vert_h = -<span class="number">16</span></span><br><span class="line">  width = <span class="number">160</span></span><br><span class="line">  uv_w = <span class="number">1.0</span> / w</span><br><span class="line">  uv_h = <span class="number">1.0</span> / h</span><br><span class="line">  rect_erb = ERB.new(RECT_TEMPLATE)</span><br><span class="line">  h.times <span class="keyword">do</span> <span class="params">|iy|</span></span><br><span class="line">    uv_y = (h - <span class="number">1</span> - iy) * uv_h</span><br><span class="line">    w.times <span class="keyword">do</span> <span class="params">|ix|</span></span><br><span class="line">      uv_x = ix * uv_w</span><br><span class="line">      char_code = ix + iy * w + start</span><br><span class="line">      print rect_erb.result(binding)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  print ERB.new(FOOTER).result(binding)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="variable">$0</span> == <span class="keyword">__FILE__</span></span><br><span class="line">  main(<span class="string">&#x27;BitmapFont&#x27;</span>, <span class="number">16</span>, <span class="number">8</span>, <span class="number">32</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使い方：<ul>
+<li><code>$ ruby create_bmfont.rb &gt; foobar.fontsettings</code></li>
+</ul>
+</li>
+<li>などとして<code>.fontsettings</code>に保存して、Unityに読み込ませる</li>
+<li>uGUIの<code>Text</code>の<code>Font</code>でフォントを指定</li>
+<li>そのままだと縁取りまで真っ白になってしまうので、マテリアルで<code>Shader</code>に<code>UI/Unlit/Transparent</code>を指定してテクスチャにフォントのビットマップ画像を指定したものを<code>Text</code>の<code>Material</code>に指定する</li>
+</ul>
+<p><img src="/assets/fixed-font.png" alt="スクリーンショット 2015-06-14 8.43.04.png"></p>
+<ul>
+<li>フォントサイズとかはないので、拡大縮小したい場合にはスケールを変更する</li>
+<li>フォントの高さがちゃんと設定されてないのか、改行してもY座標がそのままになってしまうのは要修正…</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/19/cache-http.html" title="Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する" rel="bookmark">Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/11/generate-prefabs.html" title="【Unity】スクリプトでプレハブを大量生産する" rel="bookmark">【Unity】スクリプトでプレハブを大量生産する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/23/interior-mapping.html" title="【Unity】Shader Graphでインテリアマッピング" rel="bookmark">【Unity】Shader Graphでインテリアマッピング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/09/modify-xcproj.html" title="【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する" rel="bookmark">【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/13/replace-font-unity.html" title="【Unity】全てのシーンのフォントを一括で置き換える" rel="bookmark">【Unity】全てのシーンのフォントを一括で置き換える</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

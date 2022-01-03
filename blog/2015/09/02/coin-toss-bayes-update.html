@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="続・わかりやすい　パターン認識
+第２章　事前確率と事後確率＞2.2 ベイズ更新 (p.32)
+を、プログラムで計算してみる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="コインを投げるごとにどのコインなのかの確率を計算（ベイズ更新）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>コインを投げるごとにどのコインなのかの確率を計算（ベイズ更新） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/09/02/coin-toss-bayes-update.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>コインを投げるごとにどのコインなのかの確率を計算（ベイズ更新）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-09-02
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/probability/">#probability</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><strong>続・わかりやすい　パターン認識</strong><br/>
+<strong>第２章　事前確率と事後確率＞2.2 ベイズ更新</strong> (p.32)</p>
+<p>を、プログラムで計算してみる。</p>
+<span id="more"></span>
+
+<iframe src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=tyfkda-22&o=9&p=8&l=as1&m=amazon&f=ifr&ref=tf_til&asins=427421530X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+<br/>
+
+<a href="/blog/2015/09/02/multiple-coin-toss.html" title="コインを複数回投げた場合">コインを複数回投げた場合</a>では
+<script type="math/tex">n</script>回投げ終わって<script type="math/tex">r</script>回表が出た、という具合にすべての結果が出た後で
+<p>各コインである確率を計算したが、今回は1回投げるごとに逐次更新していく（ベイズ更新）。</p>
+<p>前回<script type="math/tex">n-1</script>回の事後確率 <script type="math/tex">P(\omega_i \lvert x^{(n-1)})</script> を今回<script type="math/tex">n</script>回目の事前確率として、
+今回得られたコインの面から事後確率を更新する：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+P(\omega_i \lvert x^{(n)}) &= \frac{P(x_n \lvert \omega_i)}{P(x^{(n)})} P(\omega_i \lvert x^{(n-1)}) \\
+P(x^{(n)}) &= \sum_{j=1}^3 P(\omega_j \lvert x^{(n-1)}) P(x_n \lvert \omega_j)
+\end{align}
+%]]></script>
+
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coin_probability3.rb</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BayesUpdater</span></span></span><br><span class="line">  <span class="keyword">attr_reader</span> <span class="symbol">:probs</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(pi, theta)</span></span></span><br><span class="line">    <span class="variable">@probs</span> = pi.dup</span><br><span class="line">    <span class="variable">@theta</span> = theta</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># n回目の試行がxnだった場合に、確率を更新する</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(xn)</span></span></span><br><span class="line">    c = <span class="variable">@probs</span>.size</span><br><span class="line">    <span class="comment"># n-1回目までの観測結果に対して、今回の目が出るトータルの確率</span></span><br><span class="line">    <span class="comment"># P(x^&#123;(n)&#125;) = ∑_&#123;j=1&#125;^3 P(ω_j|x^&#123;(n-1)&#125;) P(x_n|ω_j)</span></span><br><span class="line">    prob = sigma(<span class="number">0</span>...c) <span class="keyword">do</span> <span class="params">|j|</span></span><br><span class="line">      <span class="variable">@probs</span>[j] * (xn * <span class="variable">@theta</span>[j] + (<span class="number">1</span> - xn) * (<span class="number">1</span> - <span class="variable">@theta</span>[j]))</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 各コインに対して、今回の目が出る確率を更新</span></span><br><span class="line">    c.times <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">      <span class="variable">@probs</span>[i] *= (xn * <span class="variable">@theta</span>[i] + (<span class="number">1</span> - xn) * (<span class="number">1</span> - <span class="variable">@theta</span>[i])) / prob</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span></span></span><br><span class="line">  <span class="comment"># πi: それぞれのコインが箱の中にどのような割合で混ざっているか</span></span><br><span class="line">  pi = [<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.5</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># θi: それぞれのコインを投げた時に表が出る確率</span></span><br><span class="line">  theta = [<span class="number">0.8</span>, <span class="number">0.6</span>, <span class="number">0.3</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 10回投げた結果が10回中7回表（HHHHTHHTHT）だった場合</span></span><br><span class="line">  <span class="comment">#bayes_updater = BayesUpdater.new(pi, theta)</span></span><br><span class="line">  <span class="comment">#[1, 1, 1, 1, 0, 1, 1, 0, 1, 0].each do |x|</span></span><br><span class="line">  <span class="comment">#  bayes_updater.update(x)</span></span><br><span class="line">  <span class="comment">#  p bayes_updater.probs</span></span><br><span class="line">  <span class="comment">#end</span></span><br><span class="line"></span><br><span class="line">  bayes_updater = BayesUpdater.new(pi, theta)</span><br><span class="line">  n = <span class="number">100</span></span><br><span class="line">  <span class="comment"># 0番目のコインをn回投げてみる</span></span><br><span class="line">  t = theta[<span class="number">0</span>]</span><br><span class="line">  head_count = <span class="number">0</span></span><br><span class="line">  n.times <span class="keyword">do</span></span><br><span class="line">    x = rand &lt; t ? <span class="number">1</span> : <span class="number">0</span></span><br><span class="line">    bayes_updater.update(x)</span><br><span class="line">    head_count += x</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  puts <span class="string">&quot;Head: <span class="subst">#&#123;head_count&#125;</span>/<span class="subst">#&#123;n&#125;</span>&quot;</span></span><br><span class="line">  p bayes_updater.probs</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Rangeに対してブロックを呼び出し、その結果の和を返す：∑</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigma</span><span class="params">(range, &amp;block)</span></span></span><br><span class="line">  range.map <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">    block.call(i)</span><br><span class="line">  <span class="keyword">end</span>.inject(<span class="symbol">:+</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">main</span><br><span class="line"></span><br><span class="line"><span class="comment"># Head: 81/100</span></span><br><span class="line"><span class="comment"># [0.9998409538483062, 0.00015904615169388522, 3.409780749699365e-24]</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="10回投げて7回表が出る時の確率の遷移"><a href="#10回投げて7回表が出る時の確率の遷移" class="headerlink" title="10回投げて7回表が出る時の確率の遷移"></a>10回投げて7回表が出る時の確率の遷移</h4><table>
+<thead>
+<tr>
+<th align="right"></th>
+<th align="right">コイン１</th>
+<th align="right">コイン２</th>
+<th align="right">コイン３</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">事前</td>
+<td align="right">0.1</td>
+<td align="right">0.4</td>
+<td align="right">0.5</td>
+</tr>
+<tr>
+<td align="right">1: 表</td>
+<td align="right">0.170</td>
+<td align="right">0.511</td>
+<td align="right">0.319</td>
+</tr>
+<tr>
+<td align="right">2: 表</td>
+<td align="right">0.253</td>
+<td align="right">0.569</td>
+<td align="right">0.178</td>
+</tr>
+<tr>
+<td align="right">3: 表</td>
+<td align="right">0.339</td>
+<td align="right">0.572</td>
+<td align="right">0.089</td>
+</tr>
+<tr>
+<td align="right">4: 表</td>
+<td align="right">0.423</td>
+<td align="right">0.535</td>
+<td align="right">0.042</td>
+</tr>
+<tr>
+<td align="right">5: 裏</td>
+<td align="right">0.258</td>
+<td align="right">0.653</td>
+<td align="right">0.089</td>
+</tr>
+<tr>
+<td align="right">6: 表</td>
+<td align="right">0.330</td>
+<td align="right">0.627</td>
+<td align="right">0.043</td>
+</tr>
+<tr>
+<td align="right">7: 表</td>
+<td align="right">0.404</td>
+<td align="right">0.576</td>
+<td align="right">0.020</td>
+</tr>
+<tr>
+<td align="right">8: 裏</td>
+<td align="right">0.249</td>
+<td align="right">0.709</td>
+<td align="right">0.042</td>
+</tr>
+<tr>
+<td align="right">9: 表</td>
+<td align="right">0.313</td>
+<td align="right">0.667</td>
+<td align="right">0.020</td>
+</tr>
+<tr>
+<td align="right">10: 裏</td>
+<td align="right">0.182</td>
+<td align="right">0.777</td>
+<td align="right">0.041</td>
+</tr>
+</tbody></table>
+<br/>
+
+<p><img src="https://chart.googleapis.com/chart?chs=450x400&cht=bvs&chl=pre%7CH%7CH%7CH%7CH%7CT%7CH%7CH%7CT%7CH%7CT&chd=t:10,17.0,25.3,33.9,42.3,25.8,33.0,40.4,24.9,31.3,18.2%7C40,51.1,56.9,57.2,53.5,65.3,62.7,57.6,70.9,66.7,77.7%7C50,31.9,17.8,8.9,4.2,8.9,4.3,2.0,4.2,2.0,4.1&chco=ff0000,00ff00,0000ff&chdl=Coin1%7CCoin2%7CCoin3&chxt=x,y" alt="image"></p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/05/bayes-error.html" title="ベイズ誤り確率の計算" rel="bookmark">ベイズ誤り確率の計算</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/07/23/bayes-graphical-model.html" title="ベイズ推定とグラフィカルモデル：コンピュータビジョン基礎" rel="bookmark">ベイズ推定とグラフィカルモデル：コンピュータビジョン基礎</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/02/coin-toss.html" title="コインを投げて表が出た時に、どのコインだったかの確率" rel="bookmark">コインを投げて表が出た時に、どのコインだったかの確率</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/02/multiple-coin-toss.html" title="同じコインを複数回投げた結果から、どのコインだったかの確率" rel="bookmark">同じコインを複数回投げた結果から、どのコインだったかの確率</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/10/12/supervised-infer-params.html" title="教師付き学習でパラメータの推定" rel="bookmark">教師付き学習でパラメータの推定</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

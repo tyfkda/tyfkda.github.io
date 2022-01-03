@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta name="robots" content="noindex">
+    <title>Golden angle</title>
+    <!-- CSS -->
+    <style type="text/css">
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+canvas:focus {
+  outline: none;
+}
+
+.sketch-canvas {
+  height: 480px;
+  overflow: hidden;
+}
+#processing-canvas {
+  display: block;
+}
+    </style>
+
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.16/processing.min.js"></script>
+  </head>
+  <body>
+    <div class="sketch-canvas">
+      <canvas id="processing-canvas"></canvas>
+    </div>
+
+<script id="mysketch" type="text/processing">
+final float GoldenRatio = (1.0 + sqrt(5)) / 2;
+final float GoldenAngle = 2 * PI * (1.0 / (1.0 + GoldenRatio));
+final int ColRange = 1031, ColStep = 12;
+final float RStep = 1;
+
+void setup() {
+  size(480, 480);
+  colorMode(HSB, ColRange);
+  noStroke();
+
+  draw_all(0, GoldenAngle, 0);
+}
+
+float ang = 0;
+int col;
+
+void draw() {
+  ang = (ang + 2 * PI - GoldenAngle) % (2 * PI);
+  col = (col + (ColRange - ColStep - 2)) % ColRange;
+  draw_all(ang, GoldenAngle, col);
+}
+
+void draw_all(float ang, float angstep, int col) {
+  background(51);
+
+  final int cx = width / 2, cy = height / 2;
+  float r = 0;
+
+  final float MaxR = sqrt(sq(width / 2) + sq(height / 2));
+  pushMatrix();
+  translate(cx, cy);
+  for (;;) {
+    fill(color(col % ColRange, r * 10, ColRange));
+    float R = sqrt(r * RStep);
+    pushMatrix();
+    rotate(-ang);
+    translate(r, 0);
+    if (false) {
+      ellipse(0, 0, R * 2, R * 2);
+    } else {
+      rotate(sqrt(r) * -PI / 40);
+      quad(R, R, -R, R, -R, -R, R, -R);
+    }
+    popMatrix();
+    r += RStep;
+    ang = (ang + angstep) % (2 * PI);
+    col += ColStep;
+
+    if (r >= (MaxR + R))  break;
+  }
+  popMatrix();
+}
+
+void restart() {
+  renderY = 0;
+  fill(color(192));
+  noStroke();
+  rect(0, 0, width, height);
+  loop();
+}
+    </script>
+
+<script type="text/javascript">
+var pjs
+window.addEventListener('load', function() {
+  var code = document.getElementById('mysketch').text
+  pjs = new Processing('processing-canvas', code)
+})
+function restart() {
+  pjs.restart()
+}
+</script>
+  </body>
+</html>

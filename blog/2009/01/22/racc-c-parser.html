@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Ｃ言語のソースをパースしたいと思ってたときがあったな、と思い出した。
+RubyでRaccを使って、K&amp;amp;Rに載ってるBNFを食わせてみたが、コンフリクトが発生する。
+$ racc c.y1 shift/reduce conflicts2 reduce/reduce conflicts
+
+本によれば「唯一ぶつかりがあるのは、if-elseのあいまいさである。」と書いてあるんだけど。「-v」オプションをつけて詳細を表示するとぶつかってるのは
+state 2   7) declaration : declaration_specifiers _ init_declarator_list_opt &amp;quot;;&amp;quot;  13) declaration_specifiers_opt : declaration_specifiers _  &amp;quot;*&amp;quot;           shift, and go to state 36  &amp;quot;*&amp;quot;           [reduce using rule 13 (declaration_specifiers_opt)]  &amp;quot;;&amp;quot;           reduce using rule 41 (init_declarator_list_opt)  &amp;quot;(&amp;quot;           [reduce using rule 66 (pointer_opt)]  SYMBOL        [reduce using rule 66 (pointer_opt)]  $default      reduce using rule 13 (declaration_specifiers_opt)  pointer_opt   go to state 33  init_declarator_list_opt  go to state 34  init_declarator_list  go to state 35  init_declarator  go to state 37  pointer       go to state 38  declarator    go to state 39
+
+なかなか解消できなくて辛かったんだけど、 function_definition の declaration_specifiers から opt をはずすとコンフリクトが解消された。
+これだと関数の戻り値の型宣言を省略できなくなるけど、別にいいよね。
+で構文木生成のアクションを記入。
+Ruby/RaccだとC/Yaccと比べてメモリの解放に悩まなくていいし型の異なる値も入れ放題なので全然楽だわ～。
+Raccでアクションを省略すると自動的に１番目の値が返ることになってるけど、右辺がひとつだけだったら val[0] を、複数だったら val 全体を返すようにすれば自動的に構文木が生成できて楽かなーと思ったのでRaccを改造しようとしたんだけどうまくいかず…。
+BNFとか見て初めてわかったんだけど、 TYPEDEF が storage_class_specifier になってるので extern とかを書けるところすべてに typedef が書けちゃうんだね。
+なんか不思議な…。
+あと declarator は配列の宣言とかも含むので、 function_definition は
+void test[] &amp;#123; &amp;#125;
+
+とかわけのわからんものも有効になってしまう。
+なんだかなぁ。
+以下ソース：">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="RaccによるC言語パーサ"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>RaccによるC言語パーサ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/01/22/racc-c-parser.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>RaccによるC言語パーサ</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-01-22
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ruby/">#ruby</a> <a href="/tags/c/">#c</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Ｃ言語のソースをパースしたいと思ってたときがあったな、と思い出した。
+Rubyで<a href="http://www.loveruby.net/ja/projects/racc/">Racc</a>を使って、K&amp;Rに載ってるBNFを食わせてみたが、コンフリクトが発生する。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ racc c.y</span><br><span class="line">1 <span class="built_in">shift</span>/reduce conflicts</span><br><span class="line">2 reduce/reduce conflicts</span><br></pre></td></tr></table></figure>
+
+<p>本によれば「唯一ぶつかりがあるのは、if-elseのあいまいさである。」と書いてあるんだけど。「-v」オプションをつけて詳細を表示するとぶつかってるのは</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">state 2</span><br><span class="line"></span><br><span class="line">   7) declaration : declaration_specifiers _ init_declarator_list_opt &quot;;&quot;</span><br><span class="line">  13) declaration_specifiers_opt : declaration_specifiers _</span><br><span class="line"></span><br><span class="line">  &quot;*&quot;           shift, and go to state 36</span><br><span class="line">  &quot;*&quot;           [reduce using rule 13 (declaration_specifiers_opt)]</span><br><span class="line">  &quot;;&quot;           reduce using rule 41 (init_declarator_list_opt)</span><br><span class="line">  &quot;(&quot;           [reduce using rule 66 (pointer_opt)]</span><br><span class="line">  SYMBOL        [reduce using rule 66 (pointer_opt)]</span><br><span class="line">  $default      reduce using rule 13 (declaration_specifiers_opt)</span><br><span class="line"></span><br><span class="line">  pointer_opt   go to state 33</span><br><span class="line">  init_declarator_list_opt  go to state 34</span><br><span class="line">  init_declarator_list  go to state 35</span><br><span class="line">  init_declarator  go to state 37</span><br><span class="line">  pointer       go to state 38</span><br><span class="line">  declarator    go to state 39</span><br></pre></td></tr></table></figure>
+
+<p>なかなか解消できなくて辛かったんだけど、 <code>function_definition</code> の <code>declaration_specifiers</code> から <code>opt</code> をはずすとコンフリクトが解消された。
+これだと関数の戻り値の型宣言を省略できなくなるけど、別にいいよね。</p>
+<p>で構文木生成のアクションを記入。
+Ruby/RaccだとC/Yaccと比べてメモリの解放に悩まなくていいし型の異なる値も入れ放題なので全然楽だわ～。</p>
+<p>Raccでアクションを省略すると自動的に１番目の値が返ることになってるけど、右辺がひとつだけだったら <code>val[0]</code> を、複数だったら <code>val</code> 全体を返すようにすれば自動的に構文木が生成できて楽かなーと思ったのでRaccを改造しようとしたんだけどうまくいかず…。</p>
+<p>BNFとか見て初めてわかったんだけど、 <code>TYPEDEF</code> が <code>storage_class_specifier</code> になってるので <code>extern</code> とかを書けるところすべてに <code>typedef</code> が書けちゃうんだね。
+なんか不思議な…。
+あと <code>declarator</code> は配列の宣言とかも含むので、 <code>function_definition</code> は</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> test[] &#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>とかわけのわからんものも有効になってしまう。
+なんだかなぁ。</p>
+<p>以下ソース：</p>
+<span id="more"></span>
+
+<ul>
+<li><code>function_definition</code> の <code>declaration_specifiers</code> から <code>opt</code> を除去</li>
+<li>演算子に優先を振って <code>expr</code> にまとめた</li>
+</ul>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/ruby</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Cパーサ</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CParser</span></span></span><br><span class="line">  prechigh</span><br><span class="line">    left <span class="string">&#x27;*&#x27;</span> <span class="string">&#x27;/&#x27;</span> <span class="string">&#x27;%&#x27;</span></span><br><span class="line">    left <span class="string">&#x27;+&#x27;</span> <span class="string">&#x27;-&#x27;</span></span><br><span class="line">    left <span class="string">&#x27;&lt;&lt;&#x27;</span> <span class="string">&#x27;&gt;&gt;&#x27;</span></span><br><span class="line">    left <span class="string">&#x27;&lt;&#x27;</span> <span class="string">&#x27;&gt;&#x27;</span> <span class="string">&#x27;&lt;=&#x27;</span> <span class="string">&#x27;&gt;=&#x27;</span></span><br><span class="line">    left <span class="string">&#x27;==&#x27;</span> <span class="string">&#x27;!=&#x27;</span></span><br><span class="line">    left <span class="string">&#x27;&amp;&#x27;</span></span><br><span class="line">    left <span class="string">&#x27;^&#x27;</span></span><br><span class="line">    left <span class="string">&#x27;|&#x27;</span></span><br><span class="line">    left <span class="string">&#x27;&amp;&amp;&#x27;</span></span><br><span class="line">    left <span class="string">&#x27;||&#x27;</span></span><br><span class="line"></span><br><span class="line">    nonassoc ELSE</span><br><span class="line">    nonassoc LOWER</span><br><span class="line">  preclow</span><br><span class="line">  options no_result_var</span><br><span class="line">rule</span><br><span class="line">  target</span><br><span class="line">    : translation_unit</span><br><span class="line"></span><br><span class="line">  translation_unit</span><br><span class="line">    : external_declaration                     &#123; val &#125;</span><br><span class="line">    <span class="params">| translation_unit external_declaration    &#123; val[0].push(val[1]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  external_declaration</span></span><br><span class="line"><span class="params">    : function_definition</span></span><br><span class="line"><span class="params">    |</span> declaration</span><br><span class="line"></span><br><span class="line">  function_definition</span><br><span class="line"><span class="comment"># こっちだとconflictが起こる</span></span><br><span class="line">  <span class="comment">#  : declaration_specifiers_opt declarator declaration_list_opt compound_statement</span></span><br><span class="line">    : declaration_specifiers     declarator declaration_list_opt compound_statement    &#123; DefunNode.new(val[<span class="number">0</span>], val[<span class="number">1</span>], val[<span class="number">2</span>], val[<span class="number">3</span>]) &#125;</span><br><span class="line"></span><br><span class="line">  declaration</span><br><span class="line">    : declaration_specifiers init_declarator_list_opt <span class="string">&#x27;;&#x27;</span>    &#123; DeclNode.new(val[<span class="number">0</span>], val[<span class="number">1</span>]) &#125;</span><br><span class="line"></span><br><span class="line">  declaration_list_opt : &#123;<span class="literal">nil</span>&#125; <span class="params">| declaration_list</span></span><br><span class="line"><span class="params">  declaration_list</span></span><br><span class="line"><span class="params">    : declaration                     &#123; val &#125;</span></span><br><span class="line"><span class="params">    |</span> declaration_list declaration    &#123; val[<span class="number">0</span>].push(val[<span class="number">1</span>]) &#125;</span><br><span class="line"></span><br><span class="line">  declaration_specifiers_opt : &#123;<span class="literal">nil</span>&#125; <span class="params">| declaration_specifiers</span></span><br><span class="line"><span class="params">  declaration_specifiers</span></span><br><span class="line"><span class="params">    : storage_class_specifier declaration_specifiers_opt  &#123; val[1] ? val : val[0] &#125;</span></span><br><span class="line"><span class="params">    |</span> type_specifier declaration_specifiers_opt           &#123; val[<span class="number">1</span>] ? val : val[<span class="number">0</span>] &#125;</span><br><span class="line">    <span class="params">| type_qualifier declaration_specifiers_opt           &#123; val[1] ? val : val[0] &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  storage_class_specifier</span></span><br><span class="line"><span class="params">    : AUTO |</span> REGISTER <span class="params">| STATIC |</span> EXTERN <span class="params">| TYPEDEF</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  type_specifier</span></span><br><span class="line"><span class="params">    : VOID |</span> CHAR <span class="params">| SHORT |</span> INT <span class="params">| LONG |</span> FLOAT <span class="params">| DOUBLE |</span> SIGNED <span class="params">| UNSIGNED</span></span><br><span class="line"><span class="params">    |</span> struct_or_union_specifier</span><br><span class="line">    <span class="params">| enum_specifier</span></span><br><span class="line"><span class="params">#    |</span> typedef_name</span><br><span class="line"></span><br><span class="line">  type_qualifier</span><br><span class="line">    : CONST <span class="params">| VOLATILE</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  struct_or_union_specifier</span></span><br><span class="line"><span class="params">    : struct_or_union identifier_opt &#x27;&#123;&#x27; struct_declaration_list &#x27;&#125;&#x27;  &#123; val &#125;</span></span><br><span class="line"><span class="params">    |</span> struct_or_union identifier                                      &#123; val &#125;</span><br><span class="line"></span><br><span class="line">  struct_or_union</span><br><span class="line">    : STRUCT <span class="params">| UNION</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  struct_declaration_list</span></span><br><span class="line"><span class="params">    : struct_declaration                          &#123; val &#125;</span></span><br><span class="line"><span class="params">    |</span> struct_declaration_list struct_declaration  &#123; val[<span class="number">0</span>].push(val[<span class="number">1</span>]) &#125;</span><br><span class="line"></span><br><span class="line">  init_declarator_list_opt : &#123;<span class="literal">nil</span>&#125; <span class="params">| init_declarator_list</span></span><br><span class="line"><span class="params">  init_declarator_list</span></span><br><span class="line"><span class="params">    : init_declarator                             &#123; val &#125;</span></span><br><span class="line"><span class="params">    |</span> init_declarator_list <span class="string">&#x27;,&#x27;</span> init_declarator    &#123; val[<span class="number">0</span>].push(val[<span class="number">2</span>]) &#125;</span><br><span class="line"></span><br><span class="line">  init_declarator</span><br><span class="line">    : declarator                    &#123; InitDecl.new(val[<span class="number">0</span>], <span class="literal">nil</span>) &#125;</span><br><span class="line">    <span class="params">| declarator &#x27;=&#x27; initializer    &#123; InitDecl.new(val[0], val[2]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  struct_declaration</span></span><br><span class="line"><span class="params">    : specifier_qualifier_list struct_declarator_list &#x27;;&#x27;  &#123; val &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  specifier_qualifier_list_opt : &#123;<span class="literal">nil</span>&#125; |</span> specifier_qualifier_list</span><br><span class="line">  specifier_qualifier_list</span><br><span class="line">    : type_specifier specifier_qualifier_list_opt    &#123; val &#125;</span><br><span class="line">    <span class="params">| type_qualifier specifier_qualifier_list_opt    &#123; val &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  struct_declarator_list</span></span><br><span class="line"><span class="params">    : struct_declarator</span></span><br><span class="line"><span class="params">    |</span> struct_declarator_list <span class="string">&#x27;,&#x27;</span> struct_declarator    &#123; val &#125;</span><br><span class="line"></span><br><span class="line">  struct_declarator</span><br><span class="line">    : declarator</span><br><span class="line">    <span class="params">| declarator_opt &#x27;:&#x27; constant_expression      &#123; val &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  enum_specifier</span></span><br><span class="line"><span class="params">    : ENUM identifier_opt &#x27;&#123;&#x27; enumerator_list &#x27;&#125;&#x27;    &#123; val &#125;</span></span><br><span class="line"><span class="params">    |</span> ENUM identifier                                &#123; val &#125;</span><br><span class="line"></span><br><span class="line">  declarator_opt : &#123;<span class="literal">nil</span>&#125; <span class="params">| declarator</span></span><br><span class="line"><span class="params">  declarator</span></span><br><span class="line"><span class="params">    : pointer_opt direct_declarator      &#123; DirectDecl.new(val[1], val[0]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  direct_declarator</span></span><br><span class="line"><span class="params">    : identifier</span></span><br><span class="line"><span class="params">    |</span> <span class="string">&#x27;(&#x27;</span> declarator <span class="string">&#x27;)&#x27;</span>                                 &#123; val &#125;</span><br><span class="line">    <span class="params">| direct_declarator &#x27;[&#x27; constant_expression_opt &#x27;]&#x27;  &#123; val &#125;</span></span><br><span class="line"><span class="params">    |</span> direct_declarator <span class="string">&#x27;(&#x27;</span> parameter_type_list <span class="string">&#x27;)&#x27;</span>      &#123; val &#125;</span><br><span class="line">    <span class="params">| direct_declarator &#x27;(&#x27; identifier_list_opt &#x27;)&#x27;      &#123; val &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  pointer_opt : &#123;<span class="literal">nil</span>&#125; |</span> pointer</span><br><span class="line">  pointer</span><br><span class="line">    : <span class="string">&#x27;*&#x27;</span> type_qualifier_list_opt            &#123; val[<span class="number">1</span>] ? val : val[<span class="number">0</span>] &#125;</span><br><span class="line">    <span class="params">| &#x27;*&#x27; type_qualifier_list_opt pointer    &#123; val[1] ? [[val[0], val[1]], val[2]] : [val[0], val[2]] &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  type_qualifier_list_opt : &#123;<span class="literal">nil</span>&#125; |</span> type_qualifier_list</span><br><span class="line">  type_qualifier_list</span><br><span class="line">    : type_qualifier</span><br><span class="line">    <span class="params">| type_qualifier_list type_qualifier    &#123; val &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  parameter_type_list_opt : &#123;<span class="literal">nil</span>&#125; |</span> parameter_type_list</span><br><span class="line">  parameter_type_list</span><br><span class="line">    : parameter_list</span><br><span class="line">    <span class="params">| parameter_list &#x27;,&#x27; &#x27;...&#x27;               &#123; val[0].push(&#x27;...&#x27;) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  parameter_list</span></span><br><span class="line"><span class="params">    : parameter_declaration                           &#123; val &#125;</span></span><br><span class="line"><span class="params">    |</span> parameter_list <span class="string">&#x27;,&#x27;</span> parameter_declaration        &#123; val[<span class="number">0</span>].push(val[<span class="number">2</span>]) &#125;</span><br><span class="line"></span><br><span class="line">  parameter_declaration</span><br><span class="line">    : declaration_specifiers declarator                 &#123; val &#125;</span><br><span class="line">    <span class="params">| declaration_specifiers abstract_declarator_opt    &#123; val &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  identifier_list_opt : &#123;<span class="literal">nil</span>&#125; |</span> identifier_list</span><br><span class="line">  identifier_list</span><br><span class="line">    : identifier                        &#123; val &#125;</span><br><span class="line">    <span class="params">| identifier_list &#x27;,&#x27; identifier    &#123; val[0].push(val[2]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  initializer</span></span><br><span class="line"><span class="params">    : assignment_expression</span></span><br><span class="line"><span class="params">    |</span> <span class="string">&#x27;&#123;&#x27;</span> initializer_list_opt <span class="string">&#x27;&#125;&#x27;</span>      &#123; val[<span class="number">1</span>] &#125;</span><br><span class="line">    <span class="params">| &#x27;&#123;&#x27; initializer_list &#x27;,&#x27; &#x27;&#125;&#x27;      &#123; val[1] &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  initializer_list_opt : &#123;<span class="literal">nil</span>&#125; |</span> initializer_list</span><br><span class="line">  initializer_list</span><br><span class="line">    : initializer                         &#123; val &#125;</span><br><span class="line">    <span class="params">| initializer_list &#x27;,&#x27; initializer    &#123; val[0].push(val[2]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  type_name</span></span><br><span class="line"><span class="params">    : specifier_qualifier_list abstract_declarator_opt    &#123; val &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  abstract_declarator_opt : &#123;<span class="literal">nil</span>&#125; |</span> abstract_declarator</span><br><span class="line">  abstract_declarator</span><br><span class="line">    : pointer</span><br><span class="line">    <span class="params">| pointer_opt direct_abstract_declarator  &#123; val &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  direct_abstract_declarator_opt : &#123;<span class="literal">nil</span>&#125; |</span> direct_abstract_declarator</span><br><span class="line">  direct_abstract_declarator</span><br><span class="line">    : <span class="string">&#x27;(&#x27;</span> abstract_declarator <span class="string">&#x27;)&#x27;</span></span><br><span class="line">    <span class="params">| direct_abstract_declarator_opt &#x27;[&#x27; constant_expression_opt &#x27;]&#x27;  &#123; val &#125;</span></span><br><span class="line"><span class="params">    |</span> direct_abstract_declarator <span class="string">&#x27;(&#x27;</span> parameter_type_list_opt <span class="string">&#x27;)&#x27;</span>      &#123; val &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#  typedef_name</span></span><br><span class="line"><span class="comment">#    : identifier</span></span><br><span class="line"></span><br><span class="line">  statement</span><br><span class="line">    : labeled_statement</span><br><span class="line">    <span class="params">| expression_statement</span></span><br><span class="line"><span class="params">    |</span> compound_statement</span><br><span class="line">    <span class="params">| selection_statement</span></span><br><span class="line"><span class="params">    |</span> iteration_statement</span><br><span class="line">    <span class="params">| jump_statement</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  labeled_statement</span></span><br><span class="line"><span class="params">    : identifier &#x27;:&#x27; statement                  &#123; LabelNode.new(val[0], val[2]) &#125;</span></span><br><span class="line"><span class="params">    |</span> CASE constant_expression <span class="string">&#x27;:&#x27;</span> statement    &#123; CaseNode.new(val[<span class="number">1</span>], val[<span class="number">3</span>]) &#125;</span><br><span class="line">    <span class="params">| DEFAULT &#x27;:&#x27; statement                     &#123; DefaultNode.new(val[2]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  expression_statement</span></span><br><span class="line"><span class="params">    : expression_opt &#x27;;&#x27;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  compound_statement</span></span><br><span class="line"><span class="params">    : &#x27;&#123;&#x27; declaration_list_opt statement_list_opt &#x27;&#125;&#x27;    &#123; [val[1], val[2]] &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  statement_list_opt : &#123;<span class="literal">nil</span>&#125; |</span> statement_list</span><br><span class="line">  statement_list</span><br><span class="line">    : statement                     &#123; val &#125;</span><br><span class="line">    <span class="params">| statement_list statement      &#123; val[0].push(val[1]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  selection_statement</span></span><br><span class="line"><span class="params">    : IF &#x27;(&#x27; expression &#x27;)&#x27; statement    = LOWER        &#123; IfNode.new(val[2], val[4]) &#125;</span></span><br><span class="line"><span class="params">    |</span> IF <span class="string">&#x27;(&#x27;</span> expression <span class="string">&#x27;)&#x27;</span> statement ELSE statement    &#123; IfNode.new(val[<span class="number">2</span>], val[<span class="number">4</span>], val[<span class="number">6</span>]) &#125;</span><br><span class="line">    <span class="params">| SWITCH &#x27;(&#x27; expression &#x27;)&#x27; statement               &#123; SwitchNode.new(val[2], val[4]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  iteration_statement</span></span><br><span class="line"><span class="params">    : WHILE &#x27;(&#x27; expression &#x27;)&#x27; statement                                          &#123; WhileNode.new(val[2], val[4]) &#125;</span></span><br><span class="line"><span class="params">    |</span> DO statement WHILE <span class="string">&#x27;(&#x27;</span> expression <span class="string">&#x27;)&#x27;</span> <span class="string">&#x27;;&#x27;</span>                                   &#123; DoWhileNode.new(val[<span class="number">1</span>], val[<span class="number">4</span>]) &#125;</span><br><span class="line">    <span class="params">| FOR &#x27;(&#x27; expression_opt &#x27;;&#x27; expression_opt &#x27;;&#x27; expression_opt &#x27;)&#x27; statement  &#123; ForNode.new(val[2], val[4], val[6], val[8])&#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  jump_statement</span></span><br><span class="line"><span class="params">    : GOTO identifier &#x27;;&#x27;          &#123; GotoNode.new(val[1]) &#125;</span></span><br><span class="line"><span class="params">    |</span> CONTINUE <span class="string">&#x27;;&#x27;</span>                 &#123; ContinueNode.new() &#125;</span><br><span class="line">    <span class="params">| BREAK &#x27;;&#x27;                    &#123; BreakNode.new() &#125;</span></span><br><span class="line"><span class="params">    |</span> RETURN expression_opt <span class="string">&#x27;;&#x27;</span>    &#123; ReturnNode.new(val[<span class="number">1</span>]) &#125;</span><br><span class="line"></span><br><span class="line">  expression_opt : &#123;<span class="literal">nil</span>&#125; <span class="params">| expression</span></span><br><span class="line"><span class="params">  expression</span></span><br><span class="line"><span class="params">    : assignment_expression</span></span><br><span class="line"><span class="params">    |</span> expression <span class="string">&#x27;,&#x27;</span> assignment_expression    &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line"></span><br><span class="line">  assignment_expression</span><br><span class="line">    : conditional_expression</span><br><span class="line">    <span class="params">| unary_expression assignment_operator assignment_expression  &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  assignment_operator : &#x27;=&#x27; |</span> <span class="string">&#x27;*=&#x27;</span> <span class="params">| &#x27;/=&#x27; |</span> <span class="string">&#x27;%=&#x27;</span> <span class="params">| &#x27;+=&#x27; |</span> <span class="string">&#x27;-=&#x27;</span> <span class="params">| &#x27;&lt;&lt;=&#x27; |</span> <span class="string">&#x27;&gt;&gt;=&#x27;</span> <span class="params">| &#x27;&amp;=&#x27; |</span> <span class="string">&#x27;^=&#x27;</span> <span class="params">| &#x27;|</span>=<span class="string">&#x27;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  conditional_expression</span></span><br><span class="line"><span class="string">    : expr</span></span><br><span class="line"><span class="string">    | expr &#x27;</span><span class="string">?&#x27;</span> expression <span class="string">&#x27;:&#x27;</span> conditional_expression    &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>], val[<span class="number">4</span>]]) &#125;</span><br><span class="line"></span><br><span class="line">  constant_expression_opt : &#123;<span class="literal">nil</span>&#125; <span class="params">| constant_expression</span></span><br><span class="line"><span class="params">  constant_expression</span></span><br><span class="line"><span class="params">    : conditional_expression</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  expr</span></span><br><span class="line"><span class="params">    : cast_expression</span></span><br><span class="line"><span class="params">    |</span> expr <span class="string">&#x27;||&#x27;</span> expr      &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| expr &#x27;&amp;&amp;&#x27; expr      &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params">    |</span> expr <span class="string">&#x27;|&#x27;</span>  expr      &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| expr &#x27;^&#x27;  expr      &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params">    |</span> expr <span class="string">&#x27;&amp;&#x27;</span>  expr      &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| expr &#x27;==&#x27; expr      &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params">    |</span> expr <span class="string">&#x27;!=&#x27;</span> expr      &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| expr &#x27;&lt;&#x27;  expr      &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params">    |</span> expr <span class="string">&#x27;&gt;&#x27;</span>  expr      &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| expr &#x27;&lt;=&#x27; expr      &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params">    |</span> expr <span class="string">&#x27;&gt;=&#x27;</span> expr      &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| expr &#x27;&lt;&lt;&#x27; expr      &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params">    |</span> expr <span class="string">&#x27;&gt;&gt;&#x27;</span> expr      &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| expr &#x27;+&#x27;  expr      &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params">    |</span> expr <span class="string">&#x27;-&#x27;</span>  expr      &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| expr &#x27;*&#x27;  expr      &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params">    |</span> expr <span class="string">&#x27;/&#x27;</span>  expr      &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| expr &#x27;%&#x27;  expr      &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  cast_expression</span></span><br><span class="line"><span class="params">    : unary_expression</span></span><br><span class="line"><span class="params">    |</span> <span class="string">&#x27;(&#x27;</span> type_name <span class="string">&#x27;)&#x27;</span> cast_expression    &#123; val &#125;</span><br><span class="line"></span><br><span class="line">  unary_expression</span><br><span class="line">    : postfix_expression</span><br><span class="line">    <span class="params">| &#x27;++&#x27; unary_expression           &#123; OpNode.new(:PREINC, val[1]) &#125;</span></span><br><span class="line"><span class="params">    |</span> <span class="string">&#x27;--&#x27;</span> unary_expression           &#123; OpNode.new(<span class="symbol">:PREDEC</span>, val[<span class="number">1</span>]) &#125;</span><br><span class="line">    <span class="params">| unary_operator cast_expression  &#123; OpNode.new(val[0], val[1]) &#125;</span></span><br><span class="line"><span class="params">    |</span> <span class="string">&#x27;sizeof&#x27;</span> unary_expression       &#123; OpNode.new(val[<span class="number">0</span>], val[<span class="number">1</span>]) &#125;</span><br><span class="line">    <span class="params">| &#x27;sizeof&#x27; &#x27;(&#x27; type_name &#x27;)&#x27;      &#123; OpNode.new(val[0], val[2]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  unary_operator</span></span><br><span class="line"><span class="params">    : &#x27;&amp;&#x27; &#123; :ADDRESS &#125;</span></span><br><span class="line"><span class="params">    |</span> <span class="string">&#x27;~&#x27;</span></span><br><span class="line">    <span class="params">| &#x27;!&#x27;</span></span><br><span class="line"><span class="params">    |</span> <span class="string">&#x27;*&#x27;</span> &#123; <span class="symbol">:ASTER</span> &#125;</span><br><span class="line">    <span class="params">| &#x27;+&#x27; &#123; :UPLUS &#125;</span></span><br><span class="line"><span class="params">    |</span> <span class="string">&#x27;-&#x27;</span> &#123; <span class="symbol">:UMINUS</span> &#125;</span><br><span class="line"></span><br><span class="line">  postfix_expression</span><br><span class="line">    : primary_expression</span><br><span class="line">    <span class="params">| postfix_expression &#x27;[&#x27; expression &#x27;]&#x27;                      &#123; val &#125;</span></span><br><span class="line"><span class="params">    |</span> postfix_expression <span class="string">&#x27;(&#x27;</span> argument_expression_list_opt <span class="string">&#x27;)&#x27;</span>    &#123; FuncallNode.new(val[<span class="number">0</span>], val[<span class="number">2</span>]) &#125;</span><br><span class="line">    <span class="params">| postfix_expression &#x27;.&#x27; identifier                          &#123; OpNode.new(val[1], [val[0], val[2]]) &#125;</span></span><br><span class="line"><span class="params">    |</span> postfix_expression <span class="string">&#x27;-&gt;&#x27;</span> identifier                         &#123; OpNode.new(val[<span class="number">1</span>], [val[<span class="number">0</span>], val[<span class="number">2</span>]]) &#125;</span><br><span class="line">    <span class="params">| postfix_expression &#x27;++&#x27;                                    &#123; OpNode.new(:POSTINC, val[0]) &#125;</span></span><br><span class="line"><span class="params">    |</span> postfix_expression <span class="string">&#x27;--&#x27;</span>                                    &#123; OpNode.new(<span class="symbol">:POSTDEC</span>, val[<span class="number">0</span>]) &#125;</span><br><span class="line"></span><br><span class="line">  primary_expression</span><br><span class="line">    : identifier</span><br><span class="line">    <span class="params">| constant</span></span><br><span class="line"><span class="params">    |</span> string</span><br><span class="line">    <span class="params">| &#x27;(&#x27; expression &#x27;)&#x27;    &#123; val[1] &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  argument_expression_list_opt : &#123;[]&#125; |</span> argument_expression_list</span><br><span class="line">  argument_expression_list</span><br><span class="line">    : assignment_expression                                 &#123; val &#125;</span><br><span class="line">    <span class="params">| argument_expression_list &#x27;,&#x27; assignment_expression    &#123; val[0].push(val[2]) &#125;</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">  constant</span></span><br><span class="line"><span class="params">    : integer_constant</span></span><br><span class="line"><span class="params">    |</span> character_constant</span><br><span class="line">    <span class="params">| floating_constant</span></span><br><span class="line"><span class="params">    |</span> enumeration_constant</span><br><span class="line"></span><br><span class="line">  identifier_opt : &#123;<span class="literal">nil</span>&#125; <span class="params">| identifier</span></span><br><span class="line"><span class="params">  identifier            :  SYMBOL        &#123; val[0].intern &#125;</span></span><br><span class="line"><span class="params">  integer_constant      :  INTEGER_LITERAL</span></span><br><span class="line"><span class="params">  floating_constant     :  FLOAT_LITERAL</span></span><br><span class="line"><span class="params">  character_constant    :  CHAR_LITERAL</span></span><br><span class="line"><span class="params">  string                :  STRING_LITERAL</span></span><br><span class="line"><span class="params">  enumeration_constant  :  ENUM_CONST</span></span><br><span class="line"><span class="params"><span class="keyword">end</span></span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">---- header</span></span><br><span class="line"><span class="params">DeclNode = Struct.new(:type, :vars)</span></span><br><span class="line"><span class="params">DefunNode = Struct.new(:type, :name, :params, :stmts)</span></span><br><span class="line"><span class="params">InitDecl = Struct.new(:var, :val)</span></span><br><span class="line"><span class="params">DirectDecl = Struct.new(:name, :modify)</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">OpNode = Struct.new(:op, :oprand)</span></span><br><span class="line"><span class="params">FuncallNode = Struct.new(:func, :args)</span></span><br><span class="line"><span class="params">ReturnNode = Struct.new(:val)</span></span><br><span class="line"><span class="params"><span class="keyword">class</span> BreakNode; <span class="keyword">end</span></span></span><br><span class="line"><span class="params">GotoNode = Struct.new(:label)</span></span><br><span class="line"><span class="params"><span class="keyword">class</span> ContinueNode; <span class="keyword">end</span></span></span><br><span class="line"><span class="params">IfNode = Struct.new(:exp, :<span class="keyword">then</span>, :<span class="keyword">else</span>)</span></span><br><span class="line"><span class="params">SwitchNode = Struct.new(:exp, :stmt)</span></span><br><span class="line"><span class="params">ForNode = Struct.new(:beg, :cond, :<span class="keyword">end</span>, :stmt)</span></span><br><span class="line"><span class="params">WhileNode = Struct.new(:cond, :stmt)</span></span><br><span class="line"><span class="params">DoWhileNode = Struct.new(:stmt, :cond)</span></span><br><span class="line"><span class="params">LabelNode = Struct.new(:name, :stmt)</span></span><br><span class="line"><span class="params">CaseNode = Struct.new(:val, :stmt)</span></span><br><span class="line"><span class="params">DefaultNode = Struct.new(:stmt)</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">Reserved = %w(</span></span><br><span class="line"><span class="params">  void int short char long float double signed unsigned</span></span><br><span class="line"><span class="params">  <span class="keyword">if</span> <span class="keyword">else</span> switch <span class="keyword">while</span> <span class="keyword">for</span> <span class="keyword">do</span> <span class="keyword">return</span> goto continue <span class="keyword">break</span> <span class="keyword">case</span> default</span></span><br><span class="line"><span class="params">  struct union typedef enum sizeof</span></span><br><span class="line"><span class="params">  auto register extern static const volatile</span></span><br><span class="line"><span class="params">)</span></span><br><span class="line"><span class="params">Operator = %w(</span></span><br><span class="line"><span class="params">  * / % + - &lt;&lt; &gt;&gt; &lt; &gt; &lt;= &gt;= == != &amp; ^ |</span> &amp;&amp; <span class="params">||</span></span><br><span class="line">  = += -= *= <span class="regexp">/= %= &lt;&lt;= &gt;&gt;= &amp;= |= ^=</span></span><br><span class="line"><span class="regexp">  . -&gt; ... ,</span></span><br><span class="line"><span class="regexp">)</span></span><br><span class="line"><span class="regexp">---- inner</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  def initialize</span></span><br><span class="line"><span class="regexp">    @@reserved = &#123;&#125;</span></span><br><span class="line"><span class="regexp">    Reserved.each &#123;|w| @@reserved[w.intern()] = w.upcase.intern&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    @@op_regex = /</span>\A<span class="comment">#&#123;Regexp.union(Operator.sort_by &#123;|x| -x.length&#125;)&#125;/</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">parse_file</span><span class="params">(f)</span></span></span><br><span class="line">    <span class="variable">@f</span> = f</span><br><span class="line">    <span class="variable">@line_no</span> = <span class="number">0</span></span><br><span class="line">    <span class="variable">@line</span> = <span class="string">&quot;&quot;</span></span><br><span class="line">    do_parse</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">next_token</span></span></span><br><span class="line">    loop <span class="keyword">do</span></span><br><span class="line">      <span class="variable">@line</span> = fetch_line(<span class="variable">@line</span>)</span><br><span class="line">      <span class="keyword">unless</span> <span class="variable">@line</span></span><br><span class="line">        <span class="keyword">return</span> [<span class="literal">false</span>, <span class="symbol">:END_OF_FILE</span>]</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">      token = <span class="keyword">case</span> <span class="variable">@line</span></span><br><span class="line">        <span class="keyword">when</span> /\A\s+<span class="regexp">/</span></span><br><span class="line"><span class="regexp">          nil</span></span><br><span class="line"><span class="regexp">        when %r!\A/</span><span class="regexp">/.*\Z!</span></span><br><span class="line"><span class="regexp">          nil</span></span><br><span class="line"><span class="regexp">        when %r!\A/</span>\*!</span><br><span class="line">          <span class="variable">@line</span> = block_comment(<span class="variable">$&#x27;</span>)</span><br><span class="line">          <span class="keyword">next</span></span><br><span class="line">        <span class="keyword">when</span> /\A\d+\.\d+<span class="regexp">/  # てきとー</span></span><br><span class="line"><span class="regexp">          [:FLOAT_LITERAL, $&amp;.to_f]</span></span><br><span class="line"><span class="regexp">        when /</span>\A\d+<span class="regexp">/</span></span><br><span class="line"><span class="regexp">          [:INTEGER_LITERAL, $&amp;.to_i]</span></span><br><span class="line"><span class="regexp">        when /</span>\A<span class="string">&quot;(.*?)&quot;</span>/  <span class="comment"># てきとー</span></span><br><span class="line">          [<span class="symbol">:STRING_LITERAL</span>, <span class="variable">$1</span>]</span><br><span class="line">        <span class="keyword">when</span> /\A<span class="string">&#x27;(.*?)&#x27;</span>/  <span class="comment"># てきとー</span></span><br><span class="line">          [<span class="symbol">:CHAR_LITERAL</span>, <span class="variable">$1</span>]</span><br><span class="line">        <span class="keyword">when</span> /\A\w[\w\d_]*<span class="regexp">/</span></span><br><span class="line"><span class="regexp">          w = $&amp;</span></span><br><span class="line"><span class="regexp">          s = w.intern</span></span><br><span class="line"><span class="regexp">          u = @@reserved[s]</span></span><br><span class="line"><span class="regexp">          u ? [u, u] : [:SYMBOL, w]</span></span><br><span class="line"><span class="regexp">        when @@op_regex</span></span><br><span class="line"><span class="regexp">          s = $&amp;</span></span><br><span class="line"><span class="regexp">          [s, s]</span></span><br><span class="line"><span class="regexp">        when /</span>\A./</span><br><span class="line">          s = <span class="variable">$&amp;</span></span><br><span class="line">          [s, s]</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">      <span class="variable">@line</span> = <span class="variable">$&#x27;</span></span><br><span class="line">      <span class="keyword">return</span> token <span class="keyword">if</span> token</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">on_error</span><span class="params">(t, val, vstack)</span></span></span><br><span class="line">    raise ParseError, <span class="string">&quot;\nunexpected token <span class="subst">#&#123;val.inspect&#125;</span>&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">private</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">fetch_line</span><span class="params">(line)</span></span></span><br><span class="line">    <span class="keyword">if</span> line.empty?</span><br><span class="line">      line = <span class="variable">@f</span>.gets</span><br><span class="line">      <span class="variable">@line_no</span> += <span class="number">1</span> <span class="keyword">if</span> line</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    line</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">block_comment</span><span class="params">(line)</span></span></span><br><span class="line">    <span class="keyword">until</span> line =~ <span class="regexp">%r!\*/!</span></span><br><span class="line">      line = fetch_line(line)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="variable">$&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">---- footer</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="variable">$0</span> == <span class="keyword">__FILE__</span></span><br><span class="line">  parser = CParser.new</span><br><span class="line">  p parser.parse_file(ARGF)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>実行例：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ racc c.y</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">&#x27;int test() &#123; return printf(&quot;%d\\n&quot;, 1 + 2 * 3); &#125;&#x27;</span> | ruby c.tab.rb</span><br><span class="line">[<span class="comment">#&lt;struct DefunNode type=:INT, name=#&lt;struct DirectDecl name=[:test, &quot;(&quot;, nil, &quot;</span></span><br><span class="line">)<span class="string">&quot;], modify=nil&gt;, params=nil, stmts=[nil, [#&lt;struct ReturnNode val=#&lt;struct Func</span></span><br><span class="line"><span class="string">allNode func=:printf, args=[&quot;</span>%d\\n<span class="string">&quot;, #&lt;struct OpNode op=&quot;</span>+<span class="string">&quot;, oprand=[1, #&lt;struct</span></span><br><span class="line"><span class="string"> OpNode op=&quot;</span>*<span class="string">&quot;, oprand=[2, 3]&gt;]&gt;]&gt;&gt;]]&gt;]</span></span><br></pre></td></tr></table></figure>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2011/08/15/bayesian-filter.html" title="「ベイジアンフィルタを実装してみよう」をRubyで" rel="bookmark">「ベイジアンフィルタを実装してみよう」をRubyで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/03/21/easy-dsl.html" title="Rubyで簡単DSL" rel="bookmark">Rubyで簡単DSL</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/06/01/ga-helloworld.html" title="GAで"Hello, world!"" rel="bookmark">GAで"Hello, world!"</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

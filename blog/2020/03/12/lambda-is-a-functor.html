@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="今までまったく別物だと思ってたんだけど、C++のラムダ式は実のところファンクタの糖衣構文でしかないということに気づいた。
+例えば以下のようなラムダ式：
+auto f = [](int x) &amp;#123;  return x * x;&amp;#125;;f(1111);  // =&amp;gt; 1234321
+">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【C++】C++のラムダ式はファンクタだったのか…"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【C++】C++のラムダ式はファンクタだったのか… - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/03/12/lambda-is-a-functor.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【C++】C++のラムダ式はファンクタだったのか…</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-03-12
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cplusplus/">#cplusplus</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>今までまったく別物だと思ってたんだけど、C++のラムダ式は実のところファンクタの糖衣構文でしかないということに気づいた。</p>
+<p>例えば以下のようなラムダ式：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">auto</span> f = [](<span class="keyword">int</span> x) &#123;</span><br><span class="line">  <span class="keyword">return</span> x * x;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">f</span>(<span class="number">1111</span>);  <span class="comment">// =&gt; 1234321</span></span><br></pre></td></tr></table></figure>
+
+<p>は、内部的には <code>operator()</code> を実装するクラスが作られて使用されるのと意味的には同じ：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">F</span> &#123;</span></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x * x;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">F f;</span><br><span class="line"></span><br><span class="line"><span class="built_in">f</span>(<span class="number">1111</span>);  <span class="comment">// =&gt; 1234321</span></span><br></pre></td></tr></table></figure>
+
+<p>で、その場でしか使用しない処理をわざわざクラスを作成せずに簡潔に書けるというのが利点ということになる。</p>
+<p>変数がキャプチャされるケースも、コンストラクタでメンバ変数として保持してやれば実現できる。</p>
+<p>注意点としては、 <code>[=]</code> によりコピーキャプチャされた変数の書き換えはコンパイルエラーが出る：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> y = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">auto</span> f = [y](<span class="keyword">int</span> x) -&gt; <span class="keyword">int</span> &#123;</span><br><span class="line">  y += x;  <span class="comment">// &lt;= error: cannot assign to a variable captured by copy in a non-mutable lambda</span></span><br><span class="line">  <span class="keyword">return</span> y;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>ラムダ式により生成されるファンクタはデフォルトでは <code>const</code> となることが原因：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> y = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">F</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> y;</span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">F</span>(<span class="keyword">int</span> y_) : <span class="built_in">y</span>(y_) &#123;&#125;</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;  <span class="comment">// &lt;= メンバ変数（キャプチャ内容）を書き換えるので、const指定できない</span></span><br><span class="line">    y += x;</span><br><span class="line">    <span class="keyword">return</span> y;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">const</span> F <span class="title">f</span><span class="params">(y)</span></span>;  <span class="comment">// &lt;= デフォルトで const 指定</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">f</span>(<span class="number">1111</span>);  <span class="comment">// &lt;= operator()を呼び出せず、エラー</span></span><br></pre></td></tr></table></figure>
+
+<p>とのこと。
+デフォルトでは書き換えられないが、エラーメッセージの通り <code>mutable</code> を指定すれば書き換えられる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> y = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">auto</span> f = [y](<span class="keyword">int</span> x) <span class="keyword">mutable</span> -&gt; <span class="keyword">int</span> &#123;  <span class="comment">// &lt;= mutable を指定</span></span><br><span class="line">  y += x;  <span class="comment">// &lt;= 書き換え可能</span></span><br><span class="line">  <span class="keyword">return</span> y;</span><br><span class="line">&#125;;</span><br><span class="line">cout &lt;&lt; <span class="built_in">f</span>(<span class="number">1</span>) &lt;&lt; endl;  <span class="comment">// =&gt; 1</span></span><br><span class="line">cout &lt;&lt; <span class="built_in">f</span>(<span class="number">2</span>) &lt;&lt; endl;  <span class="comment">// =&gt; 3</span></span><br><span class="line">cout &lt;&lt; <span class="built_in">f</span>(<span class="number">3</span>) &lt;&lt; endl;  <span class="comment">// =&gt; 6</span></span><br><span class="line"></span><br><span class="line">cout &lt;&lt; y &lt;&lt; endl;     <span class="comment">// =&gt; 0  （コピーキャプチャなので、キャプチャ元の変数は変わらず）</span></span><br></pre></td></tr></table></figure>
+
+<p>これはたぶん、書き換えられると意味的にまぎらわしいからデフォルトでは <code>const</code> になっているのだと推測している。
+というのは、ラムダ式をコピーするとキャプチャ自体もコピーされるので、実体が枝分かれしてしまう：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> y = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">auto</span> f = [y](<span class="keyword">int</span> x) <span class="keyword">mutable</span> -&gt; <span class="keyword">int</span> &#123;</span><br><span class="line">  y += x;</span><br><span class="line">  <span class="keyword">return</span> y;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">auto</span> g = f;</span><br><span class="line"><span class="built_in">f</span>(<span class="number">1</span>);   <span class="comment">// &lt;= 1</span></span><br><span class="line"><span class="built_in">g</span>(<span class="number">10</span>);  <span class="comment">// &lt;= 10 (fの呼び出しによる1増加はこちらには反映しない)</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://blog.feabhas.com/2014/03/demystifying-c-lambdas/">Demystifying C++ lambdas - Sticky Bits - Powered by FeabhasSticky Bits – Powered by Feabhas</a></li>
+<li><a href="https://medium.com/@winwardo/c-lambdas-arent-magic-part-2-ce0b48934809">C++ Lambdas aren’t magic, part 2 🎆 - Topher Winward - Medium</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/08/cpp-lambda.html" title="【C++】ラムダ関数" rel="bookmark">【C++】ラムダ関数</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/26/cpp-multi-value.html" title="【C++】関数から多値を返す" rel="bookmark">【C++】関数から多値を返す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/04/std-function-runtime.html" title="【C++】std::function のコスト" rel="bookmark">【C++】std::function のコスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/06/15/unique_ptr-forward-decl.html" title="【C++】クラスの前方参照とunique_ptr" rel="bookmark">【C++】クラスの前方参照とunique_ptr</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

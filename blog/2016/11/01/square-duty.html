@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ファミコンの音源は矩形波x2+三角波+ノイズという構成なんだけど、さらに矩形波にはデューティ比を変更させるという機能がある。
+これをWebAudioで実現するにはどうしたらいいのかと考えていた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="矩形波のデューティ比を変化させる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>矩形波のデューティ比を変化させる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/11/01/square-duty.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>矩形波のデューティ比を変化させる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-11-01
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/nes/">#nes</a> <a href="/tags/audio/">#audio</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ファミコンの音源は矩形波x2+三角波+ノイズという構成なんだけど、さらに矩形波には<a href="http://wiki.nesdev.com/w/index.php/APU_Pulse">デューティ比を変更させるという機能</a>がある。
+これをWebAudioで実現するにはどうしたらいいのかと考えていた。</p>
+<span id="more"></span>
+
+<h3 id="仕組み"><a href="#仕組み" class="headerlink" title="仕組み"></a>仕組み</h3><p>WebAudioにはオシレータで山と谷が等しい矩形波を生成することができるが、デューティ比を変更するような機能はない。
+オシレータを使わずに自分で計算して作ったバッファに波形を構築してやればそういう波形も作れるけど、面倒なのでできればしたくない。
+でどうしたものかと思っていたら、実現しているサイトを見つけた：
+<a href="http://webaudiodemos.appspot.com/oscilloscope/index.html">Oscilloscope and Pulse-Width control</a></p>
+<p>どうやっているのかソースを見てみると、ノコギリ波を組み合わせて実現していた。
+通常のノコギリ波に加えて、ゲインを反転させてデューティ比に合わせてディレイさせたものを組み合わせると、波が打ち消しあって矩形波が作り出せるようだ。</p>
+<h3 id="デモ"><a href="#デモ" class="headerlink" title="デモ"></a>デモ</h3><p>ということでデモを作ってみた：</p>
+<iframe src="/assets/square_duty.html" width="700" height="350"></iframe>
+
+<p>playボタンで再生開始して、「Duty cycle」のスライダー、または数値入力でデューティ比を変更できる。
+またキャンバスをドラッグで周波数とボリュームを変更できる。</p>
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><p>内容は結構簡単で、音源となるノコギリ波を発生させるオシレータを生成し、そのオシレータから分岐させてゲインを反転させてディレイさせたものをつなげる。
+そしてそれぞれを全体のボリュームをいじるゲインノードにつなぎ、最終的な出力ノードにつなげる：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//  [／|／|]</span></span><br><span class="line"><span class="comment">// oscillator ---------------+-&gt; gain -&gt; destination</span></span><br><span class="line"><span class="comment">//   |   [＼|＼|]   [|＼|＼] |</span></span><br><span class="line"><span class="comment">//   `-&gt; inverter -&gt; delay --&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> context = <span class="keyword">new</span> AudioContext()           <span class="comment">// WebAudioのコンテキスト</span></span><br><span class="line"><span class="keyword">var</span> frequency = <span class="number">220</span>                        <span class="comment">// 鳴らす音程（周波数）</span></span><br><span class="line"><span class="keyword">var</span> dutyCycle = <span class="number">0.5</span>                        <span class="comment">// デューティ比</span></span><br><span class="line"><span class="keyword">var</span> volume = <span class="number">1.0</span>                           <span class="comment">// 音量</span></span><br><span class="line"><span class="keyword">var</span> oscillator = <span class="literal">null</span>                      <span class="comment">// ノコギリ波のオシレータ</span></span><br><span class="line"><span class="keyword">var</span> gain = <span class="literal">null</span>                            <span class="comment">// 音量ノード</span></span><br><span class="line"><span class="keyword">var</span> delay = <span class="literal">null</span>                           <span class="comment">// デューティ比用の遅延</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createAudioNodes</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  oscillator = context.createOscillator()  <span class="comment">// オシレータ（音源）</span></span><br><span class="line">  oscillator.type = <span class="string">&#x27;sawtooth&#x27;</span>             <span class="comment">// オシレータのタイプにノコギリ波を指定</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> inverter = context.createGain()      <span class="comment">// ノコギリ波から矩形波を作成するための反転ノード</span></span><br><span class="line">  inverter.gain.value = -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">  delay = context.createDelay()            <span class="comment">// デューティ比再現用のディレイノード</span></span><br><span class="line"></span><br><span class="line">  gain = context.createGain()              <span class="comment">// 音量調整用ノード</span></span><br><span class="line">  gain.gain.value = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  oscillator.connect(gain)                 <span class="comment">// オシレータ-&gt;ゲイン</span></span><br><span class="line">  oscillator.connect(inverter)             <span class="comment">// オシレータ-&gt;反転</span></span><br><span class="line">  inverter.connect(delay)                  <span class="comment">// 反転-&gt;ディレイ</span></span><br><span class="line">  delay.connect(gain)                      <span class="comment">// ディレイ-&gt;ゲイン</span></span><br><span class="line">  gain.connect(destination)                <span class="comment">// ゲイン-&gt;出力</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ユーザの操作に従って周波数やボリューム、デューティ比を変更する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateAudio</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  oscillator.frequency.value = frequency                 <span class="comment">// 音程更新</span></span><br><span class="line">  gain.gain.value = volume                               <span class="comment">// 音量更新</span></span><br><span class="line">  delay.delayTime.value = (<span class="number">1.0</span> - dutyCycle) / frequency  <span class="comment">// デューティ比から設定すべき遅延を逆算</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><ul>
+<li>グラフでは赤と青のノコギリ波が打ち消し合うことを見やすくするため基準線を境に描いているが、実際には<a href="https://webaudio.github.io/web-audio-api/#basic-waveform-phase">WebAudioのノコギリ波は-1~+1の範囲</a></li>
+<li>Web Audio Demosのページでは合成した値の基準を合わせるため、直流成分を加えている。ただ、そのゲインを <code>1.7*(0.5-amt)</code> としているのがよくわからない…。</li>
+<li>Web Audio Demosのページで発生している音の波形を表示するのに<a href="https://developer.mozilla.org/ja/docs/Web/API/AudioContext/createAnalyser">AudioContext.createAnalyser</a>で<a href="https://developer.mozilla.org/ja/docs/Web/API/AnalyserNode">AnalyserNode</a>を作り周波数に分解し、また<a href="https://developer.mozilla.org/ja/docs/Web/API/AnalyserNode/getByteTimeDomainData">getTimeDomainData</a>で波形そのものを取り出している。</li>
+</ul>
+<h4 id="追記"><a href="#追記" class="headerlink" title="追記"></a>追記</h4><iframe width="560" height="315" src="https://www.youtube.com/embed/ly3SrRrzGFk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p><a href="https://www.youtube.com/watch?v=ly3SrRrzGFk">ドラクエで学ぶファミコン音色の時間変化 / NES tone technique - YouTube</a></p>
+<p>正直、デューティ比変更を実装しなくても別にそれほど効果ないしわからないでしょ、と軽く見ていた人間でした。
+機能があると追求して有効に使う人がいるんだなぁ…。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/07/07/nes-scrolling.html" title="ファミコンでのBGスクロール" rel="bookmark">ファミコンでのBGスクロール</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/09/optcarrot.html" title="Optcarrotがすごい" rel="bookmark">Optcarrotがすごい</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="WebAuidoの
+AudioContext.createScriptProcessor()
+というメソッドを使うと自分で好きに加工した波形を鳴らせるということで、試しにホワイトノイズを鳴らしてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="周波数指定のホワイトノイズ"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>周波数指定のホワイトノイズ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2018/09/15/white-noise.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>周波数指定のホワイトノイズ</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2018-09-15
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/audio/">#audio</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>WebAuidoの
+<a href="https://developer.mozilla.org/ja/docs/Web/API/AudioContext/createScriptProcessor">AudioContext.createScriptProcessor()</a>
+というメソッドを使うと自分で好きに加工した波形を鳴らせるということで、試しにホワイトノイズを鳴らしてみた。</p>
+<span id="more"></span>
+
+<h3 id="デモ"><a href="#デモ" class="headerlink" title="デモ"></a>デモ</h3>
+<style>
+.frame {
+  border:1px solid gray;
+  padding:16px;
+  border-radius:8px;
+  transition: box-shadow 0.25s;
+}
+.frame:hover {
+  box-shadow:0 0 8px blue;
+}
+</style>
+<div class="frame">
+  <div>
+    <input id="freq-slider" type="range" min="0" max="1000" step="1" value="1000"
+           style="width:240px; display: inline" />
+
+    <button id="play">play</button>
+    <button id="stop" disabled>stop</button>
+  </div>
+  <div>
+    Frequency: <input id="frequency" type="number" style="text-align:right; width:150px" />Hz
+  </div>
+</div>
+
+
+<h3 id="ScriptProcessorNode"><a href="#ScriptProcessorNode" class="headerlink" title="ScriptProcessorNode"></a>ScriptProcessorNode</h3><p><code>createScriptProcessor</code>でScriptProcessorNodeが作成され、その
+<a href="https://developer.mozilla.org/ja/docs/Web/API/ScriptProcessorNode/onaudioprocess">onaudioprocess</a>
+メソッドが時間経過とともに呼び出されるので、<code>event.outputBuffer.getChannelData()</code>で取得できるバッファにサンプルレートに従って鳴らす音圧データを書き込んでやれば鳴ってくれる：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// コンテキスト作成</span></span><br><span class="line"><span class="keyword">const</span> context = <span class="keyword">new</span> AudioContext()</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> BUFFER_SIZE = <span class="number">4096</span></span><br><span class="line"><span class="keyword">let</span> node = context.createScriptProcessor(BUFFER_SIZE, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">node.onaudioprocess = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> output = e.outputBuffer.getChannelData(<span class="number">0</span>)</span><br><span class="line">  <span class="keyword">const</span> len = output.length</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; len; ++i)</span><br><span class="line">    output[i] = <span class="built_in">Math</span>.random() * <span class="number">2</span> - <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line">node.connect(context.destination)</span><br></pre></td></tr></table></figure>
+
+<p>ホワイトノイズはすべての周波数ということで、毎サンプル（<code>output[i]</code>）でランダムな値を生成してやればよい。</p>
+<h3 id="asm-jsアノテーション"><a href="#asm-jsアノテーション" class="headerlink" title="asm.jsアノテーション"></a>asm.jsアノテーション</h3><p>ホワイトノイズでも周波数を制限してみようかと乱数の生成を毎回じゃなく指定の周波数に合うように何回かに1回にしてみると、まあ処理が重くなってしまいまともに音が鳴らない。
+<code>if</code>で分岐するからなのか毎回乱数を生成するより重くなってしまうというのが意外。</p>
+<p>これじゃ使い物にならない…と思いつつ苦し紛れに計算式に<a href="http://asmjs.org/spec/latest/#annotations">asm.jsのアノテーション</a>的に<code>|0</code>で整数ですよーと示してやると、処理落ちがなくなりきれいに鳴るようになった。
+ちゃんとそういう最適化が図られているとは、JSエンジンすごい。
+流石に今の時代でも数万回の計算は浮動小数点数だと辛いのだなぁ。</p>
+
+  <script>
+window.addEventListener('load', () => {
+  'use asm'
+
+  const contextClass = window.AudioContext || window.webkitAudioContext
+  if (contextClass == null) {
+    console.error('WebAudio not supported')
+    return
+  }
+
+  const context = new contextClass()
+
+  const VOLUME = 1.0 / 8
+  const freqText = document.getElementById('frequency')
+  const slider = document.getElementById('freq-slider')
+  const rangeMax = parseInt(slider.max) | 0
+  const COUNT_MAX = 1000000 | 0
+  const POWER = 2
+  let add = COUNT_MAX | 0
+  slider.addEventListener('input', (event) => {
+    const ratio = event.target.value / rangeMax
+    const per = Math.pow(ratio, POWER)
+    add = (COUNT_MAX * per) | 0
+    freqText.value = ((context.sampleRate * per) | 0).toString()
+  })
+  freqText.value = context.sampleRate.toString()
+
+  const updateFrequency = () => {
+    const SAMPLE_RATE = context.sampleRate
+    let freq = parseInt(freqText.value) | 0
+    freq = freq < 0 ? 0 : freq > SAMPLE_RATE ? SAMPLE_RATE : freq
+    const ratio = freq / SAMPLE_RATE
+    add = (COUNT_MAX * ratio) | 0
+    slider.value = rangeMax * Math.pow(ratio, 1.0 / POWER)
+    freqText.value = freq.toString()
+  }
+  freqText.addEventListener('keypress', (event) => {
+    if (event.keyCode == 13)  // Enter
+      updateFrequency()
+  })
+  freqText.addEventListener('change', (event) => {
+    updateFrequency()
+  })
+
+  const BUFFER_SIZE = 4096
+  let node = null
+  let count = 0 | 0
+  let lastValue = 0.0
+
+  const playButton = document.getElementById('play')
+  const stopButton = document.getElementById('stop')
+
+  playButton.addEventListener('click', (_event) => {
+    playButton.disabled = true
+    stopButton.disabled = false
+
+    node = context.createScriptProcessor(BUFFER_SIZE, 1, 1)
+    node.onaudioprocess = (e) => {
+      const output = e.outputBuffer.getChannelData(0)
+      const len = output.length | 0
+      let value = lastValue
+      let cnt = count | 0
+      for (let i = 0; i < len; ++i) {
+        output[i] = value
+        cnt = (cnt + add) | 0
+        if (cnt >= COUNT_MAX) {
+          cnt = (cnt - COUNT_MAX) | 0
+          value = (Math.random() * 2 - 1) * VOLUME
+        }
+      }
+      lastValue = value
+      count = cnt
+    }
+    node.connect(context.destination)
+  })
+
+  stopButton.addEventListener('click', (_event) => {
+    stopButton.disabled = true
+    playButton.disabled = false
+
+    node.disconnect()
+    node = null
+  })
+})
+  </script>
+
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/01/square-duty.html" title="矩形波のデューティ比を変化させる" rel="bookmark">矩形波のデューティ比を変化させる</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

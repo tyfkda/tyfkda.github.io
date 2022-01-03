@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="低レイヤを知りたい人のためのCコンパイラ作成入門（以降「低レイヤ」）を参考にして作り始めたCコンパイラがようやくセルフホスティングできるようになったので、
+今までの経験をメモしておく。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="自作Cコンパイラでセルフホスティングを達成した"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>自作Cコンパイラでセルフホスティングを達成した - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2019/07/14/self-hosting-c.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>自作Cコンパイラでセルフホスティングを達成した</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-07-14
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://www.sigbus.info/compilerbook">低レイヤを知りたい人のためのCコンパイラ作成入門</a>（以降「低レイヤ」）を参考にして作り始めたCコンパイラがようやくセルフホスティングできるようになったので、
+今までの経験をメモしておく。</p>
+<span id="more"></span>
+
+<p>リポジトリはこちら：<a href="https://github.com/tyfkda/xcc">https://github.com/tyfkda/xcc</a></p>
+<h3 id="動機"><a href="#動機" class="headerlink" title="動機"></a>動機</h3><p><a href="https://github.com/tyfkda/xv6">XV6</a>という学習用OSをひとまず使えるものにしたいなぁと思っていて、Cコンパイラが動けばXV6上で開発できるようになるのでぜひとも動かしたいと思っていた。
+しかし既存のソースだとCからアセンブリを出力するだけで、アセンブラやリンカはgccを使うとかしていることが多くて、そのままだと動かすのが難しいのではないかと思っていた。
+「低レイヤ」もその方式なんだけど、それを直接バイナリを出力する方法で実装したらできるのではないかと、始めてみた。</p>
+<h3 id="進め方"><a href="#進め方" class="headerlink" title="進め方"></a>進め方</h3><p>「低レイヤ」では最初に整数１個をコンパイルできるだけというミニマルな状態から始めて、徐々に拡張していくという手順で進んでいく。
+加減算、乗除算、ローカル変数、関数呼び出し、関数定義、という具合に少しずつ処理できる構文を増やしていく。
+記事の前半は丁寧に解説されているので、基本的には手順通りに進めていけばいい。
+後半はかなり飛ばし気味なので、自分で内容をちゃんと理解して進めていく必要がある。</p>
+<p>サイトは内容が随時更新されているみたいなんだけど自分が読んだ時点ではグローバル変数の初期化まで書かれていた。
+その状態だとまだセルフホスティングできなかったので、そこからは自前で実装していった。</p>
+<h3 id="こまごまと"><a href="#こまごまと" class="headerlink" title="こまごまと"></a>こまごまと</h3><h4 id="出力するバイナリ形式"><a href="#出力するバイナリ形式" class="headerlink" title="出力するバイナリ形式"></a>出力するバイナリ形式</h4><p>「低レイヤ」ではx86-64アセンブリ言語のソースをテキスト形式で出力して、gccでアセンブル・リンクして実行ファイルを作っている。
+こちらの目的は実行ファイルを直接出力して動かせるようにすることなので、変更する必要がある。</p>
+<p>LinuxではELF形式というものが使われている。
+XV6も同じくELFなのでどちらでも動かせて都合がよいため、ELFを吐くようにした。</p>
+<p>ELFはエルフヘッダとプログラムヘッダに加えてマシン語バイナリを出力すればよい。
+ELF64形式に関しては <a href="/blog/2019/01/28/hello-elf-world.html" title="ELF64を動的に生成してHello World">ELF64を動的に生成してHello World</a> や <a href="/blog/2019/03/06/elf-quine.html" title="ELF64でQuine">ELF64でQuine</a> で試した。</p>
+<p>C言語に対応するアセンブリを確認するには <code>gcc -S</code> で（<code>gcc -S -fomit-frame-pointer -fno-asynchronous-unwind-tables ,foo/foo.c</code>）や<a href="https://godbolt.org/">Compiler Explorer</a>が便利。
+アセンブリに対応するバイナリは、<code>gcc -c foo.s &amp;&amp; objdump -S foo.o</code> で調べられる。</p>
+<p>バイナリの出力はx86の命令ごとにベタにマクロを定義してやった。
+例えば、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MOV_RAX_IND_RAX()  ADD_CODE(0x48, 0x89, 0x00)  <span class="comment">// mov %rax, %(rax)</span></span></span><br></pre></td></tr></table></figure>
+
+<p><code>ADD_CODE</code> ではマクロの可変長引数 <code>__VA_ARGS__</code> を使ってデータを埋め込む：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ADD_CODE(...)  do &#123; unsigned char buf[] = &#123;__VA_ARGS__&#125;; add_code(buf, sizeof(buf)); &#125; while (0)</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="左辺値、参照"><a href="#左辺値、参照" class="headerlink" title="左辺値、参照"></a>左辺値、参照</h4><p>Cコンパイラを実装するにあたって、難しいのではないかと思っていたポイントが左辺値だ。
+左辺値は単純なローカル変数の場合もあるし、ポインタ値を <code>*</code> で修飾したポイント先や配列に添字でのアクセス、構造体への<code>.</code>やそのポインタへの<code>-&gt;</code>など、いろいろな場合がある。
+参照も上記のようなものに対して<code>&amp;</code>でアドレスを取れるようにする必要がある。
+このあたりをどうやって実装するかはなかなかやっかいなのではないかと思っていた。</p>
+<p>「低レイヤ」ではローカル変数を追加するする際に左辺値を説明している（#左辺値と右辺値）：</p>
+<blockquote>
+<p>このような正当な式と不正な式の区別はどのようにつければよいのでしょうか？</p>
+<p>その問いには単純な答えがあります。Cにおいて代入式の左辺にくることができるのは、メモリのアドレスを指定する式だけです。</p>
+</blockquote>
+<p>左辺値がメモリのアドレスを指すものとして、式の評価時にはそのアドレスを値としてやる。
+代入は左辺値のアドレスに値を格納するというコードを生成する、と共通化できる。</p>
+<h4 id="型の表現"><a href="#型の表現" class="headerlink" title="型の表現"></a>型の表現</h4><p>C言語では<code>int</code>などのプリミティブな型以外に、配列やポインタで修飾することができる。
+そうした型をどうやって表現するか、同じ型かどうかの判定方法を考える必要がある。</p>
+<p>「低レイヤ」では型を表す<code>Type</code>構造体を</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Type</span> &#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">enum</span> &#123;</span> INT, PTR &#125; ty;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">Type</span> *<span class="title">ptrof</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>と定義している。
+<code>ptrof</code>が<code>Type*</code>を再帰的に参照するようになっていて、これによってポインタ、ポインタのポインタ、…という具合にあらゆる型を表現できる。</p>
+<p>同じ型かどうかを判定するには、<code>ty</code> が同じかどうか、同じで<code>PTR</code>だったら<code>ptrof</code>の内容が同じかどうかで判定できる。</p>
+<p>配列を追加するには、<code>ty</code>に配列型を表す定義（<code>ARRAY</code>）を追加してやればよい。
+ティップスとして、C言語では配列型からポインタ型への自動変換があるので、配列用に新たにメンバを用意するんじゃなくポインタ用の <code>ptrof</code> と共有するほうが都合がいい。</p>
+<h4 id="初期値付きグローバル変数"><a href="#初期値付きグローバル変数" class="headerlink" title="初期値付きグローバル変数"></a>初期値付きグローバル変数</h4><p><code>int foo = 123;</code> という具合に、変数の宣言時に初期値を与えることができる。
+ローカル変数の場合には実行時に処理を行うことができるので、通常の代入処理をしてやればよい。</p>
+<p>しかしグローバル変数や静的変数の場合は起動時に初期化を行うわけではなく、コード生成時にバイトの配置まで確定させておく必要がある。
+またローカル変数の構造体のメンバに初期値が与えられてない場合には不定値が入っていてよいが、グローバル変数の初期値は0クリアされている必要がある。</p>
+<p>C99の構造体の初期化子で<code>&#123;.member=123&#125;</code>などと指定できたりする（<a href="https://en.cppreference.com/w/c/language/struct_initialization">Struct and union initialization - cppreference.com</a>）。
+対応しなくて済むなら済ませたいところだけど、共用体の場合には使えないと最初のメンバしか指定できなくなってしまうので、対応する必要がある。</p>
+<p>またグローバル変数の初期化でポインタも扱いたかったので、それも考慮する必要があった。</p>
+<h3 id="プリプロセッサ"><a href="#プリプロセッサ" class="headerlink" title="プリプロセッサ"></a>プリプロセッサ</h3><p>C言語では定数やマクロなどに加えて標準ライブラリヘッダのインクルードも使用するので、コンパイラだけじゃなくプリプロセッサも作る必要がある。</p>
+<p>「低レイヤ」にはプリプロセッサについては書かれてない。
+そこで<a href="https://github.com/rui314/9cc">9cc</a>のソースを見てみる。
+<a href="https://github.com/rui314/9cc/blob/master/token.c#L503">tokenize</a>内で<a href="https://github.com/rui314/9cc/blob/master/preprocess.c#L285">preprocess</a>を呼び出して処理しているので、どうやらトークナイズ後のトークン列に対して処理しているらしい。
+「プリプロセッサ」というぐらいだからコンパイラとは別の実行ファイルとして動作させるものだろうと思っていたんだけど、gccなどでも内蔵されているものらしい（要出典）。</p>
+<p>9ccからプリプロセッサの部分だけ抜き出して…、ということは難しそうなので、自前で実装することにした。
+コンパイルと分離されている方がフェーズを明確に分けることができてわかりやすい（と個人的に思う）ので、別の実行ファイルにする方針にした。</p>
+<p><code>#</code>で始まる行はディレクティブを処理し、始まらない行は通常の行としてマクロの展開を行う。
+パーサやレクサはコンパイラと共有しないと重複して実装する羽目になってしまうので避けたい。
+だけどそうするためには気をつけることがある。</p>
+<p>コンパイラではパースする時点で型を決めたり参照される変数が定義されているかの検査などを済ませてしまえばいっぺんに処理できて楽なんだけど、プリプロセッサでも使用できるようにするとなると都合が悪い。
+例えば<code>defined(FOO)</code>という式をパースするときに<code>defined</code>や<code>FOO</code>が定義済みかとか、型はなにかとかを検査せずに構文木だけを取得したい。</p>
+<p>なので構文木の構築（パース）と意味解析を分けてやる。
+いっぺんに処理してしまう方法に比べると作った構文木をたどる処理が必要になるのでちょっと面倒になるけど、式のパースがプリプロセッサと共有できるようになる。</p>
+<p>プリプロセッサ自体はてきとーに、インクルードやマクロの定義と展開、条件付きコンパイルなどの必要な要素だけを実装する。
+<a href="https://www.slideshare.net/kinukox/cc-55863339/17">C++でCプリプロセッサを作ったり速くしたりしたお話</a>によると「式の展開は謎が多い」とのことで、実装の参考として
+<a href="https://www.spinellis.gr/blog/20060626/">blog dds: 2006.06.26 - Dave Prosser’s C Preprocessing Algorithm</a>が紹介されていたが、あまり参照せずにちゃんと実装しなかった。</p>
+<p><code>#</code>で始まらない行も単純に出力すればよいのではなく、マクロ定義されていたら展開する必要がある。</p>
+<h4 id="関数で可変長引数を扱えるようにする"><a href="#関数で可変長引数を扱えるようにする" class="headerlink" title="関数で可変長引数を扱えるようにする"></a>関数で可変長引数を扱えるようにする</h4><p><code>printf</code>のように可変長の引数を扱うには<code>&lt;stdarg.h&gt;</code>の<code>va_list</code>を利用する。
+自作のCコンパイラはlibcを組み込まないので、この辺のライブラリ関数も自作してやる必要がある。</p>
+<p>関数呼び出しの引数はABIに従ってレジスタで渡されるが、「低レイヤ」では関数の頭でスタックフレーム上に格納して、変数アクセスはすべてスタックフレーム上のメモリアクセス経由で行う。
+なので可変長引数を扱う<code>va_list</code>はポインタで、<code>va_start</code>に渡される変数のアドレスで初期化して、<code>va_arg</code>ではその型に応じて取り出せば実現できる。
+これらは単純なマクロで実装できる。</p>
+<p>注意点としては、可変長引数の場合<code>int</code>より小さい整数型も<code>int</code>に格上げされるので、スタックフレーム上の配置を通常とは異なるようにする必要がある。</p>
+<h4 id="インラインアセンブラもどき"><a href="#インラインアセンブラもどき" class="headerlink" title="インラインアセンブラもどき"></a>インラインアセンブラもどき</h4><p>自作Cコンパイラが直接ELFバイナリを出力してしまい分割コンパイルやリンクに未対応なのですべて完結する必要がある。
+なのでエントリポイントやシステムコールもC言語上で書く必要がある。</p>
+<p>Linux上でファイルを実行した際のエントリポイントが呼び出された段階ではABIに沿ってなくて、起動パラメータがスタック上で渡されるので通常のC言語上では書けない。
+システムコールも<code>syscall</code>命令呼び出しが必要なので同様。</p>
+<p>そこでインラインアセンブラもどきを扱えるようにした。
+gccみたいにアセンブリで書けるのでなく、単にバイナリを直接配置できるようにするという方法で埋め込めるようにした：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> _start(<span class="keyword">void</span>) &#123;</span><br><span class="line">  __asm(<span class="number">0x48</span>, <span class="number">0x8b</span>, <span class="number">0x3c</span>, <span class="number">0x24</span>);     <span class="comment">// mov (%rsp), %rdi  : argcを第１引数に</span></span><br><span class="line">  __asm(<span class="number">0x48</span>, <span class="number">0x8d</span>, <span class="number">0x74</span>, <span class="number">0x24</span>, <span class="number">8</span>);  <span class="comment">// lea 8(%rsp), %rsi : argvを第２引数に</span></span><br><span class="line">  __asm(<span class="number">0xe8</span>, __rel32(<span class="string">&quot;main&quot;</span>));      <span class="comment">// call main         : main関数呼び出し</span></span><br><span class="line">  __asm(<span class="number">0x89</span>, <span class="number">0xc7</span>);                 <span class="comment">// mov %eax, %edi    : 戻り値を第１引数に</span></span><br><span class="line">  __asm(<span class="number">0xe9</span>, __rel32(<span class="string">&quot;exit&quot;</span>));      <span class="comment">// jmp exit          : exit関数呼び出し</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exit</span><span class="params">(<span class="keyword">int</span> code)</span> </span>&#123;</span><br><span class="line">  __asm(<span class="number">0xb8</span>, <span class="number">0x3c</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>);  <span class="comment">// mov $__NR_exit, %eax</span></span><br><span class="line">  __asm(<span class="number">0x0f</span>, <span class="number">0x05</span>);                    <span class="comment">// syscall : exit システムコール</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>__asm</code>は実際の関数ではなくて、コード生成時に引数をバイナリとして埋め込む。</p>
+<h3 id="セルフホスティングへの道"><a href="#セルフホスティングへの道" class="headerlink" title="セルフホスティングへの道"></a>セルフホスティングへの道</h3><p>ある程度の文法を処理できるようになれば、ユニットテストや簡単なサンプルプログラムは動くようになる。
+しかしもう少し大きな、実践的なプログラムで確認したくなってくる。
+そこでわかりやすい目標がセルフホスティングだ。
+自分自身のソースをコンパイルして動かすことができれば、それを使ってさらに拡張していけるというのが面白い。</p>
+<h4 id="不確定性バグ"><a href="#不確定性バグ" class="headerlink" title="不確定性バグ"></a>不確定性バグ</h4><p>でセルフホスティングできるようにしようとコンパイルしてみるが、しかしなんかしらバグがあって動かない。
+第二世代でのコンパイル時に落ちる場合もあるし、第二世代でコンパイルして出力した実行ファイルを起動すると落ちる場合もある。</p>
+<p>第一世代はgccでコンパイルしているのでデバッグ情報もあってgdbで追うこともできる。
+しかし第二世代にはないので、gdbで追うには辛い。
+<code>printf</code>でデバッグ出力をはさむと落ちなくなったりするので、原因の特定が難しい。</p>
+<h4 id="スタックポインタの16バイトアライン"><a href="#スタックポインタの16バイトアライン" class="headerlink" title="スタックポインタの16バイトアライン"></a>スタックポインタの16バイトアライン</h4><p>原因が全然わからないので、x86-64の場合関数呼び出し時にスタックポインタ16バイト境界に合わせる必要がある、と読んだので（<a href="http://uchan.hateblo.jp/entry/2018/02/16/232029">x86-64 モードのプログラミングではスタックのアライメントに気を付けよう - uchan note</a>）やってみた。
+実行時にレジスタの値を調整して合わせるのかと思ったが、<a href="https://github.com/rui314/8cc/">8cc</a>では<code>push</code>や<code>pop</code>などのスタック操作をカウントしておいて<a href="https://github.com/rui314/8cc/blob/master/gen.c#L1012">コンパイル時に決定していた</a>ので、
+うまい方法だと思いそれに倣ってみた。</p>
+<p>結果としては効果はなかった。
+標準ライブラリで浮動小数点数やSIMD命令を使用する場合にアライメントが必要な場合があるらしい（要出典）が、自作コンパイラの場合どれも使用していないのでアライメントが必要にはなっていなかった。</p>
+<h4 id="アセンブリを出力できるようにする"><a href="#アセンブリを出力できるようにする" class="headerlink" title="アセンブリを出力できるようにする"></a>アセンブリを出力できるようにする</h4><p>ELFを直接出力してしまっているのでSegmentation Faultが起きたときにどこで落ちたかわからず、個所を特定しづらい。
+そこで不本意ながらデバッグ用にアセンブリを出力できるようにして、gccでもビルドできるようにしてみた。</p>
+<p>結果としてそれによりバグが特定できた。
+原因はポインタのポストインクリメント時に使用する命令が間違っていて、8バイト領域へのインダイレクト加算をするところを2バイト領域で行ってしまっていた。
+こういう凡ミスするとほんと後から苦労するから気をつけないと…。</p>
+<h4 id="Makefileでの環境変数参照による第二世代のテスト"><a href="#Makefileでの環境変数参照による第二世代のテスト" class="headerlink" title="Makefileでの環境変数参照による第二世代のテスト"></a>Makefileでの環境変数参照による第二世代のテスト</h4><p>コンパイラを作成する段階でユニットテストを書いて動作をテストしていくが、第二世代のコンパイラに対してもテストさせたい。
+使用するコンパイラを切り替えられるようにするにはどうするか。</p>
+<p>Makefileからテストを起動するものとして、<code>make</code>の変数を指定する形で行う。
+使用するコンパイラをデフォルトとして第一世代のコンパイラへのパス：</p>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">XCC=./xcc</span><br><span class="line"></span><br><span class="line"><span class="section">test:</span></span><br><span class="line">	XCC=<span class="variable">$(XCC)</span> ./test.sh</span><br></pre></td></tr></table></figure>
+
+<p>を指定しておいて環境変数経由でシェルスクリプトに渡して、通常はそれでテストが走るようにしておく。</p>
+<p>第二世代のテストの場合には変数を設定して<code>test</code>を呼び出す：</p>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="section">test-gen2:</span></span><br><span class="line">	<span class="variable">$(MAKE)</span> XCC=./xcc-gen2 test</span><br></pre></td></tr></table></figure>
+
+<p>起動されるシェルスクリプト内で環境変数からコンパイラのパスを得る：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">XCC=<span class="variable">$&#123;XCC:-./xcc&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>:-</code>で環境変数が未定義だったらデフォルトの値を使用するようにする。
+（参考：<a href="https://qiita.com/tdrk/items/cc2995fd74e659ea948f#var-hoge">シェルスクリプトでの変数定義 - Qiita</a>）</p>
+<p>第三世代は、生成されたファイルが第二世代と差がないかどうかを <code>diff -b</code> でバイナリ比較する。</p>
+<h3 id="今後の課題"><a href="#今後の課題" class="headerlink" title="今後の課題"></a>今後の課題</h3><p>ひとまずある程度動作して、セルフホスティングできるCコンパイラを作ることができた。
+今後の課題としては、</p>
+<ul>
+<li>レジスタ活用<ul>
+<li>「低レイヤ」では計算途中の値をスタックに保持する方式でコンパイルするが、x86-64はレジスタ数もそれなりにあるので活用したい。
+<a href="https://github.com/rui314/9cc">9cc</a>では変数や中間の値をレジスタに割り当てるようになっているので、参考にしたい。</li>
+</ul>
+</li>
+<li>最適化<ul>
+<li>出力されるコードはお世辞にも効率的とはいえないので、多少の最適化はかけたい。</li>
+</ul>
+</li>
+<li>分割コンパイル対応</li>
+</ul>
+<h3 id="「低レイヤ」の方々"><a href="#「低レイヤ」の方々" class="headerlink" title="「低レイヤ」の方々"></a>「低レイヤ」の方々</h3><ul>
+<li><a href="https://anqou.net/poc/2018/08/21/post-1853/">セルフホストCコンパイラaqcc 開発記 | カオスの坩堝</a></li>
+<li><a href="http://0x19f.hatenablog.com/entry/2018/08/20/200432">セキュリティ・キャンプ 2018 (Cコンパイラ自作ゼミ) に参加してきました - 0x19f (Shinya Kato) の日報</a></li>
+<li><a href="https://hsjoihs.hatenablog.com/entry/2018/09/11/090451">セキュリティ・キャンプ2018参加記 - hsjoihs’s diary</a></li>
+<li><a href="https://knium.hatenadiary.com/entry/2018/09/14/203258">セキュキャン2018に参加した話 <del>集中コースYII Cコンパイラを自作してみよう！ゼミ</del> - a symmetry</a></li>
+<li><a href="https://uoo38.hatenablog.com/entry/2018/12/18/223206">今更セキュリティ・キャンプ全国大会2018参加記 - uoo38’s blog</a></li>
+<li><a href="https://qiita.com/DQNEO/items/2efaec18772a1ae3c198">Goコンパイラをゼロから作って147日でセルフホストを達成した - Qiita</a></li>
+</ul>
+<h3 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h3><ul>
+<li><a href="https://www.sigbus.info/compilerbook">低レイヤを知りたい人のためのCコンパイラ作成入門</a></li>
+<li><a href="https://github.com/rui314/8cc/">rui314/8cc: A Small C Compiler</a></li>
+<li><a href="https://github.com/rui314/9cc/">rui314/9cc: A Small C Compiler</a></li>
+<li><a href="https://qiita.com/ruiu/items/4d471216b71ab48d8b74">Cコンパイラをスクラッチから開発してみた（日記） - Qiita</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ELFを自分で生成する方法を調べたところ、
+hello worldなELFバイナリを出力するCのプログラム（の一番単純な奴） - memologue
+が非常に参考になった。
+ただ32ビット版なので64ビット版にしたい。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ELF64を動的に生成してHello World"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ELF64を動的に生成してHello World - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2019/01/28/hello-elf-world.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ELF64を動的に生成してHello World</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-01-28
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/os/">#os</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ELFを自分で生成する方法を調べたところ、
+<a href="http://d.hatena.ne.jp/yupo5656/20061112/p2">hello worldなELFバイナリを出力するCのプログラム（の一番単純な奴） - memologue</a>
+が非常に参考になった。
+ただ32ビット版なので64ビット版にしたい。</p>
+<span id="more"></span>
+
+<h3 id="ELF64ビット版への変更"><a href="#ELF64ビット版への変更" class="headerlink" title="ELF64ビット版への変更"></a>ELF64ビット版への変更</h3><p>ELF64ビット版にするには、</p>
+<ul>
+<li>構造体： <code>32</code> から <code>64</code> に（<code>Elf64_Ehdr</code>など）。</li>
+<li><code>e_machine</code>： <code>EM_X86_64</code></li>
+<li>システムコール： <code>int $0x80</code> を <code>syscall</code> に変更。</li>
+<li>システムコール番号： <code>write</code> は <code>1</code> に、 <code>exit</code> は <code>60</code> にする。</li>
+<li>システムコールに渡すレジスタ： <code>rdi</code>, <code>rsi</code>, <code>rdx</code> の順に。</li>
+<li>アセンブラ： <code>movl</code> を <code>mov</code> に。</li>
+</ul>
+<p>で一応動いた。</p>
+<h3 id="必要なプログラム部分だけを読み込ませたい"><a href="#必要なプログラム部分だけを読み込ませたい" class="headerlink" title="必要なプログラム部分だけを読み込ませたい"></a>必要なプログラム部分だけを読み込ませたい</h3><p>生成しているELFを見ると、ロードするプログラムはプログラムヘッダの <code>p_offset = 0x0</code> なのでファイルの先頭から、
+サイズは <code>p_filesz = sizeof(Elf32_Ehdr) + sizeof(Elf32_Phdr) + STRING_LEN + code_len</code> なので出力した内容全体を指すことになる。
+でもヘッダ部分は実際の実行には必要ないはずだからメモリに読み込む必要ないんじゃない？
+実際のプログラムの部分だけを指定したいよね、と思って試してみた：</p>
+<ul>
+<li>ファイル中のプログラムの開始位置を示す <code>p_offset</code> を <code>sizeof(Elf32_Ehdr) + sizeof(Elf32_Phdr)</code> に、</li>
+<li>サイズを示す <code>p_filesz</code> と <code>p_memsz</code> を <code>STRING_LEN + code_len</code> に、</li>
+<li>エントリポイント <code>e_entry</code> を <code>LOAD_ADDRESS + STRING_LEN</code> に、</li>
+</ul>
+<p>こうすればELFのヘッダを除いたプログラムの部分だけを <code>LOAD_ADDRESS</code> に読み込み動いてくれるはず…と思ったが segmentation fault が起きてしまう。
+あれこれ試してなんとなく理解したのは、ファイル中の位置と読み込み先のメモリのアドレスのページ内の位置が合っている必要がある、ということらしい。</p>
+<p><a href="https://docs.oracle.com/cd/E19683-01/816-1386/chapter6-83432/index.html">Program Header (Linker and Libraries Guide)</a></p>
+<blockquote>
+<p>p_align:
+Loadable process segments must have congruent values for p_vaddr and p_offset, modulo the page size. This member gives the value to which the segments are aligned in memory and in the file. Values 0 and 1 mean no alignment is required. Otherwise, p_align should be a positive, integral power of 2, and p_vaddr should equal p_offset, modulo p_align. See “Program Loading (Processor-Specific)”.</p>
+<p>ロード可能なプロセスセグメントは、ページサイズを法として、p_vaddrとp_offsetに一致する値を持たなければなりません。 このメンバは、セグメントがメモリ内およびファイル内で整列している値を示します。 値0および1は、配置が不要であることを意味します。 それ以外の場合、p_alignは2の正の整数乗でなければならず、p_vaddrはp_alignを法としたp_offsetと等しくなければなりません。 「プログラムのロード（プロセッサ固有）」を参照してください。</p>
+</blockquote>
+<p>ということで上の変更に加えて、 <code>LOAD_ADDRESS</code> の <code>4096</code> の余りを <code>64 + 56</code> （<code>= sizeof(Elf32_Ehdr) + sizeof(Elf32_Phdr)</code>）に合わせる必要がある
+（もしくはELFヘッダとプログラムヘッダの後に4096バイトまでパディングを入れる）。</p>
+<p>ちなみに <code>p_align</code> を <code>0x1000</code> から <code>0x10</code> とかに変えても特に効果はなさそうだった。</p>
+<p>なんと不便な、またロード先のアドレスを切りよくしようとするとファイルサイズが、ファイル上で詰めようとすると実行時のメモリが無駄になってしまうのがなんとも…。</p>
+<h3 id="関連記事"><a href="#関連記事" class="headerlink" title="関連記事"></a>関連記事</h3><ul>
+<li><a href="/blog/2019/03/06/elf-quine.html" title="ELF64でQuine">ELF64でQuine</a></li>
+<li><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する">ELFのオブジェクトファイル形式を生成する</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/12/27/baremetal-ctxswtch-rpz.html" title="Raspberry Pi Zeroでベアメタルコンテキストスイッチ" rel="bookmark">Raspberry Pi Zeroでベアメタルコンテキストスイッチ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/11/build-linux.html" title="Linuxカーネルをビルドしてみる" rel="bookmark">Linuxカーネルをビルドしてみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/18/data-segment.html" title="はりぼてOSアプリのメモリレイアウト" rel="bookmark">はりぼてOSアプリのメモリレイアウト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/23/fin-hariboteos.html" title="「OS自作入門」とりあえず完了" rel="bookmark">「OS自作入門」とりあえず完了</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

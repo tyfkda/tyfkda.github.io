@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Neural networks and deep learningの
+How the backpropagation algorithm works
+（日本語訳：逆伝播の仕組み）
+を読んで、多層パーセプトロン（ニューラルネットワーク）の誤差逆伝播法について
+ようやく理解したので、導出方法をメモ。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="誤差逆伝播法の導出"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>誤差逆伝播法の導出 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/11/27/back-propagation.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>誤差逆伝播法の導出</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-11-27
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/machine-learning/">#machine learning</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://neuralnetworksanddeeplearning.com/">Neural networks and deep learning</a>の
+<a href="http://neuralnetworksanddeeplearning.com/chap2.html">How the backpropagation algorithm works</a>
+（日本語訳：<a href="http://nnadl-ja.github.io/nnadl_site_ja/chap2.html">逆伝播の仕組み</a>）
+を読んで、多層パーセプトロン（ニューラルネットワーク）の誤差逆伝播法について
+ようやく理解したので、導出方法をメモ。</p>
+<span id="more"></span>
+
+<p>フィードフォワードに関しては<a href="/blog/2015/11/26/feed-forward.html" title="多層パーセプトロンの出力値の計算（フィードフォワード）">多層パーセプトロンの出力値の計算（フィードフォワード）</a>
+を参照のこと。</p>
+<h3 id="コスト関数"><a href="#コスト関数" class="headerlink" title="コスト関数"></a>コスト関数</h3><p>ニューラルネットワークのウェイトやバイアスをどのように調整したらいいかを
+判断するために、学習パターンの入力値に期待される出力値とのずれを測る
+<strong>コスト関数</strong> <script type="math/tex">C(\mathbf{x})</script>を導入する。</p>
+<p>ここではひとまず入力<script type="math/tex">\mathbf{x}</script>に期待される出力<script type="math/tex">\mathbf{y}</script>と
+実際の値<script type="math/tex">\mathbf{a}^L</script>の差の二乗誤差とする：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+C(\mathbf{x}) &= \frac{1}{2} \| \mathbf{y}(\mathbf{x}) - \mathbf{a}^L(\mathbf{x}) \|^2 \\
+              &= \frac{1}{2} \sum_i (y_i - a^L_i)^2 \\
+              &= \frac{1}{2} \left( (y_1 - a^L_1)^2 + (y_2 - a^L_2)^2 + \cdots \right)
+\end{align}
+%]]></script>
+
+<p>実際には学習パターン<script type="math/tex">\mathbf{x}</script>-教師データ<script type="math/tex">\mathbf{y}</script>のペアは複数与えられて
+全体の合計コストとする：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+C = \frac{1}{n} \sum_{\mathbf{x}} C(\mathbf{x})
+%]]></script>
+
+
+<p>コストを最小化するために、ウェイトやバイアスをいじった時にどのように変化するかを知りたい。
+それがわかれば、コストを減らす方向に少しずついじることによって
+達成できる（うまくいけば）。</p>
+<p>関数の傾きを得るには偏微分を使い、チェインルールで求める。</p>
+<h3 id="誤差逆伝播法（バックプロパゲーション）"><a href="#誤差逆伝播法（バックプロパゲーション）" class="headerlink" title="誤差逆伝播法（バックプロパゲーション）"></a>誤差逆伝播法（バックプロパゲーション）</h3><p>ウェイトやバイアスを変化させた時にコストがどのように変化するかを調べるには、
+コスト関数をウェイトやバイアスで偏微分して求める：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\frac{\partial C}{\partial w^l_{jk}}, \\
+\frac{\partial C}{\partial b^l_j}
+%]]></script>
+
+<p>しかしこれらの偏微分を直接求めるのは難しいので、中間の変数として
+ニューロンへの入力<script type="math/tex">z^l_j</script>を偏微分のチェインルールに用いる：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\frac{\partial C}{\partial w^l_{jk}} &= \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial w^l_{jk}}, \\
+\frac{\partial C}{\partial b^l_j} &= \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial b^l_j}
+\end{align}
+%]]></script>
+
+
+<p>実際の計算は次のようなステップを踏んで行う：</p>
+<ol>
+<li>出力層での教師データとの差から、変化量<script type="math/tex">\mathbf{\delta}^L</script>を求める</li>
+<li>後段の層の誤差から、前段の層の変化量<script type="math/tex">\mathbf{\delta}^l</script>を計算する</li>
+<li>各層の変化量から、ウェイトとバイアスでの変化量を求める</li>
+</ol>
+<p>出力層から入力層に向かって誤差を伝播させて計算していくこの一連のステップを
+誤差逆伝播法（バックプロパゲーション）という。</p>
+<h4 id="1-出力層での誤差"><a href="#1-出力層での誤差" class="headerlink" title="1. 出力層での誤差"></a>1. 出力層での誤差</h4><p>コスト関数<script type="math/tex">C</script>に対する、出力層のニューロン<script type="math/tex">j</script>への入力<script type="math/tex">z^L_j</script>での偏微分を<script type="math/tex">\delta^L_j</script>と置く。
+偏微分の中間変数として<script type="math/tex">a^L_k</script>を導入して計算する：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\delta^L_j &= \frac{\partial C}{\partial z^L_j} \tag{36} \\
+           &= \sum_k \frac{\partial C}{\partial a^L_k} \frac{\partial a^L_k}{\partial z^L_j} \tag{37} \\
+\end{align}
+%]]></script>
+
+<script type="math/tex">k \ne j</script>の場合同じ層の別のニューロンだから、<script type="math/tex">a^L_k</script>は<script type="math/tex">z^L_j</script>と無関係なので
+<script type="math/tex">\frac{\partial a^L_k}{\partial z^L_j} = 0</script>。
+
+<p>よって<script type="math/tex">\sum_k</script>は<script type="math/tex">j</script>の時だけとなる。
+定義より<script type="math/tex">a^L_j = \sigma(z^L_j)</script>なので、</p>
+<script type="math/tex">\frac{\partial a^L_k}{\partial z^L_j} = \sigma^\prime(z^L_j)</script>となり、
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\delta^L_j &= \frac{\partial C}{\partial a^L_j} \frac{\partial a^L_j}{\partial z^L_j} \tag{38} \\
+           &= \frac{\partial C}{\partial a^L_j} \sigma^\prime(z^L_j)
+\end{align}
+%]]></script>
+
+<script type="math/tex">C = \frac{1}{2} \left( (y_1 - a^L_1)^2 + (y_2 - a^L_2)^2 + \cdots \right)</script>から、
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\frac{\partial C}{\partial a^L_j} = (a^L_j - y_j)
+%]]></script>
+
+<p>となるので、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\therefore \delta^L_j = (a^L_j - y_j) \sigma^\prime(z^L_j)
+%]]></script>
+
+<p>ベクトル表記で書くと、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\mathbf{\delta}^L &= \nabla_a C \odot \sigma^\prime(\mathbf{z}^L) \\
+                  &= (\mathbf{a}^L - \mathbf{y}) \odot \sigma^\prime(\mathbf{z}^L)
+\end{align}
+%]]></script>
+
+<p>記号<script type="math/tex">\odot</script>はアマダール積といい、ベクトルの各要素ごとの乗算を表す演算子。</p>
+<h4 id="2-中間層での誤差"><a href="#2-中間層での誤差" class="headerlink" title="2. 中間層での誤差"></a>2. 中間層での誤差</h4><p>出力層以外の、中間層の誤差は後の層の誤差から求めることができる：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\delta^L_j &= \frac{\partial C}{\partial z^l_j} \tag{40} \\
+           &= \sum_k \frac{\partial C}{\partial z^{l+1}_k} \frac{\partial z^{l+1}_k}{\partial z^l_j} \tag{41} \\
+           &= \sum_k \frac{\partial z^{l+1}_k}{\partial z^l_j} \delta^{l+1}_k \tag{42} \\
+\end{align}
+%]]></script>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+z^{l+1}_k &= \sum_j w^{l+1}_{kj} a^l_j + b^{l+1}_k \\
+          &= \sum_j w^{l+1}_{kj} \sigma(z^l_j) + b^{l+1}_k \tag{43} \\
+\therefore \frac{\partial z^{l+1}_k}{\partial z^l_j} &= w^{l+1}_{kj} \sigma^\prime(z^l_j) \tag{44} \\
+\end{align}
+%]]></script>
+
+<p>(44)を(42)に代入して：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\delta^L_j = \sum_k w^{l+1}_{kj} \delta^{l+1}_k \sigma^\prime(z^l_j) \\
+%]]></script>
+
+<p>ベクトル表記で書くと、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\mathbf{\delta}^l = \left( \left( \mathbf{W}^{l+1} \right)^T \mathbf{\delta^{l+1}} \right) \odot \sigma^\prime(z^l)
+%]]></script>
+
+
+<h4 id="3-バイアスでの偏微分"><a href="#3-バイアスでの偏微分" class="headerlink" title="3. バイアスでの偏微分"></a>3. バイアスでの偏微分</h4><script type="math/tex; mode=display">% <![CDATA[
+
+\frac{\partial C}{\partial b^l_j} = \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial b^l_j}
+%]]></script>
+
+<p>ここで <script type="math/tex">\frac{\partial C}{\partial z^l_j} = \delta^l_j</script> 、 <script type="math/tex">\frac{\partial z^l_j}{\partial b^l_j} = 1</script> なので、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\frac{\partial C}{\partial b^l_j} = \delta^l_j
+%]]></script>
+
+<p>となる。</p>
+<p>ベクトル表記だと、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\frac{\partial C}{\partial \mathbf{b}^l} = \mathbf{\delta}^l
+%]]></script>
+
+
+<h4 id="4-ウェイトでの偏微分"><a href="#4-ウェイトでの偏微分" class="headerlink" title="4. ウェイトでの偏微分"></a>4. ウェイトでの偏微分</h4><script type="math/tex; mode=display">% <![CDATA[
+
+\frac{\partial C}{\partial w^l_{jk}} = \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial w^l_{jk}}
+%]]></script>
+
+<p>ここで</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\frac{\partial z^l_j}{\partial w^l_{jk}} &= \frac{\partial}{\partial w^l_{jk}} \left( \sum_t w^l_{jt} a^{l-1}_t + b^l_j \right) \\
+                                         &= a^{l-1}_k
+\end{align}
+%]]></script>
+
+<p>なので、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\frac{\partial C}{\partial w^l_{jk}} = a^{l-1}_k \delta^l_j
+%]]></script>
+
+<p>となる。</p>
+<p>ベクトル（マトリクス）形式だと、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\frac{\partial C}{\partial \mathbf{w}^l} = \mathbf{\delta}^l \cdot (\mathbf{a}^{l-1})^T
+%]]></script>
+
+
+<h3 id="学習の適用"><a href="#学習の適用" class="headerlink" title="学習の適用"></a>学習の適用</h3><p>すべての層のウェイトとバイアスに対するコスト関数の偏微分が求まったので、
+ある学習率<script type="math/tex">\eta</script>を設定して、コストを減らす方向に変更してやる（確率的最急降下法）：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+w^l_{jk} &\leftarrow w^l_{jk} - \eta \frac{\partial C}{\partial w^l_{jk}}, \\
+b^l_j &\leftarrow b^l_j - \eta \frac{\partial C}{\partial b^l_j}
+\end{align}
+%]]></script>
+
+<p>ベクトル表記だと：</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\mathbf{w}^l &\leftarrow \mathbf{w}^l - \eta \frac{\partial C}{\partial \mathbf{w}^l}, \\
+\mathbf{b}^l &\leftarrow \mathbf{b}^l - \eta \frac{\partial C}{\partial \mathbf{b}^l}
+\end{align}
+%]]></script>
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/05/dl-brief-historical-review.html" title="「ディープラーニングの最も重要なアイディア」" rel="bookmark">「ディープラーニングの最も重要なアイディア」</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

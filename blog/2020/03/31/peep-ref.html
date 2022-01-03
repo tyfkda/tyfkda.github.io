@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Rustの習作としてゲームを作ろうとしていて、その際に状態をどうやって管理したらいいかにつまづいている。
+なんかうまい方法や決まったイディオム・知見などがあるんじゃないかと思うんだけどうまく探せてないのか、把握してないのでどうしたらいいのかを考えていた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Rustで状態管理や相互参照をどうするか"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Rustで状態管理や相互参照をどうするか - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/03/31/peep-ref.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Rustで状態管理や相互参照をどうするか</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-03-31
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/rust/">#rust</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Rustの習作としてゲームを作ろうとしていて、その際に状態をどうやって管理したらいいかにつまづいている。
+なんかうまい方法や決まったイディオム・知見などがあるんじゃないかと思うんだけどうまく探せてないのか、把握してないのでどうしたらいいのかを考えていた。</p>
+<span id="more"></span>
+
+<p>例えば敵がプレイヤーの位置に向かってくる、とかいった場合にプレイヤーの座標を取得する必要があるんだけどどうするか。
+問題としては</p>
+<ul>
+<li>敵からプレイヤー情報をどうやって参照するか</li>
+</ul>
+<p>に加えて、Rustでは</p>
+<ul>
+<li>敵の動作のためミュータブル参照を取っている状態で、プレイヤー情報の参照が取れるのか</li>
+</ul>
+<p>ということがあると思う。</p>
+<h3 id="敵からプレイヤー情報をどうやって参照するか"><a href="#敵からプレイヤー情報をどうやって参照するか" class="headerlink" title="敵からプレイヤー情報をどうやって参照するか"></a>敵からプレイヤー情報をどうやって参照するか</h3><p>例えばC++やC#ではゲーム全体を管理する <code>GameManager</code> みたいなクラスをシングルトンにして、そいつに問い合わせる形にでもするかと思う。
+あまり行儀がよいとはいえないが、まあ望みは実現できる。</p>
+<p>Rustだとシングルトンをグローバル変数で実現することになるのではないかと思うけど、そうなるとシングルトンは扱いにくいんじゃないかと思う。</p>
+<p>ということで、ひとまずまっとうに更新関数に引数として渡すことにしてみる。
+<code>GameManager</code> がゲームの情報として <code>Player</code> と <code>Enemy</code> を保持しているとして：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">GameManager</span></span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> player: Player,</span><br><span class="line">    <span class="keyword">pub</span> enemy: Enemy,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Player</span></span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> pos: Pos,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Enemy</span></span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> pos: Pos,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Clone, Copy)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Pos</span></span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> x: <span class="built_in">i32</span>,</span><br><span class="line">    <span class="keyword">pub</span> y: <span class="built_in">i32</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>GameManager</code> の <code>update</code> で <code>Enemy</code> の <code>update</code> に <code>Player</code> の参照を渡す：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">impl</span> GameManager &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.enemy.update(&amp;<span class="keyword">self</span>.player);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Enemy &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, player: &amp;Player) &#123;</span><br><span class="line">        <span class="keyword">let</span> player_pos = &amp;player.pos;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="RefCellを使用する"><a href="#RefCellを使用する" class="headerlink" title="RefCellを使用する"></a>RefCellを使用する</h3><p>一応上の方法で動かせるけど、敵の更新時にプレイヤーの位置だけじゃなく、
+ステージ数によってとか残り時間によってとかいろいろ参照したい状態が追加・変更されたりした場合に
+引数を変更するとなると呼び出し元も変更する必要があって対応が辛い。
+じゃあってんで、ゲーム情報全体 <code>&amp;GameManager</code> を受け渡してみる：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">impl</span> GameManager &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.enemy.update(<span class="keyword">self</span>);  <span class="comment">// &lt;= error[E0502]: cannot borrow `self.enemy` as mutable because it is also borrowed as immutable</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Enemy &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, game_manager: &amp;GameManager) &#123;</span><br><span class="line">        <span class="keyword">let</span> player_pos = &amp;game_manager.player.pos;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>しかしこれは <code>self.enemy</code> のミュータブル参照と <code>self</code> のイミュータブル参照が同時には取れないのでコンパイルエラーが発生する。
+どう回避したらいいかというと、 <a href="https://doc.rust-jp.rs/book/second-edition/ch15-05-interior-mutability.html"><code>RefCell</code></a> を使用する。
+<code>RefCell</code> はコンパイル時じゃなくて実行時に借用を判定するようにして、制限を緩めることができる：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">GameManager</span></span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> player: RefCell&lt;Player&gt;,  <span class="comment">// &lt;=</span></span><br><span class="line">    <span class="keyword">pub</span> enemy: RefCell&lt;Enemy&gt;,    <span class="comment">// &lt;=</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> GameManager &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.enemy.borrow_mut().update(<span class="keyword">self</span>);  <span class="comment">// &lt;= borrow_mut() で実行時に借用する</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Enemy &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, game_manager: &amp;GameManager) &#123;</span><br><span class="line">        <span class="keyword">let</span> player_pos = game_manager.player.borrow().pos;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>これによって <code>GameManager</code> が管理する <code>Enemy</code> のミュータブル参照に自分を渡せるようになる。</p>
+<h3 id="疎結合にする（トレイト・ジェネリクスを使用する）"><a href="#疎結合にする（トレイト・ジェネリクスを使用する）" class="headerlink" title="疎結合にする（トレイト・ジェネリクスを使用する）"></a>疎結合にする（トレイト・ジェネリクスを使用する）</h3><p><code>Enemy</code> に <code>GameManager</code> を渡してしまうのはガチガチの密結合でよくない。
+これを回避するにはトレイトを使用する：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">trait</span> <span class="title">GameInfoHandler</span></span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">player_pos</span></span>(&amp;<span class="keyword">self</span>) -&gt; Pos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>GameManager</code> で上記のトレイトを実装し：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">impl</span> GameInfoHandler <span class="keyword">for</span> GameManager &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">player_pos</span></span>(&amp;<span class="keyword">self</span>) -&gt; Pos &#123;</span><br><span class="line">        <span class="keyword">self</span>.player.borrow().pos</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Enemy</code> 側ではジェネリクスで受け取る：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">impl</span> Enemy &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>&lt;T: GameInfoHandler&gt;(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, handler: &amp;T) &#123;</span><br><span class="line">        <span class="keyword">let</span> player_pos = handler.player_pos();</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>こうすることで <code>Enemy</code> は <code>GameManager</code> に依存しなくなり、柔軟さが増す。</p>
+<h3 id="自分で責任を取る"><a href="#自分で責任を取る" class="headerlink" title="自分で責任を取る"></a>自分で責任を取る</h3><p><code>RefCell</code> を使うのがまっとうな方法だとは思うんだけど、実行時に借用チェックが行われることになる。
+大したコストではないことはわかってるんだがどうしても気になるし、毎度 <code>borrow_mut()</code> とかするのもメンドイし、あらゆるものを <code>RefCell</code> にしなきゃならなくなってしまう。
+シングルスレッドだし同時にいじらないことは自分で責任持つよ！
+ということで <code>unsafe</code> に手を出してみる。</p>
+<h4 id="生ポインタを直接使用する"><a href="#生ポインタを直接使用する" class="headerlink" title="生ポインタを直接使用する"></a>生ポインタを直接使用する</h4><p>生ポインタを取得し、参照に変換することで借用チェッカから逃れることができる。
+<code>Enemy</code> のミュータブル参照を生ポインタ経由で取得：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">GameManager</span></span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> player: Player,</span><br><span class="line">    <span class="keyword">pub</span> enemy: Enemy,    <span class="comment">// &lt;= RefCell をやめて生で持っていた元の状態に戻す</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> GameManager &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> raw_ptr = &amp;<span class="keyword">mut</span> <span class="keyword">self</span>.enemy <span class="keyword">as</span> *<span class="keyword">mut</span> Enemy;  <span class="comment">// &lt;= ここで &amp;mut self.enemy を借用しているけど</span></span><br><span class="line">        <span class="keyword">let</span> enemy: &amp;<span class="keyword">mut</span> Enemy = <span class="keyword">unsafe</span> &#123; &amp;<span class="keyword">mut</span> *raw_ptr &#125;;</span><br><span class="line">        enemy.update(<span class="keyword">self</span>);  <span class="comment">// &lt;= &amp;self が使える</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>すると <code>self.enemy</code> のミュータブル参照は <code>raw_ptr</code> の取得時だけとなり、 <code>self</code> のイミュータブル参照はコンパイルエラーにならずに動かすことができる。</p>
+<p><code>Enemy</code> のミュータブル参照ではなく逆に <code>GameManager</code> のイミュータブル参照を生ポインタ経由させても動く：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">impl</span> GameManager &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> raw_ptr = <span class="keyword">self</span> <span class="keyword">as</span> *<span class="keyword">const</span> <span class="keyword">Self</span>;</span><br><span class="line">        <span class="keyword">let</span> handler: &amp;<span class="keyword">Self</span> = <span class="keyword">unsafe</span> &#123; &amp;*raw_ptr &#125;;</span><br><span class="line">        <span class="keyword">self</span>.enemy.update(handler);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ミュータブルは正規に借用してイミュータブルを自己責任で取得するこちらのほうが心理的には安心かもしれない。</p>
+<p>生ポインタのキャストを毎度書くのも手間なので、 <code>peep</code> などという便利関数を作ってやるといいかもしれない：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">unsafe</span> <span class="function"><span class="keyword">fn</span> <span class="title">peep</span></span>&lt;<span class="symbol">&#x27;a</span>, T&gt;(t: &amp;T) -&gt; &amp;<span class="symbol">&#x27;a</span> <span class="keyword">mut</span> T &#123;</span><br><span class="line">    &amp;<span class="keyword">mut</span> *(t <span class="keyword">as</span> *<span class="keyword">const</span> T <span class="keyword">as</span> *<span class="keyword">mut</span> T)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> GameManager &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> handler: &amp;<span class="keyword">Self</span> = <span class="keyword">unsafe</span> &#123; peep(<span class="keyword">self</span>) &#125;;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="UnsafeCell"><a href="#UnsafeCell" class="headerlink" title="UnsafeCell"></a>UnsafeCell</h4><p>生ポインタを直接触ってもいいんだけど、 <a href="https://doc.rust-lang.org/std/cell/struct.UnsafeCell.html"><code>UnsafeCell</code></a> というものがある。
+<a href="https://doc.rust-lang.org/std/cell/struct.UnsafeCell.html#method.get"><code>get</code></a> メソッドでミュータブルな生ポインタが取得できる：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::cell::UnsafeCell;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">GameManager</span></span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> player: Player,</span><br><span class="line">    <span class="keyword">pub</span> enemy: UnsafeCell&lt;Enemy&gt;,  <span class="comment">// &lt;=</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> GameManager &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">update</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> enemy: &amp;<span class="keyword">mut</span> Enemy = <span class="keyword">unsafe</span> &#123; &amp;<span class="keyword">mut</span> *<span class="keyword">self</span>.enemy.get() &#125;;  <span class="comment">// &lt;=</span></span><br><span class="line">        enemy.update(<span class="keyword">self</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>やってることは<a href="https://doc.rust-lang.org/src/core/cell.rs.html#1543-1548">生ポインタを自分で触るのと変わりはない</a>。</p>
+<p>欲をいえば開発時は <code>RefCell</code> を使用して、リリース時は <code>UnsafeCell</code> に切り替えるようなことができればいいんだけど、実装方法が分からなかった…。</p>
+<h3 id="締め"><a href="#締め" class="headerlink" title="締め"></a>締め</h3><p><code>unsafe</code> といっても「安全を保証しない」というだけで、Rustではマルチスレッドで動作させる場合も安全であることを保証できない、というだけで一概に危険というわけではないのではないか。
+などと自分を納得させて、とりあえず <code>unsafe</code> を使ってでも望みのプログラムを書けるようになるのが先決だな、と思った。</p>
+<ul>
+<li>実際のところ、ミュータブル１つとイミュータブル複数の借用を使用する場合にシングルスレッドで問題が起こることってあるんだろうか…？</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://doc.rust-jp.rs/the-rust-programming-language-ja/1.6/book/choosing-your-guarantees.html#refcellt">保証を選ぶ</a> <code>RefCell</code> などの説明</li>
+<li><a href="https://doc.rust-jp.rs/book/second-edition/ch15-05-interior-mutability.html">RefCell<T>と内部可変性パターン - The Rust Programming Language</a></li>
+<li><a href="https://doc.rust-lang.org/std/cell/struct.UnsafeCell.html#method.get">std::cell::UnsafeCell - Rust</a></li>
+<li><a href="https://doc.rust-jp.rs/book/second-edition/ch19-01-unsafe-rust.html">Unsafe Rust - The Rust Programming Language</a><ul>
+<li><blockquote>
+<p>また、unsafeは、そのブロックが必ずしも危険だったり、絶対メモリ安全上の問題を抱えていることを意味するものではありません: その意図は、プログラマとしてunsafeブロック内のコードがメモリに合法的にアクセスすることを保証することです。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><a href="https://yohhoy.hatenadiary.jp/entry/20170317/p1">危険な型変換:&amp;T→&amp;mut T - yohhoyの日記</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（移譲）」について" rel="bookmark">「継承より合成（移譲）」について</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/03/ecs-in-rust.html" title="【Rust】ECSを使ってみる(Specs)" rel="bookmark">【Rust】ECSを使ってみる(Specs)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/21/legion-ecs.html" title="【Rust】Legion ECSを触ってみた" rel="bookmark">【Rust】Legion ECSを触ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/02/rewindable-slice.html" title="【Rust】生ポインタとその演算（戻せるスライスの実装）" rel="bookmark">【Rust】生ポインタとその演算（戻せるスライスの実装）</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

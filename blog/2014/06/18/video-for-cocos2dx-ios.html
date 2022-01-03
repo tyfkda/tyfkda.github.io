@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="iOSでCocos2dxを使ったアプリで動画を再生したい場合のことがcocos2d-x 勉強第6回「ムービーを再生してみる」 - 株式会社BEFOOLに書いてある（そのサイトが参照しているのがCocos2d-x Cross Platform Video Player – Part 1 iOS | Gethu Games – Blog）。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Cocos2dxで動画の上にスプライトを描画する（iOS）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Cocos2dxで動画の上にスプライトを描画する（iOS） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/06/18/video-for-cocos2dx-ios.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Cocos2dxで動画の上にスプライトを描画する（iOS）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2014-06-18
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cocos2dx/">#cocos2dx</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>iOSでCocos2dxを使ったアプリで動画を再生したい場合のことが<a href="http://befool.co.jp/blog/8823-scholar/cocos2d-x-study-006-movie/">cocos2d-x 勉強第6回「ムービーを再生してみる」 - 株式会社BEFOOL</a>に書いてある（そのサイトが参照しているのが<a href="http://www.gethugames.in/blog/2013/09/cocos2d-x-cross-platform-video-player-ios.html">Cocos2d-x Cross Platform Video Player – Part 1 iOS | Gethu Games – Blog</a>）。</p>
+<span id="more"></span>
+
+<p>やり方としては、cocos2dxのライブラリ内であるcocos2dx/platform/ios/CCEAGLView に手を加えて、<code>UIView</code>を継承した<code>CCEAGLView</code>に、簡単に動画を再生できるMediaPlayer.frameworkの<a href="https://developer.apple.com/library/ios/documentation/MediaPlayer/Reference/MPMoviePlayerController_Class/Reference/Reference.html">MPMoviePlayerController</a>を<a href="https://developer.apple.com/library/ios/documentation/uikit/reference/uiview_class/uiview/uiview.html#//apple_ref/occ/instm/UIView/addSubview:">addSubview</a>している。</p>
+<p>その通りで再生できるんだけど、これだと動画が一番上に表示されてしまって、その上にメニューとかをCocos2dxのスプライトで出そうとしても動画に隠されてしまう。それは困るということで、動画を一番下に持って行きたい。<code>addSubview</code>の代わりに、<a href="https://developer.apple.com/library/ios/documentation/uikit/reference/uiview_class/uiview/uiview.html#//apple_ref/occ/instm/UIView/insertSubview:atIndex:">insertSubview:atIndex:0</a> としてみたが、動画が変なふうに再生されてしまうようになった。詳しくは、アプリをランドスケープモード専用にしているのに、動画はポートレイトの画面レイアウトのまま再生しようとする。</p>
+<p>なんかiOSアプリの動作がよくわかってないので、どうしてそうなるのか、また解決方法もよくわからなかった。Orientationが変更された時に<code>UIWindow</code>の<code>RootViewController</code>へのコールバックが呼ばれて<code>UIView</code>の<code>CALayer</code>とかを辿るんじゃないかと勝手に想像してあれこれやってみたが、うまくいかない…。問題は<code>eaglView</code>の<code>bounds</code>がポートレイトの縦長比率になっているのが問題だと思うんだけど、どこで<code>orientation</code>をハンドリングしてるのかわからなかった。</p>
+<p>しかたがないので無理やりやってみた。まず<code>CCEAGLView</code>に動画の再生を突っ込むのはやめて、cocos2dxのプロジェクトを作成した時にiOSの機種固有ソースとして生成される<code>AppController</code>をいじる。まずヘッダにいろいろ追加する。動画の現在の再生位置とかを取得したいので、<code>MPMoviePlayerController</code>じゃなくAVFoundation.frameworkの<code>AVPlayer</code>に変更した：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">// AppController.h</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">// インポートを追加</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;AVFoundation/AVPlayer.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;AVFoundation/AVPlayerItem.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;AVFoundation/AVPlayerLayer.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">AppController</span> : <span class="title">NSObject</span>  </span>&#123;</span><br><span class="line">    <span class="built_in">UIWindow</span> *window;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 動画再生用のメンバ変数を追加</span></span><br><span class="line">  <span class="built_in">UIView</span>* mainUiview;</span><br><span class="line">  <span class="built_in">AVPlayer</span>* player;</span><br><span class="line">  <span class="built_in">AVPlayerItem</span>* playerItem;</span><br><span class="line">  <span class="built_in">AVPlayerLayer</span>* playerLayer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) RootViewController* viewController;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 動画再生用のメソッドを追加</span></span><br><span class="line">- (<span class="keyword">void</span>) playVideo:(<span class="built_in">NSString</span> *)path;</span><br><span class="line">- (<span class="keyword">void</span>) stopVideo;</span><br><span class="line">- (<span class="keyword">void</span>) pauseVideo: (<span class="built_in">BOOL</span>)pause;</span><br><span class="line">- (<span class="keyword">void</span>) seekVideo: (<span class="keyword">float</span>) position;</span><br><span class="line">- (<span class="keyword">void</span>) getVideoInfo: (<span class="keyword">float</span>*)now duration:(<span class="keyword">float</span>*)duration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p>AppControllerの実装ファイル .mmで<code>RootViewController</code>へのビューとして<code>CCEAGLView</code>を与えているところを、動画をその下で再生したいので一段かまして、<code>UIView</code>を挟んでやる。でそうするとなぜか<code>bounds</code>に<code>orientation</code>が反映されなくなってしまうので、フレームサイズを無理やりランドスケープ（横長）にしてやる。また動画を見せるためにCocos2dxで描画してない領域を透過させてやる必要があるので、<code>opaque = NO</code>をセットする：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">// AppController.mm</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;AVFoundation/AVAsset.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">+<span class="keyword">static</span> AppController* theController;</span><br><span class="line"></span><br><span class="line"> - (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application didFinishLaunchingWithOptions:(<span class="built_in">NSDictionary</span> *)launchOptions &#123;</span><br><span class="line">+  <span class="comment">// iOSWrapperからAppControllerが呼び出せるように、グローバル変数に格納しておく</span></span><br><span class="line">+  theController = <span class="keyword">self</span>;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Init the CCEAGLView</span></span><br><span class="line">+  <span class="built_in">CGRect</span> rect = [window bounds];</span><br><span class="line">+  &#123;</span><br><span class="line">+    <span class="comment">// 横長になるように強制的に書き換える</span></span><br><span class="line">+    <span class="keyword">float</span> w = rect.size.width, h = rect.size.height;</span><br><span class="line">+    <span class="keyword">if</span> (w &lt; h) &#123;</span><br><span class="line">+      rect.size.width = h; rect.size.height = w;</span><br><span class="line">+    &#125;</span><br><span class="line">+  &#125;</span><br><span class="line">-  CCEAGLView *eaglView = [CCEAGLView viewWithFrame: [window bounds]</span><br><span class="line">+  CCEAGLView *eaglView = [CCEAGLView viewWithFrame: rect</span><br><span class="line">                                        pixelFormat: kEAGLColorFormatRGBA8</span><br><span class="line">                                        depthFormat: GL_DEPTH24_STENCIL8_OES</span><br><span class="line">                                 preserveBackbuffer: <span class="literal">NO</span></span><br><span class="line">                                         sharegroup: <span class="literal">nil</span></span><br><span class="line">                                      multiSampling: <span class="literal">NO</span></span><br><span class="line">                                    numberOfSamples: <span class="number">0</span>];</span><br><span class="line">+  eaglView.opaque = <span class="literal">NO</span>;</span><br><span class="line">  </span><br><span class="line">+  <span class="comment">// 動画をCocosよりも下に表示するために、</span></span><br><span class="line">+  <span class="comment">// eaglViewをrootViewController.viewに直接代入するのではなく、UIViewを挟む。</span></span><br><span class="line">+  <span class="built_in">UIView</span>* uiview = [[<span class="built_in">UIView</span> alloc] initWithFrame: [window bounds]];</span><br><span class="line">+  [uiview addSubview:eaglView];</span><br><span class="line">+  mainUiview = uiview;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Use RootViewController manage CCEAGLView</span></span><br><span class="line">   _viewController = [[RootViewController alloc] initWithNibName:<span class="literal">nil</span> bundle:<span class="literal">nil</span>];</span><br><span class="line">   _viewController.wantsFullScreenLayout = <span class="literal">YES</span>;</span><br><span class="line">-  _viewController.view = eaglView;</span><br><span class="line">+  _viewController.view = uiview;</span><br></pre></td></tr></table></figure>
+
+<p>動画再生関連のメソッド：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">// AppController.mm</span></span><br><span class="line">- (<span class="keyword">void</span>) stopVideo &#123;</span><br><span class="line">  [<span class="keyword">self</span> killMoviePlayer];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>) pauseVideo: (<span class="built_in">BOOL</span>)pause &#123;</span><br><span class="line">  <span class="keyword">if</span> (pause)</span><br><span class="line">    [player pause];</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    [player play];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>) playVideo:(<span class="built_in">NSString</span> *)path &#123;</span><br><span class="line">  <span class="built_in">NSURL</span>* url = [<span class="built_in">NSURL</span> fileURLWithPath:path];</span><br><span class="line">  playerItem = [[<span class="built_in">AVPlayerItem</span> alloc] initWithURL:url];</span><br><span class="line">  </span><br><span class="line">  player = [[<span class="built_in">AVPlayer</span> alloc] initWithPlayerItem:playerItem];</span><br><span class="line"></span><br><span class="line">  <span class="built_in">CALayer</span>* parentLayer = <span class="keyword">self</span>-&gt;mainUiview.layer;</span><br><span class="line">  playerLayer = [<span class="built_in">AVPlayerLayer</span> playerLayerWithPlayer:player];</span><br><span class="line">  playerLayer.frame = parentLayer.bounds;  <span class="comment">// frame は Orientation を反映してない、bounds はしている</span></span><br><span class="line">  [parentLayer insertSublayer:playerLayer atIndex:<span class="number">0</span>];</span><br><span class="line">  [playerLayer addObserver:<span class="keyword">self</span></span><br><span class="line">                forKeyPath:<span class="string">@&quot;readyForDisplay&quot;</span></span><br><span class="line">                   options:<span class="built_in">NSKeyValueObservingOptionNew</span></span><br><span class="line">                   context:<span class="literal">NULL</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(<span class="built_in">NSString</span> *)keyPath ofObject:(<span class="keyword">id</span>)object change:(<span class="built_in">NSDictionary</span> *)change context:(<span class="keyword">void</span> *)context &#123;</span><br><span class="line">  <span class="keyword">if</span> ([keyPath isEqualToString:<span class="string">@&quot;readyForDisplay&quot;</span>]) &#123;</span><br><span class="line">    [playerLayer removeObserver:<span class="keyword">self</span></span><br><span class="line">                     forKeyPath:<span class="string">@&quot;readyForDisplay&quot;</span></span><br><span class="line">                        context:<span class="literal">NULL</span>];</span><br><span class="line"></span><br><span class="line">    [player play];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="keyword">void</span>)killMoviePlayer &#123;</span><br><span class="line">  <span class="keyword">if</span> (player == <span class="literal">nil</span>)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  </span><br><span class="line">  [player pause];</span><br><span class="line">  [[<span class="built_in">NSNotificationCenter</span> defaultCenter] removeObserver:<span class="keyword">self</span></span><br><span class="line">                                                  name:<span class="built_in">AVPlayerItemDidPlayToEndTimeNotification</span></span><br><span class="line">                                                object:playerItem];</span><br><span class="line"></span><br><span class="line">  [playerLayer removeFromSuperlayer];</span><br><span class="line">  </span><br><span class="line">  player = <span class="literal">nil</span>;</span><br><span class="line">  playerItem = <span class="literal">nil</span>;</span><br><span class="line">  playerLayer = <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>) seekVideo: (<span class="keyword">float</span>) position &#123;</span><br><span class="line">  <span class="keyword">if</span> (player == <span class="literal">nil</span>)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">CMTime</span> time = playerItem.asset.duration;</span><br><span class="line">  time.value *= position;</span><br><span class="line">  [player seekToTime: time];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>) getVideoInfo: (<span class="keyword">float</span>*)now duration:(<span class="keyword">float</span>*)duration &#123;</span><br><span class="line">  <span class="keyword">if</span> (player == <span class="literal">nil</span>) &#123;</span><br><span class="line">    *now = *duration = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  *now = <span class="built_in">CMTimeGetSeconds</span>(player.currentTime);</span><br><span class="line">  *duration = <span class="built_in">CMTimeGetSeconds</span>(playerItem.asset.duration);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Cocos2dxで画面をクリアする設定は<code>CCDirector::setGLDefaultValues()</code>内で</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">glClearColor</span>(<span class="number">0.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>, <span class="number">1.0f</span>);</span><br></pre></td></tr></table></figure>
+
+<p>とダイレクトに書かれていて、アルファが1.0なのでこのままでは下に描かれている動画を上書きしてしまう。直接ここを書き換えてもいいんだけど一応ライブラリ内なので、アプリのソース<code>Classees/AppDelegate::applicationDidFinishLaunching()</code>内で、<code>glview-&gt;setDesignResolutionSize()</code>した後に <code>glClearColor(0,0,0,0);</code>としてやる。</p>
+<p>でiOSWrapperから<code>AppController</code>内の動画関連のメソッドを呼び出すようにしてやり、リンクする追加ライブラリとCoreMedia.frameworkを追加してやることで、動画の上にスプライトで再生・一時停止ボタンや現在再生中の位置などを表示できるようになった。</p>
+<p>動画の下にもなにか背景を描画したいとかなった場合にはどうしたらいいのかしらん。</p>
+<h3 id="追記"><a href="#追記" class="headerlink" title="追記"></a>追記</h3><p>英語のページでのAndroid版のほうは、Intentを飛ばして別のアクティビティを起動して、動画を再生していた：
+<a href="http://www.gethugames.in/blog/2013/09/cocos2d-x-cross-platform-video-player-part-2-android.html">http://www.gethugames.in/blog/2013/09/cocos2d-x-cross-platform-video-player-part-2-android.html</a>
+それだったらiOSでも動画再生は別のViewControllerに切り替えてしまってもいいんじゃないの？</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/10/19/cocos2d-x-js.html" title="Cocos2d-x(JS)を使ってみる" rel="bookmark">Cocos2d-x(JS)を使ってみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/14/cocos2dx-bmfont.html" title="cocos2dxで固定ピッチフォント画像を使った文字列表示" rel="bookmark">cocos2dxで固定ピッチフォント画像を使った文字列表示</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/17/cocos2dx-proguard.html" title="Cocos2dxを使ったAndroidアプリにProguardを適用する" rel="bookmark">Cocos2dxを使ったAndroidアプリにProguardを適用する</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

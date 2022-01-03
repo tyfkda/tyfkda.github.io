@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="C++11で、前方参照しているクラスをunique_ptrで保持するクラスの宣言方法がわかっていなかったのでメモ。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【C++】クラスの前方参照とunique_ptr"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【C++】クラスの前方参照とunique_ptr - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2017/06/15/unique_ptr-forward-decl.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【C++】クラスの前方参照とunique_ptr</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2017-06-15
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cplusplus/">#cplusplus</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>C++11で、前方参照しているクラスを<code>unique_ptr</code>で保持するクラスの宣言方法がわかっていなかったのでメモ。</p>
+<span id="more"></span>
+
+<h3 id="生ポインタの場合"><a href="#生ポインタの場合" class="headerlink" title="生ポインタの場合"></a>生ポインタの場合</h3><p>適当な<code>Foo</code>クラスがあったとして、</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// foo.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ~<span class="built_in">Foo</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// foo.cpp</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;foo.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line">Foo::~<span class="built_in">Foo</span>() &#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Foo:dtor&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Foo</code>クラスを生ポインタで持つクラス<code>Bar</code>があったとする。
+<code>Foo</code>クラスを前方参照することでヘッダ<code>&quot;foo.h&quot;</code>のインクルードを避けることができる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span>;</span>  <span class="comment">// 前方参照</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bar</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Bar</span>();</span><br><span class="line">  ~<span class="built_in">Bar</span>();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  Foo* foo;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>実体を利用する.cppファイル側でインクルードすることで、問題なくコンパイルできる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.cpp</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bar.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;foo.h&quot;</span>  <span class="comment">// インクルード</span></span></span><br><span class="line"></span><br><span class="line">Bar::<span class="built_in">Bar</span>() : <span class="built_in">foo</span>(<span class="keyword">new</span> <span class="built_in">Foo</span>()) &#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Bar:ctor&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Bar::~<span class="built_in">Bar</span>() &#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Bar:dtor&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">delete</span> foo;  <span class="comment">// &lt;- 自分で解放する必要あり</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>デストラクタで間違いなく解放する必要があるので危険だ！</p>
+<h3 id="unique-ptrを使う場合"><a href="#unique-ptrを使う場合" class="headerlink" title="unique_ptrを使う場合"></a>unique_ptrを使う場合</h3><p>生ポインタの代わりに<code>std::unique_ptr</code>を使って、所有権をわかりやすくしようとしてみる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bar</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Bar</span>();</span><br><span class="line">  ~<span class="built_in">Bar</span>();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  std::unique_ptr&lt;Foo&gt; foo;  <span class="comment">// &lt;- 生ポインタからunique_ptrに変更</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.cpp</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bar.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;foo.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">Bar::<span class="built_in">Bar</span>() : <span class="built_in">foo</span>(<span class="keyword">new</span> <span class="built_in">Foo</span>()) &#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Bar:ctor&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Bar::~<span class="built_in">Bar</span>() &#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Bar:dtor&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="comment">// fooは自動的に解放される</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自動的に解放されるので、安全だし楽だ！</p>
+<p>さて、<code>Bar</code>クラスを使用しようと：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.cpp</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bar.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Bar bar = <span class="built_in">Bar</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>するとコンパイルエラーが出る：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ g++ -c main.cpp</span><br><span class="line">main.cpp:4:7: error: call to implicitly-deleted copy constructor of &#x27;Bar&#x27;</span><br><span class="line">  Bar bar = Bar();</span><br><span class="line">      ^     ~~~~~</span><br><span class="line">./bar.h:13:24: note: copy constructor of &#x27;Bar&#x27; is implicitly deleted because field &#x27;foo&#x27; has a deleted copy constructor</span><br><span class="line">  std::unique_ptr&lt;Foo&gt; foo;</span><br><span class="line">                       ^</span><br><span class="line">include/c++/v1/memory:2621:31: note: copy constructor</span><br><span class="line">      is implicitly deleted because &#x27;unique_ptr&lt;Foo, std::__1::default_delete&lt;Foo&gt; &gt;&#x27; has a user-declared move constructor</span><br><span class="line">    _LIBCPP_INLINE_VISIBILITY unique_ptr(unique_ptr&amp;&amp; __u) _NOEXCEPT</span><br><span class="line">                              ^</span><br><span class="line">1 error generated.</span><br></pre></td></tr></table></figure>
+
+<p>デストラクタは宣言しているのになぜだ！？と原因がよくわからなかったんだけど、コピーコンストラクタが使われる？がその際にデフォルトが使われる？が<code>Bar</code>が前方参照で実体が不明なので？エラーになるらしい。
+エラーを回避するにはコピーコンストラクタを宣言すればよいらしい：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.h</span></span><br><span class="line">  <span class="built_in">Bar</span>(<span class="keyword">const</span> Bar&amp;);  <span class="comment">// &lt;- コピーコンストラクタを宣言</span></span><br></pre></td></tr></table></figure>
+
+<p>上記の<code>main.cpp</code>だと、実際にはコピーコンストラクタはオプティマイズで削除されて？起動されないので、実体がなくても動く。</p>
+<p>また、最初から</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.cpp</span></span><br><span class="line">  Bar bar;</span><br></pre></td></tr></table></figure>
+
+<p>と書いた場合にはコピーコンストラクタを明示しなくても動く。</p>
+<h3 id="代入"><a href="#代入" class="headerlink" title="代入"></a>代入</h3><p>同様に、インスタンスの代入が呼び出される場合には代入演算子を明示的に宣言、定義してやる必要がある：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.h</span></span><br><span class="line">  Bar&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Bar&amp; bar);  <span class="comment">// &lt;- またcpp内で適切に実装してやる必要がある</span></span><br></pre></td></tr></table></figure>
+
+<p>ムーブなら、<code>unique_ptr</code>を使っていればデフォルト実装も使える：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.h</span></span><br><span class="line">  Bar&amp; <span class="keyword">operator</span>=(Bar&amp;&amp; rhs);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.cpp</span></span><br><span class="line">Bar&amp; Bar::<span class="keyword">operator</span>=(Bar&amp;&amp;) = <span class="keyword">default</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.cpp</span></span><br><span class="line">  Bar bar2;</span><br><span class="line">  bar2 = std::<span class="built_in">move</span>(bar);</span><br></pre></td></tr></table></figure>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/08/cpp-lambda.html" title="【C++】ラムダ関数" rel="bookmark">【C++】ラムダ関数</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/26/cpp-multi-value.html" title="【C++】関数から多値を返す" rel="bookmark">【C++】関数から多値を返す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/12/lambda-is-a-functor.html" title="【C++】C++のラムダ式はファンクタだったのか…" rel="bookmark">【C++】C++のラムダ式はファンクタだったのか…</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/04/std-function-runtime.html" title="【C++】std::function のコスト" rel="bookmark">【C++】std::function のコスト</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

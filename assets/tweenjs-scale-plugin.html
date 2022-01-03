@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta name="robots" content="noindex">
+    <title>TweenJS CSS Plugin</title>
+    <!-- CSS -->
+    <style type="text/css">
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+    </style>
+
+    <!-- JS -->
+    <script src="https://code.createjs.com/tweenjs-0.6.2.min.js"></script>
+  </head>
+  <body>
+    <div style="width:500px; height:200px; background-color:lightgray; overflow:hidden;">
+      <div id="text" style="transform: translate(0, 50px) scale(0.1); font-size: 40px;">
+        quick brown fox jumps over the lazy dog
+      </div>
+    </div>
+
+<script type="text/javascript">
+var CssTransformScalePlugin = (function() {
+  'use strict'
+  function CssTransformScalePlugin() {
+  }
+  CssTransformScalePlugin.priority = -100 // very low priority, should run last
+  CssTransformScalePlugin.init = function(tween, prop, value) {
+    var style = tween.target.style
+    if (!style)
+      return value
+    var m = style['transform'].match(/scale\(([0-9.]+)(,\s*([0-9.]+))?\)/)
+    if (!m)
+      return 1
+    var x = m[1]  //, y = m[3]
+    return parseFloat(x)
+  }
+  CssTransformScalePlugin.step = function(/*tween, prop, startValue, endValue, injectProps*/) {
+  }
+  CssTransformScalePlugin.tween = function(tween, prop, value
+                                           /*, startValues, endValues, ratio, wait, end*/) {
+    var style = tween.target.style
+    if (!style)
+      return value
+
+    var transform = style['transform']
+    var newTransform =
+        style['transform'].replace(/scale\([0-9.]+(,\s*([0-9.]+))?\)/,
+                                   'scale(' + value + ')')
+    if (transform != newTransform)
+      style['transform'] = newTransform
+    return createjs.Tween.IGNORE
+  }
+  return CssTransformScalePlugin
+})()
+
+!(function() {
+  'use strict'
+
+  createjs.Ticker.timingMode = createjs.Ticker.RAF
+  createjs.Tween.installPlugin(CssTransformScalePlugin, ['scale'])
+
+  var text = document.getElementById('text')
+  createjs.Tween.get(text, { loop: true })
+    .to({ scale: 4.0 }, 2000, createjs.Ease.getPowInOut(2))
+    .to({ scale: 0.1 }, 2000, createjs.Ease.getPowInOut(2))
+})()
+</script>
+  </body>
+</html>

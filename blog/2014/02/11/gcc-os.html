@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="gccのみでOS自作入門"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>gccのみでOS自作入門 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/02/11/gcc-os.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>gccのみでOS自作入門</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2014-02-11
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/os/">#os</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><img src="/assets/haribote.png" alt="haribote"></p>
+<span id="more"></span>
+
+<p>OSを作りたくて「<a href="http://www.amazon.co.jp/gp/product/4839919844/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=4839919844&linkCode=as2&tag=tyfkda-22">OS自作入門</a>」本を<a href="/blog/2013/02/27/helloos.html" title="以前">以前</a>試してたんだけど、WindowsじゃなくてMacでやろうとしたところ、３章のC言語を導入するところで躓いてしまい、放置していた。</p>
+<iframe src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=tyfkda-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4839919844" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+<p>これはMacで使われているgccでコンパイルしたオブジェクトファイルからバイナリを取り出す方法がわからなかったのが原因だった。</p>
+<p>それならと、Linux系OS上のgccならばリンカスクリプトも受け付けて直のバイナリを取り出すことができるのでやってみた。アセンブラもgccのもの(gas)を使うようにした。</p>
+<h3 id="VirtualBoxでLinux系OSを動かす"><a href="#VirtualBoxでLinux系OSを動かす" class="headerlink" title="VirtualBoxでLinux系OSを動かす"></a>VirtualBoxでLinux系OSを動かす</h3><p>普段Macを使っていて手元にLinux系のマシンを持ってないんだけど、OS開発にエミュレータを使うこともあり、ついでにとエミュレータ上でLinux系OSを走らせて、その上で自作OSの開発を行うことにした。</p>
+<p>使っているエミュレータはVirtualBoxで、使ったゲストOSはUbuntu。動かし方はいろいろググればできるはず。</p>
+<p>しかし実際のところ、キーボード操作がMacに慣れてしまっていてCommandキーがないと死んじゃう派で、Ubuntuのデスクトップ画面とか使いたくない。なのでゲストOSのウィンドウからは操作せずに、sshでつないで操作するようにした。そうするとゲストOSのウィンドウは開いても最小化しっぱなしとかになって、無駄である。VirtualBoxにはウィンドウを開かずにコマンドラインからVMを起動する方法があるので、それを利用する：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ VBoxManage startvm &lt;VM名&gt; --<span class="built_in">type</span>=headless</span><br></pre></td></tr></table></figure>
+
+<p>停止させるには</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ VBoxManage controlvm &lt;VM名&gt; poweroff</span><br></pre></td></tr></table></figure>
+
+<p>VirtualBox上のゲストOSとホストOSで通信するにはネットワーク設定で、NAT+ホストオンリーアダプタを使う方法と、ブリッジ接続を使う方法がある。ブリッジ接続にすればホストOSのネットワーク接続と同じ設定を使うので外部のネットワークにつなげるのも簡単なんだけど、ネットワークを使えない環境だとホスト−ゲスト間も通信できなくなってしまうという問題がある。まあお好みで。</p>
+<h3 id="gas"><a href="#gas" class="headerlink" title="gas"></a>gas</h3><p>OS自作本では<a href="http://hrb.osask.jp/wiki/?tools/nask">nask</a>という、著者が作ったアセンブラを使用している。しかしできればそういう独自ツールに依存したくないので、GCCのアセンブラ(gas)を利用することにした。gasはnaskとはアセンブラの文法が違っている。nask(nasm)はインテルシンタックス、gasはAT&amp;Tシンタックスとのこと。</p>
+<p>文法の違いで一番大きいのはオペランドの順番で、インテルシンタックスでは</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MOV DST, SRC  ; DST ← SRC</span><br></pre></td></tr></table></figure>
+
+<p>に対して、AT&amp;Tシンタックスでは逆に</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MOV SRC, DST  # SRC → DST</span><br></pre></td></tr></table></figure>
+
+<p>となる。またレジスタには%を前につける。直値には＄を前につける。
+他にもいろいろ、間接インデックスを丸括弧にするとか、コメントが#で始まるとか、擬似命令が違うとか。</p>
+<p>オペランドの順番はまあどちらでも慣れでいいんだけど、%とか＄が頻発してとにかく入力しづらいので面倒くさいという欠点がある。まあしかたがない。</p>
+<h3 id="c言語導入（gccのリンカスクリプトを使う）"><a href="#c言語導入（gccのリンカスクリプトを使う）" class="headerlink" title="c言語導入（gccのリンカスクリプトを使う）"></a>c言語導入（gccのリンカスクリプトを使う）</h3><p>オブジェクトファイルからバイナリファイルを作る際に、OS自作本では著者の方が作ったいろいろなツール(tolset: cc1.exe, gas2nask.exe, nask.exe, obj2bim.exe, bim2hrb.exe)を通す必要があった。それらの操作が煩雑ということと、実際にそれぞれがどういうことをしているのかよくわからないのがちょっと不満だった。</p>
+<p>今回はGCCのリンカにリンカスクリプトを指定して、hrbファイルと同様のバイナリを生成するようにした。参考にしたのは<a href="http://vanya.jp.net/os/haribote.html#tocAnchor-1-12-1">『30日でできる！OS自作入門』のメモ</a>。</p>
+<p>OS作成に使うCのソースを、gccを使ってオブジェクトファイルを作成する：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ gcc -c &lt;Cファイル名&gt;</span><br></pre></td></tr></table></figure>
+
+<p>アセンブラのソースも同様にオブジェクトファイルを作成する：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ as &lt;アセンブラソース名&gt;</span><br></pre></td></tr></table></figure>
+
+<p>生成されたすべてのオブジェクトファイルを、リンカとリンカスクリプトを使ってバイナリを生成する：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ ld -T &lt;リンカスクリプト&gt; --oformat binary &lt;オブジェクトファイル…&gt;</span><br></pre></td></tr></table></figure>
+
+<p>ブートローダとブートされるOSとの連結は、単にcatを使ってやればできる。ファイルの配置情報を設定する場合にはちゃんとFATの内容を書き込む必要があるだろうが、OS自作本の前半ではディスクからごそっとデータを読み込んで固定のアドレスにジャンプするだけなので、今のところはこれでOK。</p>
+<h3 id="生成されたディスクイメージを走らせる"><a href="#生成されたディスクイメージを走らせる" class="headerlink" title="生成されたディスクイメージを走らせる"></a>生成されたディスクイメージを走らせる</h3><p>理論的にはゲストOSのUbuntu上でさらにエミュレータを動かして、その上で自作OSを走らせることもできないことはないとは思うんだけど、やってみたところうまく動かなかった。</p>
+<p>しかたがないので、scpでホストOS(Mac)に持ってきて、ホストOS上のVirtualBoxで動かしている。面倒くさい。もっといい方法はないものだろうか…。</p>
+<h3 id="総括"><a href="#総括" class="headerlink" title="総括"></a>総括</h3><p>一応これでMac上でも自作OSを開発できる環境は整ったので、本の通りに進められるはず。
+著者的にはtolsetなどの開発環境はすべて自作のものなので、なにがどう動いているか全て把握していると思うのでいいんだろうけども、第三者の私としてはどういうことをしているのかよくわからないので不安が残っていた。とはいっても、gccはgccで中身を知っているわけでもないけど、使うツールが少ないのはその不安が減ってよろしい。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/12/27/baremetal-ctxswtch-rpz.html" title="Raspberry Pi Zeroでベアメタルコンテキストスイッチ" rel="bookmark">Raspberry Pi Zeroでベアメタルコンテキストスイッチ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/11/build-linux.html" title="Linuxカーネルをビルドしてみる" rel="bookmark">Linuxカーネルをビルドしてみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/18/data-segment.html" title="はりぼてOSアプリのメモリレイアウト" rel="bookmark">はりぼてOSアプリのメモリレイアウト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/23/fin-hariboteos.html" title="「OS自作入門」とりあえず完了" rel="bookmark">「OS自作入門」とりあえず完了</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

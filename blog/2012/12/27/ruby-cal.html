@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Rubyでカレンダーを表示するには、Dateモジュールの機能をいろいろ使って実現する。Dateインスタンスのwdayで曜日（0=日曜、6=土曜）を取得、またDate.new(year, month, -1)でその月の最後の日が取得できることを利用する。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Rubyでカレンダー"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Rubyでカレンダー - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2012/12/27/ruby-cal.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Rubyでカレンダー</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2012-12-27
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ruby/">#ruby</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Rubyでカレンダーを表示するには、<a href="http://www.ruby-lang.org/ja/old-man/html/Date.html">Dateモジュール</a>の機能をいろいろ使って実現する。Dateインスタンスの<a href="http://www.ruby-lang.org/ja/old-man/html/Date.html#wday">wday</a>で曜日（0=日曜、6=土曜）を取得、また<a href="http://www.ruby-lang.org/ja/old-man/html/Date.html#new">Date.new</a><code>(year, month, -1)</code>でその月の最後の日が取得できることを利用する。</p>
+<span id="more"></span>
+
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;date&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Returns array of weeks of the year/month.</span></span><br><span class="line"><span class="comment">#   wday_start: Start day of week (0=Sun, 1=Mon, ..., 6=Sat)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Example:</span></span><br><span class="line"><span class="comment">#   cal(2013, 1)</span></span><br><span class="line"><span class="comment">#     =&gt; [[nil,nil,  1,  2,  3,  4,  5],</span></span><br><span class="line"><span class="comment">#         [  6,  7,  8,  9, 10, 11, 12],</span></span><br><span class="line"><span class="comment">#         [ 13, 14, 15, 16, 17, 18, 19],</span></span><br><span class="line"><span class="comment">#         [ 20, 21, 22, 23, 24, 25, 26],</span></span><br><span class="line"><span class="comment">#         [ 27, 28, 29, 30, 31]]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cal</span><span class="params">(year, month, wday_start = <span class="number">0</span>)</span></span></span><br><span class="line">  last_day = Date.new(year, month, -<span class="number">1</span>).day</span><br><span class="line">  wday = (Date.new(year, month, <span class="number">1</span>).wday - wday_start) % <span class="number">7</span></span><br><span class="line">  weeks = (wday + last_day + <span class="number">6</span>) / <span class="number">7</span></span><br><span class="line"> </span><br><span class="line">  (<span class="number">0</span> ... weeks).map <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">    day = i * <span class="number">7</span> - wday + <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> day &lt;= <span class="number">0</span>  <span class="comment"># First week of the month.</span></span><br><span class="line">      [<span class="literal">nil</span>] * wday + (<span class="number">1</span> .. <span class="number">7</span> - wday).to_a</span><br><span class="line">    <span class="keyword">elsif</span> day + <span class="number">7</span> &gt; last_day  <span class="comment"># Last week of the month.                         </span></span><br><span class="line">      (day .. last_day).to_a</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      (day .. day + <span class="number">6</span>).to_a</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="variable">$0</span> == <span class="keyword">__FILE__</span></span><br><span class="line"><span class="comment">=begin</span></span><br><span class="line"><span class="comment">2013/1</span></span><br><span class="line"><span class="comment"> .  .  1  2  3  4  5</span></span><br><span class="line"><span class="comment"> 6  7  8  9 10 11 12</span></span><br><span class="line"><span class="comment">13 14 15 16 17 18 19</span></span><br><span class="line"><span class="comment">20 21 22 23 24 25 26</span></span><br><span class="line"><span class="comment">27 28 29 30 31</span></span><br><span class="line"><span class="comment">=end</span></span><br><span class="line">  now = Time.now</span><br><span class="line">  month = (ARGV.shift <span class="params">||</span> now.month).to_i</span><br><span class="line">  year = (ARGV.shift <span class="params">||</span> now.year).to_i</span><br><span class="line"></span><br><span class="line">  weeks = cal(year, month)</span><br><span class="line"></span><br><span class="line">  puts <span class="string">&quot;<span class="subst">#&#123;year&#125;</span>/<span class="subst">#&#123;month&#125;</span>&quot;</span></span><br><span class="line">  weeks.each <span class="keyword">do</span> <span class="params">|week|</span></span><br><span class="line">    puts week.map &#123;<span class="params">|d|</span> d ? sprintf(<span class="string">&#x27;%2d&#x27;</span>, d) : <span class="string">&#x27; .&#x27;</span>&#125;.join(<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>Codepadで動作を見てみる：<a href="http://codepad.org/r7uuRL37">http://codepad.org/r7uuRL37</a></p>
+<p><code>(wday + last_day + 6) / 7</code>でその月に何週あるかを割り出して、初めの週と終わりの週に特殊処理をして、それらを配列として返すので、あとはなんなりと。</p>
+<p>月曜始まりにしたい場合とかを考慮して、何曜日を先頭にするかを引数として渡せるようにした。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2011/08/15/bayesian-filter.html" title="「ベイジアンフィルタを実装してみよう」をRubyで" rel="bookmark">「ベイジアンフィルタを実装してみよう」をRubyで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/03/21/easy-dsl.html" title="Rubyで簡単DSL" rel="bookmark">Rubyで簡単DSL</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/06/01/ga-helloworld.html" title="GAで"Hello, world!"" rel="bookmark">GAで"Hello, world!"</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

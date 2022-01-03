@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="3impを参考に作っている自作のLispコンパイラで効率のいいループの実現方法を考えてたんだけど、どうもインチキ感が拭えない。
+と思っていたところ、4.7節「できそうな改善」の4.7.3項「末尾再帰最適化」に、方法は書いてないけど案としては書いてあった（ここの「末尾再帰最適化」というのは末尾呼び出し最適化でスタックを消費しない、というのとは違くて、再帰というところがポイントになっている。）">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Schemeのコンパイラで効率のいいループの実現方法、そして3impとの決別"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Schemeのコンパイラで効率のいいループの実現方法、そして3impとの決別 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/12/30/part-from-3imp.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Schemeのコンパイラで効率のいいループの実現方法、そして3impとの決別</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-12-30
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/lisp/">#lisp</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://www.cs.indiana.edu/~dyb/papers/3imp.pdf">3imp</a>を参考に作っている自作のLispコンパイラで<a href="/blog/2013/12/11/scheme-loop.html" title="効率のいいループの実現方法">効率のいいループの実現方法</a>を考えてたんだけど、どうもインチキ感が拭えない。
+と思っていたところ、4.7節「できそうな改善」の4.7.3項「末尾再帰最適化」に、方法は書いてないけど案としては書いてあった（ここの「末尾再帰最適化」というのは末尾呼び出し最適化でスタックを消費しない、というのとは違くて、再帰というところがポイントになっている。）</p>
+<span id="more"></span>
+
+<p>それによれば、最適化しない場合の、関数を探して引数の数をチェックして…、という処理を省いて直接のジャンプにできる、とのこと。
+さらにいえばその関数が（named letのように）直接呼び出される場合、クロージャの生成も避ける事ができ、一般的な言語のループ構造に適用される最適化も行うことができる、とのこと。</p>
+<p>これをどうやったら実現できるのか考えてたんだけど、なんとなく実装方法がわかった。
+問題は 1.末尾再帰をジャンプにする、 2.クロージャを作らない（もしくはスタック上に作る）、 3.ボックス化しない、という３つに分けられる。</p>
+<p>1の末尾再帰をジャンプに置き換えるために必要な条件として、そのループ用の関数を保持する変数への代入が１回しかないことが挙げられる。
+１回しか代入がなくてしかもラムダ式だったらその後内容は変化しないので、コンパイル時にジャンプの飛び先を決めることができる。</p>
+<p>２のクロージャを作らないために必要な条件としては、そのループ用の関数が呼び出しにしか使われていないこと。
+その関数が他の関数への引数として使われてたり、戻り値として返されたりしていたら、他のところに保持されたりしてスコープを超えて生き延びる可能性があるので、クロージャを作る必要がある。</p>
+<p>３のボックス化は、Schemeの変数のスコープのルール上、ループ用の関数のためのローカル変数を用意して、それに対して代入を行うことで、その関数内から自分自身を見れるようにしている。で代入があると継続で捕獲される可能性があるのでボックス化されてしまう、というわけ。
+１と２の条件を両方満たした場合には、ボックス化を避ける事ができる。</p>
+<p>問題はどうやってこれらの条件をチェックするかということ。
+3impで示されるコンパイラは、いわば１パスコンパイラといったところで、S式を直接解析してコードを出力していくようになっている。
+S式なので<code>read</code>した段階で構文木のようなツリー構造は得られているものの、その他の情報はまったくない。
+自由変数の参照や変数への代入を調べるために、その都度内側のブロックをたどって調べたり、外側から引数として与えてもらったりしている。</p>
+<p>この方式でも上記の条件のチェックはできないことはないのかもしれないけど、S式をいちいちたどって調べるのが大変なことと、スコープ全体の情報を得るのが難しいこと、ジャンプの飛び先といったコンパイル後の情報を得るのが難しいので、大変なことが予想される。</p>
+<p>そこでいったんS式から内部情報を持つツリー構造に変換して、その後コンパイルしてコード生成をするという、２パス方式に変更してはどうかと思いいたった。
+そうすれば構文解析も１回で済んで何度も構文をたどらずに済むし、中間情報も利用できるようになる。</p>
+<p>というわけで、ここで3imp型のコンパイラの構造から決別することにした。
+これは僕にとってとても大きなことで、ちょっと今まで想定してなかったので驚いている。
+でもそういう方法もあるよということで。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/09/lisp-to-js.html" title="LispからJavaScriptへのトランスレータを作り始めた" rel="bookmark">LispからJavaScriptへのトランスレータを作り始めた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/01/15/loop-without-closure.html" title="Schemeコンパイラで、末尾再帰のクロージャをループに変更する" rel="bookmark">Schemeコンパイラで、末尾再帰のクロージャをループに変更する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/11/scheme-loop.html" title="Schemeでの効率のいいループの方法を考える" rel="bookmark">Schemeでの効率のいいループの方法を考える</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/01/16/setjmp.html" title="Schemeコンパイラで、ある種の継続をsetjmpに置き換える" rel="bookmark">Schemeコンパイラで、ある種の継続をsetjmpに置き換える</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

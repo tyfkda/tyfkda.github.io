@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="所定の回数だけインデクスに応じて何か処理をしてそれぞれの結果を配列にしたいという処理をサクッと書きたいんだけど、
+JavaScriptで整数配列を簡単に生成する方法が覚えられなくて毎度ウェブ検索のお世話になっていたので調べた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【JavaScript】range（整数列）の作成方法"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【JavaScript】range（整数列）の作成方法 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2021/06/01/js-range.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【JavaScript】range（整数列）の作成方法</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2021-06-01
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/javascript/">#javascript</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>所定の回数だけインデクスに応じて何か処理をしてそれぞれの結果を配列にしたいという処理をサクッと書きたいんだけど、
+JavaScriptで整数配列を簡単に生成する方法が覚えられなくて毎度ウェブ検索のお世話になっていたので調べた。</p>
+<span id="more"></span>
+
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>スプレッドしてmap <code>[...Array(N)].map((_, i) =&gt; iを使った計算)</code> が簡潔さと速度の面でよいと思う。</p>
+<p>完</p>
+<p>.</p>
+<p>.</p>
+<h3 id="前書き"><a href="#前書き" class="headerlink" title="前書き"></a>前書き</h3><p>ループを自前で回せば一応できるんだけど、<code>for</code>文を書くのが面倒なのでサクッと<code>map</code>したい。
+Pythonでは<code>range</code>、Rubyでは<code>...</code>で<code>Range</code>オブジェクトなるものが簡単に生成できる。
+JavaScriptではそのようなものは無いようで、自作する必要がある。</p>
+<h3 id="候補"><a href="#候補" class="headerlink" title="候補"></a>候補</h3><p>実際には整数列を加工した結果を得たいので、<code>range</code>の代替を作るだけじゃなくて実際になにか計算させてみる（ここでは自乗<code>i * i</code>としてみた）。
+何回か実行して処理にかかる経過時間を <code>performance.now()</code> で取得して平均を測る。</p>
+<h4 id="for-push：愚直にforループを書いて、結果をpush"><a href="#for-push：愚直にforループを書いて、結果をpush" class="headerlink" title="for-push：愚直にforループを書いて、結果をpush"></a>for-push：愚直にforループを書いて、結果をpush</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> array = <span class="keyword">new</span> <span class="built_in">Array</span>()</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; N; ++i)</span><br><span class="line">  array.push(i * i)</span><br></pre></td></tr></table></figure>
+
+<h4 id="prealloc-for-store：容量を指定して配列を確保、愚直にforループを書いて結果を格納"><a href="#prealloc-for-store：容量を指定して配列を確保、愚直にforループを書いて結果を格納" class="headerlink" title="prealloc-for-store：容量を指定して配列を確保、愚直にforループを書いて結果を格納"></a>prealloc-for-store：容量を指定して配列を確保、愚直にforループを書いて結果を格納</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> array = <span class="keyword">new</span> <span class="built_in">Array</span>(N)</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; N; ++i)</span><br><span class="line">  array[i] = i * i</span><br></pre></td></tr></table></figure>
+
+<h4 id="array-push-map：配列にpushして整数列を生成し、mapする"><a href="#array-push-map：配列にpushして整数列を生成し、mapする" class="headerlink" title="array.push.map：配列にpushして整数列を生成し、mapする"></a>array.push.map：配列に<code>push</code>して整数列を生成し、mapする</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">array_push</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> array = <span class="keyword">new</span> <span class="built_in">Array</span>()</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">    array.push(i)</span><br><span class="line">  <span class="keyword">return</span> array</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">array_push(N).map(<span class="function"><span class="params">i</span> =&gt;</span> i * i)</span><br></pre></td></tr></table></figure>
+
+<h4 id="array-prealloc-map：容量を指定して配列を確保・格納してmap"><a href="#array-prealloc-map：容量を指定して配列を確保・格納してmap" class="headerlink" title="array.prealloc.map：容量を指定して配列を確保・格納してmap"></a>array.prealloc.map：容量を指定して配列を確保・格納してmap</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">array_prealloc</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> array = <span class="keyword">new</span> <span class="built_in">Array</span>(n)</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">    array[i] = i</span><br><span class="line">  <span class="keyword">return</span> array</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">array_prealloc(N).map(<span class="function"><span class="params">i</span> =&gt;</span> i * i)</span><br></pre></td></tr></table></figure>
+
+<h4 id="array-from-map：Array-fromを使う"><a href="#array-from-map：Array-fromを使う" class="headerlink" title="array.from.map：Array.fromを使う"></a>array.from.map：Array.fromを使う</h4><p><code>Array(N)</code> または <code>new Array(N)</code> で容量を指定して配列が確保できるが、それに対して <code>map</code> を使っても意図した結果にならない：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Array</span>(<span class="number">5</span>).map(<span class="function">(<span class="params">v, i</span>) =&gt;</span> i)  <span class="comment">//=&gt; [ &lt;5 empty items&gt; ]</span></span><br></pre></td></tr></table></figure>
+
+<p>なんか謎の挙動なんだけど、</p>
+<blockquote>
+<p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/Array">https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/Array</a>
+注: これは <code>arrayLength</code> 個の空のスロットを持つ配列であり、実際に <code>undefined</code> の値が入ったスロットではありません</p>
+</blockquote>
+<p>とのこと。<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/from">Array.from</a>を使ってようやく使える：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Array</span>.from(<span class="built_in">Array</span>(N)).map(<span class="function">(<span class="params">_, i</span>) =&gt;</span> i * i)</span><br></pre></td></tr></table></figure>
+
+<p><code>map</code>に与えた関数の第一引数に値が渡されるが<code>undefined</code>なので無視して、第二引数に渡されるインデクスを利用する。</p>
+<h4 id="array-from：Array-fromに関数を渡す"><a href="#array-from：Array-fromに関数を渡す" class="headerlink" title="array.from：Array.fromに関数を渡す"></a>array.from：Array.fromに関数を渡す</h4><p>Array.fromに関数を渡せる：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Array</span>.from(<span class="built_in">Array</span>(N), <span class="function">(<span class="params">_, i</span>) =&gt;</span> i * i)</span><br></pre></td></tr></table></figure>
+
+<h4 id="array-from-length：Array-fromにlengthを与える"><a href="#array-from-length：Array-fromにlengthを与える" class="headerlink" title="array.from.length：Array.fromにlengthを与える"></a>array.from.length：Array.fromにlengthを与える</h4><p>Array.fromには<code>length</code>を指定して生成する方法もあるとのこと：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Array</span>.from(&#123;<span class="attr">length</span>: N&#125;, <span class="function">(<span class="params">_, i</span>) =&gt;</span> i * i)</span><br></pre></td></tr></table></figure>
+
+<h4 id="array-fill-map：Array-fillで実体化する"><a href="#array-fill-map：Array-fillで実体化する" class="headerlink" title="array.fill.map：Array.fillで実体化する"></a>array.fill.map：Array.fillで実体化する</h4><p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/fill">Array.fill</a>で空のスロットを実体化する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Array</span>(N).fill().map(<span class="function">(<span class="params">_, i</span>) =&gt;</span> i * i)</span><br></pre></td></tr></table></figure>
+
+<h4 id="spread-map：スプレッド構文"><a href="#spread-map：スプレッド構文" class="headerlink" title="spread.map：スプレッド構文"></a>spread.map：スプレッド構文</h4><p>array.from.mapと同じだが、<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Spread_syntax">スプレッド構文</a> <code>[...]</code> を使う：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[...Array(N)].map(<span class="function">(<span class="params">_, i</span>) =&gt;</span> i * i)</span><br></pre></td></tr></table></figure>
+
+<h4 id="spread-keys"><a href="#spread-keys" class="headerlink" title="spread.keys"></a>spread.keys</h4><p>インデクスからmapで加工するのであれば上のspread.mapでいいんだけど、
+一応<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/keys">Array.prototype.keys()</a>
+にスプレッドの適用も試してみる：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[...Array(N).keys()]</span><br></pre></td></tr></table></figure>
+
+<p>これだけはmapせずに、整数列を得るだけ。</p>
+<h4 id="spread-generator：ジェネレータを使用する"><a href="#spread-generator：ジェネレータを使用する" class="headerlink" title="spread.generator：ジェネレータを使用する"></a>spread.generator：ジェネレータを使用する</h4><p>余計な呼び出しコストが必要で明らかに色々ペナルティ多そうなので言わずもがなだが、一応ジェネレータを使った場合も調べてみる：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">range_gen</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">    <span class="keyword">yield</span> i</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[...range_gen(N)].map(<span class="function"><span class="params">i</span> =&gt;</span> i * i)</span><br></pre></td></tr></table></figure>
+
+<p>ジェネレータは<code>function*</code>としてしか書けず、アロー・無名関数では書けないとのこと。</p>
+<h3 id="実際に走らせてみる"><a href="#実際に走らせてみる" class="headerlink" title="実際に走らせてみる"></a>実際に走らせてみる</h3><div style="border:1px solid black; border-radius:8px; padding:8px;">
+  <div>
+    配列サイズ：<input id="size" type="text" size="6" value="100">
+    計測回数：<input id="count" type="text" size="8" value="1000">
+    <input type="button" value="Bench" onclick="start()">
+  </div>
+  <table id="result-table"></table>
+</div>
+
+
+<h3 id="考察"><a href="#考察" class="headerlink" title="考察"></a>考察</h3><ul>
+<li>配列に順に<code>push</code>するより、あらかじめサイズを指定して確保してインデクスで格納したほうがよい</li>
+<li>配列のサイズが大きくなると差が開く</li>
+<li>環境によっても結果が変わってくるので、書きやすい方法を使うのが一番という身も蓋もない結果に…</li>
+<li>にしても、array.from.mapよりもarray.fromやarray.from.lengthが遅いのが腑に落ちない…</li>
+</ul>
+<!--code-->
+
+<script>
+'use strict'
+
+function array_push(n) {
+  const array = new Array()
+  for (let i = 0; i < n; ++i)
+    array.push(i)
+  return array
+}
+
+function array_prealloc(n) {
+  const array = new Array(n)
+  for (let i = 0; i < n; ++i)
+    array[i] = i
+  return array
+}
+
+function *range_gen(n) {
+  for (let i = 0; i < n; ++i)
+    yield i
+}
+
+function bench(count, proc) {
+  let total = 0
+  let result
+  for (let i = 0; i < count; ++i) {
+    const start = performance.now()
+    result = proc()
+    const end = performance.now()
+    total += end - start
+  }
+  return total / count
+}
+
+function start() {
+  const resultTable = document.getElementById('result-table')
+  resultTable.innerHTML = `<tr><th>ケース</th><th>時間 [ms]</th><th>グラフ（短いほどよい）</th></tr>`
+
+  const count = Math.max(parseInt(document.getElementById('count').value), 10)
+  const size = Math.max(parseInt(document.getElementById('size').value), 10)
+  const cases = [
+    ['for-push', () => {
+        const array = new Array()
+        for (let i = 0; i < size; ++i)
+          array.push(i * i)
+        //return array
+    }],
+    ['prealloc-for-store', () => {
+        const array = new Array(size)
+        for (let i = 0; i < size; ++i)
+          array[i] = i * i
+        //return array
+    }],
+    ['array.push.map', () => array_push(size).map(i => i * i)],
+    ['array.prealloc.map', () => array_prealloc(size).map(i => i * i)],
+    ['array.from.map', () => Array.from(Array(size)).map((_, i) => i * i)],
+    ['array.from', () => Array.from(Array(size), (_, i) => i * i)],
+    ['array.from.length', () => Array.from({length: size}, (_, i) => i * i)],
+    ['array.fill.map', () => Array(size).fill().map((_, i) => i * i)],
+    ['spread.map', () => [...Array(size)].map((_, i) => i * i)],
+    ['spread.keys', () => [...Array(size).keys()]],
+    ['spread.generator', () => [...range_gen(size)].map(i => i * i)],
+  ]
+  const results = cases.map(([_, proc]) => bench(count, proc))
+  const WIDTH = 256
+  const max = Math.max(...results)
+  for (let i = 0; i < cases.length; ++i) {
+    const [title, proc] = cases[i]
+    const time = results[i]
+    const width = Math.round(WIDTH * time / max)
+    resultTable.innerHTML += `<tr><td>${title}</td><td>${time}</td><td><div style="width:${width}px; height:12px; background-color:red"></div></td></tr>`
+  }
+}
+</script>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/js-game-engine.html" title="JSでオレオレゲームエンジン" rel="bookmark">JSでオレオレゲームエンジン</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="とにかくハードディスクを圧迫するファイルが多くて、すぐに辛くなる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="MacOSXの不要ファイル削除"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>MacOSXの不要ファイル削除 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/01/22/remove-dust.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>MacOSXの不要ファイル削除</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-01-22
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>とにかくハードディスクを圧迫するファイルが多くて、すぐに辛くなる。</p>
+<span id="more"></span>
+
+<h2 id="Xcode"><a href="#Xcode" class="headerlink" title="Xcode"></a>Xcode</h2><h3 id="CoreSimulator"><a href="#CoreSimulator" class="headerlink" title="CoreSimulator"></a>CoreSimulator</h3><p><code>~/Library/Developer/CoreSimulator/Devices</code>以下にiOSのバージョンと機種ごとのシミュレータ（？）が入ってる。古いバージョンとかがたくさん残っていて、でかい。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ xcrun simctl list</span><br><span class="line">== Device Types ==</span><br><span class="line">iPhone 4s (com.apple.CoreSimulator.SimDeviceType.iPhone-4s)</span><br><span class="line">iPhone 5 (com.apple.CoreSimulator.SimDeviceType.iPhone-5)</span><br><span class="line">iPhone 5s (com.apple.CoreSimulator.SimDeviceType.iPhone-5s)</span><br><span class="line">iPhone 6 (com.apple.CoreSimulator.SimDeviceType.iPhone-6)</span><br><span class="line">iPhone 6 Plus (com.apple.CoreSimulator.SimDeviceType.iPhone-6-Plus)</span><br><span class="line">iPhone 6s (com.apple.CoreSimulator.SimDeviceType.iPhone-6s)</span><br><span class="line">iPhone 6s Plus (com.apple.CoreSimulator.SimDeviceType.iPhone-6s-Plus)</span><br><span class="line">iPad 2 (com.apple.CoreSimulator.SimDeviceType.iPad-2)</span><br><span class="line">iPad Retina (com.apple.CoreSimulator.SimDeviceType.iPad-Retina)</span><br><span class="line">iPad Air (com.apple.CoreSimulator.SimDeviceType.iPad-Air)</span><br><span class="line">iPad Air 2 (com.apple.CoreSimulator.SimDeviceType.iPad-Air-2)</span><br><span class="line">iPad Pro (com.apple.CoreSimulator.SimDeviceType.iPad-Pro)</span><br><span class="line">Apple TV 1080p (com.apple.CoreSimulator.SimDeviceType.Apple-TV-1080p)</span><br><span class="line">Apple Watch - 38mm (com.apple.CoreSimulator.SimDeviceType.Apple-Watch-38mm)</span><br><span class="line">Apple Watch - 42mm (com.apple.CoreSimulator.SimDeviceType.Apple-Watch-42mm)</span><br><span class="line">== Runtimes ==</span><br><span class="line">iOS 9.2 (9.2 - 13C75) (com.apple.CoreSimulator.SimRuntime.iOS-9-2)</span><br><span class="line">tvOS 9.1 (9.1 - 13U78) (com.apple.CoreSimulator.SimRuntime.tvOS-9-1)</span><br><span class="line">watchOS 2.1 (2.1 - 13S660) (com.apple.CoreSimulator.SimRuntime.watchOS-2-1)</span><br><span class="line">== Devices ==</span><br><span class="line">-- iOS 9.2 --</span><br><span class="line">    iPhone 4s (2913BDFC-A14F-410C-A91A-8F9E4932E96D) (Shutdown)</span><br><span class="line">    iPhone 5 (2E630D90-8E4B-43E0-8E75-AB60C1250126) (Shutdown)</span><br><span class="line">    iPhone 6s Plus (06537792-FAF6-4A65-B927-1CBACAB2C7D4) (Shutdown)</span><br><span class="line">    iPad Pro (26E5BE32-FA23-405D-986A-8B48C3A80F20) (Shutdown)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>シミュレータにインストールされているアプリの削除、リセット（シミュレータ自体は残ったまま）</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ xcrun simctl erase 358B0474-9C7F-4EB7-AA1A-0AC970917081</span><br></pre></td></tr></table></figure>
+
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="http://qiita.com/reikubonaga/items/48987d35fb10b7de6bcc">軽量化 - iOS開発していて気がついたら一杯のハードディスクを20GB以上軽くする方法！ - Qiita</a></li>
+</ul>
+<h2 id="AndroidSDK"><a href="#AndroidSDK" class="headerlink" title="AndroidSDK"></a>AndroidSDK</h2><p>デカい。特に最近のSDKは<code>x86</code>と<code>x86-64</code>で２倍取るので、よけいに辛い。</p>
+<h2 id="Homebrew"><a href="#Homebrew" class="headerlink" title="Homebrew"></a>Homebrew</h2><p><code>brew</code>でインストールしたファイルは<code>/usr/local/Cellar</code>以下に入っているが、<code>brew update</code>などをしていると古いバージョンが残っていて（？）、それが積み重なって結構な容量になる。</p>
+<p><code>brew cleanup [target]</code>で、最新版以外を削除する：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ brew ls --versions | grep mysql  <span class="comment"># 例えば`mysql`を見てみる</span></span><br><span class="line">mysql 5.6.10 5.6.17_1 5.6.21 5.6.22 5.6.25 5.6.26 5.7.10</span><br><span class="line">$ ls /usr/<span class="built_in">local</span>/Cellar/mysql</span><br><span class="line">5.6.10          5.6.21          5.6.25          5.7.10</span><br><span class="line">5.6.17_1        5.6.22          5.6.26</span><br><span class="line">$ brew cleanup mysql  <span class="comment"># 古いバージョンを削除</span></span><br><span class="line">Removing: /usr/<span class="built_in">local</span>/Cellar/mysql/5.6.10... (9,246 files, 327.4M)</span><br><span class="line">Removing: /usr/<span class="built_in">local</span>/Cellar/mysql/5.6.17_1... (9,509 files, 314.0M)</span><br><span class="line">Removing: /usr/<span class="built_in">local</span>/Cellar/mysql/5.6.21... (9,620 files, 314.5M)</span><br><span class="line">Removing: /usr/<span class="built_in">local</span>/Cellar/mysql/5.6.22... (9,665 files, 314.7M)</span><br><span class="line">Removing: /usr/<span class="built_in">local</span>/Cellar/mysql/5.6.25... (9,833 files, 313.8M)</span><br><span class="line">Removing: /usr/<span class="built_in">local</span>/Cellar/mysql/5.6.26... (9,853 files, 314.0M)</span><br><span class="line">==&gt; This operation has freed approximately 1.9G of disk space.</span><br><span class="line">$ brew ls --versions | grep mysql</span><br><span class="line">mysql 5.7.10  <span class="comment"># 綺麗になりました</span></span><br><span class="line">$ ls /usr/<span class="built_in">local</span>/Cellar/mysql</span><br><span class="line">5.7.10</span><br></pre></td></tr></table></figure>
+
+<p>対称を指定しなければ、すべてのモジュールが対象になる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ brew cleanup -n  <span class="comment"># ドライラン</span></span><br><span class="line">Would remove: /usr/<span class="built_in">local</span>/Cellar/ant/1.9.4 (1,597 files, 35.8M)</span><br><span class="line">Would remove: /usr/<span class="built_in">local</span>/Cellar/ant/1.9.5 (1,606 files, 34.8M)</span><br><span class="line">==&gt; This operation would free approximately 4.5G of disk space.</span><br><span class="line">...</span><br><span class="line">$ brew cleanup  <span class="comment"># クリーンナップ！</span></span><br><span class="line">...</span><br><span class="line">==&gt; This operation has freed approximately 4.5G of disk space.</span><br></pre></td></tr></table></figure>
+
+<h3 id="ダウンロードしたファイル"><a href="#ダウンロードしたファイル" class="headerlink" title="ダウンロードしたファイル"></a>ダウンロードしたファイル</h3><ul>
+<li><code>/Library/Caches/Homebrew</code> 以下にダウンロードされた<code>.tar.gz</code>が入っている<ul>
+<li><a href="https://github.com/Homebrew/homebrew/issues/2923#issuecomment-490929">You can blow away the cache currently with:</a></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ rm -rf `brew --cache`</span><br></pre></td></tr></table></figure>
+
+<h2 id="m2-repository"><a href="#m2-repository" class="headerlink" title=".m2 repository"></a>.m2 repository</h2><ul>
+<li>Apache Maven? Eclipse?</li>
+<li><code>~/.m2/repository/.cache/m2e</code> 以下</li>
+</ul>
+<h2 id="GenyMotion"><a href="#GenyMotion" class="headerlink" title="GenyMotion"></a>GenyMotion</h2><ul>
+<li>不用意にAndroid5、API23以降のデバイスを作ると結構デカい</li>
+<li>キャッシュ：<code>~/.Genymobile/Genymotion/ova</code><ul>
+<li>Settings &gt; Misc &gt; Cache usage &gt; Clear cache（<a href="http://stackoverflow.com/a/22835750">android - Clean Genymotion virtual devices local cache - Stack Overflow</a>
+）</li>
+</ul>
+</li>
+</ul>
+<h2 id="iTunes"><a href="#iTunes" class="headerlink" title="iTunes"></a>iTunes</h2><p>iPhoneなどからバックアップしたアプリが保存される。</p>
+<ul>
+<li><code>~/Music/iTunes/iTunes Media/Mobile Applications/</code><ul>
+<li>iTunesを開いて、<code>Apps &gt; マイ App</code>で、アプリのアイコンを右クリック &gt; 削除 &gt; ゴミ箱に入れる</li>
+</ul>
+</li>
+<li><code>~/Music/iTunes/Album Artwork/</code><ul>
+<li><a href="https://discussionsjapan.apple.com/thread/10034024?start=0&tstart=0">Album Artworkの中身にファイルはないのですか？ | Apple サポートコミュニティ</a></li>
+<li>自分の場合iTunesで曲を保持してないので、Album Artworkフォルダごと削除してしまっても、次回iTunesを立ち上げた時に自動的に再度フォルダは作られて問題ないように見える</li>
+</ul>
+</li>
+</ul>
+<h2 id="gradle"><a href="#gradle" class="headerlink" title="gradle"></a>gradle</h2><ul>
+<li><code>~/.gradle</code><ul>
+<li><code>wrapper/dists</code>, <code>cache</code>など、古いバージョンなども残っている模様</li>
+<li><a href="http://stackoverflow.com/a/28065338">Android Studio update -Error:Could not run build action using Gradle distribution - Stack Overflow</a> <code>~/.gradle</code> ごと削除してしまってよいとか（やってはみたが、不具合は未確認）</li>
+</ul>
+</li>
+</ul>
+<h2 id="node-js"><a href="#node-js" class="headerlink" title="node.js"></a>node.js</h2><h3 id="nvm"><a href="#nvm" class="headerlink" title="nvm"></a>nvm</h3><ul>
+<li>インストールされているバージョンをリストアップ： <code>nvm ls</code><ul>
+<li>各nodeのバージョンのインストール先： <code>~/.nvm/versions/node/</code></li>
+</ul>
+</li>
+<li>使わなくなったバージョンのアンインストール： <code>nvm uninstall &lt;バージョン&gt;</code></li>
+</ul>
+<h3 id="npm"><a href="#npm" class="headerlink" title="npm"></a>npm</h3><ul>
+<li>グローバルにインストールされているパッケージをリストアップ： <code>npm -g ls</code><ul>
+<li>インストール先：　<code>nvm</code> を使っている場合、<code>~/.nvm/versions/node/&lt;バージョン&gt;/lib/node_modules/</code></li>
+</ul>
+</li>
+<li>グローバルのパッケージをアンインストールするには： <code>npm -g uninstall &lt;パッケージ&gt;</code></li>
+</ul>
+<h2 id="Ruby"><a href="#Ruby" class="headerlink" title="Ruby"></a>Ruby</h2><h3 id="rbenv"><a href="#rbenv" class="headerlink" title="rbenv"></a>rbenv</h3><ul>
+<li>バージョンをリスト： <code>rbenv versions</code><ul>
+<li>インストール先： <code>/usr/local/rbenv/versions/</code></li>
+</ul>
+</li>
+<li>アンインストール： <code>rbenv uninstall &lt;バージョン&gt;</code></li>
+</ul>
+<h3 id="gem"><a href="#gem" class="headerlink" title="gem"></a>gem</h3><ul>
+<li>リスト： <code>gem list</code><ul>
+<li>インストール先： <code>/usr/local/rbenv/versions/&lt;バージョン&gt;/lib/ruby/gems/&lt;バージョン&gt;/gems/</code></li>
+</ul>
+</li>
+<li>不要な古いバージョンを削除： <code>gem cleanup</code><ul>
+<li><code>--dryrun</code> をつけて確認してからが吉</li>
+</ul>
+</li>
+</ul>
+<h2 id="TBC"><a href="#TBC" class="headerlink" title="TBC"></a>TBC</h2><p>To be continued…</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

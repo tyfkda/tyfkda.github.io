@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta name="robots" content="noindex">
+    <title>Refraction</title>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="default.css">
+
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.16/processing.min.js"></script>
+  </head>
+  <body style="height:256px; overflow:hidden">
+    <div class="sketch-canvas">
+      <div class="pull-left"><canvas id="processing-canvas"></canvas></div>
+      <div class="pull-left" style="margin:8px"><button onclick="restart()">restart</button></div>
+    </div>
+
+<script id="mysketch" type="text/processing">
+class vec {
+  float x, y, z;
+  vec(float x, float y, float z) { this.x = x; this.y = y; this.z = z; }
+  void set(float x, float y, float z) { this.x = x; this.y = y; this.z = z; }
+  vec add(vec v) { return new vec(x + v.x, y + v.y, z + v.z); }
+  vec sub(vec v) { return new vec(x - v.x, y - v.y, z - v.z); }
+  vec scale(float s) { return new vec(x * s, y * s, z * s); }
+  vec neg() { return new vec(-x, -y, -z); }
+  float len() { return sqrt(x * x + y * y + z * z); }
+  vec normal() { return scale(1.0 / len()); }
+  float dot(vec v) { return x * v.x + y * v.y + z * v.z; }
+  vec cross(vec v) { return new vec(y * v.z - v.y * z, z * v.x - v.z * x, x * v.y - v.x * y); }
+}
+
+float EPSILON = 0.0001;
+
+// 線分と球の交差判定
+float intersect_line_sphere(vec orig, vec dir, vec sphere_center, float sphere_radius) {
+  vec c = sphere_center;
+  vec s = orig;
+  vec d = dir;
+  float r = sphere_radius;
+  vec v = s.sub(c);
+
+  float b = v.dot(d);
+  float dd = sq(b) - (v.dot(v) - sq(r));
+  if (dd < 0) {
+    return -1;  // not intersect
+  } else {
+    float sqdd = sqrt(dd);
+    float t = -b - sqdd;
+    if (t < EPSILON) {
+      t = -b + sqdd;
+      if (t < EPSILON) {
+        return -1;
+      }
+    }
+    return t;  // maybe intersect
+  }
+}
+
+// 線分と無限平面の交差判定
+float intersect_line_plane(vec orig, vec dir, float a, float b, float c, float d) {
+  float h = orig.x * a + orig.y * b + orig.z * c + d;
+  if (h < 0) {
+    return -1;
+  } else {
+    float inner = dir.x * a + dir.y * b + dir.z * c;
+    if (inner >= 0) {
+      return -1;
+    } else {
+      return h / (-inner);
+    }
+  }
+}
+
+// マテリアル
+class Material {
+  vec diffuse = new vec(0, 0, 0);
+  vec emissive = new vec(0, 0, 0);
+  vec diffuse2 = new vec(0, 0, 0);
+  float grid = 0;
+  float reflection = 0;
+  float refraction = 0;
+  float eta = 0;
+
+  Material(float difr, float difg, float difb) {
+    diffuse.set(difr, difg, difb);
+  }
+
+  vec get_diffuse(vec pos) {
+    if (grid == 0) {
+      return diffuse;
+    } else {
+      float e = 0.0001;
+      float v = floor(pos.x/grid + e) + floor(pos.y/grid + e) + floor(pos.z/grid + e);
+      int i = (int)v;
+      if ((i & 1) == 0) {
+        return diffuse;
+      } else {
+        return diffuse2;
+      }
+    }
+  }
+};
+
+// 物体
+class Object {
+  Material material;
+
+  float intersect_line(vec pNrm, vec orig, vec dir) {
+    return -1;
+  }
+}
+
+// 球
+class Sphere extends Object {
+  vec center;
+  float radius;
+
+  Sphere(vec _center, float _radius, Material _material) {
+    center = _center;
+    radius = _radius;
+    material = _material;
+  }
+
+  float intersect_line(vec normal, vec orig, vec dir) {
+    float t = intersect_line_sphere(orig, dir, center, radius);
+    if (t >= 0) {
+      vec pos = orig.add(dir.scale(t));
+      vec n = pos.sub(center).normal();
+      normal.set(n.x, n.y, n.z);
+    }
+    return t;
+  }
+}
+
+// 無限平面
+class Plane extends Object {
+  float a, b, c, d;  // 平面方程式の係数
+
+  Plane(float _a, float _b, float _c, float _d, Material _material) {
+    a = _a;
+    b = _b;
+    c = _c;
+    d = _d;
+    material = _material;
+  }
+
+  float intersect_line(vec normal, vec orig, vec dir) {
+    float t = intersect_line_plane(orig, dir, a, b, c, d);
+    if (t >= 0) {
+      normal.set(a, b, c);
+    }
+    return t;
+  }
+}
+
+// 点光源
+class PointLight {
+  vec pos;
+  vec col;
+
+  PointLight(vec _pos, vec _col) {
+    pos = _pos;
+    col = _col;
+  }
+
+  vec shading(vec hitpos, vec normal, Material material) {
+    vec lv = pos.sub(hitpos).normal();
+    float f = max(normal.dot(lv), 0);
+    vec diffuse = material.get_diffuse(hitpos);
+    return new vec(f * diffuse.x * col.x, f * diffuse.y * col.y, f * diffuse.z * col.z);
+  }
+}
+
+// 交差情報
+class Intersect {
+  float t = -1;
+  vec normal = new vec(0, 0, 0);
+  Object obj = null;
+
+  boolean is_enable() { return t >= 0; }
+}
+
+int renderY = 0;
+color LineBuf[];
+
+// 値を範囲内に収める
+float clamp(float val, float min, float max) {
+  if (val < min) {
+    return min;
+  } else if (val > max) {
+    return max;
+  } else {
+    return val;
+  }
+}
+
+// 反射ベクトルを求める
+vec reflection(vec v, vec normal) {
+  return v.add(normal.scale(-2 * v.dot(normal)));
+}
+
+// 反射ベクトルを求める
+vec refraction(vec v, vec n, float eta) {
+  float dot = v.dot(n);
+  float d = 1.0 - sq(eta) * (1.0 - sq(dot));
+  if (d > 0) {
+    vec rn = v.sub(n.scale(dot)).scale(eta);
+    vec rt = n.scale(sqrt(d));
+    return rn.sub(rt);
+  } else {  // 全反射
+    return null;
+  }
+}
+
+color fcolor(float r, float g, float b) {
+  int ir = (int)(clamp(r, 0, 1) * 255.99);
+  int ig = (int)(clamp(g, 0, 1) * 255.99);
+  int ib = (int)(clamp(b, 0, 1) * 255.99);
+  return color(ir, ig, ib);
+}
+
+// シーン
+class Scene {
+  ArrayList objs;
+  ArrayList lights;
+
+  Scene() {
+    objs = new ArrayList();
+    lights = new ArrayList();
+  }
+
+  void add_obj(Object obj) {
+    objs.add(obj);
+  }
+
+  void add_light(PointLight light) {
+    lights.add(light);
+  }
+
+  // 一番近くで交差するオブジェクトを探す
+  void find_nearest_intersect_with_ray(Intersect isect, vec orig, vec dir) {
+    isect.t = -1;
+    vec normal = new vec(0, 0, 0);
+    for (int i=objs.size(); --i>=0; ) {
+      Object obj = (Object)objs.get(i);
+      float t = obj.intersect_line(normal, orig, dir);
+      if (t >= 0 && (isect.t < 0 || t < isect.t)) {
+        isect.t = t;
+        isect.normal.set(normal.x, normal.y, normal.z);
+        isect.obj = obj;
+      }
+    }
+  }
+
+  // 目標物までの間に何かに当たるか？
+  boolean intersect_anything(vec orig, vec target) {
+    vec diff = target.sub(orig);
+    float len = diff.len();
+    vec dir = diff.scale(1.0 / len);
+    vec normal = new vec(0, 0, 0);
+    for (int i=objs.size(); --i>=0; ) {
+      Object obj = (Object)objs.get(i);
+      float t = obj.intersect_line(normal, orig, dir);
+      if (t >= 0 && t < len) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // シェーディング
+  vec shading(vec pos, vec normal, Material material, vec raydir) {
+    vec col = new vec(0, 0, 0);
+    float a = material.reflection;
+    float b = material.refraction;
+    if (a + b < 1) {
+      col = col.add(calc_diffuse(pos, normal, material).scale(1 - a - b));
+    }
+    if (a > 0) {
+      col = col.add(calc_reflection(pos, normal, raydir).scale(a));
+    }
+    if (b > 0) {
+      col = col.add(calc_refraction(pos, normal, raydir, material.eta).scale(b));
+    }
+    return col;
+  }
+  vec calc_diffuse(vec pos, vec normal, Material material) {
+    vec col = new vec(0, 0, 0);
+    for (int i=lights.size(); --i>=0; ) {
+      PointLight light = (PointLight)lights.get(i);
+      if (visible(pos, light.pos)) {
+        col = col.add(light.shading(pos, normal, material));
+      }
+    }
+    return col;
+  }
+  vec calc_reflection(vec pos, vec normal, vec raydir) {
+    vec refvec = reflection(raydir, normal);
+    return raytrace(pos, refvec);
+  }
+  vec calc_refraction(vec pos, vec normal, vec raydir, float eta) {
+    vec refvec = refraction(raydir, normal, eta);
+    if (refvec != null) {  // 屈折
+      return raytrace(pos, refvec);
+    } else {  // 全反射
+      return calc_reflection(pos, normal, raydir);
+    }
+  }
+
+  vec raytrace(vec orig, vec raydir) {
+    Intersect isect = new Intersect();
+    find_nearest_intersect_with_ray(isect, orig, raydir);
+    if (isect.is_enable()) {
+      vec pos = orig.add(raydir.scale(isect.t));
+      if (isect.normal.dot(raydir) < 0) {
+        return shading(pos, isect.normal, isect.obj.material, raydir);
+      } else {
+        return calc_refraction(pos, isect.normal.neg(), raydir, 1.0 / isect.obj.material.eta);
+      }
+    }
+    return new vec(0, 0, 0);
+  }
+
+  // 見えるか？
+  boolean visible(vec pos, vec target) {
+    return !intersect_anything(pos, target);
+  }
+}
+
+vec eyepos = new vec(0, 0, -1.5);
+Scene scene;
+
+void setup() {
+  size(256, 256);
+  LineBuf = new color[width];
+
+  scene = new Scene();
+  // 球
+  {
+    Material material = new Material(1, 0, 0);
+    material.refraction = 1.0;
+    material.eta = 1 / 2.417;
+    scene.add_obj(new Sphere(new vec(0, 0, 0), 0.5, material));
+  }
+  // 床
+  {
+    Material material = new Material(0, 1, 0);
+    material.grid = 0.25;
+    material.diffuse2.set(0, 0, 1);
+    scene.add_obj(new Plane(0, 1, 0, 0.5, material));
+  }
+  {
+    Material material = new Material(1, 1, 0);
+    material.grid = 0.25;
+    material.diffuse2.set(1, 1, 1);
+    scene.add_obj(new Plane(0, 0, -1, 1.5, material));
+  }
+  {
+    Material material = new Material(1, 0, 0);
+    material.grid = 0.25;
+    material.diffuse2.set(1, 0, 1);
+    scene.add_obj(new Plane(1, 0, 0, 1, material));
+  }
+  {
+    Material material = new Material(0, 1, 1);
+    material.grid = 0.25;
+    material.diffuse2.set(0, 0, 1);
+    scene.add_obj(new Plane(-1, 0, 0, 1, material));
+  }
+  {
+    Material material = new Material(1, 1, 0);
+    material.grid = 0.25;
+    material.diffuse2.set(0, 1, 1);
+    scene.add_obj(new Plane(0, -1, 0, 1, material));
+  }
+  scene.add_light(new PointLight(new vec(0.5, 0.75, -1.5), new vec(1, 1, 1)));
+  scene.add_light(new PointLight(new vec(0, 0.8, 0), new vec(2, 2, 2)));
+}
+
+void draw() {
+  render_line(LineBuf, width, height, renderY);
+  copy_line(LineBuf, renderY);
+  if (++renderY >= height) {
+    noLoop();
+  }
+}
+
+void copy_line(color[] img, int y) {
+  loadPixels();
+  for (int i = 0; i < width; ++i) {
+    pixels[y * width + i] = img[i];
+  }
+  updatePixels();
+}
+
+void render_line(color[] img, int width, int height, int iy) {
+  float w2 = width / 2;
+  float h2 = height / 2;
+  float xofs = w2 - 0.5;
+  float yofs = h2 - 0.5;
+  float py = -((iy - yofs) / h2);    // flip Y
+
+  vec normal = new vec(0, 0, 0);
+  for (int j=0; j<width; ++j) {
+    float px = (j - xofs) / w2;
+    vec raydir = (new vec(px, py, 1.75)).normal();
+    vec col = scene.raytrace(eyepos, raydir);
+    img[j] = fcolor(col.x, col.y, col.z);
+  }
+}
+
+void restart() {
+  renderY = 0;
+  fill(color(192));
+  noStroke();
+  rect(0, 0, width, height);
+  loop();
+}
+    </script>
+
+<script type="text/javascript">
+var pjs
+window.addEventListener('load', function() {
+  var code = document.getElementById('mysketch').text
+  pjs = new Processing('processing-canvas', code)
+})
+function restart() {
+  pjs.restart()
+}
+</script>
+  </body>
+</html>

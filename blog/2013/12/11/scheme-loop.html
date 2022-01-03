@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Schemeはご承知の通りループの構文がなくて、末尾再帰でループを実現する。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Schemeでの効率のいいループの方法を考える"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Schemeでの効率のいいループの方法を考える - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/12/11/scheme-loop.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Schemeでの効率のいいループの方法を考える</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-12-11
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/lisp/">#lisp</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Schemeはご承知の通りループの構文がなくて、末尾再帰でループを実現する。</p>
+<span id="more"></span>
+
+<p>よく使うのはnamed letという構文で、例えば階乗の計算は</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">(<span class="name">let</span> fact ((<span class="name">n</span> <span class="number">10</span>))</span><br><span class="line">  (<span class="name">if</span> (<span class="name">=</span> n <span class="number">0</span>)</span><br><span class="line">      <span class="number">1</span></span><br><span class="line">    (<span class="name">*</span> n (<span class="name">fact</span> (<span class="name">-</span> n <span class="number">1</span>)))))</span><br></pre></td></tr></table></figure>
+
+<p>てな具合になる。簡単な実装法としては、named letはマクロによって変換されて、単純なラムダ式になる：</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">((<span class="name">lambda</span> (<span class="name">fact</span>)</span><br><span class="line">   (<span class="name">set!</span> fact (<span class="name">lambda</span> (<span class="name">n</span>)</span><br><span class="line">                (<span class="name">if</span> (<span class="name">=</span> n <span class="number">0</span>)</span><br><span class="line">                    <span class="number">1</span></span><br><span class="line">                  (<span class="name">*</span> n (<span class="name">fact</span> (<span class="name">-</span> n <span class="number">1</span>))))))</span><br><span class="line">   (<span class="name">fact</span> <span class="number">10</span>))</span><br><span class="line"> &#x27;())</span><br></pre></td></tr></table></figure>
+
+<p>関数が自分自身を参照するためにローカル変数<code>fact</code>への代入が必要となっている。</p>
+<p>しかしこの方法は（まともな処理系では最適化されるのかわからないけど、僕の参考にしている<a href="http://www.cs.indiana.edu/~dyb/papers/3imp.pdf">3imp</a>のスタックベースの）処理系の実装から考えるとあまりよろしくない。<code>set!</code>による代入を使うと、そのローカル変数はボックス化する必要があって、ヒープの確保が発生してしまう。なぜかというと、どこかから継続で使われる可能性があるので、スタック上に持っておくことができなくなるからである。しかしヒープの確保はコストがかかるのでできれば避けたい。</p>
+<p>でヒープを使わないループの実現方法を考えたんだけど、関数に自分自身を引数に追加してしまうのはどうかと思いついた。</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">(<span class="name">let1</span> fact (<span class="name">lambda</span> (<span class="name">self</span> n)</span><br><span class="line">             (<span class="name">if</span> (<span class="name">=</span> n <span class="number">1</span>)</span><br><span class="line">                 <span class="number">1</span></span><br><span class="line">               (<span class="name">*</span> n (<span class="name">self</span> self (<span class="name">-</span> n <span class="number">1</span>)))))</span><br><span class="line">  (<span class="name">fact</span> fact <span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+
+<p>これだと<code>set!</code>を使わないのでヒープの確保が発生しないので、軽くなるはず。</p>
+<p>問題は、手書きで <code>(fact fact n)</code> などと書きたくないので、自動的に関数への引数を挿入する方法をどうするか。例えば<code>macrolet</code>のように局所的なマクロを定義できれば機械的にいけそうである。<a href="http://valvallow.blogspot.jp/2011/05/gauche-macrolet.html">vallog: gauche に macrolet</a>を参考に、オレオレ<code>named-let</code>マクロを</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">(<span class="name">define-macro</span> (<span class="name">macrolet</span> letargs . body)</span><br><span class="line">  `(let-syntax</span><br><span class="line">       ,(map (lambda (elm)</span><br><span class="line">               (cons (car elm) `((,(with-module gauche.internal make-macro-transformer) (gensym) ,(cadr elm)))))</span><br><span class="line">             letargs)</span><br><span class="line">     ,@body))</span><br><span class="line"></span><br><span class="line">(<span class="name">define-macro</span> (<span class="name">named-let</span> name vars . body)</span><br><span class="line">  (<span class="name">let</span> ((<span class="name">args</span> (<span class="name">gensym</span>))</span><br><span class="line">        (<span class="name">self</span> (<span class="name">gensym</span>)))</span><br><span class="line">    `(macrolet ((,name (lambda ,args `(,&#x27;,self ,&#x27;,self ,@,args))))</span><br><span class="line">       (let1 ,self (lambda (,self ,@(map car vars))</span><br><span class="line">                     ,@body)</span><br><span class="line">         (,name ,@(map cadr vars))))))</span><br></pre></td></tr></table></figure>
+
+<p>のように定義してやると、</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">(<span class="name">named-let</span> fact ((<span class="name">n</span> <span class="number">10</span>))</span><br><span class="line">  (<span class="name">if</span> (<span class="name">=</span> n <span class="number">0</span>)</span><br><span class="line">      <span class="number">1</span></span><br><span class="line">    (<span class="name">*</span> n (<span class="name">fact</span> (<span class="name">-</span> n <span class="number">1</span>)))))</span><br></pre></td></tr></table></figure>
+
+<p>と素直に書けば自動的に変換できて、しかもヒープ確保なしで動く。やったね！</p>
+<p>こういう変換をラムダリフティングというのかな。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/09/lisp-to-js.html" title="LispからJavaScriptへのトランスレータを作り始めた" rel="bookmark">LispからJavaScriptへのトランスレータを作り始めた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/01/15/loop-without-closure.html" title="Schemeコンパイラで、末尾再帰のクロージャをループに変更する" rel="bookmark">Schemeコンパイラで、末尾再帰のクロージャをループに変更する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/30/part-from-3imp.html" title="Schemeのコンパイラで効率のいいループの実現方法、そして3impとの決別" rel="bookmark">Schemeのコンパイラで効率のいいループの実現方法、そして3impとの決別</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/01/16/setjmp.html" title="Schemeコンパイラで、ある種の継続をsetjmpに置き換える" rel="bookmark">Schemeコンパイラで、ある種の継続をsetjmpに置き換える</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

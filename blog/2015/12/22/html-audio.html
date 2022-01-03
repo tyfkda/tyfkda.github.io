@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="iOSのブラウザではオーディオの再生に制限があって、ユーザがタッチなどの操作をした時に１つだけ鳴らすことができて、それ以外の任意のタイミングで鳴らすことができない。これは非常に困る。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="iOSアプリ内ブラウザでのオーディオ再生の制限解除"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>iOSアプリ内ブラウザでのオーディオ再生の制限解除 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/12/22/html-audio.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>iOSアプリ内ブラウザでのオーディオ再生の制限解除</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-12-22
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ios/">#ios</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>iOSのブラウザではオーディオの再生に制限があって、ユーザがタッチなどの操作をした時に１つだけ鳴らすことができて、それ以外の任意のタイミングで鳴らすことができない。これは非常に困る。</p>
+<span id="more"></span>
+
+<p>SafariやChromeなど通常のブラウザではどうしようもないんだが、アプリ内で<code>UIWebView</code>を使っている場合には<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIWebView_Class/#//apple_ref/occ/instp/UIWebView/mediaPlaybackRequiresUserAction">mediaPlaybackRequiresUserAction</a>プロパティを<code>false</code>にしてやればこの制限が解除され、ユーザの操作がなくても好きなタイミングでオーディオを再生できるようになる：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> webView: <span class="type">UIWebView</span> <span class="operator">=</span> <span class="type">UIWebView</span>()</span><br><span class="line">webView.mediaPlaybackRequiresUserAction <span class="operator">=</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="WKWebViewの場合"><a href="#WKWebViewの場合" class="headerlink" title="WKWebViewの場合"></a>WKWebViewの場合</h3><ul>
+<li><code>WKWebView</code>の場合は <code>WKWebViewConfiguration</code>#<a href="https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebViewConfiguration_Ref/index.html#//apple_ref/occ/instp/WKWebViewConfiguration/requiresUserActionForMediaPlayback">requiresUserActionForMediaPlayback</a></li>
+<li>ただしそれを<code>false</code>にしても、ローカルファイルからは読み込めない<ul>
+<li><a href="http://stackoverflow.com/questions/32780038/wkwebview-fails-to-play-local-audio">javascript - WKWebView fails to play local audio - Stack Overflow</a></li>
+<li>HTMLで読み込むファイルすべてを<a href="http://stackoverflow.com/questions/24882834/wkwebview-not-loading-local-files-under-ios-8/28676439#28676439"><code>/temp/www</code>以下にコピー</a>してやればいける、しかしメンドイな…。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> webView: <span class="type">WKWebView</span>!</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">loadView</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.loadView()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> config <span class="operator">=</span> <span class="type">WKWebViewConfiguration</span>()</span><br><span class="line">    config.requiresUserActionForMediaPlayback <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    webView <span class="operator">=</span> <span class="type">WKWebView</span>(frame: view.bounds, configuration: config)</span><br><span class="line">    view.addSubview(webView)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">    <span class="comment">// バンドルされたpublic_htmlディレクトリ以下を/temp/wwwにコピーして、その中のindex.htmlを開く</span></span><br><span class="line">    <span class="keyword">let</span> dirUrl <span class="operator">=</span> <span class="type">NSBundle</span>.mainBundle().<span class="type">URLForResource</span>(<span class="string">&quot;public_html&quot;</span>, withExtension: <span class="string">&quot;&quot;</span>)<span class="operator">!</span></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">      <span class="keyword">let</span> dstUrl <span class="operator">=</span> <span class="keyword">try</span> copyFilesToTempWWW(dirUrl)</span><br><span class="line">      <span class="keyword">let</span> url <span class="operator">=</span> dstUrl.<span class="type">URLByAppendingPathComponent</span>(<span class="string">&quot;index.html&quot;</span>)</span><br><span class="line">      webView.loadRequest(<span class="type">NSURLRequest</span>(URL: url))</span><br><span class="line">    &#125; <span class="keyword">catch</span> <span class="keyword">let</span> error <span class="keyword">as</span> <span class="type">NSError</span> &#123;</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&quot;Error: &quot;</span> <span class="operator">+</span> error.debugDescription)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">copyFilesToTempWWW</span>(<span class="params">url</span>: <span class="type">NSURL</span>)</span> <span class="keyword">throws</span> -&gt; <span class="type">NSURL</span> &#123;</span><br><span class="line">    <span class="comment">// Some safety checks</span></span><br><span class="line">    <span class="keyword">var</span> error:<span class="type">NSError</span>? <span class="operator">=</span> <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="operator">!</span>url.fileURL <span class="operator">||</span> <span class="operator">!</span>url.checkResourceIsReachableAndReturnError(<span class="operator">&amp;</span>error)) &#123;</span><br><span class="line">      <span class="keyword">throw</span> error <span class="operator">??</span> <span class="type">NSError</span>(</span><br><span class="line">        domain: <span class="string">&quot;BuggyWKWebViewDomain&quot;</span>,</span><br><span class="line">        code: <span class="number">1001</span>,</span><br><span class="line">        userInfo: [NSLocalizedDescriptionKey: <span class="type">NSLocalizedString</span>(<span class="string">&quot;URL must be a file URL.&quot;</span>, comment:<span class="string">&quot;&quot;</span>)])</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create &quot;/temp/www&quot; directory</span></span><br><span class="line">    <span class="keyword">let</span> fm <span class="operator">=</span> <span class="type">NSFileManager</span>.defaultManager()</span><br><span class="line">    <span class="keyword">let</span> tmpDirURL <span class="operator">=</span> <span class="type">NSURL</span>.fileURLWithPath(<span class="type">NSTemporaryDirectory</span>()).<span class="type">URLByAppendingPathComponent</span>(<span class="string">&quot;www&quot;</span>)</span><br><span class="line">    <span class="keyword">try!</span> fm.createDirectoryAtURL(tmpDirURL, withIntermediateDirectories: <span class="literal">true</span>, attributes: <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Now copy given file to the temp directory</span></span><br><span class="line">    <span class="keyword">let</span> dstURL <span class="operator">=</span> tmpDirURL.<span class="type">URLByAppendingPathComponent</span>(url.lastPathComponent<span class="operator">!</span>)</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">_</span> <span class="operator">=</span> <span class="keyword">try?</span> fm.removeItemAtURL(dstURL)</span><br><span class="line">    <span class="keyword">try!</span> fm.copyItemAtURL(url, toURL: dstURL)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Files in &quot;/temp/www&quot; load flawlessly :)</span></span><br><span class="line">    <span class="keyword">return</span> dstURL</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">didReceiveMemoryWarning</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.didReceiveMemoryWarning()</span><br><span class="line">    <span class="comment">// Dispose of any resources that can be recreated.</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://mushikago.com/i/?p=6133">iOSアプリ内のUIWebViewでHTML5オーディオを自動再生する。 | MUSHIKAGO APPS MEMO</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/08/bounces-false.html" title="iOSのWebViewでバウンスを禁止する、をSwiftで" rel="bookmark">iOSのWebViewでバウンスを禁止する、をSwiftで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/21/bubble-shooter.html" title="Bubble shooter作成中" rel="bookmark">Bubble shooter作成中</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-pass-values.html" title="iOSガワネイティブでSwiftにでかいデータを受け渡す" rel="bookmark">iOSガワネイティブでSwiftにでかいデータを受け渡す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-swift-result.html" title="iOSガワネイティブでSwiftから値を受け取る" rel="bookmark">iOSガワネイティブでSwiftから値を受け取る</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

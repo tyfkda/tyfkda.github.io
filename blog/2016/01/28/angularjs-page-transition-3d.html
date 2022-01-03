@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="AngularJS1でngRouteを使ったページ遷移時に、それまでの画面が奥に引っ込むアニメーションや、逆に出てくるアニメーションを入れて、見た目をリッチにしてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="AngularJSでページ遷移時に3D風アニメーションを入れてみた"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>AngularJSでページ遷移時に3D風アニメーションを入れてみた - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/01/28/angularjs-page-transition-3d.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>AngularJSでページ遷移時に3D風アニメーションを入れてみた</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-01-28
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/angular/">#angular</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>AngularJS1でngRouteを使ったページ遷移時に、それまでの画面が奥に引っ込むアニメーションや、逆に出てくるアニメーションを入れて、見た目をリッチにしてみた。</p>
+<span id="more"></span>
+
+<p><a href="https://jsfiddle.net/52jfs8hw/6/embedded/result/">デモ</a></p>
+<p><a href="https://gyazo.com/1482322c5e4de7c3f95fb243608ac7c8"><img src="https://i.gyazo.com/1482322c5e4de7c3f95fb243608ac7c8.gif" alt="https://gyazo.com/1482322c5e4de7c3f95fb243608ac7c8"></a></p>
+<h3 id="AngularJSを使ったHTMLページ作成"><a href="#AngularJSを使ったHTMLページ作成" class="headerlink" title="AngularJSを使ったHTMLページ作成"></a>AngularJSを使ったHTMLページ作成</h3><p><a href="https://jsfiddle.net/52jfs8hw/1/">デモ1</a></p>
+<p>JSでAngularJSのモジュール<code>app</code>とコントローラ<code>AppController</code>を定義する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// script.js</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="meta">  &#x27;use strict&#x27;</span></span><br><span class="line"></span><br><span class="line">  angular.module(<span class="string">&#x27;app&#x27;</span>, [])</span><br><span class="line">    .controller(<span class="string">&#x27;AppController&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 特になにもなし</span></span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>今のところ定義しただけで、特に何もしない</li>
+</ul>
+<p>HTMLで、それらを使ったHTMLを定義する：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--index.html--&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">ng-app</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;style.css&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;script.js&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-controller</span>=<span class="string">&quot;AppController as app&quot;</span>&gt;</span></span><br><span class="line">    Hello</span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>スタイルは適当に：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* style.css */</span></span><br><span class="line"><span class="selector-tag">html</span>, <span class="selector-tag">body</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>画面いっぱいに表示されるように、<code>html</code>と<code>body</code>に<code>height: 100%</code>を指定</li>
+</ul>
+<h3 id="ngRouteによるページ遷移"><a href="#ngRouteによるページ遷移" class="headerlink" title="ngRouteによるページ遷移"></a>ngRouteによるページ遷移</h3><p>ngRouteというモジュールを使うと、同一ページ内で擬似的なページ遷移を行えるようになる。</p>
+<p><a href="https://jsfiddle.net/52jfs8hw/2/">デモ2</a></p>
+<p>JSでルーティングの設定をする：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// script.js</span></span><br><span class="line">  angular.module(<span class="string">&#x27;app&#x27;</span>, [<span class="string">&#x27;ngRoute&#x27;</span>])</span><br><span class="line">    ...</span><br><span class="line">    .config([<span class="string">&#x27;$routeProvider&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$routeProvider</span>) </span>&#123;</span><br><span class="line">      $routeProvider</span><br><span class="line">        .when(<span class="string">&#x27;/&#x27;</span>, &#123;</span><br><span class="line">          <span class="attr">templateUrl</span>: <span class="string">&#x27;top&#x27;</span>,</span><br><span class="line">        &#125;)</span><br><span class="line">        .when(<span class="string">&#x27;/setting&#x27;</span>, &#123;</span><br><span class="line">          <span class="attr">templateUrl</span>: <span class="string">&#x27;setting&#x27;</span>,</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>依存するモジュールに<code>ngRoute</code>を指定する</li>
+<li><code>$routeProvider</code>にルーティングを定義する</li>
+<li><code>templateUrl</code>にパスを指定するが、後述の<code>ng-template</code>で定義した名前を指定するとその中身が参照されることになる</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- head内 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular-route.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-controller</span>=<span class="string">&quot;AppController as app&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-view</span> <span class="attr">id</span>=<span class="string">&quot;root&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">id</span>=<span class="string">&quot;top&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/ng-template&quot;</span>&gt;</span><span class="handlebars"><span class="xml"></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;top&quot;</span>&gt;</span></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">        <span class="tag">&lt;<span class="name">h3</span>&gt;</span>Top page<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#/setting&quot;</span>&gt;</span>Go to setting<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">    </span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">id</span>=<span class="string">&quot;setting&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/ng-template&quot;</span>&gt;</span><span class="handlebars"><span class="xml"></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;setting&quot;</span>&gt;</span></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">        <span class="tag">&lt;<span class="name">h3</span>&gt;</span>Setting<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#/&quot;</span>&gt;</span>Back<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="xml"><span class="handlebars">    </span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ng-view</code>で指定した要素のところに、ルーティングで設定された内容が埋め込まれる</li>
+<li><code>type=&quot;text/ng-template&quot;</code>を指定したスクリプトタグで、ルーティングで表示される内容を定義できる</li>
+<li>リンクのURLは<code>&lt;a href=&quot;#/〜&quot;&gt;</code>でハッシュとして指すことができる</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* style.css */</span></span><br><span class="line"><span class="selector-id">#root</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.top</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: red;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.setting</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: green;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ng-view</code> で指定した要素を <code>position: absolute</code> にする（後でアニメーションさせるときに必要）</li>
+</ul>
+<h3 id="アニメーションの導入"><a href="#アニメーションの導入" class="headerlink" title="アニメーションの導入"></a>アニメーションの導入</h3><p><a href="https://jsfiddle.net/52jfs8hw/3/">デモ3</a></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- head内 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular-animate.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-controller</span>=<span class="string">&quot;AppController as app&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">class</span>=<span class="string">&quot;scaledown-frombottom&quot;</span>&gt;</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>root</code>じゃなくてそれより上の要素（ここでは<code>body</code>）にクラスアトリビュートをセットして、アニメーションを選択する</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// script.js</span></span><br><span class="line">  angular.module(<span class="string">&#x27;app&#x27;</span>, [<span class="string">&#x27;ngRoute&#x27;</span>, <span class="string">&#x27;ngAnimate&#x27;</span>])</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>依存するモジュールに<code>ngAnimate</code>を追加</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* style.css */</span></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: black;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#root</span> &#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="attribute">transition</span>: <span class="number">500ms</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.scaledown-frombottom</span> <span class="selector-class">.ng-enter</span> &#123;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.scaledown-frombottom</span> <span class="selector-class">.ng-enter</span><span class="selector-class">.ng-enter-active</span> &#123;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0%</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.scaledown-frombottom</span> <span class="selector-class">.ng-leave</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">scale</span>(<span class="number">1</span>);</span><br><span class="line">  <span class="attribute">opacity</span>: <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.scaledown-frombottom</span> <span class="selector-class">.ng-leave</span><span class="selector-class">.ng-leave-active</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">scale</span>(<span class="number">0.75</span>);</span><br><span class="line">  <span class="attribute">opacity</span>: <span class="number">0.5</span>;</span><br><span class="line">  <span class="attribute">z-index</span>: -<span class="number">1000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>body</code> の <code>background-color: black</code> で、背景を黒くする</li>
+<li><code>#root</code> に <code>transition: 500ms</code> で、アニメーションの時間を指定する</li>
+<li>ここでは<code>scaledown-frombottom</code>というクラス名のアニメーションを定義している<ul>
+<li><code>scaledown-frombottom</code>の直後のスペースは必要で、これで階層のついた要素のスタイルを指定できる？</li>
+</ul>
+</li>
+<li>奥に引っ込む時に、<code>z-index</code>を負の値にしてやり、奥に描画されるようにする<ul>
+<li><code>transform: translate3d()</code>を使ったら描画の優先順序をいい具合にしてくれないかと思ったが、そうはいかず…</li>
+</ul>
+</li>
+</ul>
+<h3 id="アニメーションの種類を設定"><a href="#アニメーションの種類を設定" class="headerlink" title="アニメーションの種類を設定"></a>アニメーションの種類を設定</h3><p>ページを戻る時には別のアニメーションをすることで、「行った」「戻った」というページ間の関係を分かりやすくする。</p>
+<p><a href="https://jsfiddle.net/52jfs8hw/6/">デモ4</a></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// script.js</span></span><br><span class="line">  <span class="comment">// appモジュール</span></span><br><span class="line">    .controller(<span class="string">&#x27;AppController&#x27;</span>, [<span class="string">&#x27;$rootScope&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$rootScope</span>) </span>&#123;</span><br><span class="line">      $rootScope.pageTransitionAnimType = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    &#125;])</span><br><span class="line">    ... <span class="comment">// ルーティングの設定</span></span><br><span class="line">    .directive(<span class="string">&#x27;pageTransitAnim&#x27;</span>, [<span class="string">&#x27;$rootScope&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$rootScope</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">restrict</span>: <span class="string">&#x27;A&#x27;</span>,</span><br><span class="line">        <span class="attr">link</span>: <span class="function"><span class="keyword">function</span>(<span class="params">_scope, elem, attrs, _ctrl</span>) </span>&#123;</span><br><span class="line">          angular.element(elem).on(<span class="string">&#x27;click touchstart&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            $rootScope.pageTransitionAnimType = attrs.pageTransitAnim</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>pageTransitAnim</code> というディレクティブを定義して、アニメーションを指定できるようにする<ul>
+<li>リンクがクリックされた時に、そのアトリビュートの値を<code>$rootScope.pageTransitionAnimType</code>に代入してやる</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-controller</span>=<span class="string">&quot;AppController as app&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">ng-class</span>=<span class="string">&quot;pageTransitionAnimType&quot;</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- topからsettingへのリンク --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#/setting&quot;</span> <span class="attr">page-transit-anim</span>=<span class="string">&quot;scaledown-frombottom&quot;</span>&gt;</span>Go to setting<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- settingからtopへのリンク --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#/&quot;</span> <span class="attr">page-transit-anim</span>=<span class="string">&quot;movetobottom-scaleup&quot;</span>&gt;</span>Back<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>body</code>の<code>ng-class=&quot;pageTransitionAnimType&quot;</code>で、AngularJSの<code>$rootScope.pageTransitionAnimType</code>がクラス名として設定され、JS内で値を変更することで再生するアニメーションが切り替わる</li>
+<li>定義されたディレクティブ<code>page-transit-anim</code>を<code>a</code>タグのアトリビュートとして、そのリンクがクリックされた時にアニメーションを指定する</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* style.css */</span></span><br><span class="line"><span class="selector-class">.movetobottom-scaleup</span> <span class="selector-class">.ng-enter</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">scale</span>(<span class="number">0.75</span>);</span><br><span class="line">  <span class="attribute">opacity</span>: <span class="number">0.5</span>;</span><br><span class="line">  <span class="attribute">z-index</span>: -<span class="number">1000</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.movetobottom-scaleup</span> <span class="selector-class">.ng-enter</span><span class="selector-class">.ng-enter-active</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">scale</span>(<span class="number">1</span>);</span><br><span class="line">  <span class="attribute">opacity</span>: <span class="number">1</span>;</span><br><span class="line">  <span class="attribute">z-index</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.movetobottom-scaleup</span> <span class="selector-class">.ng-leave</span> &#123;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0%</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.movetobottom-scaleup</span> <span class="selector-class">.ng-leave</span><span class="selector-class">.ng-leave-active</span> &#123;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>追加のアニメーション<code>movetobottom-scaleup</code>を定義する</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://codepen.io/schonert/pen/InAzi">Different ngRoute animations</a></li>
+<li><a href="http://tympanus.net/codrops/2013/05/07/a-collection-of-page-transitions/">A Collection of Page Transitions</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/21/access-directive-from-transclude.html" title="Transclude内からディレクティブにアクセスする" rel="bookmark">Transclude内からディレクティブにアクセスする</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/14/angular1-component.html" title="AngularJS1.5で親子コンポーネント間のやりとり" rel="bookmark">AngularJS1.5で親子コンポーネント間のやりとり</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/24/custom-selector.html" title="AngularJS1で独自の選択ボックスを作る" rel="bookmark">AngularJS1で独自の選択ボックスを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/03/jekyll-editor.html" title="Jekyllのフロントエンドを作り始めた" rel="bookmark">Jekyllのフロントエンドを作り始めた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/15/ng-click.html" title="ディレクティブのテンプレートでng-clickを使う" rel="bookmark">ディレクティブのテンプレートでng-clickを使う</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

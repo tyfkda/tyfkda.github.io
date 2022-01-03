@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ネイティブアプリなんだけどネイティブのコードは極力書かず、
+WebViewを使ってhtml+JavaScriptを使ってアプリを組みたい。
+今回はiOS, Swiftで作ってみる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="iOSでガワネイティブ"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>iOSでガワネイティブ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/11/03/ios-gawa-native.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>iOSでガワネイティブ</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2014-11-03
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ios/">#ios</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ネイティブアプリなんだけどネイティブのコードは極力書かず、
+WebViewを使ってhtml+JavaScriptを使ってアプリを組みたい。
+今回はiOS, Swiftで作ってみる。</p>
+<span id="more"></span>
+
+<p><a href="https://github.com/tyfkda/GawaNativeIos">コード</a></p>
+<ul>
+<li>‘16/11/30: <code>UIWebView</code>から<code>WKWebView</code>に変更</li>
+</ul>
+<h2 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h2><p>Xcodeでプロジェクトを新規作成する。</p>
+<ul>
+<li>Xcodeを起動して現れるダイアログで Create a new Xcode project &gt; iOS &gt; Application &gt; Single View Application を選び、Nextボタンを押す</li>
+<li>「Choose options for your new project」ダイアログで Product Name などの情報を入力<ul>
+<li>使用言語がObjective-CとSwiftから選べる</li>
+</ul>
+</li>
+<li>プロジェクトを保存するパスを指定</li>
+</ul>
+<h2 id="Storyboardを使わないようにする"><a href="#Storyboardを使わないようにする" class="headerlink" title="Storyboardを使わないようにする"></a>Storyboardを使わないようにする</h2><p>単にWebViewを全画面に配置するだけの単純なレイアウトなのでStoryboardは必要ない。
+なのでXcodeでSwiftのプロジェクトを作った時に自動的に作られるMain.storyboardを使わないようにする。</p>
+<ul>
+<li>Xcodeでプロジェクトのターゲット &gt; General &gt; Deployment Info &gt; Main Interface
+を空にする。</li>
+<li>Main.storyboardを削除する</li>
+<li>ViewControllerが呼び出されなくなるので、自前で呼び出す</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppDelegate</span>: <span class="title">UIResponder</span>, <span class="title">UIApplicationDelegate</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> window: <span class="type">UIWindow</span>?</span><br><span class="line">  <span class="keyword">var</span> navigationController: <span class="type">UINavigationController</span>?</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">application</span>(<span class="keyword">_</span> <span class="params">application</span>: <span class="type">UIApplication</span>, <span class="params">didFinishLaunchingWithOptions</span> <span class="params">launchOptions</span>: [<span class="params">UIApplicationLaunchOptionsKey</span>: <span class="keyword">Any</span>]<span class="operator">?</span>)</span> -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">    window <span class="operator">=</span> <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.main.bounds)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> viewController: <span class="type">ViewController</span> <span class="operator">=</span> <span class="type">ViewController</span>()</span><br><span class="line">    window<span class="operator">!</span>.rootViewController <span class="operator">=</span> viewController</span><br><span class="line">    window<span class="operator">!</span>.makeKeyAndVisible()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="operator">...</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="WebViewを全画面の大きさで追加"><a href="#WebViewを全画面の大きさで追加" class="headerlink" title="WebViewを全画面の大きさで追加"></a>WebViewを全画面の大きさで追加</h2><p>ViewControllerで全画面のWebViewを追加する。</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span>, <span class="title">WKNavigationDelegate</span> </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> webView: <span class="type">WKWebView</span> <span class="operator">=</span> <span class="type">WKWebView</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line">    webView.frame <span class="operator">=</span> view.bounds</span><br><span class="line">    webView.navigationDelegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">    view.addSubview(webView)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://developer.apple.com/reference/webkit/wkwebview">WKWebView</a>からのイベントを処理するため、<a href="https://developer.apple.com/reference/webkit/wknavigationdelegate">WKNavigationDelegate</a>を継承してやる</li>
+<li><code>webView</code>の<code>frame</code>をコントローラ自体の<code>view.bounds</code>にしてやると全画面になる</li>
+</ul>
+<h2 id="htmlの表示"><a href="#htmlの表示" class="headerlink" title="htmlの表示"></a>htmlの表示</h2><p>htmlは外部httpサーバから取ってくることもできるが、ここではリソースとしてアプリ内部に持ち、
+それをWebViewで表示することにする。</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span>()</span> &#123;</span><br><span class="line">  <span class="operator">...</span></span><br><span class="line">  <span class="comment">//let url = URL(string: &quot;https://www.example.com/&quot;)!  // 外部のURLを読み込む場合（httpの場合Info.plistにNSAppTransportSecurityの指定が必要）</span></span><br><span class="line">  <span class="keyword">let</span> url <span class="operator">=</span> <span class="type">Bundle</span>.main.url(forResource: <span class="string">&quot;index&quot;</span>, withExtension: <span class="string">&quot;.html&quot;</span>)<span class="operator">!</span></span><br><span class="line">  <span class="keyword">let</span> urlRequest <span class="operator">=</span> <span class="type">URLRequest</span>(url: url)</span><br><span class="line">  webView.load(urlRequest)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>プロジェクトにResourcesとかいうグループを作り、その中にhtmlファイルを追加する
+（ここではindex.htmlにした）</li>
+<li>プロジェクトの設定のBuild Phases &gt; Copy Bundle Resourcesで追加する
+（ドラッグドロップでプロジェクトにファイルを追加した場合には自動的に登録される？ので別途行う必要はないみたい）</li>
+<li><a href="https://developer.apple.com/reference/foundation/bundle/1411540-url">Bundle#url(forResource:withExtension)</a>でリソースのパスを取得</li>
+<li><a href="https://developer.apple.com/reference/webkit/wkwebview/1414954-load">WKWebView#load</a>でWebViewに読み込む</li>
+</ul>
+<p>読み込むファイルをサブディレクトリの中に入れたい場合、FinderからXcodeのResources内にサブフォルダをドラッグドロップして、Added foldersに「Create folder references」を選ぶ</p>
+<h2 id="htmlから画像、JavaScript、CSSを読み込む"><a href="#htmlから画像、JavaScript、CSSを読み込む" class="headerlink" title="htmlから画像、JavaScript、CSSを読み込む"></a>htmlから画像、JavaScript、CSSを読み込む</h2><p>html内で相対パスで書けばリソース内のファイルが自動的に読み込まれる</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/css&quot;</span> <span class="attr">href</span>=<span class="string">&quot;main.css&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;hoge.png&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;main.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="JavaScriptとネイティブの連携"><a href="#JavaScriptとネイティブの連携" class="headerlink" title="JavaScriptとネイティブの連携"></a>JavaScriptとネイティブの連携</h2><h3 id="JavaScriptからネイティブを呼び出す"><a href="#JavaScriptからネイティブを呼び出す" class="headerlink" title="JavaScriptからネイティブを呼び出す"></a>JavaScriptからネイティブを呼び出す</h3><p>JavaScriptからネイティブに対してなにか起動するにはURLをリクエストして、
+<a href="https://developer.apple.com/reference/webkit/wknavigationdelegate/1455641-webview">WKNavigationDelegate#webView(_:decidePolicyFor:decisionHandler:)</a>が呼び出されるのを利用する。</p>
+<p>スキーマを<code>http://</code>や<code>https://</code>じゃなくて独自のものにしておくことで判定する。
+ここでは<code>native://</code>などとしてみる。</p>
+<p>html(JavaScript)側：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;native://foo/bar.baz&quot;</span>&gt;</span>Push me!<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>ネイティブ(Swift)側：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> kScheme <span class="operator">=</span> <span class="string">&quot;native://&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">webView</span>(<span class="keyword">_</span> <span class="params">webView</span>: <span class="type">WKWebView</span>,</span></span><br><span class="line"><span class="function">             <span class="params">decidePolicyFor</span> <span class="params">navigationAction</span>: <span class="type">WKNavigationAction</span>,</span></span><br><span class="line"><span class="function">             <span class="params">decisionHandler</span>: <span class="keyword">@escaping</span> (<span class="type">WKNavigationActionPolicy</span>) -&gt; <span class="type">Void</span>)</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> policy <span class="operator">=</span> <span class="type">WKNavigationActionPolicy</span>.allow</span><br><span class="line">  <span class="keyword">if</span> <span class="keyword">let</span> url <span class="operator">=</span> navigationAction.request.url<span class="operator">?</span>.absoluteString &#123;</span><br><span class="line">    <span class="keyword">if</span> url.hasPrefix(kScheme) &#123;</span><br><span class="line">      evaluateJs(<span class="string">&quot;addTextNode(&#x27;<span class="subst">\(url)</span> &#x27;);&quot;</span>)</span><br><span class="line">      policy <span class="operator">=</span> <span class="type">WKNavigationActionPolicy</span>.cancel  <span class="comment">// ページ遷移を行わないようにcancelを返す</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  decisionHandler(policy)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>呼び出されたネイティブ側では、スキーム以外のURLの残り部分を使って自由に処理すればよい</li>
+<li>他にはMessage Handlerというものを使用する方法があるようです（<a href="https://developer.apple.com/reference/webkit/wkusercontentcontroller/1537172-add">WKUserContentController#add(_:name:)</a>）</li>
+</ul>
+<h3 id="ネイティブからJavaScriptを呼び出す"><a href="#ネイティブからJavaScriptを呼び出す" class="headerlink" title="ネイティブからJavaScriptを呼び出す"></a>ネイティブからJavaScriptを呼び出す</h3><p><a href="https://developer.apple.com/reference/webkit/wkwebview/1415017-evaluatejavascript">WKWebView#evaluateJavaScript(_:completionHandler:)</a>を使用する：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">evaluateJs</span>(<span class="keyword">_</span> <span class="params">script</span>: <span class="type">String</span>)</span> &#123;</span><br><span class="line">  webView.evaluateJavaScript(script, completionHandler: &#123;(result: <span class="keyword">Any</span><span class="operator">?</span>, error: <span class="type">Error</span>?) <span class="keyword">in</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;JS result=<span class="subst">\(result)</span>, error=<span class="subst">\(error)</span>&quot;</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>毎回evalすることになるし全部文字列にしないといけないのがアレだけど…</li>
+<li>JavaScriptの実行結果を扱いたい場合には<code>completionHandler</code>を指定してやる（省略可能）</li>
+</ul>
+<h2 id="実行例"><a href="#実行例" class="headerlink" title="実行例"></a>実行例</h2><p><img src="https://github.com/tyfkda/GawaNativeIos/raw/master/ss.png" alt="スクリーンショット"></p>
+<h2 id="関連"><a href="#関連" class="headerlink" title="関連"></a>関連</h2><ul>
+<li><a href="/blog/2015/02/02/gawa-native-swift-result.html" title="iOSガワネイティブでSwiftから値を受け取る">iOSガワネイティブでSwiftから値を受け取る</a></li>
+<li><a href="/blog/2015/02/02/gawa-native-pass-values.html" title="iOSガワネイティブでSwiftにでかいデータを受け渡す">iOSガワネイティブでSwiftにでかいデータを受け渡す</a></li>
+<li><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト">FastClickを使った体感応答時間の短縮テスト</a></li>
+<li><a href="/blog/2015/01/08/bounces-false.html" title="iOSのWebViewでバウンスを禁止する、をSwiftで">iOSのWebViewでバウンスを禁止する、をSwiftで</a></li>
+<li><a href="/blog/2015/12/22/html-audio.html" title="iOSアプリ内ブラウザでのオーディオ再生の制限解除">iOSアプリ内ブラウザでのオーディオ再生の制限解除</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/08/bounces-false.html" title="iOSのWebViewでバウンスを禁止する、をSwiftで" rel="bookmark">iOSのWebViewでバウンスを禁止する、をSwiftで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/21/bubble-shooter.html" title="Bubble shooter作成中" rel="bookmark">Bubble shooter作成中</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-pass-values.html" title="iOSガワネイティブでSwiftにでかいデータを受け渡す" rel="bookmark">iOSガワネイティブでSwiftにでかいデータを受け渡す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-swift-result.html" title="iOSガワネイティブでSwiftから値を受け取る" rel="bookmark">iOSガワネイティブでSwiftから値を受け取る</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

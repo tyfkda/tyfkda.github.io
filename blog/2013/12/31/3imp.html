@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="3imp
+http://www.cs.indiana.edu/~dyb/papers/3imp.pdf
+3章　ヒープベースモデル
+rib: 関数への実引数を保持
+関数呼び出し：frame作成 -&amp;gt; argument …で実引数をribに積んでいく -&amp;gt; applyでクロージャを実行 -&amp;">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="3impメモ"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>3impメモ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/12/31/3imp.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>3impメモ</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-12-31
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <span id="more"></span>
+
+<p>3imp
+<a href="http://www.cs.indiana.edu/~dyb/papers/3imp.pdf">http://www.cs.indiana.edu/~dyb/papers/3imp.pdf</a></p>
+<h3 id="3章-ヒープベースモデル"><a href="#3章-ヒープベースモデル" class="headerlink" title="3章　ヒープベースモデル"></a>3章　ヒープベースモデル</h3><ul>
+<li>rib: 関数への実引数を保持</li>
+<li>関数呼び出し：frame作成 -&gt; argument …で実引数をribに積んでいく -&gt; applyでクロージャを実行 -&gt; returnで戻る</li>
+</ul>
+<h3 id="4章-スタックベースモデル"><a href="#4章-スタックベースモデル" class="headerlink" title="4章　スタックベースモデル"></a>4章　スタックベースモデル</h3><ul>
+<li><p>4.1 標準的なブロック構造言語の、スタックベースモデルの実装（関数は第一級じゃない、継続はサポートしない、末尾呼び出しなし）</p>
+</li>
+<li><p>4.2 ヒープベースモデルをベースに、ダイナミックチェーンだけスタックに乗せる</p>
+</li>
+<li><p>4.3 スタティックチェーンもスタックに乗せるが、関数は第一級じゃなくなり、末尾呼び出しもなくす、代入もサポートしない、継続はサポート</p>
+</li>
+<li><p>4.4 クロージャのサポート</p>
+</li>
+<li><p>関数への実引数はスタックに、内部に登場する自由変数はクロージャオブジェクト中にコピーとして値が直接配列に保持される。</p>
+</li>
+</ul>
+<h3 id="3-1-モチベーションと問題"><a href="#3-1-モチベーションと問題" class="headerlink" title="3.1 モチベーションと問題"></a>3.1 モチベーションと問題</h3><ul>
+<li>典型的なレキシカルスコープの言語（Algol 60, C, Pascalなど）はコールフレームを実際のスタック上に記録している</li>
+<li>コールフレームはリターンアドレス、変数バインディング、前のフレームへのリンク、あと時々追加情報を持つ</li>
+<li>Schemeだと１級クロージャや継続があるので、この構造は充分でない。変数バインディングはスタックでは保持できない。ヒープに確保した環境に実引数を保持し、この環境へのポインタをスタックに置く</li>
+<li>ヒープの確保・解放や環境へのアクセスに時間がかかる</li>
+</ul>
+<h3 id="3-2-データ構造"><a href="#3-2-データ構造" class="headerlink" title="3.2 データ構造"></a>3.2 データ構造</h3><ul>
+<li>ヒープベースのシステムは、５つのデータ構造でコア言語をサポートする：環境、コールフレーム、制御スタック、クロージャ、継続</li>
+<li>環境：変数のリストと値のリスト（3.4で値のリストだけに改善する）</li>
+<li>フレームと制御スタック：フレームは別の計算を行うときに、中断する計算の状態を記録する。これはある関数が他の関数を呼び出すときに作られる。フレームはリターンアドレス、環境やそれと同等な変数バインディング、前のフレームへのポインタ、そして他に続きの計算に必要な状態を保持しなければならない。</li>
+<li>クロージャと継続：略</li>
+</ul>
+<h3 id="3-3-実装戦略"><a href="#3-3-実装戦略" class="headerlink" title="3.3 実装戦略"></a>3.3 実装戦略</h3><ul>
+<li>５つのレジスタ<ul>
+<li>a: アキュムレータ</li>
+<li>x: 次の式</li>
+<li>e: 現在の環境</li>
+<li>r: 現在の値rib</li>
+<li>s: 現在のスタック</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-4-ヒープベースモデルの実装"><a href="#3-4-ヒープベースモデルの実装" class="headerlink" title="3.4 ヒープベースモデルの実装"></a>3.4 ヒープベースモデルの実装</h3><h4 id="3-4-1-アセンブリコード"><a href="#3-4-1-アセンブリコード" class="headerlink" title="3.4.1 アセンブリコード"></a>3.4.1 アセンブリコード</h4><ul>
+<li><code>(halt)</code>: 停止</li>
+<li><code>(refer var x)</code>: 変数<code>var</code>の値を現在の環境から探してアキュムレータに置き、<code>x</code>を次の式にする</li>
+<li><code>(constant obj x)</code>: <code>obj</code>をアキュムレータに置き、<code>x</code>を次の式にする</li>
+<li><code>(close vars body x)</code>: <code>body</code>, <code>vars</code>と現在の環境からクロージャを作る</li>
+<li><code>(test then else)</code>: アキュムレータを調べ、真なら<code>then</code>を次の式に、そうでなければ<code>else</code>にする</li>
+<li><code>(assign var x)</code>: 現在の環境の変数<code>var</code>をアキュムレータの値に変更し、<code>x</code>を次の式にする</li>
+<li><code>(conti x)</code>: 現在のスタックから継続を作り、それをアキュムレータに置き、<code>x</code>を次の式にする</li>
+<li><code>(nuate s var)</code>: <code>s</code>を現在のスタックとして復元し、アキュムレータを現在の環境の<code>var</code>の値にし、<code>(return)</code>を次の式にする（以下で説明）</li>
+<li><code>(frame x ret)</code>: 現在の環境、<code>rib</code>、そして<code>ret</code>を次の式としてフレームを作成し、このフレームを現在のスタックに足し、現在の<code>rib</code>を空にし、<code>x</code>を次の式にする</li>
+<li><code>(argument x)</code>: アキュムレータの値を現在の<code>rib</code>に追加し、<code>x</code>を次の式にする</li>
+<li><code>(apply)</code>: アキュムレータに入っているクロージャを現在の<code>rib</code>にある値のリストに適用する。正確には、この命令はクロージャの変数リストと現在の<code>rib</code>でクロージャの環境を拡張し、その新しい環境を現在の環境にセットし、現在の<code>rib</code>を空リストにし、クロージャの本体を次の式にする</li>
+<li><code>(return)</code>: スタックから最初のフレームを取り除き、現在の環境、現在の<code>rib</code>、次の式、そして現在のスタックをリセットする</li>
+</ul>
+<h4 id="3-4-2-変換"><a href="#3-4-2-変換" class="headerlink" title="3.4.2 変換"></a>3.4.2 変換</h4><h4 id="3-4-3-評価"><a href="#3-4-3-評価" class="headerlink" title="3.4.3 評価"></a>3.4.3 評価</h4><h3 id="3-5-変数アクセスの改善"><a href="#3-5-変数アクセスの改善" class="headerlink" title="3.5 変数アクセスの改善"></a>3.5 変数アクセスの改善</h3><ul>
+<li>Schemeは静的スコープなので、変数が実行時の環境のどこに登場するかが、ソースから正確にわかる</li>
+</ul>
+<h2 id="4章-スタックベースモデル-1"><a href="#4章-スタックベースモデル-1" class="headerlink" title="4章　スタックベースモデル"></a>4章　スタックベースモデル</h2><ul>
+<li>ヒープベースモデルの実行の大半は変数参照と関数呼び出しにかかっていて、クロージャの生成や継続の生成と呼び出しはそれほどかかっていない。これはプログラミングスタイルに悪影響を及ぼしてしまう。</li>
+</ul>
+<h3 id="4-1-ブロック構造言語のスタックベース実装"><a href="#4-1-ブロック構造言語のスタックベース実装" class="headerlink" title="4.1 ブロック構造言語のスタックベース実装"></a>4.1 ブロック構造言語のスタックベース実装</h3><ul>
+<li>標準的なブロック構造言語（第一級クロージャを持たない）の実装を説明する。関数は引数として渡せるが、第一級ではなくスコープ外からの呼び出しは保証しない。</li>
+</ul>
+<h4 id="4-1-1-コールフレーム"><a href="#4-1-1-コールフレーム" class="headerlink" title="4.1.1 コールフレーム"></a>4.1.1 コールフレーム</h4><ul>
+<li>コールフレームは関数が引数に適用されるときごとに作られる。この節で説明するスタックモデルのコールフレームは、1.中断された呼び出しのコールフレームが保持しているフレームポインタ（ダイナミックリンク）、2.リターンアドレス（呼び出し後の次の式）、3.呼び出された関数への引数、4.呼び出された関数の次の外側のスコープのコールフレームが保持しているフレームポインタ（スタティックリンク）</li>
+</ul>
+<h4 id="4-1-2-ダイナミックリンクとスタティックリンク"><a href="#4-1-2-ダイナミックリンクとスタティックリンク" class="headerlink" title="4.1.2 ダイナミックリンクとスタティックリンク"></a>4.1.2 ダイナミックリンクとスタティックリンク</h4><ul>
+<li>ダイナミックリンクは常に呼び出し元のフレームを指す。これは関数から戻るときに次のフレームがスタックのどこにあるかを決定するために使われる。ダイナミックリンクはときには必要でない、なぜなら次のフレームは常にスタック上の現在のフレームのすぐ下に配置されていて、コンパイラがそれぞれのフレームサイズを知っていると仮定すれば。</li>
+<li>他方スタティックリンクは常に呼び出された関数を包む関数のフレームを指す、そのフレームは呼び出された関数から見える変数バインディングを保持する。言語がクロージャや末尾呼び出しや継続をサポートしないという仮定は重要で、それによりこのフレームがスタック上にあることを保証する。</li>
+<li>ヒープベースでもスタティックとダイナミックチェーンは存在するが、それぞれは独立している。</li>
+</ul>
+<h3 id="4-1-3-関数-functional"><a href="#4-1-3-関数-functional" class="headerlink" title="4.1.3 関数 (functional)"></a>4.1.3 関数 (functional)</h3><ul>
+<li>あれこれ</li>
+<li>関数はそれを生成したところの外側では生存しない（それゆえ、それを生成したスコープが抜けた後には使われない）ので、list操作によるヒープ確保は必要ない。スタック上のコールフレームに関数を作るほうが適切かもしれない。しかしコールフレームを簡潔に保つため、その改善はここでは採用しない。</li>
+</ul>
+<h4 id="4-1-4-スタック操作"><a href="#4-1-4-スタック操作" class="headerlink" title="4.1.4 スタック操作"></a>4.1.4 スタック操作</h4><ul>
+<li>スタックベースモデルとヒープベースモデルの実装の主要な違いは、自然に、コールフレームと変数バインディングがヒープに確保されたリンク構造の代わりに実際のスタック上にあることだ。この違いは思ったほど実装に影響しない。</li>
+<li><code>push</code>, <code>index</code>, <code>index-set!</code></li>
+</ul>
+<h4 id="4-1-5-変換"><a href="#4-1-5-変換" class="headerlink" title="4.1.5 変換"></a>4.1.5 変換</h4><ul>
+<li>3.5節のコンパイラから3つのマイナーな変更</li>
+<li>１：関数への引数が直接コールフレーム上に配置され、コールフレームのサイズは引数の数によって変わる。バーチャルマシンの<code>return</code>命令はコールフレームを取り除く責任があるので、この情報を持つ必要がある。<code>return</code>命令に引数<code>n</code>を追加し、それがスタックからいくつ取り除くかを示す。スタティックリンクもスタック上に保持されるが、それもカウントに含めておくので明示的には取り除かれない（<code>n</code>が引数の数+1になっている）。</li>
+<li>２：末尾呼び出しはサポートされないので、関数適用時のコードの<code>tail?</code>が削除された</li>
+<li>３：継続は完全に削除</li>
+</ul>
+<h3 id="4-1-6-評価"><a href="#4-1-6-評価" class="headerlink" title="4.1.6 評価"></a>4.1.6 評価</h3><ul>
+<li>バーチャルマシンは3.5節と似たような構造で、ほとんど同じ命令をサポートする。アキュムレータ<code>a</code>と次の式<code>x</code>レジスタはまったく同じ用途で、環境<code>e</code>とスタック<code>s</code>は異なる使い方。<code>e</code>レジスタは環境のようなものを保持するが、これはスタックポインタで次の外側のスコープのコールフレームを指す。<code>s</code>レジスタは現在のスタックのトップを指す。現在の<code>rib</code>を保持していた<code>r</code>レジスタは削除された。引数はヒープに確保された<code>rib</code>上ではなく直接スタック上に置かれるようになったため。</li>
+<li><code>find-link</code>ヘルパー関数は3.5節のヒープベースモデルの<code>lookup</code>関数の外側のループと似ている。2つの引数を受け取り、<code>e</code>から始まるスタティックフレームの<code>n</code>番目のフレームを返す。</li>
+</ul>
+<h3 id="4-2-スタック確保のダイナミックチェーン"><a href="#4-2-スタック確保のダイナミックチェーン" class="headerlink" title="4.2 スタック確保のダイナミックチェーン"></a>4.2 スタック確保のダイナミックチェーン</h3><ul>
+<li>この節と次の節は3.5節のヒープベースモデルを１歩ずつ前の節で示されたスタックベースモデルに近い効率に置き換えていく</li>
+<li>この節ではダイナミックチェーン、またの名を制御スタックを実際のスタックに配置する。スタティックチェーン、またの名を環境はヒープのまま。主な困難さは継続のサポートである。継続はダイナミックチェーンを、削除されたり上書きされた後も保持し復元できなければならない。</li>
+</ul>
+<h4 id="4-2-1-スナップショット継続"><a href="#4-2-1-スナップショット継続" class="headerlink" title="4.2.1 スナップショット継続"></a>4.2.1 スナップショット継続</h4><ul>
+<li>ここでとられる解決方法は、スタックのコピー、すなわちスナップショットを継続に格納し、継続が呼び出されるときにそのコピーを復元する。</li>
+<li>この解決方法は機能するが、高いように感じるだろう。スタックはとても大きくなり、継続生成時の確保とコピーのオーバーヘッドや、継続呼び出し時のコピーのオーバーヘッドは大きい可能性がある。これが大きな問題にならない理由は、継続の生成と呼び出しは関数呼び出しに比べて稀だからである。</li>
+</ul>
+<h4 id="4-2-2-評価"><a href="#4-2-2-評価" class="headerlink" title="4.2.2 評価"></a>4.2.2 評価</h4><ul>
+<li><code>frame</code>と<code>return</code>はスタックを見るようにして、継続はスタックのスナップショットを操作する</li>
+</ul>
+<h3 id="4-3-スタック確保のスタティックチェーン"><a href="#4-3-スタック確保のスタティックチェーン" class="headerlink" title="4.3 スタック確保のスタティックチェーン"></a>4.3 スタック確保のスタティックチェーン</h3><ul>
+<li>スタティックチェーンをスタック上に移動させるのはいくぶんか難しい。この節と続く３節で説明する。</li>
+<li>この節ではスタティックチェーンをスタックに移動し、第一級関数、代入、そして末尾呼び出しのサポートを除外する。続く３節でこれらの機能を取り戻す。</li>
+</ul>
+<h4 id="4-3-1-変数の値をコールフレームに含める"><a href="#4-3-1-変数の値をコールフレームに含める" class="headerlink" title="4.3.1 変数の値をコールフレームに含める"></a>4.3.1 変数の値をコールフレームに含める</h4><ul>
+<li>スタティックチェーンをスタック上に移動するとは、制御情報がすでに入っているコールフレームに、関数への引数を置くことである。これは4.1節のスタックベースモデルと4.2節の修正ヒープベースモデルを混ぜることで達成できる。</li>
+<li>しかし、4.1節のシステムは第一級関数をサポートしていない、なぜならスタック上にあるスタティックチェーンの保持を要求するから。</li>
+<li>末尾呼び出しもサポートしない、なぜなら変数バインディングが呼び出される関数で必要かもしれないので、呼び出しのフレームを削除することができるとは限らないから。</li>
+<li>さらに、継続が作られる可能性により、代入のサポートも難しい。スタックに確保された変数バインディングへの代入は継続の存在により扱いが難しい、なぜなら複数の更新の問題があるため。継続はスタックのコピーを持つため、同じスタックのコピーが１つ以上のメモリに存在することがある。もし4.1節のシステムのように変数バインディングがコールフレームに直接格納されると、変数の値は１つ以上の場所に格納されることを意味する。そのような変数への代入は、現在スタック上にあるものだけでなく、すべてのコピーの更新を要求する。</li>
+<li>これは深刻な問題で、なぜならコンパイラはいつ継続が生成されまた呼び出されるか検出できないため。そのため代入をサポートするために実行時に何か記録しておく必要があるが、これは代入を遅くさせ、追加のストレージオーバーヘッド（たぶんヒープ）を要求する。この問題の解決方法は4.5節。</li>
+</ul>
+<h4 id="4-3-2-変換と評価"><a href="#4-3-2-変換と評価" class="headerlink" title="4.3.2 変換と評価"></a>4.3.2 変換と評価</h4><h3 id="4-4-表示クロージャ"><a href="#4-4-表示クロージャ" class="headerlink" title="4.4 表示クロージャ"></a>4.4 表示クロージャ</h3><ul>
+<li>第一級関数は継続と同じような問題がある。継続には、この情報は継続地点からのすべてのダイナミックチェーンと継続が必要とする変数バインディングを含むスタティックチェーンである。クロージャには、保持する情報の量はもっと小さい；１つのスタティックチェーンだけが必要で、ダイナミックチェーンは必要ない。</li>
+<li>この理由により、継続の生成時にしたようにスタック全体をコピーするのはとても非効率的である。代わりに、この節では関数が必要とする特定のスタティックチェーンだけ（実際には、特定の値だけ）を保持する戦略を説明する。新しい関数オブジェクト、表示クロージャを導入する。このオブジェクトの生成や維持はより一般的なブロック構造言語の表示(display)の生成や維持の実装と似ている。</li>
+</ul>
+<h4 id="4-4-1-表示"><a href="#4-4-1-表示" class="headerlink" title="4.4.1 表示"></a>4.4.1 表示</h4><ul>
+<li>深くネストした関数やブロックのプログラムでは、特定のブロックの自由変数のアクセスはスタティックリンクを辿るため非効率的な可能性がある。スタティックリンクの走査はブロックレベルごとに１つ余計なメモリ参照を要求する。表示は自由変数のアクセスを改善するために用いられる。表示は表示ポインタの配列で、それぞれは現在のスタティックチェーンのフレームのアドレスを保持する。</li>
+<li>表示のアプローチによりスタティックリンクは必要なくなる、なぜなら同じリンク情報は表示ポインタの集合で維持されているため。</li>
+</ul>
+<h4 id="4-4-2-表示クロージャの生成"><a href="#4-4-2-表示クロージャの生成" class="headerlink" title="4.4.2 表示クロージャの生成"></a>4.4.2 表示クロージャの生成</h4><ul>
+<li>…</li>
+</ul>
+<h3 id="4-5-代入のサポート"><a href="#4-5-代入のサポート" class="headerlink" title="4.5 代入のサポート"></a>4.5 代入のサポート</h3><ul>
+<li><code>box</code></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/01/03/clox-closure.html" title="1パスコンパイラでのクロージャの実装方法(Upvalue)" rel="bookmark">1パスコンパイラでのクロージャの実装方法(Upvalue)</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

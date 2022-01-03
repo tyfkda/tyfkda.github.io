@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="何度やってもRailsが身につかない。ドットインストールの講座をやったメモを備忘録として書く。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ドットインストールの&#34;Ruby on Rails 4 入門&#34;"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ドットインストールの&#34;Ruby on Rails 4 入門&#34; - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/11/12/rails-dot-install.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ドットインストールの"Ruby on Rails 4 入門"</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2014-11-12
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ror/">#ror</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>何度やってもRailsが身につかない。ドットインストールの講座をやったメモを備忘録として書く。</p>
+<span id="more"></span>
+
+<p><a href="http://dotinstall.com/lessons/basic_rails_v2">Ruby on Rails 4入門 (全28回) - プログラミングならドットインストール</a></p>
+<p><a href="https://github.com/tyfkda/dotinstall-rails4-tutorial">コード</a></p>
+<h3 id="プロジェクト作成"><a href="#プロジェクト作成" class="headerlink" title="プロジェクト作成"></a>プロジェクト作成</h3><p><code>$ rails new appname</code></p>
+<ul>
+<li><code>--skip-bundle</code> でバンドルのインストールを省略して高速化</li>
+</ul>
+<h3 id="サーバー起動"><a href="#サーバー起動" class="headerlink" title="サーバー起動"></a>サーバー起動</h3><p><code>$ rails server</code> または <code>$ rails s</code></p>
+<h3 id="モデル作成"><a href="#モデル作成" class="headerlink" title="モデル作成"></a>モデル作成</h3><p><code>$ rails generate model Project title</code></p>
+<ul>
+<li>モデル名は単数形、大文字始まり</li>
+<li>メンバは、後ろに<code>:string</code>や<code>:integer</code>をつけることで型を指定できる。省略すると<code>string</code>となる</li>
+<li><code>rails g</code> でも可</li>
+</ul>
+<p>マイグレーションファイルが生成されるので、<code>rake db:migrate</code> DBへ反映させる</p>
+<h3 id="DB確認"><a href="#DB確認" class="headerlink" title="DB確認"></a>DB確認</h3><p><code>$ rails db</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sqlite&gt; .schema</span><br><span class="line">CREATE TABLE &quot;projects&quot; (&quot;id&quot; INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, &quot;title&quot; varchar(255), &quot;created_at&quot; datetime, &quot;updated_at&quot; datetime);</span><br><span class="line">CREATE TABLE &quot;schema_migrations&quot; (&quot;version&quot; varchar(255) NOT NULL);</span><br><span class="line">CREATE UNIQUE INDEX &quot;unique_schema_migrations&quot; ON &quot;schema_migrations&quot; (&quot;version&quot;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="コンソール"><a href="#コンソール" class="headerlink" title="コンソール"></a>コンソール</h3><p>インタラクティブに操作できる。</p>
+<p><code>$ rails console</code></p>
+<ul>
+<li><code>p1 = Project.new(&quot;p1&quot;); p1.save</code></li>
+<li><code>p2 = Project.create(&quot;p2&quot;)</code></li>
+</ul>
+<h3 id="コントローラ作成"><a href="#コントローラ作成" class="headerlink" title="コントローラ作成"></a>コントローラ作成</h3><p><code>$ rails g controller Projects</code></p>
+<ul>
+<li>コントローラの作成は複数形</li>
+<li>app/controllers/projects_controller.rb が生成される</li>
+</ul>
+<h3 id="route-設定"><a href="#route-設定" class="headerlink" title="route 設定"></a>route 設定</h3><p>作成したコントローラにブラウザからアクセスできるように、routeを設定する</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># config/routes.rb</span></span><br><span class="line">Rails.application.routes.draw <span class="keyword">do</span></span><br><span class="line">  <span class="comment"># 追加</span></span><br><span class="line">  resources <span class="symbol">:projects</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>を追加する。</p>
+<p>設定したルートの確認は <code>rake routes</code> でできる。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ rake routes</span><br><span class="line">      Prefix Verb   URI Pattern                  Controller<span class="comment">#Action</span></span><br><span class="line">    projects GET    /projects(.:format)          projects<span class="comment">#index</span></span><br><span class="line">             POST   /projects(.:format)          projects<span class="comment">#create</span></span><br><span class="line"> new_project GET    /projects/new(.:format)      projects<span class="comment">#new</span></span><br><span class="line">edit_project GET    /projects/:id/edit(.:format) projects<span class="comment">#edit</span></span><br><span class="line">     project GET    /projects/:id(.:format)      projects<span class="comment">#show</span></span><br><span class="line">             PATCH  /projects/:id(.:format)      projects<span class="comment">#update</span></span><br><span class="line">             PUT    /projects/:id(.:format)      projects<span class="comment">#update</span></span><br><span class="line">             DELETE /projects/:id(.:format)      projects<span class="comment">#destroy</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="共通テンプレート"><a href="#共通テンプレート" class="headerlink" title="共通テンプレート"></a>共通テンプレート</h3><figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- app/views/layouts/application.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Taskapp<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> stylesheet_link_tag    <span class="string">&#x27;application&#x27;</span>, <span class="symbol">media:</span> <span class="string">&#x27;all&#x27;</span>, <span class="string">&#x27;data-turbolinks-track&#x27;</span> =&gt; <span class="literal">true</span> </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> javascript_include_tag <span class="string">&#x27;application&#x27;</span>, <span class="string">&#x27;data-turbolinks-track&#x27;</span> =&gt; <span class="literal">true</span> </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> csrf_meta_tags </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">&lt;%=</span><span class="ruby"> <span class="keyword">yield</span> </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><code>&lt;%= image_tag &quot;logo.png&quot; %&gt;</code> でイメージタグを埋め込む。画像ファイルは app/assets/images に置く。</p>
+<p><code>&lt;%= link_to &quot;Home&quot;, projects_path %&gt;</code> でリンクの埋め込み。</p>
+<h3 id="モデルの詳細ページを作る"><a href="#モデルの詳細ページを作る" class="headerlink" title="モデルの詳細ページを作る"></a>モデルの詳細ページを作る</h3><p>一覧のビューの中でリンクを指定する：</p>
+<figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- app/views/projects/index.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml">&lt;%=</span><span class="ruby"> link_to project.title, project_path(project.id) </span><span class="xml">%&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>コントローラにshowアクションを追加する：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app/controllers/projects_controller.rb</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">show</span></span></span><br><span class="line">    <span class="variable">@project</span> = Project.find(params[<span class="symbol">:id</span>])</span><br><span class="line">  <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>ビューを追加する</p>
+<figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- app/views/projects/show.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>&lt;%=</span><span class="ruby"> <span class="variable">@project</span>.title </span><span class="xml">%&gt;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="アイテムの新規追加を作る"><a href="#アイテムの新規追加を作る" class="headerlink" title="アイテムの新規追加を作る"></a>アイテムの新規追加を作る</h3><figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- app/views/projects/index.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml">&lt;%=</span><span class="ruby"> link_to <span class="string">&quot;Add New&quot;</span>, new_project_path </span><span class="xml">%&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>アクションを追加：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app/controllers/projects_controller.rb</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">new</span></span></span><br><span class="line">    <span class="variable">@project</span> = Project.new</span><br><span class="line">  <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>ビューを追加</p>
+<figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- app/views/projects/new.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml">&lt;%=</span><span class="ruby"> form_for <span class="variable">@project</span> <span class="keyword">do</span> <span class="params">|f|</span> </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> f.label <span class="symbol">:title</span> </span><span class="xml">%&gt;<span class="tag">&lt;<span class="name">br</span>&gt;</span></span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> f.text_field <span class="symbol">:title</span> </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> f.submit </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="バリデーションの追加"><a href="#バリデーションの追加" class="headerlink" title="バリデーションの追加"></a>バリデーションの追加</h3><p>入力が空の状態を防ぐなど、条件を付けられる</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app/models/project.rb</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Project</span> &lt; ActiveRecord::Base</span></span><br><span class="line">  <span class="comment"># 追加</span></span><br><span class="line">  validates <span class="symbol">:title</span>, <span class="symbol">presence:</span> <span class="literal">true</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>保存時、バリデーションに失敗したときに分岐させる</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app/controllers/projects_controller.rb</span></span><br><span class="line">    <span class="keyword">if</span> <span class="variable">@project</span>.save</span><br><span class="line">      redirect_to project_path  <span class="comment"># 成功した場合には一覧に飛ばす</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      render <span class="string">&#x27;new&#x27;</span>  <span class="comment"># 失敗した場合にはもう一度新規追加画面に戻る</span></span><br><span class="line">    <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="要素の編集を追加"><a href="#要素の編集を追加" class="headerlink" title="要素の編集を追加"></a>要素の編集を追加</h3><p><code>edit</code> をコントローラ、ビューに追加して、編集画面を追加。</p>
+<p><code>update</code> で編集内容を保存。</p>
+<h3 id="編集画面を共通化する"><a href="#編集画面を共通化する" class="headerlink" title="編集画面を共通化する"></a>編集画面を共通化する</h3><p><code>new</code> と <code>edit</code> で表示しているフォームが全く同じ形なので、パーシャルを使って共通化する。</p>
+<figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- new.html.erb,edit.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> render <span class="string">&#x27;form&#x27;</span> </span><span class="xml">%&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- app/views/projects/_form.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml">&lt;%=</span><span class="ruby"> form_for ... </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml">  ...</span></span><br><span class="line"><span class="xml">&lt;%</span><span class="ruby"> <span class="keyword">end</span> </span><span class="xml">%&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="要素の削除"><a href="#要素の削除" class="headerlink" title="要素の削除"></a>要素の削除</h3><figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml">&lt;%=</span><span class="ruby"> link_to <span class="string">&quot;[Delete]&quot;</span>, project_path(project.id), <span class="symbol">method:</span> <span class="symbol">:delete</span>, <span class="symbol">data:</span> &#123; <span class="symbol">confirm:</span> <span class="string">&quot;are you sure?&quot;</span> &#125; </span><span class="xml">%&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>コントローラに<code>destroy</code> アクションを追加</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app/controllers/projects_controller.rb</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">destroy</span></span></span><br><span class="line">    <span class="variable">@project</span> = Project.find(params[<span class="symbol">:id</span>])</span><br><span class="line">    <span class="variable">@project</span>.destroy</span><br><span class="line">    redirect_to projects_path</span><br><span class="line">  <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="「タスク」モデルの追加"><a href="#「タスク」モデルの追加" class="headerlink" title="「タスク」モデルの追加"></a>「タスク」モデルの追加</h3><p>タスクという、プロジェクトと１対多となるモデルを作成</p>
+<p><code>$ rails g model Task title done:boolean project:references</code></p>
+<p><code>boolean</code> で真偽値、<code>references</code>で他のモデルへの参照。</p>
+<p><code>done</code>の初期値を<code>false</code>とするために、生成されたマイグレーションファイル(db/migrate/XXXX_create_tasks.rb)に <code>default: false</code> と指定してやる。</p>
+<p><code>$ rake db:migrate</code> でDBに反映</p>
+<h3 id="ProjectモデルにTaskへの指定を追加する"><a href="#ProjectモデルにTaskへの指定を追加する" class="headerlink" title="ProjectモデルにTaskへの指定を追加する"></a>ProjectモデルにTaskへの指定を追加する</h3><figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app/models/project.rb</span></span><br><span class="line">  has_many <span class="symbol">:tasks</span></span><br></pre></td></tr></table></figure>
+
+<p>ProjectがTaskと１対多であることを記述する</p>
+<p>Taskの方は生成時に自動的に「belongs_to :project」という指定が入っているが
+Projectの方は自動的には追加されないので、してやる必要がある。</p>
+<h3 id="Taskへのルーティングを設定"><a href="#Taskへのルーティングを設定" class="headerlink" title="Taskへのルーティングを設定"></a>Taskへのルーティングを設定</h3><figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># config/routes.rb</span></span><br><span class="line">  resources <span class="symbol">:projects</span> <span class="keyword">do</span></span><br><span class="line">    <span class="comment"># :projectsのアソシエーションとして指定、createとdestroyアクションのみ</span></span><br><span class="line">    resources <span class="symbol">:tasks</span>, <span class="symbol">only:</span> [<span class="symbol">:create</span>, <span class="symbol">:destroy</span>]</span><br><span class="line">  <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ rake routes</span><br><span class="line">       Prefix Verb   URI Pattern                               Controller<span class="comment">#Action</span></span><br><span class="line">project_tasks POST   /projects/:project_id/tasks(.:format)     tasks<span class="comment">#create</span></span><br><span class="line"> project_task DELETE /projects/:project_id/tasks/:id(.:format) tasks<span class="comment">#destroy</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="タスクの新規追加"><a href="#タスクの新規追加" class="headerlink" title="タスクの新規追加"></a>タスクの新規追加</h3><figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app/controllers/tasks_controller.rb</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">create</span></span></span><br><span class="line">    <span class="variable">@project</span> = Project.find(params[<span class="symbol">:project_id</span>])</span><br><span class="line">    <span class="variable">@task</span> = <span class="variable">@project</span>.tasks.create(task_params)</span><br><span class="line">    redirect_to project_path(<span class="variable">@project</span>.id)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="チェックボックスの表示"><a href="#チェックボックスの表示" class="headerlink" title="チェックボックスの表示"></a>チェックボックスの表示</h3><figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- app/views/projects/show.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml">    &lt;%=</span><span class="ruby"> check_box_tag <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;&#x27;</span>, task.done, &#123;<span class="string">&#x27;data-id&#x27;</span> =&gt; task.id, <span class="string">&#x27;data-project_id&#x27;</span> =&gt; task.project_id&#125; </span><span class="xml">%&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>あとでpostメッセージを送る時に使えるように、データフィールドにID埋め込んでおく</li>
+</ul>
+<h3 id="toggleアクションを呼び出す"><a href="#toggleアクションを呼び出す" class="headerlink" title="toggleアクションを呼び出す"></a>toggleアクションを呼び出す</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app/views/projects/show.html.erb</span></span><br><span class="line">&lt;script&gt;</span><br><span class="line">$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  $(<span class="string">&quot;input[type=checkbox]&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    $.post(<span class="string">&#x27;/projects/&#x27;</span> + $(<span class="built_in">this</span>).data(<span class="string">&#x27;project_id&#x27;</span>) + <span class="string">&#x27;/tasks/&#x27;</span> + $(<span class="built_in">this</span>).data(<span class="string">&#x27;id&#x27;</span>) + <span class="string">&#x27;/toggle&#x27;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>ルーティングを設定：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># config/routes.rb</span></span><br><span class="line">  post <span class="string">&#x27;/projects/:project_id/tasks/:id/toggle&#x27;</span> =&gt; <span class="string">&#x27;tasks#toggle&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>アクションでは表示内容はないので、それを指定する</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app/controllers/tasks_controller.rb</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">toggle</span></span></span><br><span class="line">    render <span class="symbol">nothing:</span> <span class="literal">true</span></span><br><span class="line">    ...</span><br><span class="line">  <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/01/rails6-session-cookie.html" title="Rails6 のセッションの扱いと、クッキーからの復元方法" rel="bookmark">Rails6 のセッションの扱いと、クッキーからの復元方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/11/04/ruby-on-rails-tutorial.html" title="Ruby on Railsを再び学ぶ" rel="bookmark">Ruby on Railsを再び学ぶ</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

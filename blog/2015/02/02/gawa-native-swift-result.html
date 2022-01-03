@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="iOSでガワネイティブでWebView上で動かしているJSとSwiftの基本的なやりとりを試したけど大事なことが抜けていた。件の記事でJSからSwiftを呼び出してあとはネイティブに任せっきりという処理はできるが、ネイティブからなにか情報を取得することを試していなかった。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="iOSガワネイティブでSwiftから値を受け取る"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>iOSガワネイティブでSwiftから値を受け取る - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/02/02/gawa-native-swift-result.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>iOSガワネイティブでSwiftから値を受け取る</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-02-02
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ios/">#ios</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2014/11/03/ios-gawa-native.html" title="iOSでガワネイティブ">iOSでガワネイティブ</a>でWebView上で動かしているJSとSwiftの基本的なやりとりを試したけど大事なことが抜けていた。件の記事でJSからSwiftを呼び出してあとはネイティブに任せっきりという処理はできるが、ネイティブからなにか情報を取得することを試していなかった。
+
+<span id="more"></span>
+
+<h2 id="JSからネイティブを呼び出し結果を受け取る方法"><a href="#JSからネイティブを呼び出し結果を受け取る方法" class="headerlink" title="JSからネイティブを呼び出し結果を受け取る方法"></a>JSからネイティブを呼び出し結果を受け取る方法</h2><p><code>webView:shouldStartLoadWithRequest</code>ではリクエストされたURLに遷移するかどうかは制御できるが、値の取得はできない。値を取得するには別の仕組み、<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSURLProtocol_Class/index.html">NSURLProtocol</a>というものを使う。</p>
+<p><code>NSURLProtocol</code>を継承したクラスを作りシステムに登録するとURLリクエストのたびに<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSURLProtocol_Class/index.html#//apple_ref/occ/clm/NSURLProtocol/canInitWithRequest:">canInitWithRequest</a>が呼び出されるので、フックしたい場合には<code>true</code>を返してその後呼び出される<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSURLProtocol_Class/index.html#//apple_ref/occ/instm/NSURLProtocol/startLoading">startLoading</a>でレスポンスを返すとブラウザに渡される。JSからはAjaxでフックされるURLを叩いて結果を得るようにすればネイティブから値を取得することができる。</p>
+<h3 id="カスタムのURLProtocolクラスを定義する"><a href="#カスタムのURLProtocolクラスを定義する" class="headerlink" title="カスタムのURLProtocolクラスを定義する"></a>カスタムのURLProtocolクラスを定義する</h3><figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// MyURLProtocol.swift</span></span><br><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">let</span> <span class="type">HOOK_HOST</span> <span class="operator">=</span> <span class="string">&quot;native&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyURLProtocol</span>: <span class="title">NSURLProtocol</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="class"><span class="keyword">class</span> <span class="title">func</span> <span class="title">canInitWithRequest</span>(<span class="title">request</span>: <span class="title">NSURLRequest</span>) -&gt; <span class="title">Bool</span> </span>&#123;</span><br><span class="line">    <span class="comment">// &quot;http://native/...&quot;のリクエストをフック</span></span><br><span class="line">    <span class="keyword">if</span> request.<span class="type">URL</span>.scheme <span class="operator">==</span> <span class="string">&quot;http&quot;</span> <span class="operator">&amp;&amp;</span> request.<span class="type">URL</span>.host <span class="operator">==</span> <span class="type">HOOK_HOST</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="class"><span class="keyword">class</span> <span class="title">func</span> <span class="title">canonicalRequestForRequest</span>(<span class="title">request</span>: <span class="title">NSURLRequest</span>) -&gt; <span class="title">NSURLRequest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> request;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">startLoading</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> url <span class="operator">=</span> request.<span class="type">URL</span></span><br><span class="line">    <span class="comment">// URLによってなにかレスポンスを返す（後述）</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">stopLoading</span>()</span> &#123;</span><br><span class="line">    <span class="comment">// 特に何もしない</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="作ったURLProtocolを登録する"><a href="#作ったURLProtocolを登録する" class="headerlink" title="作ったURLProtocolを登録する"></a>作ったURLProtocolを登録する</h3><p><code>ViewController</code>の<code>viewDidLoad</code>かなにかに以下を追加すると、すべてのWebViewのURLリクエストがフックされる：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NSURLProtocol.registerClass(MyURLProtocol)</span><br></pre></td></tr></table></figure>
+
+<p>アプリの終了などで使わなくったら<code>unregister</code>してやること：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NSURLProtocol.unregisterClass(MyURLProtocol)</span><br></pre></td></tr></table></figure>
+
+<h3 id="JavaScriptからの呼び出し"><a href="#JavaScriptからの呼び出し" class="headerlink" title="JavaScriptからの呼び出し"></a>JavaScriptからの呼び出し</h3><p>通常のAjaxのようにXmlHttpRequestを使うが、違いとしてはAsyncじゃなく同期にしてやると違和感がないのではないかと思う（JS的には結局コールバックを使うことになるが…）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// test.js</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foobar</span>(<span class="params">url</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">200</span> &lt;= xhr.status &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">      <span class="comment">// 成功</span></span><br><span class="line">      <span class="keyword">var</span> result = xhr.responseText;  <span class="comment">// Swiftから返された内容</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (xhr.status &gt;= <span class="number">400</span>) &#123;</span><br><span class="line">      <span class="comment">// 失敗</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  xhr.open(<span class="string">&#x27;GET&#x27;</span>, url, <span class="literal">false</span>);  <span class="comment">// 第３引数＝asyncかどうか</span></span><br><span class="line">  xhr.send(<span class="literal">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foobar(<span class="string">&#x27;http://native/foo?bar=baz&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="カスタムのURLProtocolでリクエストに対する結果を返す"><a href="#カスタムのURLProtocolでリクエストに対する結果を返す" class="headerlink" title="カスタムのURLProtocolでリクエストに対する結果を返す"></a>カスタムのURLProtocolでリクエストに対する結果を返す</h3><p>自分で定義した<code>MyURLProtocol</code>の<code>startLoading</code>でリクエストに対してクライアントになにか結果を返してやる必要がる。簡単に返せるように、<code>sendBackEmpty</code>と<code>sendBackPlainText</code>というメソッドを用意してやった：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// MyURLProtocol.swift</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyURLProtocol</span>: <span class="title">NSURLProtocol</span> </span>&#123;</span><br><span class="line">  <span class="operator">...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// ダミーを返す場合</span></span><br><span class="line">  <span class="keyword">private</span> <span class="function"><span class="keyword">func</span> <span class="title">sendBackEmpty</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> response <span class="operator">=</span> <span class="type">NSURLResponse</span>(URL: <span class="keyword">self</span>.request.<span class="type">URL</span>,</span><br><span class="line">      MIMEType: <span class="literal">nil</span>,</span><br><span class="line">      expectedContentLength: <span class="number">0</span>,</span><br><span class="line">      textEncodingName: <span class="literal">nil</span>)</span><br><span class="line">    <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocol</span>(<span class="keyword">self</span>,</span><br><span class="line">      didReceiveResponse: response,</span><br><span class="line">      cacheStoragePolicy: <span class="type">NSURLCacheStoragePolicy</span>.<span class="type">NotAllowed</span>)</span><br><span class="line">    <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocol</span>(<span class="keyword">self</span>, didLoadData: <span class="type">NSData</span>(bytes: <span class="literal">nil</span>, length: <span class="number">0</span>))</span><br><span class="line">    <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocolDidFinishLoading</span>(<span class="keyword">self</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// プレーンテキストを返す場合</span></span><br><span class="line">  <span class="keyword">private</span> <span class="function"><span class="keyword">func</span> <span class="title">sendBackPlainText</span>(<span class="params">str</span>: <span class="type">String</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> data: <span class="type">NSData</span> <span class="operator">=</span> str.dataUsingEncoding(<span class="type">NSUTF8StringEncoding</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> headers <span class="operator">=</span> [</span><br><span class="line">        <span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;text/plain&quot;</span>,</span><br><span class="line">        <span class="string">&quot;ContentLength&quot;</span>: <span class="string">&quot;<span class="subst">\(data.length)</span>&quot;</span>,</span><br><span class="line">      ]</span><br><span class="line">      <span class="keyword">let</span> response <span class="operator">=</span> <span class="type">NSHTTPURLResponse</span>(URL: <span class="keyword">self</span>.request.<span class="type">URL</span>,</span><br><span class="line">        statusCode: <span class="number">200</span>,</span><br><span class="line">        HTTPVersion: <span class="string">&quot;1.1&quot;</span>,</span><br><span class="line">        headerFields: headers)</span><br><span class="line">      <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocol</span>(<span class="keyword">self</span>,</span><br><span class="line">        didReceiveResponse: response<span class="operator">!</span>,</span><br><span class="line">        cacheStoragePolicy: <span class="type">NSURLCacheStoragePolicy</span>.<span class="type">NotAllowed</span>)</span><br><span class="line">      <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocol</span>(<span class="keyword">self</span>, didLoadData: data)</span><br><span class="line">      <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocolDidFinishLoading</span>(<span class="keyword">self</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/08/bounces-false.html" title="iOSのWebViewでバウンスを禁止する、をSwiftで" rel="bookmark">iOSのWebViewでバウンスを禁止する、をSwiftで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/21/bubble-shooter.html" title="Bubble shooter作成中" rel="bookmark">Bubble shooter作成中</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/02/gawa-native-pass-values.html" title="iOSガワネイティブでSwiftにでかいデータを受け渡す" rel="bookmark">iOSガワネイティブでSwiftにでかいデータを受け渡す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/22/html-audio.html" title="iOSアプリ内ブラウザでのオーディオ再生の制限解除" rel="bookmark">iOSアプリ内ブラウザでのオーディオ再生の制限解除</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

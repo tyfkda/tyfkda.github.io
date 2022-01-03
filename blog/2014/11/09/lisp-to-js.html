@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="JavaScriptは通常のブラウザで動作するので面倒なプログラミング環境のインストールとか必要なく動かすことができ、またnode.jsなどをインストールしてコマンドラインでも動かすことができる。なのでJavaScriptで動くコードを書くことは価値があるだろう。
+てなわけで、LispコードをJavaScriptに変換するトランスレータを作り始めた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="LispからJavaScriptへのトランスレータを作り始めた"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>LispからJavaScriptへのトランスレータを作り始めた - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/11/09/lisp-to-js.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>LispからJavaScriptへのトランスレータを作り始めた</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2014-11-09
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/lisp/">#lisp</a> <a href="/tags/javascript/">#javascript</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>JavaScriptは通常のブラウザで動作するので面倒なプログラミング環境のインストールとか必要なく動かすことができ、またnode.jsなどをインストールしてコマンドラインでも動かすことができる。なのでJavaScriptで動くコードを書くことは価値があるだろう。</p>
+<p>てなわけで、LispコードをJavaScriptに変換するトランスレータを作り始めた。</p>
+<span id="more"></span>
+
+<h3 id="方針"><a href="#方針" class="headerlink" title="方針"></a>方針</h3><p>継続とか末尾呼び出し最適化を諦めればVM方式じゃなくて直接動作するJavaScriptに変換できるのではないかと思った。さらにいろいろ、RnRSだかCommon Lispの仕様とかに従わずに正確数やら文字型やらを実装しないでJavaScriptのデータ型をそのまま使う形にすればJavaScriptと同等な速度で動くプログラムに直接変換できるのではないか、などと考えた。</p>
+<p>最適化に関しては、あまり頑張らなくてもJavaScript処理系がやってくれるのではないかなーと勝手に期待。</p>
+<h3 id="セルフホスティングコンパイラまでの道のり"><a href="#セルフホスティングコンパイラまでの道のり" class="headerlink" title="セルフホスティングコンパイラまでの道のり"></a>セルフホスティングコンパイラまでの道のり</h3><p>まず最初はGaucheで動く、S式からJavaScriptのコードを表す文字列に変換する簡単なプログラムから作っていった。リテラルのコンパイルから始めて関数呼び出し、ラムダ関数、スペシャルフォームをコンパイルできるように拡張していった。</p>
+<p>ある段階になると、コンパイラ自体をセルフホスティングしてJavaScript上で動くコンパイラを生成できるようにすることを考える。セルフホスティングするにはコンパイラが使う機能すべてをコンパイルできるようにする必要がある。足りない機能を実装して、また過剰な機能を使わないで単純な実装に置き換えたりした。</p>
+<h3 id="マクロの実装"><a href="#マクロの実装" class="headerlink" title="マクロの実装"></a>マクロの実装</h3><p>Lisp言語の特徴として、コンパイルがホスト言語上でのコンパイル処理だけにとどまらず、ターゲット環境での実行を必要とする、ということがある。なぜかというと、マクロによるS式の変換を行うには実行環境が必要になるからだ。</p>
+<p>セルフホスティングが完了してない段階ではJavaScriptでコンパイラが動く環境がないのでGaucheで動くコンパイラを使うのだけど、その段階ではマクロを実行できない。というのもマクロの定義に対してコンパイラが生成したJavaScriptコードはホスト言語であるGaucheでは動かせないからだ。</p>
+<p>それを避けるためにスペシャルフォーム以外の文法（<code>let</code>とか<code>cond</code>とか）をすべて実装するのは大変だし、逆にそれらを使わずに基本的な文法だけでコンパイラを書くのも辛い。</p>
+<p>そこでちょっとインチキだけどマクロの変換はGauche上で<code>eval</code>してしまうことで実現しておく。その際にはホスト言語であるGaucheと実装中の言語の動作を同じにしておく必要がある。</p>
+<h3 id="はしごを外す"><a href="#はしごを外す" class="headerlink" title="はしごを外す"></a>はしごを外す</h3><p>セルフホスティングが実現できたならば、ようやくホスト言語からおさらばできる環境が整う。Lisp(Scheme)で書いているコンパイラをコンパイルしてJavaScriptで動くプログラムができあがる。コンパイラを変更・拡張するにはLispで書いてるソースコードを変更してJavaScriptで動くコンパイラを使ってJavaScriptのコードを生成すればよい。新たな<a href="http://ja.wikipedia.org/wiki/%E3%83%96%E3%83%BC%E3%83%88%E3%82%B9%E3%83%88%E3%83%A9%E3%83%83%E3%83%97%E5%95%8F%E9%A1%8C">ブートストラップ問題</a>のできあがり！</p>
+<h3 id="ここまでのコード"><a href="#ここまでのコード" class="headerlink" title="ここまでのコード"></a>ここまでのコード</h3><p>シンプルなセルフホスティングコンパイラができたので、現段階で公開しておきます：</p>
+<p><a href="https://github.com/tyfkda/lisp2js/tree/v0.1">lisp2js v0.1</a></p>
+<ul>
+<li>Lispで書かれたコンパイラが<a href="https://github.com/tyfkda/lisp2js/blob/v0.1/src%2Flisp2js.scm">189行</a>。
+まあ短くてとっかかりにはよいのではないでしょうか。</li>
+<li>他には<a href="https://github.com/tyfkda/lisp2js/blob/v0.1/runtime%2Flisp.js">JavaScriptのランタイム</a>が404行、
+<a href="https://github.com/tyfkda/lisp2js/blob/v0.1/src%2Fbasic.scm">基本的な関数やマクロのLispでの定義</a>が160行、
+<a href="http://qiita.com/tyfkda/items/8a2e313d6146ad475dc8">準クォートの展開コード</a>が278行。</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/01/15/loop-without-closure.html" title="Schemeコンパイラで、末尾再帰のクロージャをループに変更する" rel="bookmark">Schemeコンパイラで、末尾再帰のクロージャをループに変更する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/30/part-from-3imp.html" title="Schemeのコンパイラで効率のいいループの実現方法、そして3impとの決別" rel="bookmark">Schemeのコンパイラで効率のいいループの実現方法、そして3impとの決別</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/11/scheme-loop.html" title="Schemeでの効率のいいループの方法を考える" rel="bookmark">Schemeでの効率のいいループの方法を考える</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/01/16/setjmp.html" title="Schemeコンパイラで、ある種の継続をsetjmpに置き換える" rel="bookmark">Schemeコンパイラで、ある種の継続をsetjmpに置き換える</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Lisp/Schemeの準クォートの展開アルゴリズムは Quasiquotation in Lisp のAppendix A に書かれている。で生成される展開コードは効果的じゃない、最適化されたものが “Common Lisp the Language, 2nd Edition” の Appendix C. Backquote に載っている、とも書かれている。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Schemeで準クォートの展開"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Schemeで準クォートの展開 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/11/06/quasi-quote.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Schemeで準クォートの展開</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2014-11-06
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/lisp/">#lisp</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Lisp/Schemeの準クォートの展開アルゴリズムは <a href="http://repository.readscheme.org/ftp/papers/pepm99/bawden.pdf">Quasiquotation in Lisp</a> のAppendix A に書かれている。で生成される展開コードは効果的じゃない、最適化されたものが “Common Lisp the Language, 2nd Edition” の <a href="http://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node367.html">Appendix C. Backquote</a> に載っている、とも書かれている。</p>
+<span id="more"></span>
+
+<p>これをScheme(Gauche)で動かしてみる。</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line"><span class="comment">;;; Common Lisp backquote implementation, written in Common Lisp.</span></span><br><span class="line"><span class="comment">;;; Author: Guy L. Steele Jr.  Date: 27 December 1985</span></span><br><span class="line"><span class="comment">;;; Tested under Symbolics Common Lisp and Lucid Common Lisp.</span></span><br><span class="line"><span class="comment">;;; This software is in the public domain.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;;; $ is pseudo-backquote and % is pseudo-comma. This makes it</span></span><br><span class="line"><span class="comment">;;; possible to test this code without interfering with normal</span></span><br><span class="line"><span class="comment">;;; Common Lisp syntax.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;;; The following are unique tokens used during processing.</span></span><br><span class="line"><span class="comment">;;; They need not be symbols; they need not even be atoms.</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> *bq-clobberable* (<span class="name">gensym</span>))</span><br><span class="line">(<span class="name">define</span> *bq-quote-nil* (<span class="name">list</span> &#x27;quote ()))</span><br><span class="line"></span><br><span class="line"><span class="comment">;;; Reader macro characters:</span></span><br><span class="line"><span class="comment">;;;   $foo is read in as (BACKQUOTE foo)</span></span><br><span class="line"><span class="comment">;;;   %foo is read in as (#:COMMA foo)</span></span><br><span class="line"><span class="comment">;;;   %@foo is read in as (#:COMMA-ATSIGN foo)</span></span><br><span class="line"><span class="comment">;;;   %.foo is read in as (#:COMMA-DOT foo)</span></span><br><span class="line"><span class="comment">;;; where #:COMMA is the value of the variable *COMMA*, etc.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;;; BACKQUOTE is an ordinary macro (not a read-macro) that</span></span><br><span class="line"><span class="comment">;;; processes the expression foo, looking for occurrences of</span></span><br><span class="line"><span class="comment">;;; #:COMMA, #:COMMA-ATSIGN, and #:COMMA-DOT. It constructs code</span></span><br><span class="line"><span class="comment">;;; in strict accordance with the rules on pages 349-350 of</span></span><br><span class="line"><span class="comment">;;; the first edition (pages 528-529 of this second edition).</span></span><br><span class="line"><span class="comment">;;; It then optionally applies a code simplifier.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;(set-macro-character #\`</span></span><br><span class="line"><span class="comment">;  (lambda (stream char)</span></span><br><span class="line"><span class="comment">;     ;(declare (ignore char))</span></span><br><span class="line"><span class="comment">;     (list &#x27;quasiquote (read stream))))</span></span><br><span class="line"><span class="comment">;</span></span><br><span class="line"><span class="comment">;(set-macro-character #\,</span></span><br><span class="line"><span class="comment">;  (lambda (stream char)</span></span><br><span class="line"><span class="comment">;     ;(declare (ignore char))</span></span><br><span class="line"><span class="comment">;     (let1 c (read-char stream)</span></span><br><span class="line"><span class="comment">;       (case c</span></span><br><span class="line"><span class="comment">;         (#\@</span></span><br><span class="line"><span class="comment">;          (list &#x27;unquote-splicing (read stream)))</span></span><br><span class="line"><span class="comment">;         (#\.</span></span><br><span class="line"><span class="comment">;          (list &#x27;unquote-dot (read stream)))</span></span><br><span class="line"><span class="comment">;         (t (unread-char c stream)</span></span><br><span class="line"><span class="comment">;            (list &#x27;unquote (read stream)))))))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;;; If the value of *BQ-SIMPLIFY* is non-NIL, then BACKQUOTE</span></span><br><span class="line"><span class="comment">;;; processing applies the code simplifier. If the value is NIL,</span></span><br><span class="line"><span class="comment">;;; then the code resulting from BACKQUOTE is exactly that</span></span><br><span class="line"><span class="comment">;;; specified by the official rules.</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define-macro</span> (<span class="name">quasiquote</span> x)</span><br><span class="line">  (<span class="name">bq-completely-process</span> x))</span><br><span class="line"></span><br><span class="line"><span class="comment">;;; Backquote processing proceeds in three stages:</span></span><br><span class="line"><span class="comment">;;;</span></span><br><span class="line"><span class="comment">;;; (1) BQ-PROCESS applies the rules to remove occurrences of</span></span><br><span class="line"><span class="comment">;;; #:COMMA, #:COMMA-ATSIGN, and #:COMMA-DOT corresponding to</span></span><br><span class="line"><span class="comment">;;; this level of BACKQUOTE. (It also causes embedded calls to</span></span><br><span class="line"><span class="comment">;;; BACKQUOTE to be expanded so that nesting is properly handled.)</span></span><br><span class="line"><span class="comment">;;; Code is produced that is expressed in terms of functions</span></span><br><span class="line"><span class="comment">;;; #:BQ-LIST, #:BQ-APPEND, and #:BQ-CLOBBERABLE. This is done</span></span><br><span class="line"><span class="comment">;;; so that the simplifier will simplify only list construction</span></span><br><span class="line"><span class="comment">;;; functions actually generated by BACKQUOTE and will not involve</span></span><br><span class="line"><span class="comment">;;; any user code in the simplification. #:BQ-LIST means LIST,</span></span><br><span class="line"><span class="comment">;;; #:BQ-APPEND means APPEND, and #:BQ-CLOBBERABLE means IDENTITY</span></span><br><span class="line"><span class="comment">;;; but indicates places where &quot;%.&quot; was used and where NCONC may</span></span><br><span class="line"><span class="comment">;;; therefore be introduced by the simplifier for efficiency.</span></span><br><span class="line"><span class="comment">;;;</span></span><br><span class="line"><span class="comment">;;; (2) BQ-SIMPLIFY, if used, rewrites the code produced by</span></span><br><span class="line"><span class="comment">;;; BQ-PROCESS to produce equivalent but faster code. The</span></span><br><span class="line"><span class="comment">;;; additional functions #:BQ-LIST* and #:BQ-NCONC may be</span></span><br><span class="line"><span class="comment">;;; introduced into the code.</span></span><br><span class="line"><span class="comment">;;;</span></span><br><span class="line"><span class="comment">;;; (3) BQ-REMOVE-TOKENS goes through the code and replaces</span></span><br><span class="line"><span class="comment">;;; #:BQ-LIST with LIST, #:BQ-APPEND with APPEND, and so on.</span></span><br><span class="line"><span class="comment">;;; #:BQ-CLOBBERABLE is simply eliminated (a call to it being</span></span><br><span class="line"><span class="comment">;;; replaced by its argument). #:BQ-LIST* is replaced by either</span></span><br><span class="line"><span class="comment">;;; LIST* or CONS (the latter is used in the two-argument case,</span></span><br><span class="line"><span class="comment">;;; purely to make the resulting code a tad more readable).</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">bq-completely-process</span> x)</span><br><span class="line">  (<span class="name">bq-simplify</span> (<span class="name">bq-process</span> x)))</span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">bq-process</span> x)</span><br><span class="line">  (<span class="name">cond</span> ((<span class="name">not</span> (<span class="name">pair</span>? x))</span><br><span class="line">         (<span class="name">list</span> &#x27;quote x))</span><br><span class="line">        ((<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;quasiquote)</span><br><span class="line">         (<span class="name">bq-process</span> (<span class="name">bq-completely-process</span> (<span class="name">cadr</span> x))))</span><br><span class="line">        ((<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote) (<span class="name">cadr</span> x))</span><br><span class="line">        ((<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote-splicing)</span><br><span class="line">         (<span class="name">error</span> <span class="string">&quot;,@~S after `&quot;</span> (<span class="name">cadr</span> x)))</span><br><span class="line">        ((<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote-dot)</span><br><span class="line">         (<span class="name">error</span> <span class="string">&quot;,.~S after `&quot;</span> (<span class="name">cadr</span> x)))</span><br><span class="line">        (<span class="name">else</span> (<span class="name">let</span> loop ((<span class="name">p</span> x)</span><br><span class="line">                         (<span class="name">q</span> &#x27;()))</span><br><span class="line">             (<span class="name">if</span> (<span class="name">not</span> (<span class="name">pair</span>? p))</span><br><span class="line">                 (<span class="name">cons</span> &#x27;append</span><br><span class="line">                       (<span class="name">nreconc</span> q (<span class="name">list</span> (<span class="name">list</span> &#x27;quote p))))</span><br><span class="line">               (<span class="name">if</span> (<span class="name">eq</span>? (<span class="name">car</span> p) &#x27;unquote)</span><br><span class="line">                   (<span class="name">begin</span> (<span class="name">unless</span> (<span class="name">null</span>? (<span class="name">cddr</span> p)) (<span class="name">error</span> <span class="string">&quot;Malformed ,~S&quot;</span> p))</span><br><span class="line">                          (<span class="name">cons</span> &#x27;append</span><br><span class="line">                                (<span class="name">nreconc</span> q (<span class="name">list</span> (<span class="name">cadr</span> p)))))</span><br><span class="line">                 (<span class="name">begin</span> (<span class="name">when</span> (<span class="name">eq</span>? (<span class="name">car</span> p) &#x27;unquote-splicing)</span><br><span class="line">                          (<span class="name">error</span> <span class="string">&quot;Dotted ,@~S&quot;</span> p))</span><br><span class="line">                        (<span class="name">when</span> (<span class="name">eq</span>? (<span class="name">car</span> p) &#x27;unquote-dot)</span><br><span class="line">                          (<span class="name">error</span> <span class="string">&quot;Dotted ,.~S&quot;</span> p))</span><br><span class="line">                        (<span class="name">loop</span> (<span class="name">cdr</span> p)</span><br><span class="line">                              (<span class="name">cons</span> (<span class="name">bracket</span> (<span class="name">car</span> p)) q)))))))))</span><br><span class="line"></span><br><span class="line"><span class="comment">;;; This implements the bracket operator of the formal rules.</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">bracket</span> x)</span><br><span class="line">  (<span class="name">cond</span> ((<span class="name">not</span> (<span class="name">pair</span>? x))</span><br><span class="line">         (<span class="name">list</span> &#x27;list (<span class="name">bq-process</span> x)))</span><br><span class="line">        ((<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote)</span><br><span class="line">         (<span class="name">list</span> &#x27;list (<span class="name">cadr</span> x)))</span><br><span class="line">        ((<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote-splicing)</span><br><span class="line">         (<span class="name">cadr</span> x))</span><br><span class="line">        ((<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote-dot)</span><br><span class="line">         (<span class="name">list</span> *bq-clobberable* (<span class="name">cadr</span> x)))</span><br><span class="line">        (<span class="name">else</span> (<span class="name">list</span> &#x27;list (<span class="name">bq-process</span> x)))))</span><br><span class="line"></span><br><span class="line"><span class="comment">;;; This auxiliary function is like MAPCAR but has two extra</span></span><br><span class="line"><span class="comment">;;; purposes: (1) it handles dotted lists; (2) it tries to make</span></span><br><span class="line"><span class="comment">;;; the result share with the argument x as much as possible.</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">maptree</span> fn x)</span><br><span class="line">  (<span class="name">if</span> (<span class="name">not</span> (<span class="name">pair</span>? x))</span><br><span class="line">      (<span class="name">fn</span> x)</span><br><span class="line">    (<span class="name">let</span> ((<span class="name">a</span> (<span class="name">fn</span> (<span class="name">car</span> x)))</span><br><span class="line">          (<span class="name">d</span> (<span class="name">maptree</span> fn (<span class="name">cdr</span> x))))</span><br><span class="line">      (<span class="name">if</span> (<span class="name">and</span> (<span class="name">equal</span>? a (<span class="name">car</span> x)) (<span class="name">equal</span>? d (<span class="name">cdr</span> x)))</span><br><span class="line">          x</span><br><span class="line">        (<span class="name">cons</span> a d)))))</span><br><span class="line"></span><br><span class="line"><span class="comment">;;; This predicate is true of a form that when read looked</span></span><br><span class="line"><span class="comment">;;; like %@foo or %.foo.</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">bq-splicing-frob</span> x)</span><br><span class="line">  (<span class="name">and</span> (<span class="name">pair</span>? x)</span><br><span class="line">       (<span class="name">or</span> (<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote-splicing)</span><br><span class="line">           (<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote-dot))))</span><br><span class="line"></span><br><span class="line"><span class="comment">;;; This predicate is true of a form that when read</span></span><br><span class="line"><span class="comment">;;; loocked like %@foo or %.foo or just place %foo.</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">bq-frob</span> x)</span><br><span class="line">  (<span class="name">and</span> (<span class="name">pair</span>? x)</span><br><span class="line">       (<span class="name">or</span> (<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote)</span><br><span class="line">           (<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote-splicing)</span><br><span class="line">           (<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;unquote-dot))))</span><br><span class="line"></span><br><span class="line"><span class="comment">;;; The simplifier essentially looks for calls to #:BQ-APPEND and</span></span><br><span class="line"><span class="comment">;;; tries to simplify them. The arguments to #:BQ-APPEND are</span></span><br><span class="line"><span class="comment">;;; processed from right to left, building up a replacement form.</span></span><br><span class="line"><span class="comment">;;; At each step a number of special cases are handled that,</span></span><br><span class="line"><span class="comment">;;; loosely speaking, look like this:</span></span><br><span class="line"><span class="comment">;;;</span></span><br><span class="line"><span class="comment">;;; (APPEND (LIST a b c) foo) U&gt; (LIST* a b c foo)</span></span><br><span class="line"><span class="comment">;;;     provided a, b, c are not splicing frobs</span></span><br><span class="line"><span class="comment">;;; (APPEND (LIST* a b c) foo) U&gt; (LIST* a b (APPEND c foo))</span></span><br><span class="line"><span class="comment">;;;     provided a, b, c are not splicing frobs</span></span><br><span class="line"><span class="comment">;;; (APPEND (QUOTE (x)) foo) U&gt; (LIST* (QUOTE x) foo)</span></span><br><span class="line"><span class="comment">;;; (APPEND (CLOBBERABLE x) foo) U&gt; (NCONC x foo)</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">bq-simplify</span> x)</span><br><span class="line">  (<span class="name">if</span> (<span class="name">pair</span>? x)</span><br><span class="line">      (<span class="name">let</span> ((<span class="name">x</span> (<span class="name">if</span> (<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;quote)</span><br><span class="line">                   x</span><br><span class="line">                 (<span class="name">maptree</span> bq-simplify x))))</span><br><span class="line">        (<span class="name">if</span> (<span class="name">not</span> (<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;append))</span><br><span class="line">            x</span><br><span class="line">          (<span class="name">bq-simplify-args</span> x)))</span><br><span class="line">    x))</span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">bq-simplify-args</span> x)</span><br><span class="line">  (<span class="name">let</span> loop ((<span class="name">args</span> (<span class="name">reverse</span> (<span class="name">cdr</span> x)))</span><br><span class="line">             (<span class="name">result</span> &#x27;()))</span><br><span class="line">    (<span class="name">if</span> (<span class="name">not</span> (<span class="name">null</span>? args))</span><br><span class="line">        (<span class="name">loop</span> (<span class="name">cdr</span> args)</span><br><span class="line">              (<span class="name">cond</span> ((<span class="name">not</span> (<span class="name">pair</span>? (<span class="name">car</span> args)))</span><br><span class="line">                     (<span class="name">bq-attach-append</span> &#x27;append (<span class="name">car</span> args) result))</span><br><span class="line">                    ((<span class="name">and</span> (<span class="name">eq</span>? (<span class="name">caar</span> args) &#x27;list)</span><br><span class="line">                          (<span class="name">not</span> (<span class="name">any</span> bq-splicing-frob (<span class="name">cdar</span> args))))</span><br><span class="line">                     (<span class="name">bq-attach-conses</span> (<span class="name">cdar</span> args) result))</span><br><span class="line">                    ((<span class="name">and</span> (<span class="name">eq</span>? (<span class="name">caar</span> args) &#x27;list*)</span><br><span class="line">                          (<span class="name">not</span> (<span class="name">any</span> bq-splicing-frob (<span class="name">cdar</span> args))))</span><br><span class="line">                     (<span class="name">bq-attach-conses</span></span><br><span class="line">                      (<span class="name">reverse</span> (<span class="name">cdr</span> (<span class="name">reverse</span> (<span class="name">cdar</span> args))))</span><br><span class="line">                      (<span class="name">bq-attach-append</span> &#x27;append</span><br><span class="line">                                        (<span class="name">car</span> (<span class="name">last</span> (<span class="name">car</span> args)))</span><br><span class="line">                                        result)))</span><br><span class="line">                    ((<span class="name">and</span> (<span class="name">eq</span>? (<span class="name">caar</span> args) &#x27;quote)</span><br><span class="line">                          (<span class="name">pair</span>? (<span class="name">cadar</span> args))</span><br><span class="line">                          (<span class="name">not</span> (<span class="name">bq-frob</span> (<span class="name">cadar</span> args)))</span><br><span class="line">                          (<span class="name">not</span> (<span class="name">cddar</span> args)))</span><br><span class="line">                     (<span class="name">bq-attach-conses</span> (<span class="name">list</span> (<span class="name">list</span> &#x27;quote</span><br><span class="line">                                                   (<span class="name">caadar</span> args)))</span><br><span class="line">                                       result))</span><br><span class="line">                    ((<span class="name">eq</span>? (<span class="name">caar</span> args) *bq-clobberable*)</span><br><span class="line">                     (<span class="name">bq-attach-append</span> &#x27;append! (<span class="name">cadar</span> args) result))</span><br><span class="line">                    (<span class="name">else</span> (<span class="name">bq-attach-append</span> &#x27;append</span><br><span class="line">                                            (<span class="name">car</span> args)</span><br><span class="line">                                            result))))</span><br><span class="line">      result)))</span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">null-or-quoted</span> x)</span><br><span class="line">  (<span class="name">or</span> (<span class="name">null</span>? x) (<span class="name">and</span> (<span class="name">pair</span>? x) (<span class="name">eq</span>? (<span class="name">car</span> x) &#x27;quote))))</span><br><span class="line"></span><br><span class="line"><span class="comment">;;; When BQ-ATTACH-APPEND is called, the OP should be #:BQ-APPEND</span></span><br><span class="line"><span class="comment">;;; or #:BQ-NCONC. This produces a form (op item result) but</span></span><br><span class="line"><span class="comment">;;; some simplifications are done on the fly:</span></span><br><span class="line"><span class="comment">;;;</span></span><br><span class="line"><span class="comment">;;; (op &#x27;(a b c) &#x27;(d e f g)) U&gt; &#x27;(a b c d e f g)</span></span><br><span class="line"><span class="comment">;;; (op item &#x27;nil) U&gt; item, provided item is not a splicable frob</span></span><br><span class="line"><span class="comment">;;; (op item ’nil) U&gt;(op item), if item is a splicable frob</span></span><br><span class="line"><span class="comment">;;; (op item (op a b c)) U&gt; (op item a b c)</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">bq-attach-append</span> op item result)</span><br><span class="line">  (<span class="name">cond</span> ((<span class="name">and</span> (<span class="name">null-or-quoted</span> item) (<span class="name">null-or-quoted</span> result))</span><br><span class="line">         (<span class="name">list</span> &#x27;quote (<span class="name">append</span> (<span class="name">safe-cadr</span> item) (<span class="name">safe-cadr</span> result))))</span><br><span class="line">        ((<span class="name">or</span> (<span class="name">null</span>? result) (<span class="name">equal</span>? result *bq-quote-nil*))</span><br><span class="line">         (<span class="name">if</span> (<span class="name">bq-splicing-frob</span> item) (<span class="name">list</span> op item) item))</span><br><span class="line">        ((<span class="name">and</span> (<span class="name">pair</span>? result) (<span class="name">eq</span>? (<span class="name">car</span> result) op))</span><br><span class="line">         (<span class="name">list*</span> (<span class="name">car</span> result) item (<span class="name">cdr</span> result)))</span><br><span class="line">        (<span class="name">else</span> (<span class="name">list</span> op item result))))</span><br><span class="line"></span><br><span class="line"><span class="comment">;;; The effect of BQ-ATTACH-CONSES is to produce a form as if by</span></span><br><span class="line"><span class="comment">;;; `(LIST* ,@items ,result) but some simplifications are done</span></span><br><span class="line"><span class="comment">;;; on the fly.</span></span><br><span class="line"><span class="comment">;;;</span></span><br><span class="line"><span class="comment">;;; (LIST* &#x27;a &#x27;b &#x27;c &#x27;d) U&gt; &#x27;(a b c . d)</span></span><br><span class="line"><span class="comment">;;; (LIST* a b c &#x27;nil) U&gt; (LIST a b c)</span></span><br><span class="line"><span class="comment">;;; (LIST* a b c (list* d e f g)) U&gt; (LIST* a b c d e f g)</span></span><br><span class="line"><span class="comment">;;; (LIST* a b c (list d e f g)) U&gt; (LIST a b c d e f g)</span></span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">bq-attach-conses</span> items result)</span><br><span class="line">  (<span class="name">cond</span> ((<span class="name">and</span> (<span class="name">every</span> null-or-quoted items)</span><br><span class="line">              (<span class="name">null-or-quoted</span> result))</span><br><span class="line">         (<span class="name">list</span> &#x27;quote</span><br><span class="line">               (<span class="name">append</span> (<span class="name">map</span> cadr items) (<span class="name">cadr</span> result))))</span><br><span class="line">        ((<span class="name">or</span> (<span class="name">null</span>? result) (<span class="name">equal</span>? result *bq-quote-nil*))</span><br><span class="line">         (<span class="name">cons</span> &#x27;list items))</span><br><span class="line">        ((<span class="name">and</span> (<span class="name">pair</span>? result)</span><br><span class="line">              (<span class="name">or</span> (<span class="name">eq</span>? (<span class="name">car</span> result) &#x27;list)</span><br><span class="line">                  (<span class="name">eq</span>? (<span class="name">car</span> result) &#x27;list*)))</span><br><span class="line">         (<span class="name">cons</span> (<span class="name">car</span> result) (<span class="name">append</span> items (<span class="name">cdr</span> result))))</span><br><span class="line">        (<span class="name">else</span> (<span class="name">cons</span> &#x27;list* (<span class="name">append</span> items (<span class="name">list</span> result))))))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>リーダーマクロの辺りはコメントアウトした</li>
+<li>元のコードでは <code>backquote</code>, <code>comma</code>, <code>comma-atsign</code>, <code>comma-dot</code> という名前だが、Scheme風に <code>quasiquote</code>, <code>unquote</code>, <code>unquote-splicing</code>, <code>unquote-dot</code> と変更した</li>
+<li>元のコードではいったん識別用のシンボルを埋め込んで後で変換しているが、最初から埋め込むようにした</li>
+<li><code>do</code> ループを使用していたところをnamed-letによるループに変更</li>
+<li>Common Lispでは当然ながら <code>nil</code> をリストの終端と <code>false</code> の両方の意味で使うけど、Schemeでは使い分けないといけない</li>
+</ul>
+<p>必要なヘルパー関数：</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line"><span class="comment">;; Reverse list and concatenate tail destructively.</span></span><br><span class="line">(<span class="name">define</span> (<span class="name">nreconc</span> ls tail)</span><br><span class="line">  (<span class="name">let1</span> top (<span class="name">reverse!</span> ls)</span><br><span class="line">    (<span class="name">set-cdr!</span> ls tail)</span><br><span class="line">    top))</span><br><span class="line"></span><br><span class="line">(<span class="name">define</span> (<span class="name">safe-car</span> x)</span><br><span class="line">  (<span class="name">if</span> (<span class="name">null</span>? x)</span><br><span class="line">      &#x27;()</span><br><span class="line">    (<span class="name">car</span> x)))</span><br><span class="line">(<span class="name">define</span> (<span class="name">safe-cdr</span> x)</span><br><span class="line">  (<span class="name">if</span> (<span class="name">null</span>? x)</span><br><span class="line">      &#x27;()</span><br><span class="line">    (<span class="name">cdr</span> x)))</span><br><span class="line">(<span class="name">define</span> (<span class="name">safe-cadr</span> x)  (<span class="name">safe-car</span> (<span class="name">safe-cdr</span> x)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="http://clhs.lisp.se/Body/f_revapp.htm#nreconc">nreconc</a> はリストをひっくり返して、その末尾に追加する関数<ul>
+<li>こんな関数があることが驚きだ…</li>
+</ul>
+</li>
+<li>Common Lispでは <code>car</code> や <code>cdr</code> に <code>nil</code> を渡すと <code>nil</code> が返るけど、Schemeではエラーが発生するので、<code>nil</code> チェックをするものを用意してやる</li>
+</ul>
+<p>動作を試してみるには</p>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">(<span class="name">print</span> (<span class="name">bq-completely-process</span> &#x27;(x ,y ,@z)))</span><br><span class="line"><span class="comment">;; =&gt; (list* &#x27;x y z)</span></span><br></pre></td></tr></table></figure>
+
+<p>など。</p>
+<hr>
+<p>追記：</p>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line">&#x27;(x . ,y)</span><br></pre></td></tr></table></figure>
+
+<p>が</p>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line">(<span class="name">list*</span> <span class="symbol">&#x27;x</span> y)</span><br></pre></td></tr></table></figure>
+
+<p>と展開されるが、単なる<code>cons</code>になって欲しい。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/13/defmacro.html" title="マクロを定義するマクロを定義する" rel="bookmark">マクロを定義するマクロを定義する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/24/emacs-reload.html" title="Emacsでメジャーモードを保持したままバッファをリロード" rel="bookmark">Emacsでメジャーモードを保持したままバッファをリロード</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/20/gauche-embed-string.html" title="Gaucheで文字列埋め込み" rel="bookmark">Gaucheで文字列埋め込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/02/20/gimp-outline.html" title="GIMPで縁取りするスクリプト" rel="bookmark">GIMPで縁取りするスクリプト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/20/install-gauche.html" title="Gaucheの最新版をビルドしてインストール" rel="bookmark">Gaucheの最新版をビルドしてインストール</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

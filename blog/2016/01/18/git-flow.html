@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="要約：masterをdevelop、ダミーのブランチをmasterにして、git-flowコマンドラインツールのfeature機能だけを使う">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="git-flowコマンドラインツールをgithub-flowとして使う"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>git-flowコマンドラインツールをgithub-flowとして使う - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/01/18/git-flow.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>git-flowコマンドラインツールをgithub-flowとして使う</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-01-18
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/git/">#git</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>要約：<code>master</code>を<code>develop</code>、ダミーのブランチを<code>master</code>にして、git-flowコマンドラインツールの<code>feature</code>機能だけを使う</p>
+<span id="more"></span>
+
+<hr>
+<p>git-flowを導入してない、<code>master</code>をメインのブランチとして使用している単純なgitリポジトリで作業する場合、</p>
+<ol>
+<li><code>git checkout -b feature/xxxx</code>でフィーチャーブランチを作成</li>
+<li>変更をコミット</li>
+<li><code>git checkout master</code>でマスターブランチに移動</li>
+<li><code>git merge feature/xxxx</code>で変更をマージ</li>
+<li><code>git branch -d feature/xxxx</code>でフィーチャーブランチを削除</li>
+</ol>
+<p>などと手作業でしていたが、git-flowコマンドラインツール（またはSourceTreeのGit Flow）を利用できたら3~5が<code>git flow feature finish xxxx</code>一発でできて楽だ。</p>
+<p>そこで<code>master</code>ブランチをgit-flowでいうところの<code>develop</code>として使い、使わないダミーのブランチをgit-flowでいうところの<code>master</code>にしてやって、<code>release</code>を使わなければいいんじゃないかと思った。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git branch production  <span class="comment"># ダミーのリリース用ブランチを作成</span></span><br><span class="line">$ git flow init  <span class="comment"># git-flowセットアップ</span></span><br><span class="line"></span><br><span class="line">Which branch should be used <span class="keyword">for</span> bringing forth production releases?</span><br><span class="line">   - master</span><br><span class="line">   - production</span><br><span class="line">Branch name <span class="keyword">for</span> production releases: [production] production  <span class="comment"># productionをリリース用ブランチにする</span></span><br><span class="line"></span><br><span class="line">Which branch should be used <span class="keyword">for</span> integration of the <span class="string">&quot;next release&quot;</span>?</span><br><span class="line">   - master</span><br><span class="line">Branch name <span class="keyword">for</span> <span class="string">&quot;next release&quot;</span> development: [master]  <span class="comment"># masterを開発用ブランチにする</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># あとはデフォルト</span></span><br><span class="line">How to name your supporting branch prefixes?</span><br><span class="line">Feature branches? [feature/]</span><br><span class="line">Release branches? [release/]</span><br><span class="line">Hotfix branches? [hotfix/]</span><br><span class="line">Support branches? [support/]</span><br><span class="line">Version tag prefix? []</span><br></pre></td></tr></table></figure>
+
+<p>試してみる：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git flow feature start hoge  <span class="comment"># フィーチャーブランチhoge開始</span></span><br><span class="line">Switched to a new branch <span class="string">&#x27;feature/hoge&#x27;</span></span><br><span class="line"></span><br><span class="line">Summary of actions:</span><br><span class="line">- A new branch <span class="string">&#x27;feature/hoge&#x27;</span> was created, based on <span class="string">&#x27;master&#x27;</span></span><br><span class="line">- You are now on branch <span class="string">&#x27;feature/hoge&#x27;</span></span><br><span class="line"></span><br><span class="line">Now, start committing on your feature. When <span class="keyword">done</span>, use:</span><br><span class="line"></span><br><span class="line">     git flow feature finish hoge</span><br><span class="line"></span><br><span class="line">$ git branch</span><br><span class="line">* feature/hoge</span><br><span class="line">  master</span><br><span class="line">  production</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">&#x27;hoge&#x27;</span> &gt; hoge  <span class="comment"># ファイルを編集</span></span><br><span class="line">$ git add hoge</span><br><span class="line">$ git commit -am <span class="string">&#x27;hoge&#x27;</span>  <span class="comment"># コミット</span></span><br><span class="line">[feature/hoge 6547b4f] hoge</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 hoge</span><br><span class="line">$ git flow feature finish hoge  <span class="comment"># フィーチャーブランチ終了</span></span><br><span class="line">Switched to branch <span class="string">&#x27;master&#x27;</span></span><br><span class="line">Updating 8c6d9a7..6547b4f</span><br><span class="line">Fast-forward</span><br><span class="line"> hoge | 1 +</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 hoge</span><br><span class="line">Deleted branch feature/hoge (was 6547b4f).</span><br><span class="line"></span><br><span class="line">Summary of actions:</span><br><span class="line">- The feature branch <span class="string">&#x27;feature/hoge&#x27;</span> was merged into <span class="string">&#x27;master&#x27;</span></span><br><span class="line">- Feature branch <span class="string">&#x27;feature/hoge&#x27;</span> has been removed</span><br><span class="line">- You are now on branch <span class="string">&#x27;master&#x27;</span></span><br><span class="line"></span><br><span class="line">$ git branch</span><br><span class="line">* master</span><br><span class="line">  production</span><br></pre></td></tr></table></figure>
+
+<p>どうやら意図通り使えるようです。</p>
+<hr>
+<p>のちのち実際にgit-flowを導入するとなった場合には、設定が<code>.git/config</code>に保存されているので、削除して初期化しなおしてやればよい</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># .git/config</span><br><span class="line">...</span><br><span class="line">[gitflow &quot;branch&quot;]</span><br><span class="line">        master = production</span><br><span class="line">        develop = master</span><br><span class="line">[gitflow &quot;prefix&quot;]</span><br><span class="line">        feature = feature/</span><br><span class="line">        release = release/</span><br><span class="line">        hotfix = hotfix/</span><br><span class="line">        support = support/</span><br><span class="line">        versiontag =</span><br></pre></td></tr></table></figure>
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/17/git-log.html" title="自分が今日一日何をしたのか調べる(gitのlogから)" rel="bookmark">自分が今日一日何をしたのか調べる(gitのlogから)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/07/git-worktree.html" title="gh-pagesをサブディレクトリ内で管理" rel="bookmark">gh-pagesをサブディレクトリ内で管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/10/22/pull-request.html" title="GitHubでプルリクエストを送るときの操作手順" rel="bookmark">GitHubでプルリクエストを送るときの操作手順</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

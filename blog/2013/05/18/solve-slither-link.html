@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="数独をSATソルバで解く方法がわかったので、別のパズルを試してみようと、スリザーリンクを解いてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Haskell】SATソルバを使ってスリザーリンクを解く"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Haskell】SATソルバを使ってスリザーリンクを解く - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/05/18/solve-slither-link.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Haskell】SATソルバを使ってスリザーリンクを解く</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-05-18
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/haskell/">#haskell</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>数独をSATソルバで解く方法がわかったので、別のパズルを試してみようと、<a href="http://ja.wikipedia.org/wiki/%E3%82%B9%E3%83%AA%E3%82%B6%E3%83%BC%E3%83%AA%E3%83%B3%E3%82%AF">スリザーリンク</a>を解いてみた。</p>
+<span id="more"></span>
+
+<p>数独は論理式の制約を書くだけでSATソルバに渡せば答えが求まっていた。これは数独では個別の条件を見るだけでよくて、全体の状態を考える必要がないからだ。しかし、スリザーリンクだと、線分が全体でつながっているという条件を満たす必要があり、これを論理式で書くのは難しい。</p>
+<p>そこで、全体がつながっているという条件はひとまず無視して、SATソルバで解を求める。そしてその解で引かれる輪がひとつにつながっているかを調べる。もしつながってなかったら、SATソルバで別解があるかどうかを調べる時と同じように、その解を除外する条件を加えて再び調べることを繰り返す。</p>
+<p>バックトラックじゃなくて再計算になってしまうので時間がかかるかもしれないが、これなら実装も簡単だろう、と思ったんだけどいろいろつまづいた。スリザーリンクの制約の、数字のマスの周囲4辺にはその数値の数だけの線分が引かれる、という制約で、例えば数字が2で4辺をa,b,c,dとして、Aを(aに線分を引く)、B…とすると、A,B,C,Dのうちの2つが真となる組み合わせ</p>
+<ul>
+<li>(A and B and ¬C and ¬D) or</li>
+<li>(A and ¬B and C and ¬D) or</li>
+<li>(A and ¬B and ¬C and D) or</li>
+<li>(¬A and B and C and ¬D) or</li>
+<li>(¬A and B and ¬C and D) or</li>
+<li>(¬A and ¬B and C and D)</li>
+</ul>
+<p>となるが、SATには乗法標準形で渡す必要があって、この加法標準形を単純に乗法標準形に変換すると4の6乗=4,096節に展開される。</p>
+<p>同様に線分がループを作るという条件から、線が枝分かれしたり途中で切れたりしない、という制約を表す、各格子点に接続する4つの線分のうち2つ、または0個線が引かれるという条件になる。これも単純に展開すると、4の7乗=16,384節に展開される。</p>
+<p>ちょっとこれだと制約の節が多くなりすぎてしまう。幸い展開した形は、(A or ¬A)などという形が多く含まれ、そういう場合には必ず真になるので、その節は省略できる。こういう節を取り除くと、各格子点で13個、数字のマスの制約は0の場合4個、1と3の場合34個、2の場合18個に大幅に削減できる。</p>
+<p>このように節を減らした結果、8x8の問題で7.6秒ほどで解くことができた。ただ、もっと大きな問題で試したところ、36x20程度でも、ものすごく時間がかかって終わらない。このサイズの盤面で、変数が1496個、節が14,559個となるが、MiniSatで解を求めると一瞬で求まるので、HaskellのSATソルバの性能によるものだと思う。</p>
+<p>ソース長い…</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- This code requires SAT solver module,</span></span><br><span class="line"><span class="comment">-- e.g. https://gist.github.com/gatlin/1755736</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Data.Char (<span class="title">isDigit</span>, <span class="title">ord</span>)</span><br><span class="line"><span class="keyword">import</span> Data.List (<span class="title">genericLength</span>, <span class="title">group</span>, <span class="title">groupBy</span>, <span class="title">sort</span>)</span><br><span class="line"><span class="keyword">import</span> Data.Map (<span class="title">alter</span>, <span class="title">empty</span>, (!))</span><br><span class="line"><span class="keyword">import</span> Sat (<span class="title">solve</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">problem</span> = [<span class="string">&quot;-0-1--1-&quot;</span>,</span><br><span class="line">           <span class="string">&quot;-3--23-2&quot;</span>,</span><br><span class="line">           <span class="string">&quot;--0----0&quot;</span>,</span><br><span class="line">           <span class="string">&quot;-3--0---&quot;</span>,</span><br><span class="line">           <span class="string">&quot;---3--0-&quot;</span>,</span><br><span class="line">           <span class="string">&quot;1----3--&quot;</span>,</span><br><span class="line">           <span class="string">&quot;3-13--3-&quot;</span>,</span><br><span class="line">           <span class="string">&quot;-0--3-3-&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">  <span class="keyword">case</span> solveSlitherLink problem <span class="keyword">of</span></span><br><span class="line">    <span class="type">Nothing</span> -&gt; putStrLn <span class="string">&quot;Impossible&quot;</span></span><br><span class="line">    <span class="type">Just</span> answer -&gt; putStrLn $ showAnswer problem answer</span><br><span class="line"></span><br><span class="line"><span class="title">solveSlitherLink</span> problem = solveUntil (oneLoop w) $ makeSlitherLinkConstraints problem</span><br><span class="line">  <span class="keyword">where</span> w = genericLength $ head problem</span><br><span class="line"></span><br><span class="line"><span class="title">makeSlitherLinkConstraints</span> problem = concat $ gridCnstss ++ numCnstss</span><br><span class="line">  <span class="keyword">where</span> gridCnstss = gridConstraints w h</span><br><span class="line">        numCnstss = numberConstraints problem</span><br><span class="line">        w = genericLength $ head problem</span><br><span class="line">        h = genericLength problem</span><br><span class="line"></span><br><span class="line"><span class="comment">-- Whether the given answer makes one loop.</span></span><br><span class="line"><span class="title">oneLoop</span> :: <span class="type">Integer</span> -&gt; [<span class="type">Integer</span>] -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">oneLoop</span> w answer = length edges == length (search $ fst $ head edges)</span><br><span class="line">  <span class="keyword">where</span> edges = map (toGridPoints) $ filter (&gt; <span class="number">0</span>) answer</span><br><span class="line">        toGridPoints var | isHorzEdge var = horz var</span><br><span class="line">                         | otherwise      = vert var</span><br><span class="line">        isHorzEdge v = (v - <span class="number">1</span>) `mod` lw &lt; w</span><br><span class="line">        horz v = (((v - <span class="number">1</span>) `mod` lw, (v - <span class="number">1</span>) `div` lw),</span><br><span class="line">                  ((v - <span class="number">1</span>) `mod` lw + <span class="number">1</span>, (v - <span class="number">1</span>) `div` lw))</span><br><span class="line">        vert v = (((v - <span class="number">1</span>) `mod` lw - w, (v - <span class="number">1</span>) `div` lw),</span><br><span class="line">                  ((v - <span class="number">1</span>) `mod` lw - w, (v - <span class="number">1</span>) `div` lw + <span class="number">1</span>))</span><br><span class="line">        lw = <span class="number">2</span> * w + <span class="number">1</span></span><br><span class="line">        graph = foldl update empty edges</span><br><span class="line">        update m (c1, c2) = alter (f c2) c1 $ alter (f c1) c2 m</span><br><span class="line">        f c <span class="type">Nothing</span> = <span class="type">Just</span> [c]</span><br><span class="line">        f c (<span class="type">Just</span> o) = <span class="type">Just</span> (c:o)</span><br><span class="line">        search pt = loop [pt] $ head (graph ! pt)</span><br><span class="line">        loop path p | p `elem` path = path</span><br><span class="line">                    | otherwise     = loop (p:path) $ next p (head path)</span><br><span class="line">        next p o = head $ filter (/= o) $ (graph ! p)</span><br><span class="line"></span><br><span class="line"><span class="comment">---- Cell constraints.</span></span><br><span class="line"><span class="comment">-- 4 Cell edges must be the number of the cell.</span></span><br><span class="line"></span><br><span class="line"><span class="title">numberConstraints</span> :: [<span class="type">String</span>] -&gt; [[[<span class="type">Integer</span>]]]</span><br><span class="line"><span class="title">numberConstraints</span> problem = map (cellConstraints w) $ map (\(n,pt) -&gt; (ord n - ord &#x27;<span class="number">0</span>&#x27;, pt)) $ cellNums</span><br><span class="line">  <span class="keyword">where</span> cellNums = filter (isDigit . fst) $ zip (concat problem) $ allCells</span><br><span class="line">        allCells = [(x,y) | y &lt;- [<span class="number">0.</span>.h<span class="number">-1</span>], x &lt;- [<span class="number">0.</span>.w<span class="number">-1</span>]]</span><br><span class="line">        w = genericLength $ head problem</span><br><span class="line">        h = genericLength problem</span><br><span class="line"></span><br><span class="line"><span class="title">cellConstraints</span> w (n,(x,y)) = cnst</span><br><span class="line">  <span class="keyword">where</span> cnst = dnf2cnf edges $ cellEdgePatterns !! n</span><br><span class="line">        edges = [u, u + w, u + w + <span class="number">1</span>, u + <span class="number">2</span> * w + <span class="number">1</span>]</span><br><span class="line">        u = y * (<span class="number">2</span> * w + <span class="number">1</span>) + x + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="title">cellEdgePatterns</span> :: [[[<span class="type">Integer</span>]]]</span><br><span class="line"><span class="title">cellEdgePatterns</span> = map (\n -&gt; filter (edgeNum n) ps) [<span class="number">0.</span><span class="number">.4</span>]</span><br><span class="line">  <span class="keyword">where</span> edgeNum n = (== n) . length . filter (&gt; <span class="number">0</span>)</span><br><span class="line">        ps = multiply $ replicate <span class="number">4</span> [<span class="number">-1</span>, <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">---- Grid constraints.</span></span><br><span class="line"><span class="comment">-- Every grid point have 0 or 2 edges.</span></span><br><span class="line"></span><br><span class="line"><span class="title">gridConstraints</span> :: <span class="type">Integer</span> -&gt; <span class="type">Integer</span> -&gt; [[[<span class="type">Integer</span>]]]</span><br><span class="line"><span class="title">gridConstraints</span> w h = map mulCoeffs [gridEdges w h x y | (x,y) &lt;- allGridPoint]</span><br><span class="line">  <span class="keyword">where</span> mulCoeffs ls = dnf2cnf ls $ gridPointEdgePatterns !! (length ls)</span><br><span class="line">        allGridPoint = [(x, y) | y &lt;- [<span class="number">0.</span>.h], x &lt;- [<span class="number">0.</span>.w]]</span><br><span class="line"></span><br><span class="line"><span class="title">gridEdges</span> :: <span class="type">Integer</span> -&gt; <span class="type">Integer</span> -&gt; <span class="type">Integer</span> -&gt; <span class="type">Integer</span> -&gt; [<span class="type">Integer</span>]</span><br><span class="line"><span class="title">gridEdges</span> w h x y = concat [u, l, r, d]</span><br><span class="line">  <span class="keyword">where</span> u | y == <span class="number">0</span>    = []</span><br><span class="line">          | otherwise = [p - w - <span class="number">1</span>]</span><br><span class="line">        l | x == <span class="number">0</span>    = []</span><br><span class="line">          | otherwise = [p - <span class="number">1</span>]</span><br><span class="line">        r | x == w    = []</span><br><span class="line">          | otherwise = [p]</span><br><span class="line">        d | y == h    = []</span><br><span class="line">          | otherwise = [p + w]</span><br><span class="line">        p = y * (<span class="number">2</span> * w + <span class="number">1</span>) + x + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="title">gridPointEdgePatterns</span> :: [[[<span class="type">Integer</span>]]]</span><br><span class="line"><span class="title">gridPointEdgePatterns</span> = map convert [<span class="number">0.</span><span class="number">.4</span>]</span><br><span class="line">  <span class="keyword">where</span> convert = filter has0or2edges . multiply . flip replicate [<span class="number">-1</span>, <span class="number">1</span>]</span><br><span class="line">        has0or2edges = is0or2 . length . filter (&gt; <span class="number">0</span>)</span><br><span class="line">        is0or2 n = n == <span class="number">0</span> || n == <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- Convert SAT result to visible form.</span></span><br><span class="line"><span class="title">showAnswer</span> :: [<span class="type">String</span>] -&gt; [<span class="type">Integer</span>] -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">showAnswer</span> problem answer = unlines $ map concat $ sandwich horz cells</span><br><span class="line">  <span class="keyword">where</span> frame = map (splitAt w) $ pack (<span class="number">2</span> * w + <span class="number">1</span>) $ sortOf abs answer</span><br><span class="line">        w = length $ head problem</span><br><span class="line">        cells = zipWith sandwich (map (map toVert. snd) frame) $ map label pproblem</span><br><span class="line">        label = map (\c -&gt; [&#x27; &#x27;, c, &#x27; &#x27;])</span><br><span class="line">        horz  = map (sandwich (repeat <span class="string">&quot;+&quot;</span>) . map toHorz . fst) frame</span><br><span class="line">        pproblem = map (map (\c -&gt; <span class="keyword">if</span> c `elem` <span class="string">&quot;0123&quot;</span> <span class="keyword">then</span> c <span class="keyword">else</span> &#x27; &#x27;)) problem</span><br><span class="line">        toHorz x | x &gt; <span class="number">0</span>     = <span class="string">&quot;---&quot;</span></span><br><span class="line">                 | otherwise = <span class="string">&quot;   &quot;</span></span><br><span class="line">        toVert x | x &gt; <span class="number">0</span>     = <span class="string">&quot;|&quot;</span></span><br><span class="line">                 | otherwise = <span class="string">&quot; &quot;</span></span><br><span class="line"></span><br><span class="line"><span class="title">solveUntil</span> :: ([<span class="type">Integer</span>] -&gt; <span class="type">Bool</span>) -&gt; [[<span class="type">Integer</span>]] -&gt; <span class="type">Maybe</span> [<span class="type">Integer</span>]</span><br><span class="line"><span class="title">solveUntil</span> f constraints =</span><br><span class="line">  <span class="keyword">case</span> solve constraints <span class="keyword">of</span></span><br><span class="line">    <span class="type">Nothing</span> -&gt; <span class="type">Nothing</span></span><br><span class="line">    <span class="type">Just</span> answer -&gt; <span class="keyword">if</span> f answer</span><br><span class="line">                     <span class="keyword">then</span> <span class="type">Just</span> answer</span><br><span class="line">                     <span class="keyword">else</span> solveUntil f $ exclude answer : constraints</span><br><span class="line">  <span class="keyword">where</span> exclude answer = map negate answer</span><br><span class="line"></span><br><span class="line"><span class="comment">-- DNF (Disjunctive Normal Form, ex. (A and B) or (C and D) or ...) to</span></span><br><span class="line"><span class="comment">-- CNF (Conjunctive Normal Form, ex. (A or C) and (A or D) and ...)</span></span><br><span class="line"><span class="comment">--dnf2cnf :: Num b =&gt; [b] -&gt; [[Integer]] -&gt; [[Integer]]</span></span><br><span class="line"><span class="title">dnf2cnf</span> vars dnf = map (map ref) reducedCnf</span><br><span class="line">  <span class="keyword">where</span> reducedCnf = restoreVar $ removeTrueClauses $ map groupVars cnf</span><br><span class="line">        cnf = multiply $ map (zipWith (*) [<span class="number">1.</span>.]) dnf</span><br><span class="line">        groupVars = map (uniq . sort) . groupOf abs . sortOf abs</span><br><span class="line">        removeTrueClauses = filter (all single)</span><br><span class="line">        restoreVar = uniq . sort . map (map head)</span><br><span class="line">        ref i | i &gt; <span class="number">0</span> =   vars !! (fromInteger (i - <span class="number">1</span>))</span><br><span class="line">              | i &lt; <span class="number">0</span> = -(vars !! (fromInteger (-i - <span class="number">1</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment">-- [[A1,A2,A3..], [B1,B2,B3..],..] -&gt; [[A1,B1,..], [A1,B2,..], .., [A2,B1,..], [A2,B2,..], ..]</span></span><br><span class="line"><span class="title">multiply</span> :: [[a]] -&gt; [[a]]</span><br><span class="line"><span class="title">multiply</span> [] = []</span><br><span class="line"><span class="title">multiply</span> [xs] = map (\x -&gt; [x]) xs</span><br><span class="line"><span class="title">multiply</span> (xs:xss) = concatMap (\x -&gt; map (x:) $ multiply xss) xs</span><br><span class="line"></span><br><span class="line"><span class="title">sandwich</span> (a:_) []      = [a]</span><br><span class="line"><span class="title">sandwich</span> (a:<span class="keyword">as</span>) (b:bs) = a:b: sandwich <span class="keyword">as</span> bs</span><br><span class="line"></span><br><span class="line"><span class="title">sortOf</span> :: (<span class="type">Ord</span> a, <span class="type">Ord</span> b) =&gt; (a -&gt; b) -&gt; [a] -&gt; [a]</span><br><span class="line"><span class="title">sortOf</span> f = map snd . sort . map (\x -&gt; (f x, x))</span><br><span class="line"></span><br><span class="line"><span class="title">groupOf</span> f = groupBy (\a b -&gt; f a == f b)</span><br><span class="line"></span><br><span class="line"><span class="title">pack</span> n [] = []</span><br><span class="line"><span class="title">pack</span> n xs = (take n xs) : pack n (drop n xs)</span><br><span class="line"></span><br><span class="line"><span class="title">single</span> [x] = <span class="type">True</span></span><br><span class="line"><span class="title">single</span> _   = <span class="type">False</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- Eliminates adjacent same elements, same as unix command.</span></span><br><span class="line"><span class="title">uniq</span> :: <span class="type">Eq</span> a =&gt; [a] -&gt; [a]</span><br><span class="line"><span class="title">uniq</span> = map head . group</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="http://bach.istc.kobe-u.ac.jp/sugar/puzzles/slitherlink.html">スリザーリンク・パズルをSugar制約ソルバーで解く</a> 辺に方向を持たせるのと、輪っかに番号を付ける、という方法がよくわからなかった。</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

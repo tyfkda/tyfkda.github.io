@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="githubから最新版を取得リポジトリはhttps://github.com/mruby/mrubyにある。
+$ git clone https://github.com/mruby/mruby.git
+
+Makemakeを実行すると、./bin/ 以下に実行ファイル、./build/host/li">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="mrubyテスト"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>mrubyテスト - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/03/11/mruby.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>mrubyテスト</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-03-11
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/mruby/">#mruby</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <span id="more"></span>
+
+<h3 id="githubから最新版を取得"><a href="#githubから最新版を取得" class="headerlink" title="githubから最新版を取得"></a>githubから最新版を取得</h3><p>リポジトリは<a href="https://github.com/mruby/mruby">https://github.com/mruby/mruby</a>にある。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/mruby/mruby.git</span><br></pre></td></tr></table></figure>
+
+<h3 id="Make"><a href="#Make" class="headerlink" title="Make"></a>Make</h3><p><code>make</code>を実行すると、./bin/ 以下に実行ファイル、./build/host/lib/ 以下にライブラリができる。</p>
+<h3 id="Rubyのソースをコンパイル"><a href="#Rubyのソースをコンパイル" class="headerlink" title="Rubyのソースをコンパイル"></a>Rubyのソースをコンパイル</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ bin/mrbc foo.rb</span><br></pre></td></tr></table></figure>
+
+<p>入力ソース例：foo.rb</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">(<span class="number">0</span>...<span class="number">5</span>).each <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">  puts i</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>出力されたファイル：foo.mrb</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0000000: 5249 5445 3030 3039 3030 3030 3030 3039  RITE000900000009</span><br><span class="line">0000010: 3030 3030 4d41 545a 2020 2020 3030 3039  0000MATZ    0009</span><br><span class="line">0000020: 3030 3030 3030 3030 3030 4434 3030 3032  0000000000D40002</span><br><span class="line">0000030: 3030 3030 2020 2020 2020 2020 4136 4339  0000        A6C9</span><br><span class="line">0000040: 3030 3030 3030 3645 5343 3030 3031 3030  0000006ESC000100</span><br><span class="line">0000050: 3033 3030 3034 3436 3946 3030 3030 3030  030004469F000000</span><br><span class="line">0000060: 3036 3030 4246 4646 3833 3031 3430 3032  0600BFFF83014002</span><br><span class="line">0000070: 3033 3030 3830 3430 4331 3031 3030 3033  03008040C1010003</span><br><span class="line">0000080: 3430 3030 3830 3030 3231 3030 3030 3030  4000800021000000</span><br><span class="line">0000090: 3441 3344 3632 3030 3030 3030 3030 3030  4A3D620000000000</span><br><span class="line">00000a0: 3030 3030 3030 3030 3031 3030 3034 6561  00000000010004ea</span><br><span class="line">00000b0: 6368 3944 4131 3030 3030 3030 3636 5343  ch9DA100000066SC</span><br><span class="line">00000c0: 3030 3033 3030 3035 3030 3034 3438 3339  0003000500044839</span><br><span class="line">00000d0: 3030 3030 3030 3035 3032 3030 3030 3236  0000000502000026</span><br><span class="line">00000e0: 3031 3830 3030 3036 3032 3030 3430 3031  0180000602004001</span><br><span class="line">00000f0: 3031 3830 3030 4130 3031 3830 3030 3239  018000A001800029</span><br><span class="line">0000100: 4641 3445 3030 3030 3030 3030 3030 3030  FA4E000000000000</span><br><span class="line">0000110: 3030 3030 3030 3031 3030 3034 7075 7473  000000010004puts</span><br><span class="line">0000120: 3234 3839 3030 3030 3030 3030            248900000000</span><br></pre></td></tr></table></figure>
+
+<p>バイトコードを16進文字列化したものになるっぽい。<code>each</code>とか<code>puts</code>とか、ところどころシンボルがそのまま埋め込まれている。</p>
+<p><code>-B</code>オプションで、C言語のソースコード形式で出力される。</p>
+<h3 id="バイトコード実行"><a href="#バイトコード実行" class="headerlink" title="バイトコード実行"></a>バイトコード実行</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ bin/mruby -b foo.mrb</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td></tr></table></figure>
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby-api.html" title="mrubyのAPIテスト" rel="bookmark">mrubyのAPIテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-backtrace.html" title="mrubyでエラー発生時にバックトレースを表示する" rel="bookmark">mrubyでエラー発生時にバックトレースを表示する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/12/mruby-custom-allocator.html" title="mrubyでカスタムアロケータを指定" rel="bookmark">mrubyでカスタムアロケータを指定</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/18/mruby-gc.html" title="mrubyのGCの仕組みを調べた" rel="bookmark">mrubyのGCの仕組みを調べた</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

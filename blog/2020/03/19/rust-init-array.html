@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ちょっと前からRustを触り始めて、ようやく多少動かせるようになってきた。
+で今までわかった範囲で、配列の初期化についてまとめてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Rust】配列を初期化するn通りの方法と制約"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Rust】配列を初期化するn通りの方法と制約 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/03/19/rust-init-array.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Rust】配列を初期化するn通りの方法と制約</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-03-19
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/rust/">#rust</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ちょっと前からRustを触り始めて、ようやく多少動かせるようになってきた。
+で今までわかった範囲で、配列の初期化についてまとめてみた。</p>
+<span id="more"></span>
+
+<h3 id="リテラル"><a href="#リテラル" class="headerlink" title="リテラル"></a>リテラル</h3><p>Rustで配列を記述するには、型を <code>[要素の型; 要素数]</code> という具合に指定する。
+で初期化の要素をブラケット内 <code>[ ]</code> に記述する：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array: [<span class="built_in">i32</span>; <span class="number">3</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];  <span class="comment">// 1, 2, 3 のi32型3要素の配列</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=fn%20main()%20%7B%0A%20%20%20%20let%20array:%20%5Bi32;%203%5D%20=%20%5B1,%202,%203%5D;%0A%20%20%20%20println!(%22%7B:?%7D%22,%20array);%0A%7D%0A">Rust Playgroundで実行</a></p>
+<h3 id="デフォルト値で埋める"><a href="#デフォルト値で埋める" class="headerlink" title="デフォルト値で埋める"></a>デフォルト値で埋める</h3><p>要素数が多い場合、初期化時にすべての要素の初期値を列挙するのが大変。
+デフォルト値で初期化したい場合、要素数がそこまで多くなければ <a href="https://doc.rust-lang.org/std/default/trait.Default.html"><code>Default::default()</code></a> というのが使える：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array2: [<span class="built_in">i32</span>; <span class="number">32</span>] = <span class="built_in">Default</span>::default();  <span class="comment">// 0が32個</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=fn%20main()%20%7B%0A%20%20%20%20let%20array2:%20%5Bi32;%2032%5D%20=%20Default::default();%0A%20%20%20%20println!(%22%7B:?%7D%22,%20array2);%0A%7D%0A">Rust Playgroundで実行</a></p>
+<p>使用できる個数に制限があって、 <strong>32個以下</strong> でしか使えない。
+なんでそんな制約があるんだと思うんだけど、<a href="https://doc.rust-lang.org/src/core/array/mod.rs.html#429-431">マクロで実装されている</a>からなのかもしれない。</p>
+<ul>
+<li><a href="https://blog.rust-lang.org/2020/10/08/Rust-1.47.html#traits-on-larger-arrays">Rust 1.47 のconst generics</a> で32以上も可能になるとのこと</li>
+</ul>
+<h3 id="一定の値で埋める"><a href="#一定の値で埋める" class="headerlink" title="一定の値で埋める"></a>一定の値で埋める</h3><p>要素の型が <a href="https://doc.rust-lang.org/std/marker/trait.Copy.html"><code>Copy</code></a> トレイトを実装している場合、全要素を同じ値で初期化するなら <code>[要素; 要素数]</code> と書ける：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array3: [<span class="built_in">i32</span>; <span class="number">33</span>] = [<span class="number">1</span>; <span class="number">33</span>];</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=fn%20main()%20%7B%0A%20%20%20%20let%20array3:%20%5Bi32;%2033%5D%20=%20%5B1;%2033%5D;%0A%20%20%20%20println!(%22%7B:?%7D%22,%20array3.len());%0A%7D%0A">Rust Playgroundで実行</a></p>
+<p>この場合には32個以上も可能。</p>
+<h3 id="個別に初期化したい場合"><a href="#個別に初期化したい場合" class="headerlink" title="個別に初期化したい場合"></a>個別に初期化したい場合</h3><p>リテラルでの直接記述や同じ値での初期化じゃなく、インデクスを使ってとか乱数を使ってとかで初期化したい場合どうするか。
+Rustは安全性が最優先の言語で、変数が未初期化の状態を許さないので、でかい配列といえど確保のみということはできず、要素もすべて宣言時に初期化済みの状態になっていないといけない。</p>
+<p>ではどうするか。
+実のところ、 <code>unsafe</code> を使うことになる：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::mem::MaybeUninit;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">func</span></span>() &#123;</span><br><span class="line">    <span class="keyword">const</span> LEN: <span class="built_in">usize</span> = <span class="number">16</span>;  <span class="comment">// 確保したい要素数</span></span><br><span class="line">    <span class="comment">// 未初期化の領域を確保</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> array4: [MaybeUninit&lt;<span class="built_in">i32</span>&gt;; LEN] = <span class="keyword">unsafe</span> &#123; MaybeUninit::uninit().assume_init() &#125;;</span><br><span class="line">    <span class="keyword">for</span> (i, slot) <span class="keyword">in</span> array4.iter_mut().enumerate() &#123;</span><br><span class="line">        <span class="comment">// [i]の要素を初期化する</span></span><br><span class="line">        *slot = MaybeUninit::new((i * i) <span class="keyword">as</span> <span class="built_in">i32</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// MaybeUninit を外した安全な配列型に変換</span></span><br><span class="line">    <span class="keyword">let</span> array4: [<span class="built_in">i32</span>; LEN] = <span class="keyword">unsafe</span> &#123; std::mem::transmute::&lt;_, [<span class="built_in">i32</span>; LEN]&gt;(array4) &#125;;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std::mem::MaybeUninit;%0A%0Afn%20func()%20-%3E%20%5Bi32;%2016%5D%20%7B%0A%20%20%20%20const%20LEN:%20usize%20=%2016;%0A%20%20%20%20let%20mut%20array4:%20%5BMaybeUninit%3Ci32%3E;%20LEN%5D%20=%20unsafe%20%7B%20MaybeUninit::uninit().assume_init()%20%7D;%0A%20%20%20%20for%20(i,%20slot)%20in%20array4.iter_mut().enumerate()%20%7B%0A%20%20%20%20%20%20%20%20*slot%20=%20MaybeUninit::new((i%20*%20i)%20as%20i32);%0A%20%20%20%20%7D%0A%20%20%20%20let%20array4:%20%5Bi32;%20LEN%5D%20=%20unsafe%20%7B%20std::mem::transmute::%3C_,%20%5Bi32;%20LEN%5D%3E(array4)%20%7D;%0A%20%20%20%20array4%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20array4%20=%20func();%0A%20%20%20%20println!(%22%7B:?%7D%22,%20array4);%0A%7D%0A">Rust Playgroundで実行</a></p>
+<p><a href="https://doc.rust-lang.org/std/mem/union.MaybeUninit.html"><code>MaybeUninit</code></a> で要素が未初期化の状態の配列を確保し、
+各要素を初期化した後、
+<a href="https://doc.rust-jp.rs/the-rust-programming-language-ja/1.9/book/casting-between-types.html#transmute"><code>std::mem::transmute</code></a> で型を変換して取り出す。</p>
+<p>「え、そんな基本的なことで <code>unsafe</code> を使わないといけないの？」と思うのだけど、そういうものらしい。</p>
+<h4 id="crate-を利用する"><a href="#crate-を利用する" class="headerlink" title="crate を利用する"></a>crate を利用する</h4><p>上の <code>MaybeUninit</code> を使う方法は決まった形式なので、モジュール化できれば簡潔に利用できて便利。
+<a href="https://crates.io/">crates.io</a> にいろいろあるみたいなんだけど、 <a href="https://crates.io/crates/array-macro">array-macro</a> というものを使ってみた。</p>
+<p>Cargo.toml の <code>[dependencies]</code> に追加：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[dependencies]</span><br><span class="line">array-macro = &quot;1.0.4&quot;</span><br></pre></td></tr></table></figure>
+
+<p>して、利用</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> array_macro::*;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> array5: [<span class="built_in">i32</span>; LEN] = array![|i| i * i; LEN];</span><br><span class="line">    <span class="keyword">let</span> array6: [<span class="built_in">i32</span>; LEN] = array![<span class="number">1</span>; LEN];</span><br></pre></td></tr></table></figure>
+
+<p>できる。
+クロージャを渡す方法以外にも通常の固定値での初期化と同じようにも書けるが、こちらは <code>Copy</code> トレイトじゃない型でも使用できるという違いがある。</p>
+<h3 id="静的な配列の個数指定"><a href="#静的な配列の個数指定" class="headerlink" title="静的な配列の個数指定"></a>静的な配列の個数指定</h3><p>静的な配列も定義できる。
+ローカル変数の場合は型宣言を省略できるが、静的な場合には明示する必要がある：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">const</span> ARRAY: [<span class="built_in">i32</span>; <span class="number">3</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+
+<p>開発時にコードの修正で要素数を増減させる場合に、個数宣言（<code>; 3</code>の箇所）も合わせないといけなくて要素数に応じて修正する必要があるのが地味に面倒だ。</p>
+<p>でcrateがないか調べたらあった：<a href="https://crates.io/crates/counted-array">counted-array</a> (from <a href="https://github.com/rust-lang/rust/issues/40269#issuecomment-284250535">Array length inference?</a>)。
+これを使えば個数に <code>_</code> を指定できて、自動的にサイズを埋めてくれる：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line">counted_array!(<span class="keyword">pub</span> <span class="keyword">const</span> ARRAY2: [<span class="built_in">i32</span>; _] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><p>コアな言語仕様だけ用意してマクロでなんとかするというのも理にかなっているといえばそうなんだけど、
+「このcrateを使えば簡単にできますよ」というのは言語に慣れてない人間にとっては探すのも難しいのでなかなか辛いと思った。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（移譲）」について" rel="bookmark">「継承より合成（移譲）」について</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/03/ecs-in-rust.html" title="【Rust】ECSを使ってみる(Specs)" rel="bookmark">【Rust】ECSを使ってみる(Specs)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/21/legion-ecs.html" title="【Rust】Legion ECSを触ってみた" rel="bookmark">【Rust】Legion ECSを触ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか" rel="bookmark">Rustで状態管理や相互参照をどうするか</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

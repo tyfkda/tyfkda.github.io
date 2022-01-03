@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Unityの標準シェーダーでカリングの制御をできるようにしたかったので調べてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Unity】カリング制御可能な標準シェーダーを作る"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Unity】カリング制御可能な標準シェーダーを作る - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2018/08/29/unity-culling-shader.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Unity】カリング制御可能な標準シェーダーを作る</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2018-08-29
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unity/">#unity</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Unityの標準シェーダーでカリングの制御をできるようにしたかったので調べてみた。</p>
+<span id="more"></span>
+
+<p>試したバージョン：Unity 2018.2.4f1</p>
+<h2 id="標準シェーダーのソースのダウンロード"><a href="#標準シェーダーのソースのダウンロード" class="headerlink" title="標準シェーダーのソースのダウンロード"></a>標準シェーダーのソースのダウンロード</h2><p><a href="https://unity3d.com/jp/get-unity/download/archive">Unity - Download Archive</a>
+のダウンロードのドロップダウンに「ビルトインシェーダー」という項目があり、クリックすると.zipファイルをダウンロードできる。</p>
+<p>ファイルを展開して DefaultResourcesExtra/Standard.shader が対象のソースコード。</p>
+<h2 id="シェーダーの修正"><a href="#シェーダーの修正" class="headerlink" title="シェーダーの修正"></a>シェーダーの修正</h2><h3 id="シェーダー名の修正"><a href="#シェーダー名の修正" class="headerlink" title="シェーダー名の修正"></a>シェーダー名の修正</h3><p>ここでは仮に、<code>Custom/StandardCull</code>とでもしてみる。
+ファイル名も<code>StandardCull.shader</code>としておく：</p>
+<figure class="highlight diff"><figcaption><span>StandardCull.shader</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="deletion">-Shader &quot;Standard&quot;</span></span><br><span class="line"><span class="addition">+Shader &quot;Custom/StandardCull&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Unityのプロジェクトに突っ込むとマテリアルのShaderから選べるようになっている。</p>
+<center>
+<img src="/assets/unity-cull-shader/1.png" title="1.png" />
+</center>
+
+<h3 id="シェーダーにカリングを制御するパラメータを追加"><a href="#シェーダーにカリングを制御するパラメータを追加" class="headerlink" title="シェーダーにカリングを制御するパラメータを追加"></a>シェーダーにカリングを制御するパラメータを追加</h3><figure class="highlight diff"><figcaption><span>StandardCull.shader</span></figcaption><table><tr><td class="code"><pre><span class="line"> Shader &quot;Custom/StandardCull&quot;</span><br><span class="line"> &#123;</span><br><span class="line">     Properties</span><br><span class="line">     &#123;</span><br><span class="line">         ...</span><br><span class="line"></span><br><span class="line"><span class="addition">+        [Enum(UnityEngine.Rendering.CullMode)]</span></span><br><span class="line"><span class="addition">+        _Cull(&quot;Cull&quot;, Float) = 0                // 0=Off</span></span><br><span class="line"></span><br><span class="line">     ...</span><br><span class="line"></span><br><span class="line">     SubShader</span><br><span class="line">     &#123;</span><br><span class="line">         Tags &#123; &quot;RenderType&quot;=&quot;Opaque&quot; &quot;PerformanceChecks&quot;=&quot;False&quot; &#125;</span><br><span class="line">         LOD 300</span><br><span class="line"></span><br><span class="line"><span class="addition">+        Cull [_Cull]</span></span><br><span class="line"></span><br><span class="line">     // 念のためLOD 150も同様に</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://docs.unity3d.com/ja/current/ScriptReference/Rendering.CullMode.html">Rendering.CullMode</a></li>
+</ul>
+<h3 id="UIの指定"><a href="#UIの指定" class="headerlink" title="UIの指定"></a>UIの指定</h3><p>カリングのパラメータを追加しただけではUnityエディタのインスペクタからいじれない。
+.zipを展開した中にEditor/StandardShaderGUI.csというファイルがあるので、StandardCullShaderGUI.csなどとリネームしてAssetsのEditor以下につっこみ、変更する：</p>
+<figure class="highlight diff"><figcaption><span>StandardCullShaderGUI.cs</span></figcaption><table><tr><td class="code"><pre><span class="line"> namespace UnityEditor</span><br><span class="line"> &#123;</span><br><span class="line"><span class="deletion">-    internal class StandardShaderGUI : ShaderGUI</span></span><br><span class="line"><span class="addition">+    internal class StandardCullShaderGUI : ShaderGUI</span></span><br><span class="line">     &#123;</span><br><span class="line">         ...</span><br><span class="line"></span><br><span class="line">         private static class Styles</span><br><span class="line">         &#123;</span><br><span class="line">             ...</span><br><span class="line"><span class="meta">@@ -55,6 +55,7 @@</span></span><br><span class="line">             public static string renderingMode = &quot;Rendering Mode&quot;;</span><br><span class="line">             public static string advancedText = &quot;Advanced Options&quot;;</span><br><span class="line">             public static readonly string[] blendNames = Enum.GetNames(typeof(BlendMode));</span><br><span class="line"><span class="addition">+            public static string cullModeText = &quot;CullMode&quot;;</span></span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         MaterialProperty blendMode = null;</span><br><span class="line"><span class="meta">@@ -83,6 +84,7 @@</span></span><br><span class="line">         MaterialProperty detailNormalMapScale = null;</span><br><span class="line">         MaterialProperty detailNormalMap = null;</span><br><span class="line">         MaterialProperty uvSetSecondary = null;</span><br><span class="line"><span class="addition">+        MaterialProperty cullMode = null;</span></span><br><span class="line"></span><br><span class="line">         ...</span><br><span class="line"></span><br><span class="line">         public void FindProperties(MaterialProperty[] props)</span><br><span class="line">         &#123;</span><br><span class="line">             ...</span><br><span class="line"><span class="meta">@@ -123,6 +125,7 @@</span></span><br><span class="line">             detailNormalMapScale = FindProperty(&quot;_DetailNormalMapScale&quot;, props);</span><br><span class="line">             detailNormalMap = FindProperty(&quot;_DetailNormalMap&quot;, props);</span><br><span class="line">             uvSetSecondary = FindProperty(&quot;_UVSec&quot;, props);</span><br><span class="line"><span class="addition">+            cullMode = FindProperty(&quot;_Cull&quot;, props);</span></span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         ...</span><br><span class="line"></span><br><span class="line">         public void ShaderPropertiesGUI(Material material)</span><br><span class="line">         &#123;</span><br><span class="line">             ...</span><br><span class="line"><span class="meta">@@ -152,6 +155,7 @@</span></span><br><span class="line">             EditorGUI.BeginChangeCheck();</span><br><span class="line">             &#123;</span><br><span class="line">                 BlendModePopup();</span><br><span class="line"><span class="addition">+                m_MaterialEditor.ShaderProperty(cullMode, Styles.cullModeText);</span></span><br><span class="line"></span><br><span class="line">                 ...</span><br></pre></td></tr></table></figure>
+
+<p>シェーダ側に上記のGUIを使用するということを指定する：</p>
+<figure class="highlight diff"><figcaption><span>StandardCull.shader</span></figcaption><table><tr><td class="code"><pre><span class="line"> Shader &quot;Custom/StandardCull&quot;</span><br><span class="line"> &#123;</span><br><span class="line">     ...</span><br><span class="line"></span><br><span class="line"><span class="deletion">-    CustomEditor &quot;StandardShaderGUI&quot;</span></span><br><span class="line"><span class="addition">+    CustomEditor &quot;StandardCullShaderGUI&quot;</span></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>するとマテリアルを選択するとインスペクタに<code>CullMode</code>というドロップダウンが追加され、変更できるようになる。</p>
+<center>
+<img src="/assets/unity-cull-shader/2.png" title="2.png" />
+</center>
+
+<h3 id="スクリプトからの変更"><a href="#スクリプトからの変更" class="headerlink" title="スクリプトからの変更"></a>スクリプトからの変更</h3><p>スクリプトからマテリアルのカリングモードをいじるには、</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.Rendering;</span><br><span class="line"></span><br><span class="line">    Material material;  <span class="comment">// 対象のマテリアル</span></span><br><span class="line">    CullMode cullMode = CullMode.Off;</span><br><span class="line">    material.SetFloat(<span class="string">&quot;_Cull&quot;</span>, (<span class="built_in">float</span>)cullMode);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://docs.unity3d.com/ja/current/ScriptReference/Material.SetFloat.html">Material.SetFloat</a><ul>
+<li><a href="https://docs.unity3d.com/ja/current/ScriptReference/Material.SetInt.html">Material.SetInt</a> は<code>SetFloat</code>のエイリアスとのことなので使う意味はないかな。</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/19/cache-http.html" title="Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する" rel="bookmark">Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/14/fixed-font.html" title="【Unity】固定幅ビットマップフォントを使う" rel="bookmark">【Unity】固定幅ビットマップフォントを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/11/generate-prefabs.html" title="【Unity】スクリプトでプレハブを大量生産する" rel="bookmark">【Unity】スクリプトでプレハブを大量生産する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/23/interior-mapping.html" title="【Unity】Shader Graphでインテリアマッピング" rel="bookmark">【Unity】Shader Graphでインテリアマッピング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/09/modify-xcproj.html" title="【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する" rel="bookmark">【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

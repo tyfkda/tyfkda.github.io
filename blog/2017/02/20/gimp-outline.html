@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="GIMPで絵の縁取りをするスクリプトを書いてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="GIMPで縁取りするスクリプト"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>GIMPで縁取りするスクリプト - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2017/02/20/gimp-outline.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>GIMPで縁取りするスクリプト</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2017-02-20
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/lisp/">#lisp</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>GIMPで絵の縁取りをするスクリプトを書いてみた。</p>
+<span id="more"></span>
+
+<p>GIMPでは<code>Script-Fu</code>とかいうSchemeのスクリプト処理系が使える。
+自作のスクリプトを追加したい場合、Macなら<code>~/Library/Application Support/GIMP/2.8/scripts/</code>内に<code>.scm</code>ファイルを追加してやればよい。
+<code>script-fu-register</code>で関数を登録して、メニューから呼び出せるようにする。</p>
+<p>GIMPのメニュー＞フィルター＞Script-Fu＞Script-Fu コンソールでコンソールウィンドウが開き、インタラクティブに操作できる（けどあまり試してない…）。
+「参照」ボタンで呼び出せる関数が調べられる。
+開発時、自作のスクリプトを更新したらメニューの「スクリプトを再読込」で更新を反映させる（この手順がメンドイので自動にだかショートカットキー一発にしたい…）。</p>
+<p>ですったもんだしながら画像の縁取りをするスクリプトを作った。
+選択中のレイヤーの不透明部分に対して、選択色で4近傍の縁取りをする：</p>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name">script-fu-outline4</span> img src-layer)</span><br><span class="line">  <span class="comment">;; Undoのグループ化</span></span><br><span class="line">  (<span class="name"><span class="builtin-name">define</span></span> (<span class="name">undo-group</span> fn)</span><br><span class="line">    (<span class="name">gimp-image-undo-group-start</span> img)</span><br><span class="line">    (<span class="name">fn</span>)</span><br><span class="line">    (<span class="name">gimp-image-undo-group-end</span> img))</span><br><span class="line"></span><br><span class="line">  <span class="comment">;; src-layerの下に空のレイヤーを追加</span></span><br><span class="line">  (<span class="name"><span class="builtin-name">define</span></span> (<span class="name">add-empty-layer</span>)</span><br><span class="line">    (<span class="name"><span class="builtin-name">let</span></span> ((<span class="name">index</span> (<span class="name"><span class="builtin-name">car</span></span> (<span class="name">gimp-image-get-layer-position</span> img src-layer)))</span><br><span class="line">          (<span class="name">width</span> (<span class="name"><span class="builtin-name">car</span></span> (<span class="name">gimp-drawable-width</span> src-layer)))</span><br><span class="line">          (<span class="name">height</span> (<span class="name"><span class="builtin-name">car</span></span> (<span class="name">gimp-drawable-height</span> src-layer))))</span><br><span class="line">      (<span class="name"><span class="builtin-name">let</span></span> ((<span class="name">empty-layer</span> (<span class="name"><span class="builtin-name">car</span></span> (<span class="name">gimp-layer-new</span> img width height RGBA-IMAGE</span><br><span class="line">                                                <span class="string">&quot;Outline4&quot;</span> <span class="number">100</span> NORMAL))))</span><br><span class="line">        (<span class="name">gimp-image-add-layer</span> img empty-layer (<span class="name"><span class="builtin-name">+</span></span> index <span class="number">1</span>))</span><br><span class="line">        empty-layer)))</span><br><span class="line"></span><br><span class="line">  <span class="comment">;; 不透明部分をずらして塗り潰し</span></span><br><span class="line">  (<span class="name"><span class="builtin-name">define</span></span> (<span class="name">fill</span> layer ofsx ofsy)</span><br><span class="line">    (<span class="name">gimp-image-select-item</span> img CHANNEL-OP-REPLACE src-layer)</span><br><span class="line">    (<span class="name">gimp-selection-translate</span> img ofsx ofsy)</span><br><span class="line">    (<span class="name">gimp-edit-fill</span> layer FOREGROUND-FILL))</span><br><span class="line"></span><br><span class="line">  (<span class="name">undo-group</span></span><br><span class="line">   (<span class="name"><span class="builtin-name">lambda</span></span> ()</span><br><span class="line">     (<span class="name"><span class="builtin-name">let</span></span> ((<span class="name">outline-layer</span> (<span class="name">add-empty-layer</span>))</span><br><span class="line">           (<span class="name">outline-color</span> (<span class="name"><span class="builtin-name">car</span></span> (<span class="name">gimp-context-get-foreground</span>))))</span><br><span class="line">       (<span class="name">gimp-layer-set-name</span> outline-layer</span><br><span class="line">                            (<span class="name"><span class="builtin-name">string-append</span></span> <span class="string">&quot;Outline for &quot;</span> (<span class="name"><span class="builtin-name">car</span></span> (<span class="name">gimp-layer-get-name</span> src-layer))))</span><br><span class="line"></span><br><span class="line">       <span class="comment">;; 上下左右にずらして塗りつぶす</span></span><br><span class="line">       (<span class="name"><span class="builtin-name">for-each</span></span> (<span class="name"><span class="builtin-name">lambda</span></span> (offset)</span><br><span class="line">                   (<span class="name">fill</span> outline-layer (<span class="name"><span class="builtin-name">car</span></span> offset) (<span class="name"><span class="builtin-name">cadr</span></span> offset)))</span><br><span class="line">                 &#x27;((<span class="number">1</span> <span class="number">0</span>) (<span class="number">-1</span> <span class="number">0</span>) (<span class="number">0</span> <span class="number">1</span>) (<span class="number">0</span> <span class="number">-1</span>)))</span><br><span class="line"></span><br><span class="line">       <span class="comment">;; 中央を抜く</span></span><br><span class="line">       (<span class="name">gimp-image-select-item</span> img CHANNEL-OP-REPLACE src-layer)</span><br><span class="line">       (<span class="name">gimp-edit-cut</span> outline-layer)</span><br><span class="line"></span><br><span class="line">       <span class="comment">;; 後始末</span></span><br><span class="line">       (<span class="name">gimp-selection-clear</span> img)</span><br><span class="line">       (<span class="name">gimp-image-set-active-layer</span> img src-layer))))</span><br><span class="line"></span><br><span class="line">  (<span class="name">gimp-displays-flush</span>))</span><br><span class="line"></span><br><span class="line">(<span class="name">script-fu-register</span></span><br><span class="line"> <span class="string">&quot;script-fu-outline4&quot;</span>                        <span class="comment">;func name</span></span><br><span class="line"> <span class="string">&quot;Outline4&quot;</span>                                  <span class="comment">;menu label</span></span><br><span class="line"> <span class="string">&quot;レイヤーの不透明部分を上下左右にずらして枠を作成する&quot;</span>  <span class="comment">;description</span></span><br><span class="line"> <span class="string">&quot;tyfkda&quot;</span>                             <span class="comment">;author</span></span><br><span class="line"> <span class="string">&quot;copyright 2017, tyfkda&quot;</span>        <span class="comment">;copyright notice</span></span><br><span class="line"> <span class="string">&quot;Febrary 13, 2017&quot;</span>                          <span class="comment">;date created</span></span><br><span class="line"> <span class="string">&quot;&quot;</span>                     <span class="comment">;image type that the script works on</span></span><br><span class="line"> SF-IMAGE       <span class="string">&quot;Image&quot;</span> <span class="number">0</span></span><br><span class="line"> SF-DRAWABLE    <span class="string">&quot;Drawable&quot;</span> <span class="number">0</span></span><br><span class="line"> )</span><br><span class="line"></span><br><span class="line">(<span class="name">script-fu-menu-register</span> <span class="string">&quot;script-fu-outline4&quot;</span> <span class="string">&quot;&lt;Image&gt;/Script-Fu/Outline4&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>読み込ませるとメニューにScript-Fu＞Outline4＞Outline4という項目が追加されるので、選ぶと即実行される。
+やってることは単純だけど、まあある程度使えてちゃんと動いたから満足。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/13/defmacro.html" title="マクロを定義するマクロを定義する" rel="bookmark">マクロを定義するマクロを定義する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/24/emacs-reload.html" title="Emacsでメジャーモードを保持したままバッファをリロード" rel="bookmark">Emacsでメジャーモードを保持したままバッファをリロード</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/20/gauche-embed-string.html" title="Gaucheで文字列埋め込み" rel="bookmark">Gaucheで文字列埋め込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/20/install-gauche.html" title="Gaucheの最新版をビルドしてインストール" rel="bookmark">Gaucheの最新版をビルドしてインストール</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/09/lisp-to-js.html" title="LispからJavaScriptへのトランスレータを作り始めた" rel="bookmark">LispからJavaScriptへのトランスレータを作り始めた</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Crafting Interpretersを読んである程度全体の構成はわかったんだけど、クロージャの実装方法はあまりよく理解せずに飛ばしてしまったのでもう一度ちゃんと理解したいと思う。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="1パスコンパイラでのクロージャの実装方法(Upvalue)"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>1パスコンパイラでのクロージャの実装方法(Upvalue) - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/01/03/clox-closure.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>1パスコンパイラでのクロージャの実装方法(Upvalue)</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-01-03
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2019/12/22/crafting-interpreters.html" title="Crafting Interpretersを読んで">Crafting Interpretersを読んで</a>ある程度全体の構成はわかったんだけど、クロージャの実装方法はあまりよく理解せずに飛ばしてしまったのでもう一度ちゃんと理解したいと思う。
+
+<span id="more"></span>
+
+<h3 id="Loxでのクロージャの実装手法"><a href="#Loxでのクロージャの実装手法" class="headerlink" title="Loxでのクロージャの実装手法"></a>Loxでのクロージャの実装手法</h3><p>VM版でのクロージャは<a href="https://www.craftinginterpreters.com/closures.html">25章 - Closure</a>で解説されている。</p>
+<p>まずVM版がどうやってローカル変数を扱っているかというと、VMに値のスタックを持っていて、値を積んだり取り出したりして行っている。
+クロージャを実装しない段階ではスコープの開始・終了や関数呼び出しによるローカル変数の生存期間と、スタック上に配置された値の生存期間が一致している。
+スタックを使用することで、新しいローカル変数の追加や関数呼び出し時にも特にヒープ確保を発生させずに行うことができて効率がよい。</p>
+<p>しかしクロージャでローカル変数をキャプチャできると話が変わってくる。
+スコープを抜けた後にもローカル変数にアクセスできる可能性が出てくるので、その変数はスタック上に置いておくことができなくて、ヒープに逃がす必要がある。</p>
+<p>すべてのローカル変数をヒープに確保すると遅くなってしまうので、キャプチャされるものだけにしたい。
+しかしLoxは1パスコンパイラで構文木を生成せずに直接バイトコードを出力するので、変数が後々キャプチャされるかどうかを定義時点で知ることができない。
+そこでUpvalueという方法を使う。</p>
+<h4 id="Upvalueによるキャプチャ"><a href="#Upvalueによるキャプチャ" class="headerlink" title="Upvalueによるキャプチャ"></a>Upvalueによるキャプチャ</h4><p>ネストした関数をコンパイルする際に、外側の関数で定義されたローカル変数を参照した場合、その関数が使用とする自由変数として登録する。</p>
+<p>実行時にクロージャを生成する際に、関数の自由変数ごとに<code>Upvalue</code>をヒープ上に生成する。
+<code>Upvalue</code>には対象の自由変数が格納されているスタック位置へのポインタを保持する（クロージャ生成時には自由変数のスコープは生きているので、スタック上に存在する）。</p>
+<p>キャプチャされた変数もその変数が属している関数スコープ内では普通のローカル変数と同様にアクセスされる。
+キャプチャしたクロージャ内からアクセスされるときには<code>Upvalue</code>を通して間接的に行われる。</p>
+<p>キャプチャされた変数がスコープから抜けてスタックから取り除かれる際には、スタック上に配置されていた値を<code>Upvalue</code>内部にコピーして、ポインタがそれを指すように変更する。
+これによって値がスタックからヒープに移され、スコープを抜けてスタックが解放された後にもアクセスすることができるようになる。</p>
+<h4 id="ネストされた関数でのキャプチャ"><a href="#ネストされた関数でのキャプチャ" class="headerlink" title="ネストされた関数でのキャプチャ"></a>ネストされた関数でのキャプチャ</h4><p>コンパイル時に関数が使用する自由変数をどこからキャプチャするか、という情報を調べる。
+一つ外側の関数で定義されたローカル変数の場合、内側の関数が使用する自由変数として登録する。</p>
+<p>もっと外側の関数のローカル変数の場合には、再帰的に登録する。
+なので直接参照していなくても内部の関数で使用されている自由変数は同様に登録される。</p>
+<h4 id="Upvalueを管理する"><a href="#Upvalueを管理する" class="headerlink" title="Upvalueを管理する"></a>Upvalueを管理する</h4><p>キャプチャされた変数に対する代入が他の箇所でも反映されるようにするために、個々の変数に対する<code>Upvalue</code>は1つである必要がある。
+これを管理するために、VMスタック上のローカル変数に対するUpvalueをリンクリストで保持する。
+リンクリストは降順に並ぶようにしておく。</p>
+<p>クロージャ生成時に<code>Upvalue</code>を生成するかどうかを、リンクリストをたどって対象のスロットに対する<code>Upvalue</code>があるかどうか調べる。
+あればそれをそのまま使用する。
+なければ新たに生成する。
+リンクリストをたどるのは対象のスロットのポインタまでで済むので、それほど深くならない、はず。</p>
+<p>スコープから抜けて<code>Upvalue</code>に値を逃がすには、リンクリストをたどって解放しようとするスロットに対するUpvalueがあったら、VMスタックから<code>Upvalue</code>に値をコピーしてやる。</p>
+<h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><p><code>Upvalue</code>を使った自由変数のキャプチャによって、1パスコンパイラでありながらレキシカルスコープを達成できている。
+しかも実装が巧妙に作られている。</p>
+<a href="/blog/2013/04/20/assign-free-variable.html" title="構文木を調べることができる場合には">構文木を調べることができる場合には</a>キャプチャする自由変数に対する参照だけで代入が行われない場合にはヒープにBoxを作成せずに値のコピーだけで済ませられたが、1パスUpvalueの場合にはそこまで判定できないので必ずヒープ上に作成してしまう、といった違いがある。
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://www.craftinginterpreters.com/closures.html">Closures · Crafting Interpreters</a></li>
+</ul>
+<p>UpvalueはLuaによって実装されたとのこと。
+LuaのVMはレジスタマシンとのことだけど、Upvalueの方法は非常に参考になる：</p>
+<ul>
+<li>pdf: <a href="https://www.lua.org/doc/jucs05.pdf">The Implementation of Lua 5.0</a></li>
+<li>pdf: <a href="https://pdfs.semanticscholar.org/73a2/e3c03f799956aa5a3188e4eb35c90977a471.pdf">Closures in Lua</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

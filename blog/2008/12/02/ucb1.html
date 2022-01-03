@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="「囲碁ＡＩにおける革命「モンテカルロ木探索」とは何か？」に参加したのモンテカルロ木探索で、勝率が高いであろう手を調べる回数を増やす方法。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Multi-Armed Bandit 問題のテスト"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Multi-Armed Bandit 問題のテスト - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2008/12/02/ucb1.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Multi-Armed Bandit 問題のテスト</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2008-12-02
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2008/11/28/mcgo.html" title="「囲碁ＡＩにおける革命「モンテカルロ木探索」とは何か？」に参加した">「囲碁ＡＩにおける革命「モンテカルロ木探索」とは何か？」に参加した</a>のモンテカルロ木探索で、勝率が高いであろう手を調べる回数を増やす方法。
+
+<span id="more"></span>
+
+<p>美添氏の<a href="http://minerva.cs.uec.ac.jp/~ito/entcog/contents/lecture/date/5-yoshizoe.pdf">「コンピュータ囲碁におけるモンテカルロ法」（理論編）</a> の Multi-Armed Bandit 問題（何台もあるスロットマシンのどれにどれだけつぎ込んだら儲けが多くできるか）てやつ。どのマシンにも平均してつぎ込むのはダメな手段（原始モンテカルロ法）。UCB1 (Upper Confidence Bound) を計算して一番大きい値のマシンにコインを投入していけば儲けを大きくできるらしい。</p>
+<p>Ruby でテストのプログラム：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/ruby</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> Math</span><br><span class="line"></span><br><span class="line"><span class="comment"># 勝率</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">win_ratio</span><span class="params">(test, win)</span></span>        <span class="comment"># 試行回数, 勝利回数</span></span><br><span class="line">  <span class="keyword">return</span> (test &gt; <span class="number">0</span>) ? (<span class="number">1.0</span> * win / test) : <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># UCB1 (Upper Confidence Bound) の計算</span></span><br><span class="line"><span class="comment">#       test:   そのマシンのテスト回数</span></span><br><span class="line"><span class="comment">#       win:    そのうちの勝った回数</span></span><br><span class="line"><span class="comment">#       total:  総試行回数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_ucb1</span><span class="params">(test, win, total)</span></span></span><br><span class="line">  <span class="keyword">if</span> total == <span class="number">0</span> <span class="comment"># まだ１つもテストしてない</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    c = <span class="number">1</span>       <span class="comment"># 期待値の値域によって決まる定数</span></span><br><span class="line">    <span class="keyword">if</span> test &gt; <span class="number">0</span></span><br><span class="line">      per = win_ratio(test, win)</span><br><span class="line">      <span class="keyword">return</span> per + c * sqrt(<span class="number">2</span> * log(total) / test)</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="keyword">return</span> c * sqrt(<span class="number">2</span> * log(total) * <span class="number">1000</span>)    <span class="comment"># てきとうにでかい値を掛けておく</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Array</span></span></span><br><span class="line">  <span class="comment"># 配列中の最大値のインデクスを返す</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">max_idx</span></span></span><br><span class="line">    n = <span class="keyword">self</span>.size</span><br><span class="line">    maxi = maxv = <span class="literal">nil</span></span><br><span class="line">    (<span class="number">0</span>...n).each <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">      <span class="keyword">if</span> !maxv <span class="params">||</span> maxv &lt; <span class="keyword">self</span>[i]</span><br><span class="line">        maxi = i</span><br><span class="line">        maxv = <span class="keyword">self</span>[i]</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> maxi</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># それぞれの手を選んだときに勝つ確率（テスト用データ）</span></span><br><span class="line">Tbl = [<span class="number">0.30</span>, <span class="number">0.31</span>, <span class="number">0.29</span>, <span class="number">0.32</span>, <span class="number">0.28</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># テスト回数</span></span><br><span class="line">N = <span class="number">1000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># プレイアウト（ランダムの手でゲームを進めて勝敗をつける）</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">playout</span><span class="params">(hand)</span></span></span><br><span class="line">  <span class="comment"># ここではテストで、乱数で決定</span></span><br><span class="line">  rand &lt; Tbl[hand]</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># それぞれの手の試行回数、勝利回数</span></span><br><span class="line">test_data = Tbl.map&#123; [<span class="number">0</span>, <span class="number">0</span>] &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># モンテカルロ木探索</span></span><br><span class="line">N.times <span class="keyword">do</span> <span class="params">|n|</span></span><br><span class="line">  ucb1s = test_data.map&#123;<span class="params">|test, win|</span> calc_ucb1(test, win, n)&#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment"># UCB1 が一番大きな手を選択</span></span><br><span class="line">  hand = ucb1s.max_idx</span><br><span class="line"></span><br><span class="line">  <span class="comment"># その手でプレイアウトさせて勝ったかどうかを調べる</span></span><br><span class="line">  win = playout(hand)</span><br><span class="line"></span><br><span class="line">  test_data[hand][<span class="number">0</span>] += <span class="number">1</span>               <span class="comment"># その手の試行回数 +1</span></span><br><span class="line">  <span class="keyword">if</span> win</span><br><span class="line">    test_data[hand][<span class="number">1</span>] += <span class="number">1</span>             <span class="comment"># その手の勝利回数 +1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  puts %!hand <span class="comment">#&#123;hand&#125;: #&#123;win ? &quot;WIN!&quot; : &quot;lose&quot;&#125;, #&#123;test_data[hand][1]&#125;/#&#123;test_data[hand][0]&#125;!</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 勝率が高い順に並べる</span></span><br><span class="line">order = (<span class="number">0</span>...test_data.size).sort_by &#123;<span class="params">|i|</span> -win_ratio(test_data[i][<span class="number">0</span>], test_data[i][<span class="number">1</span>])&#125;</span><br><span class="line"></span><br><span class="line">puts <span class="string">&quot;\n**** Result ****&quot;</span></span><br><span class="line">order.each <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">  test = test_data[i][<span class="number">0</span>]</span><br><span class="line">  win = test_data[i][<span class="number">1</span>]</span><br><span class="line">  printf(<span class="string">&quot;hand <span class="subst">#&#123;i&#125;</span>: %4d/%4d (%f)\n&quot;</span>, win, test, <span class="number">1.0</span> * win / test)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>実行例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hand 0: WIN!, 1/1</span><br><span class="line">hand 0: lose, 1/2</span><br><span class="line">hand 1: lose, 0/1</span><br><span class="line">hand 2: WIN!, 1/1</span><br><span class="line">hand 3: lose, 0/1</span><br><span class="line">hand 4: lose, 0/1</span><br><span class="line">hand 2: lose, 1/2</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">**** Result ****</span><br><span class="line">hand 3:   74/ 235 (0.314894)</span><br><span class="line">hand 4:   61/ 213 (0.286385)</span><br><span class="line">hand 1:   60/ 211 (0.284360)</span><br><span class="line">hand 0:   58/ 206 (0.281553)</span><br><span class="line">hand 2:   30/ 135 (0.222222)</span><br></pre></td></tr></table></figure>
+
+<p>だいたい勝率が一番高くしてある３番目の手が最高の勝率になって試行回数も一番多くなる。総試行回数がたった１０００回だからしばしば間違うけど。</p>
+<ul>
+<li><a href="http://homes.dsi.unimi.it/~cesabian/Pubblicazioni/ml-02.pdf">Finite-time Analysis of the Multiarmed Bandit Problem*</a>, Peter Auer, Nicolo Cesa-Bianchi, Paul Fischer, 2002　元となる論文</li>
+<li><a href="http://shouchan.ei.tuat.ac.jp/wiki/index.php?plugin=attach&pcmd=open&file=tajima0805sigal.pdf&refer=lab/papers/depot">k-armedバンデット問題のゲームへの適用における試行回数について</a>、<a href="http://shouchan.ei.tuat.ac.jp/wiki/index.php?plugin=attach&pcmd=open&file=tajima0806GI.pdf&refer=lab/papers/depot">UCTアルゴリズムにおける確率的な試行回数削減方法</a></li>
+<li><a href="http://yowaken.dip.jp/tdiary/20080411.html#p02">no title</a></li>
+</ul>
+<p>ま、例によって論文は読んでないんですが。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

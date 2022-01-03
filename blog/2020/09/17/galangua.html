@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Rustを習得したいんだけど、多少大きいプログラムじゃないとボローチェッカーなどのメリットがわからないだろう、
+ということでシューティングゲームを作ってみた。
+名付けて「Galangua」：
+
+ブラウザ版をプレイ">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/09/17/galangua.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-09-17
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/wasm/">#wasm</a> <a href="/tags/rust/">#rust</a> <a href="/tags/gamedev/">#gamedev</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Rustを習得したいんだけど、多少大きいプログラムじゃないとボローチェッカーなどのメリットがわからないだろう、
+ということでシューティングゲームを作ってみた。
+名付けて「<a href="https://github.com/tyfkda/galangua">Galangua</a>」：</p>
+<p><a href="https://tyfkda.github.io/galangua/"><img src="/assets/galangua.png" alt="Galangua screenshot"></a></p>
+<p><a href="https://tyfkda.github.io/galangua/">ブラウザ版をプレイ</a></p>
+<span id="more"></span>
+
+<h3 id="実装の方針"><a href="#実装の方針" class="headerlink" title="実装の方針"></a>実装の方針</h3><p>元ゲームが発売されたのは約40年前ということで、できれば当時のテクノロジーで再現したい。
+（実際に内部を知っているわけではないので単なる推測。）</p>
+<h4 id="座標の表現"><a href="#座標の表現" class="headerlink" title="座標の表現"></a>座標の表現</h4><p>敵が滑らかな曲線の軌道を描いて魅力的に動くのが特徴的。
+整数で制御するとガタガタになってしまうが、当時は間違いなく浮動小数点数などというものは使えなかったのでどうするか。</p>
+<p>座標値をある定数倍しておいて計算するという、固定小数点数を使う。
+2のべき乗、とくに256倍とかにしておけば除算もビットシフトも必要なくて便利
+（ただ縦は288ドットあるので、贅沢に2+1=3バイト使っていたかといわれると怪しい）。</p>
+<h4 id="回転"><a href="#回転" class="headerlink" title="回転"></a>回転</h4><p>当時のスプライトに回転機能はなかったと思うので、回転のパターンを持っていたんだろうと予想。
+見たところ回転パターンは24パターン、もし左右上下反転機能があったとすると7パターンで済む。</p>
+<p>一周360度を256にすれば、8ビットのオーバーフローで数値が自動的にループできて便利。
+（今回実装するにあたっては、さらに256倍して保持している。）</p>
+<h4 id="三角関数"><a href="#三角関数" class="headerlink" title="三角関数"></a>三角関数</h4><p>敵の挙動を観察すると、移動は速度と角度で制御されているっぽい。
+角度から移動量を求めるためのサイン、コサインは事前に計算して、配列参照すればよい。</p>
+<p>問題は、特定の場所に向かう場合にどう求めるか。
+隊列中の自分の位置に戻ったり自機に向かう際に、目的地への角度を計算する必要がある。
+現在からすると角度を求めるには <code>atan2</code> を使うものだと思うが、当時はどうしていたのか？</p>
+<p>テーブル参照にするとしても、単純にXYそれぞれ256段階・角度を1バイトで保持すると64KBを使い切ってしまう。
+各1ビット削って、0〜45度まででX &gt; Y &gt; 0とすると、6KB程度に抑えられるので、贅沢だけど許容範囲かな？
+（そもそも <code>atan2</code> 的に角度を求めていたのかどうか自体が不明だが…。）</p>
+<h4 id="自機のキャプチャ"><a href="#自機のキャプチャ" class="headerlink" title="自機のキャプチャ"></a>自機のキャプチャ</h4><p>元ゲームの最大の特徴として、敵によって自機が捕獲されて敵の一味にされてしまうが、
+それを取り返すことによってパワーアップできる、というフィーチャーがある。
+デュアルになると弾を２発同時に発射できて敵を倒しやすくなるが、横幅が広くなって敵にあたって死にやすくなる、
+という単純なパワーアップじゃなくジレンマが含まれているのがゲーム性として面白いところだと思う。</p>
+<p>キャプチャがあることによっていろいろ細かいフィーチャーがあって、</p>
+<ul>
+<li>捕獲される最中にも弾を撃てて、撃ち落とすと脱出できる</li>
+<li>キャプチャを引き連れての攻撃中に撃ち落とすと取り返せるが、隊列内にいるときに撃ち落とすと寝返ったままになる</li>
+<li>寝返った自機が攻撃してきたのを撃ち落とさずに画面外に消えると、次のステージで再度キャプチャ済みとして登場する</li>
+</ul>
+<p>このへんは地道に実装するしかない。</p>
+<h4 id="登場の軌道"><a href="#登場の軌道" class="headerlink" title="登場の軌道"></a>登場の軌道</h4><p>敵が隊列を組んだ後の攻撃の軌道は速度と角度で動かしているっぽいが、登場時の軌道はどうもそうではないっぽい。
+カーブする前に加速したり、２列で並んで飛ぶ場合には外側の動きが遅れたり、単純な速度や角度の操作には見えない。
+またステージが進むと速度が速くなる、といったこともある。</p>
+<p>登場の軌道をテーブルで持っているという可能性もある気がするが、目コピでは実装方法を推測できなかった…。
+チャレンジングステージではさらにいろいろなバリエーションがあるので、そのへんも謎だ…。</p>
+<h4 id="敵の攻撃順の制御"><a href="#敵の攻撃順の制御" class="headerlink" title="敵の攻撃順の制御"></a>敵の攻撃順の制御</h4><p>隊列がそろった後、どの敵が攻撃してくるかという制御が必要になる。
+同時に２，３組攻撃してくるようなんだけど、こちらも観察してみたが法則がわからなかった…。</p>
+<h3 id="Rustでの実装方法"><a href="#Rustでの実装方法" class="headerlink" title="Rustでの実装方法"></a>Rustでの実装方法</h3><p>C++などでプログラミングする場合と比べて、Rust特有に発生する実装方法など。</p>
+<h4 id="弾を発射するにはどうするか？"><a href="#弾を発射するにはどうするか？" class="headerlink" title="弾を発射するにはどうするか？"></a>弾を発射するにはどうするか？</h4><p>自機などのゲーム内のオブジェクトは <code>struct</code> で必要な情報を保持していて、 <code>impl</code> で関連するメソッドを実装することでオブジェクト指向っぽく実装することができる。
+更新時に移動で座標を変更する場合には自分のフィールドをいじればよいので特に問題はない。
+しかし弾を撃とうとしたとたんに借用の問題が発生する。</p>
+<p>ゲームを管理するゲームマネージャ構造体が自機や自機が発射する弾を所有・管理していて、自機の更新呼び出し時にミュータブル参照する。
+そうするとゲームマネージャ自体がミュータブル借用済み扱いになり変更不可能になってしまうので、弾を追加することができなくなってしまう。
+C++などの場合にはゲームマネージャのメソッド呼び出しのような形で処理すると思うが、Rustではそういうことができない。</p>
+<p>そこでどうしたかというと、直接弾を発生させるのではなく、イベントキューというものを渡してそこにいったん書き込むようにした。
+他にもスコア加算・エフェクト発生・自機死亡など、自分だけでは収まらない処理を（すべてではないが）イベントキューで処理するようにした。</p>
+<h4 id="ゲーム情報の受け渡しをどうするか？"><a href="#ゲーム情報の受け渡しをどうするか？" class="headerlink" title="ゲーム情報の受け渡しをどうするか？"></a>ゲーム情報の受け渡しをどうするか？</h4><p>敵の動作として、自機の方向に向かうなど自分以外の情報も必要になるがどうするか。
+ゲームマネージャをシングルトンにすることもできず、かといって必要な情報を更新メソッドに受け渡すのも大変なので、以前書いたように <code>unsafe</code> で秘密裏に参照を取得して、トレイトとして渡してアクセスするようにした
+（<a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか">Rustで状態管理や相互参照をどうするか</a> ）。</p>
+<p>行儀がよろしくはないが、安全を考慮してオーバーエンジニアリングするよりもまずは実現することが大事だ、と嘯いて納得することにする。</p>
+<h4 id="Wasm版"><a href="#Wasm版" class="headerlink" title="Wasm版"></a>Wasm版</h4><p>普通にアプリをビルドすればデスクトップ上で実行することができるが、独自にビルドしてもらうまたはバイナリ配布＋インストールしてもらうのは非常にハードルが高いことと思う。
+ブラウザ上でも動かせたら手軽に動作を見せることができて便利。</p>
+<p>RustのコードはあるOS用の実行ファイルにだけじゃなくて、ブラウザ上で動くWasm形式にもビルドすることができる
+（過去記事：<a href="/blog/2020/07/12/rust-wasm-pack.html" title="【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…">【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…</a>）。</p>
+<p>スタンドアロン版ではグラフィクス表示に<a href="https://crates.io/crates/sdl2">SDL2</a>を使用している。
+emscriptenでSDL2自体もブラウザ上で動かすことができるのかどうかよく知らないんだけどあまりそういう大掛かりなことをする自信がないので、
+ブラウザ版では描画ライブラリを切り替えることにした。
+描画用のトレイトを用意して、アプリ側のコードではトレイト経由で呼び出すようにする。</p>
+<p><a href="https://doc.rust-jp.rs/rust-by-example-ja/generics/bounds.html">ジェネリック境界</a> を使用すると、
+コード自体はトレイトに依存するだけで、トレイトを実装する実際の型に直接依存せずにすみ、しかも静的にリンクされるという利点がある。
+これが<a href="https://blog.rust-lang.org/2015/05/11/traits.html">ゼロコスト抽象化</a>か、すごい…。</p>
+<h3 id="Rustはゲームプログラミングに向いているか？"><a href="#Rustはゲームプログラミングに向いているか？" class="headerlink" title="Rustはゲームプログラミングに向いているか？"></a>Rustはゲームプログラミングに向いているか？</h3><p>Rustでゲームを作ってみて実際どうだったか？
+個人的な意見だけど、あまり向いてないのではないか？と感じた
+（これが私があまりよくRustを理解してなくてうまい書き方を知らないからで、もっとうまい方法があるようなら知りたい）。</p>
+<p>Rustの利点は散々色んな所で吹聴されていると思うので、デメリットと感じたところだけを列挙する。</p>
+<h4 id="参照を保持しておけない"><a href="#参照を保持しておけない" class="headerlink" title="参照を保持しておけない"></a>参照を保持しておけない</h4><p>借用の問題で、他のオブジェクトの参照を保持しておくというようなことができない。
+<code>Rc&lt;RefCell&lt;T&gt;&gt;</code> として保持すればできるが、これは実行時にコストがかかるし記述がメンドイし、ちょっとやりすぎと思ってしまう。</p>
+<h4 id="クロージャが使えない"><a href="#クロージャが使えない" class="headerlink" title="クロージャが使えない"></a>クロージャが使えない</h4><p>クロージャも借用の関係で使うのが難しい。
+呼び出されるコールバックで借用を借りっぱなしにできないので、結果を反映させられないので実質使えない。</p>
+<h4 id="シングルトンが（気楽には）使えない"><a href="#シングルトンが（気楽には）使えない" class="headerlink" title="シングルトンが（気楽には）使えない"></a>シングルトンが（気楽には）使えない</h4><p>実際には使えないことはないが <code>Mutex</code> か <code>RwLock</code> でくくって、アクセス時にロックが必要になる。</p>
+<h4 id="クラス・継承方式のOOPからの転換が必要"><a href="#クラス・継承方式のOOPからの転換が必要" class="headerlink" title="クラス・継承方式のOOPからの転換が必要"></a>クラス・継承方式のOOPからの転換が必要</h4><p>C++などのクラス・継承方式のOOPにどっぷり慣れ親しんでいる身からすると、敵のベースクラスを用意して、敵の種類ごとにオーバーライドして…と考えるんだけど、
+Rustの <code>trait</code> - <code>impl</code> 方式だと違うイディオムが必要な気がする
+（どういう方法が有効なのかよくわかってない）。</p>
+<p>共通部分をくくりだしてコンポジションするにも移譲の呼び出しコードを書かなきゃいけないので記述がかさみ、
+また特殊化ができないのでコードの重複が発生する。</p>
+<h4 id="unsafe使用の代償"><a href="#unsafe使用の代償" class="headerlink" title="unsafe使用の代償"></a>unsafe使用の代償</h4><p>機能実装のためには <code>unsafe</code> も躊躇なく使うと割り切ることにしたが、
+一部でも使用すると完全に信頼できるコードパスがほとんどなくなるので、果たしてRustで書く意味あるんだろうかという疑問が湧いてくる。</p>
+<h4 id="数値型のキャストが面倒"><a href="#数値型のキャストが面倒" class="headerlink" title="数値型のキャストが面倒"></a>数値型のキャストが面倒</h4><p>数値型でも同じ型同士じゃないとエラーになるため、 <code>usize</code> と <code>u32</code> などの型変換が必要で面倒。</p>
+<h3 id="締め"><a href="#締め" class="headerlink" title="締め"></a>締め</h3><p>私のようなヌルグラマはGCつきの言語で高速化や安全性など気にせずにスパゲティを量産するのが性に合ってるな、と感じた。</p>
+<p>元ゲームは滑らかな動きが謎でまさにオーパーツ。</p>
+<h3 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h3><ul>
+<li>ソース: <a href="https://github.com/tyfkda/galangua">https://github.com/tyfkda/galangua</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/07/12/rust-wasm-pack.html" title="【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…" rel="bookmark">【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/11/22/wasm-bin-format.html" title="【WASM】WASMのバイナリフォーマット" rel="bookmark">【WASM】WASMのバイナリフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（移譲）」について" rel="bookmark">「継承より合成（移譲）」について</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/03/ecs-in-rust.html" title="【Rust】ECSを使ってみる(Specs)" rel="bookmark">【Rust】ECSを使ってみる(Specs)</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

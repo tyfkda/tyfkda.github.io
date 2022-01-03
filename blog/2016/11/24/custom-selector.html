@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="独自コンポーネントでng-modelを使い、値を変更・参照する方法。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="AngularJS1で独自の選択ボックスを作る"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>AngularJS1で独自の選択ボックスを作る - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/11/24/custom-selector.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>AngularJS1で独自の選択ボックスを作る</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-11-24
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/angular/">#angular</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>独自コンポーネントで<code>ng-model</code>を使い、値を変更・参照する方法。</p>
+<span id="more"></span>
+
+<p>AngularJS1を使ったウェブアプリで要素を選択させる際に通常の<code>select</code>〜<code>option</code>を使っていたのだけど、環境によって見た目が異なる、CSS Transformで<code>scale</code>を使っていても無視して元のフォントサイズで描画される、スタイルを上手く指定できない、という問題があったため別の手段を使う必要があった。
+<a href="http://v4-alpha.getbootstrap.com/components/dropdowns/">Bootstrapのドロップダウン</a>を使おうともしたんだけど、選択ボックスに選択された候補のテキストを当て込むようにしたい、そのため横幅を選択させる候補中の最大のものにしたい、それとBootstrapのドロップダウンは普通のインライン要素にできない？ので独自で実装することにした。</p>
+<h3 id="デモ"><a href="#デモ" class="headerlink" title="デモ"></a>デモ</h3><iframe height='413' scrolling='no' title='Custom selector' src='//codepen.io/tyfkda/embed/yVXgWz/?height=413&theme-id=0&default-tab=result&embed-version=2' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/tyfkda/pen/yVXgWz/'>Custom selector</a> by tyfkda (<a href='http://codepen.io/tyfkda'>@tyfkda</a>) on <a href='http://codepen.io'>CodePen</a>.
+</iframe>
+
+<h3 id="使用側"><a href="#使用側" class="headerlink" title="使用側"></a>使用側</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">my-select</span> <span class="attr">items</span>=<span class="string">&quot;[&#x27;apple&#x27;, &#x27;banana&#x27;, &#x27;carrot&#x27;]&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">ng-model</span>=<span class="string">&quot;$ctrl.value&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">ng-change</span>=<span class="string">&quot;$ctrl.onSelected()&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">my-select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>仮にコンポーネントのタグを<code>my-select</code>として、<code>items</code>に配列を渡すとその中から1つをユーザが選択できる。
+選択された項目は<code>ng-model</code>で指定した変数に格納される。
+変更は<code>ng-change</code>で通知される。</p>
+<ul>
+<li>itemsの各要素は固定で、状態によって変わらないという前提</li>
+<li>選択された項目はそのインデクスが<code>ng-model</code>で指定した変数に格納されるものとする<ul>
+<li>未選択の場合に<code>-1</code>を指定しておくことで、表示の位置調整を簡潔にする</li>
+</ul>
+</li>
+<li>変更があったら<code>ng-change</code>が実行される</li>
+</ul>
+<h3 id="コンポーネントの実装"><a href="#コンポーネントの実装" class="headerlink" title="コンポーネントの実装"></a>コンポーネントの実装</h3><p>クラス定義：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MySelect</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params">$element, $timeout</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.$element = $element</span><br><span class="line">    <span class="built_in">this</span>.$timeout = $timeout</span><br><span class="line"></span><br><span class="line">    <span class="built_in">this</span>.ngModel = $element.controller(<span class="string">&#x27;ngModel&#x27;</span>)  <span class="comment">// Must be exist, since it is specified in `require`</span></span><br><span class="line">    <span class="comment">//this.ngModel.$render = () =&gt; &#123;</span></span><br><span class="line">    <span class="comment">//  console.log(`$render: $&#123;this.ngModel.$viewValue&#125;`)</span></span><br><span class="line">    <span class="comment">//&#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">this</span>.popupStyle = &#123;</span><br><span class="line">      <span class="attr">display</span>: <span class="string">&#x27;none&#x27;</span>,</span><br><span class="line">      <span class="attr">backgroundColor</span>: <span class="string">&#x27;white&#x27;</span>,</span><br><span class="line">      <span class="attr">left</span>: <span class="string">&#x27;-1px&#x27;</span>,  <span class="comment">// -1 for border</span></span><br><span class="line">      <span class="attr">opacity</span>: <span class="number">0</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>$element.controller(&#39;ngModel&#39;)</code>でタグの属性として指定された<code>ngModel</code>のコントローラを取得できる<ul>
+<li>値の変更を通知するときに使用するため、保持しておく</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$onInit() &#123;</span><br><span class="line">  <span class="built_in">this</span>.$timeout(<span class="function">() =&gt;</span> &#123;  <span class="comment">// I don&#x27;t know why this is needed...</span></span><br><span class="line">    <span class="keyword">const</span> widths = <span class="built_in">this</span>.items.map(<span class="function"><span class="params">item</span> =&gt;</span> MySelect.calcTextWidth(<span class="built_in">this</span>.$element[<span class="number">0</span>], item))</span><br><span class="line">    <span class="built_in">this</span>.width = widths.reduce(<span class="function">(<span class="params">acc, x</span>) =&gt;</span> <span class="built_in">Math</span>.max(acc, x))</span><br><span class="line">    <span class="keyword">const</span> style = <span class="built_in">window</span>.getComputedStyle(<span class="built_in">this</span>.$element[<span class="number">0</span>])</span><br><span class="line">    <span class="keyword">const</span> border = <span class="number">2</span></span><br><span class="line">    <span class="built_in">this</span>.height = <span class="built_in">parseInt</span>(style.height, <span class="number">10</span>) - border</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>初期化で<code>items</code>の各要素の幅を調べ、一番広いものを選択ボックスの幅とする</li>
+<li>要素の高さは選択ボックスの高さから求める（ボーダーが1pxという前提…）</li>
+<li>なぜ<code>$timeout</code>で待たなければいけないのかよくわからない…</li>
+</ul>
+<p>テキストの幅計算：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="function"><span class="title">calcTextWidth</span>(<span class="params">parent, text</span>)</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> span = <span class="built_in">document</span>.createElement(<span class="string">&#x27;span&#x27;</span>)</span><br><span class="line">  parent.appendChild(span)</span><br><span class="line">  span.style.cssText = <span class="string">&#x27;visibility:hidden;position:absolute;white-space:nowrap&#x27;</span></span><br><span class="line">  span.innerText = text</span><br><span class="line">  <span class="keyword">const</span> width = span.offsetWidth</span><br><span class="line">  parent.removeChild(span)</span><br><span class="line">  <span class="keyword">return</span> width</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>埋め込み先の要素にテキストを生成し、幅を取得する</li>
+<li><code>white-space:nowrap</code>とした上でテキストを設定し、<code>offsetWidth</code>で取得</li>
+</ul>
+<p>選択ボックスがクリックされたとき：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">onClick</span>(<span class="params">$event</span>)</span> &#123;</span><br><span class="line">  $event.stopPropagation()</span><br><span class="line">  $event.preventDefault()</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">this</span>.popupStyle.display !== <span class="string">&#x27;none&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.closePopup()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">delete</span> <span class="built_in">this</span>.popupStyle.display</span><br><span class="line">  <span class="keyword">const</span> selectedIndex = <span class="built_in">this</span>.ngModel.$viewValue</span><br><span class="line">  <span class="built_in">this</span>.popupStyle.top = <span class="string">`<span class="subst">$&#123;-(selectedIndex * <span class="built_in">this</span>.height) - <span class="number">1</span>&#125;</span>px`</span>  <span class="comment">// -1 for border</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Fade in</span></span><br><span class="line">  <span class="built_in">this</span>.popupStyle.opacity = <span class="number">0</span></span><br><span class="line">  <span class="built_in">this</span>.$timeout(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.popupStyle.opacity = <span class="number">1</span></span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> docClicked = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">document</span>.removeEventListener(<span class="string">&#x27;click&#x27;</span>, docClicked)</span><br><span class="line">    <span class="built_in">this</span>.$timeout(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.closePopup()</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">document</span>.addEventListener(<span class="string">&#x27;click&#x27;</span>, docClicked)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ポップアップを開くためにスタイルを変更<ul>
+<li>その際、フェードインさせるため<code>opacity</code>を操作（CSSで<code>transition-duration</code>を指定しておく）</li>
+<li>フェードインが効かないことがある…なぜだ</li>
+</ul>
+</li>
+<li>現在選択されている項目がポップアップ内の項目と合うように、現在の値（<code>this.ngModel.$viewValue</code>）から位置を計算</li>
+<li>ポップアップやその他どこかをクリックされた時に閉じるために、<code>document</code>にクリックハンドラを設定する</li>
+</ul>
+<p>項目をクリックされたとき：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">onClickItem</span>(<span class="params">$event, index</span>)</span> &#123;</span><br><span class="line">  $event.stopPropagation()</span><br><span class="line">  $event.preventDefault()</span><br><span class="line">  <span class="built_in">this</span>.closePopup()</span><br><span class="line"></span><br><span class="line">  <span class="built_in">this</span>.ngModel.$setViewValue(index)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ngModel</code>の<code>$setViewValue()</code>で、<code>ng-model</code>で指定された変数に設定できる</li>
+<li>イベントの伝播を止めてやらないと、クリックイベントが選択ボックスに渡って再度開いてしまう</li>
+</ul>
+<p>ポップアップを閉じる</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">  <span class="function"><span class="title">closePopup</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.popupStyle.opacity = <span class="number">0</span></span><br><span class="line">    <span class="built_in">this</span>.$timeout(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.popupStyle.display = <span class="string">&#x27;none&#x27;</span></span><br><span class="line">    &#125;, <span class="number">500</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>フェードアウトさせてから非表示にする</li>
+</ul>
+<p>コンポーネント定義：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">angular.module(<span class="string">&#x27;mySelect&#x27;</span>, [])</span><br><span class="line">  .component(<span class="string">&#x27;mySelect&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">restrict</span>: <span class="string">&#x27;AE&#x27;</span>,</span><br><span class="line">    <span class="attr">controller</span>: [<span class="string">&#x27;$element&#x27;</span>, <span class="string">&#x27;$timeout&#x27;</span>, MySelect],</span><br><span class="line">    <span class="attr">require</span>: <span class="string">&#x27;ngModel&#x27;</span>,</span><br><span class="line">    <span class="attr">bindings</span>: &#123;</span><br><span class="line">      <span class="attr">items</span>: <span class="string">&#x27;=&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">templateUrl</span>: <span class="string">&#x27;./my_select.html&#x27;</span>,</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>require: &#39;ngModel&#39;</code>で必須にしてやる</li>
+<li><code>ngModel</code>を扱うには<code>directive</code>を使い、<code>link</code>でなんか処理する必要があるのかと思っていたが、<code>component</code>だけでできた</li>
+<li><code>ngModel</code>を使用すれば自動的に<code>ngChange</code>が呼び出される？ようで、明示的に扱う必要はなかった</li>
+</ul>
+<p>HTML:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;select&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">ng-class</span>=<span class="string">&quot;&#123;empty:!$ctrl.getText()&#125;&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">ng-style</span>=<span class="string">&quot;&#123;width:$ctrl.width+&#x27;px&#x27;&#125;&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">ng-click</span>=<span class="string">&quot;$ctrl.onClick($event)&quot;</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- select box --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;text&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">ng-bind</span>=<span class="string">&quot;$ctrl.getText()&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- popup --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;popup&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">ng-style</span>=<span class="string">&quot;$ctrl.popupStyle&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-repeat</span>=<span class="string">&quot;item in $ctrl.items&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">class</span>=<span class="string">&quot;item&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">ng-class</span>=<span class="string">&quot;&#123;selected:$index===$ctrl.ngModel.$viewValue&#125;&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">ng-bind</span>=<span class="string">&quot;item&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">ng-click</span>=<span class="string">&quot;$ctrl.onClickItem($event, $index)&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>未指定の場合（テキストが空の場合）に見た目を変えられるように、<code>empty</code>クラスを追加してやる</li>
+<li>ポップアップ中の選択されている要素には<code>selected</code>クラスを追加する</li>
+</ul>
+<p>SCSS:</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line">my-select &#123;</span><br><span class="line">  <span class="attribute">display</span>: inline-block;</span><br><span class="line"></span><br><span class="line">  <span class="selector-class">.select</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">    <span class="attribute">display</span>: inline-block;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">8px</span>;</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">1px</span> solid gray;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">8px</span>;</span><br><span class="line">    <span class="attribute">background-color</span>: white;</span><br><span class="line">    <span class="attribute">box-sizing</span>: content-box;</span><br><span class="line">    <span class="attribute">white-space</span>: nowrap;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="attribute">cursor</span>: pointer;</span><br><span class="line">    <span class="attribute">transition-duration</span>:<span class="number">0.25s</span>;</span><br><span class="line"></span><br><span class="line">    <span class="selector-class">.text</span> &#123;</span><br><span class="line">      <span class="attribute">display</span>: inline-block;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="selector-class">.popup</span> &#123;</span><br><span class="line">      <span class="attribute">position</span>: absolute;</span><br><span class="line">      <span class="attribute">border</span>: <span class="number">1px</span> solid gray;</span><br><span class="line">      <span class="attribute">border-radius</span>: <span class="number">8px</span>;</span><br><span class="line">      <span class="attribute">overflow</span>: hidden;</span><br><span class="line">      <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">40px</span> rgba(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1.0</span>);</span><br><span class="line">      <span class="attribute">opacity</span>: <span class="number">0</span>;</span><br><span class="line">      <span class="attribute">transition-duration</span>:<span class="number">0.25s</span>;</span><br><span class="line"></span><br><span class="line">      <span class="selector-class">.item</span> &#123;</span><br><span class="line">        <span class="attribute">padding</span>:<span class="number">8px</span>;</span><br><span class="line">        <span class="attribute">color</span>: black;</span><br><span class="line">        <span class="attribute">transition-duration</span>:<span class="number">0.25s</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="selector-class">.item</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">        <span class="attribute">background</span>: cyan;</span><br><span class="line">        <span class="attribute">color</span>: black;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="selector-class">.item</span><span class="selector-class">.selected</span> &#123;</span><br><span class="line">        <span class="attribute">background</span>: blue;</span><br><span class="line">        <span class="attribute">color</span>: white;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="selector-class">.select</span><span class="selector-class">.empty</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: red;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="selector-class">.select</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: blue;</span><br><span class="line">    <span class="attribute">color</span>: white;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>選択ボックス、ポップアップなどは<code>display: inline-block</code>を指定</li>
+<li>選択ボックスを<code>position:relative</code>にしてポップアップを<code>position:absolute</code>にすることで、ポップアップを選択ボックスからの相対位置で指定できるようにする</li>
+<li>ポップアップ要素のhtmlは選択ボックス内の後の方に記述することで、<code>z-index</code>を指定しなくても他の要素より手前に描画されている（かぶる位置に<code>z-index</code>を指定している要素がない前提）</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/21/access-directive-from-transclude.html" title="Transclude内からディレクティブにアクセスする" rel="bookmark">Transclude内からディレクティブにアクセスする</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/14/angular1-component.html" title="AngularJS1.5で親子コンポーネント間のやりとり" rel="bookmark">AngularJS1.5で親子コンポーネント間のやりとり</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/28/angularjs-page-transition-3d.html" title="AngularJSでページ遷移時に3D風アニメーションを入れてみた" rel="bookmark">AngularJSでページ遷移時に3D風アニメーションを入れてみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/03/jekyll-editor.html" title="Jekyllのフロントエンドを作り始めた" rel="bookmark">Jekyllのフロントエンドを作り始めた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/15/ng-click.html" title="ディレクティブのテンプレートでng-clickを使う" rel="bookmark">ディレクティブのテンプレートでng-clickを使う</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="自作のC言語は64bit Linux上で動かすことを前提としているが、他のプラットフォームでも動くのであればなおよい。
+以前はコンパイラから直接実行形式のバイナリを出力していたので難しかったけど、いったんアセンブリを出力してそれをアセンブルするように変更したので、
+ELFを出力する自作のアセンブラじ">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="MacOS用アセンブリへの変更点"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>MacOS用アセンブリへの変更点 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2019/11/23/asm-on-mac.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>MacOS用アセンブリへの変更点</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-11-23
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://github.com/tyfkda/xcc">自作のC言語</a>は64bit Linux上で動かすことを前提としているが、他のプラットフォームでも動くのであればなおよい。
+以前はコンパイラから直接実行形式のバイナリを出力していたので難しかったけど、いったんアセンブリを出力してそれをアセンブルするように変更したので、
+ELFを出力する自作のアセンブラじゃなくgcc(clang)を呼び出すようにすればMac上でも動かせるんじゃないか、とやってみた。</p>
+<h2 id="ソースの修正"><a href="#ソースの修正" class="headerlink" title="ソースの修正"></a>ソースの修正</h2><h3 id="環境の判別"><a href="#環境の判別" class="headerlink" title="環境の判別"></a>環境の判別</h3><p>環境依存で動作を変更したい場合、C言語では定義済みマクロで判定する。
+動かしているのがMac上の場合には <code>__APPLE__</code> が定義されているので、それを使用する：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__linux__)</span></span><br><span class="line">  ...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(__APPLE__)</span></span><br><span class="line">  ...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="標準関数が未定義になってしまうのを回避"><a href="#標準関数が未定義になってしまうのを回避" class="headerlink" title="標準関数が未定義になってしまうのを回避"></a>標準関数が未定義になってしまうのを回避</h3><p>Mac上でソースをコンパイルすると <code>snprintf</code> が未定義でコンパイルに失敗してしまう。
+そんなことあるか？と思ってヘッダファイル /usr/include/stdio.h を見てみる：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#if __DARWIN_C_LEVEL &gt;= 200112L || defined(_C99_SOURCE) || defined(__cplusplus)</span><br><span class="line">__BEGIN_DECLS</span><br><span class="line">int	 snprintf(char * __restrict __str, size_t __size, const char * __restrict __format, ...) __printflike(3, 4);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>などと <code>#if</code> で定義が囲まれている。
+テスト用のコードを作成して調べたところ <code>__DARWIN_C_LEVEL</code> は <code>900000L</code> だった。</p>
+<p>これなら条件は有効そうだが…と思ったら、 <code>_POSIX_SOURCE</code> を定義していたのが原因だった
+（<code>_POSIX_SOURCE</code> は、Linuxで <code>kill</code> が未定義になるのを解決するためにMakefile内で定義していた）。
+<code>_POSIX_SOURCE</code> を定義していなければ <code>__DARWIN_C_LEVEL</code> は <code>900000L</code>(<code>_DARWIN_C_FULL</code>) だが、定義していると <code>_POSIX_C_SOURCE</code> を参照するようになっていて、
+<code>_POSIX_C_SOURCE</code> は <code>198808L</code> となってしまうようだ（&lt;sys/cdefs.h&gt;）。</p>
+<p><code>_POSIX_SOURCE</code> をMakefile内で一律に定義するんじゃなく、 <code>kill</code> を使用する箇所でLinux の場合にのみ定義するようにして回避する。</p>
+<h2 id="出力するコードの修正"><a href="#出力するコードの修正" class="headerlink" title="出力するコードの修正"></a>出力するコードの修正</h2><p>Linux上のgccとMac上のclangが受け付けるアセンブリの形式に違いがあって、C言語をコンパイルして出力するコードをそれに合わせるようにする必要がある。</p>
+<h3 id="読み込み専用データセクション"><a href="#読み込み専用データセクション" class="headerlink" title="読み込み専用データセクション"></a>読み込み専用データセクション</h3><p>C言語で <code>const</code> を指定した、読み込み専用で書き込み不可のデータは、Linuxでは <code>.rodata</code> セクションに配置する：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.section .rodata</span><br></pre></td></tr></table></figure>
+
+<p>しかしこの書式をMac上のclangアセンブラは受け付けてくれない。
+<code>__TEXT,__const</code> にする必要がある：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.section __TEXT,__const</span><br></pre></td></tr></table></figure>
+
+<h3 id="グローバルなシンボルにアンダースコアをつける"><a href="#グローバルなシンボルにアンダースコアをつける" class="headerlink" title="グローバルなシンボルにアンダースコアをつける"></a>グローバルなシンボルにアンダースコアをつける</h3><p>Linuxの場合にはC言語で定義したシンボルがそのままの名前でアセンブリに出力される。
+しかしMacでは前にアンダースコア <code>_</code> が追加される。
+例えば <code>write</code> という関数を呼び出していても実際には <code>_write</code> というシンボルを参照することになる。</p>
+<p>またC言語標準のエントリポイントも実際に参照されるのは <code>main</code> じゃなくて <code>_main</code> となり、C言語から出力するときにアンダースコアをつけてやらないと未定義でリンクに失敗する。</p>
+<h3 id="アライメントの指定方法"><a href="#アライメントの指定方法" class="headerlink" title="アライメントの指定方法"></a>アライメントの指定方法</h3><p>データを特定の数値の倍数のアドレスに配置するために、 <code>.align</code> というディレクティブで指定する。
+これはそのままMac上でもアセンブルできるが実際には動作が違っていて、指定が合わせたいバイト数じゃなく２の何乗かという意味で解釈される
+（<a href="http://umezawa.dyndns.info/wordpress/?p=6361">或るプログラマの一生 » Mac (Intel Mac) のアセンブラでは .align は .p2align の意味である</a>）。
+なので例えば構造体とかのアライメントが崩れて、値がおかしくなってしまう。</p>
+<p>そこで <code>.p2align</code> と出力して、値も２の何乗かを出力するよう変更する。
+Linux上で <code>.p2align</code> が使えるんであればそちらに統一でもいいんだけど、Linuxでは受け付けてくれない…。</p>
+<p>以上の修正で、単純なコードならコンパイルして動かせるようになった。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

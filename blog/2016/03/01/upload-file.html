@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="AngularJS1.5でファイルをアップロードする機能を追加したかったのだが、ファイルをアップロードしてもページ遷移はしたくなかったので、$httpを使ってAJAX的にプログラム内から送って、結果を受け取るようにした。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ファイルを$httpでアップロードする"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ファイルを$httpでアップロードする - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/03/01/upload-file.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ファイルを$httpでアップロードする</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2016-03-01
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/angular/">#angular</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>AngularJS1.5でファイルをアップロードする機能を追加したかったのだが、ファイルをアップロードしてもページ遷移はしたくなかったので、<code>$http</code>を使ってAJAX的にプログラム内から送って、結果を受け取るようにした。</p>
+<span id="more"></span>
+
+<h3 id="例として定義するモジュール"><a href="#例として定義するモジュール" class="headerlink" title="例として定義するモジュール"></a>例として定義するモジュール</h3><p>定義するモジュール名を仮に<code>app</code>とする：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">  angular.module(<span class="string">&#x27;app&#x27;</span>, [])</span><br></pre></td></tr></table></figure>
+
+<h3 id="選択したファイルをAngularJSに渡せるようにするためのディレクティブを定義する"><a href="#選択したファイルをAngularJSに渡せるようにするためのディレクティブを定義する" class="headerlink" title="選択したファイルをAngularJSに渡せるようにするためのディレクティブを定義する"></a>選択したファイルをAngularJSに渡せるようにするためのディレクティブを定義する</h3><p>HTMLの<code>input type=&quot;file&quot;</code>で選択したファイルをAngularJSに受け渡すためのディレクティブを定義する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">  angular.module(<span class="string">&#x27;app&#x27;</span>)</span><br><span class="line">    .directive(<span class="string">&#x27;fileModel&#x27;</span>, [<span class="string">&#x27;$parse&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$parse</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">restrict</span>: <span class="string">&#x27;A&#x27;</span>,</span><br><span class="line">        <span class="attr">link</span>: <span class="function"><span class="keyword">function</span>(<span class="params">scope, element, attrs</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">const</span> model = $parse(attrs.fileModel)</span><br><span class="line">          element.bind(<span class="string">&#x27;change&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            scope.$apply(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">              model.assign(scope, element[<span class="number">0</span>].files[<span class="number">0</span>])</span><br><span class="line">            &#125;)</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>element</code>の<code>change</code>を監視して、変更されたらモデルを更新する</li>
+</ul>
+<h3 id="ファイルを選択してアップロードするためのHTML"><a href="#ファイルを選択してアップロードするためのHTML" class="headerlink" title="ファイルを選択してアップロードするためのHTML"></a>ファイルを選択してアップロードするためのHTML</h3><p>上で定義した<code>file-model</code>ディレクティブを使って、ファイルを選択する<code>input</code>と、アップロードするためのボタンを用意する：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">// index.html</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">ng-app</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;app.js&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-controller</span>=<span class="string">&quot;AppController as appCtrl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">file-model</span>=<span class="string">&quot;myFile&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">ng-click</span>=<span class="string">&quot;myFile&amp;&amp;appCtrl.upload(myFile)&quot;</span> <span class="attr">ng-disabled</span>=<span class="string">&quot;!myFile&quot;</span>&gt;</span>Upload<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>コントローラ<code>AppController</code>は後述</li>
+<li>選択したファイルを<code>myFile</code>というモデル（変数名）に格納することにする</li>
+<li>ボタンが押されたら<code>appCtrl</code>の<code>upload</code>メソッドに、選択されたファイル<code>myFile</code>を渡す</li>
+</ul>
+<h3 id="アップロードするサービス"><a href="#アップロードするサービス" class="headerlink" title="アップロードするサービス"></a>アップロードするサービス</h3><p>ファイルを<code>$http</code>で送る機能をAngularJSのサービスとして作成する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">  angular.module(<span class="string">&#x27;app&#x27;</span>)</span><br><span class="line">    .service(<span class="string">&#x27;fileUpload&#x27;</span>, [<span class="string">&#x27;$http&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$http</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">this</span>.uploadFileToUrl = <span class="function"><span class="keyword">function</span>(<span class="params">uploadUrl, name, file</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> formData = <span class="keyword">new</span> FormData()</span><br><span class="line">        formData.append(name, file)</span><br><span class="line">        <span class="keyword">const</span> config = &#123;</span><br><span class="line">          <span class="attr">headers</span>: &#123;</span><br><span class="line">            <span class="string">&#x27;Content-Type&#x27;</span>: <span class="literal">undefined</span>,</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> $http.post(uploadUrl, formData, config)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>$http.post</code>を使う</li>
+<li><code>Content-Type</code>に<code>undefined</code>を指定すると良きに計らってくれるらしい</li>
+</ul>
+<h3 id="ファイルをアップロードする"><a href="#ファイルをアップロードする" class="headerlink" title="ファイルをアップロードする"></a>ファイルをアップロードする</h3><p>上で作成したファイルをアップロードするサービスを使って、コントローラ内からファイルをアップロードする：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">  angular.module(<span class="string">&#x27;app&#x27;</span>)</span><br><span class="line">    .controller(<span class="string">&#x27;AppController&#x27;</span>, [<span class="string">&#x27;fileUpload&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">fileUpload</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">this</span>.upload = <span class="function">(<span class="params">file</span>) =&gt;</span> &#123;</span><br><span class="line">        fileUpload.uploadFileToUrl(<span class="string">&#x27;/upload&#x27;</span>, <span class="string">&#x27;upName&#x27;</span>, file)</span><br><span class="line">          .then(</span><br><span class="line">            <span class="function">(<span class="params">response</span>) =&gt;</span> &#123;</span><br><span class="line">              <span class="built_in">console</span>.log(<span class="string">&#x27;upload success&#x27;</span>)</span><br><span class="line">              <span class="built_in">console</span>.log(response.data)</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="function">(<span class="params">response</span>) =&gt;</span> &#123;</span><br><span class="line">              <span class="built_in">console</span>.error(<span class="string">&#x27;upload failed&#x27;</span>)</span><br><span class="line">              <span class="built_in">console</span>.log(response)</span><br><span class="line">            &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>依存関係に<code>fileUpload</code>を含めて、それを使う</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/21/access-directive-from-transclude.html" title="Transclude内からディレクティブにアクセスする" rel="bookmark">Transclude内からディレクティブにアクセスする</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/14/angular1-component.html" title="AngularJS1.5で親子コンポーネント間のやりとり" rel="bookmark">AngularJS1.5で親子コンポーネント間のやりとり</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/28/angularjs-page-transition-3d.html" title="AngularJSでページ遷移時に3D風アニメーションを入れてみた" rel="bookmark">AngularJSでページ遷移時に3D風アニメーションを入れてみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/24/custom-selector.html" title="AngularJS1で独自の選択ボックスを作る" rel="bookmark">AngularJS1で独自の選択ボックスを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/03/jekyll-editor.html" title="Jekyllのフロントエンドを作り始めた" rel="bookmark">Jekyllのフロントエンドを作り始めた</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="チャーチ数は、関数 f を x に何回適用したか、で数を表すらしい。
+まずは０から、
+
+zero = λf.λx. x
+
+１進めた数は succ で得られる
+
+succ = λn.λf.λx. f (n f x)
+
+２つの数 m、n の足し算は、初期値 m にさらに n 回 f を適用すれば得られる">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ラムダ計算でハマる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ラムダ計算でハマる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2008/02/02/lambda-calculus.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ラムダ計算でハマる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2008-02-02
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/math/">#math</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%83%A0%E3%83%80%E8%A8%88%E7%AE%97">チャーチ数</a>は、関数 f を x に何回適用したか、で数を表すらしい。
+まずは０から、</p>
+<ul>
+<li>zero = λf.λx. x</li>
+</ul>
+<p>１進めた数は succ で得られる</p>
+<ul>
+<li>succ = λn.λf.λx. f (n f x)</li>
+</ul>
+<p>２つの数 m、n の足し算は、初期値 m にさらに n 回 f を適用すれば得られる</p>
+<ul>
+<li>plus = λm.λn.λf.λx. n f (m f x)</li>
+</ul>
+<p>掛け算は、m の加算を n 回行う、ってことかな？</p>
+<ul>
+<li>mult = λm.λn.λf.λx. n (m f) x</li>
+</ul>
+<p>ここまではなんとなくわかったんだけど、指数がどうして次のようになるのかわからない：</p>
+<ul>
+<li>exp  = λm.λn. n m</li>
+</ul>
+<p>手で展開してみる： exp 3 2</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">2 = λf.λx. f (f x)</span><br><span class="line">3 = λf.λx. f (f (f x))</span><br><span class="line">exp 3 2 = (λm.λn.λf.λx. n m f x) 3 2</span><br><span class="line">        = (λf.λx. (λg.λy. g (g y)) m f x)    -- n = 2 = λg.λy. g (g y) に置き換え</span><br><span class="line">        = (λf.λx. (λy. m (m y)) f x)    -- g を m に置き換え</span><br><span class="line">        = (λf.λx. (m (m f)) x)    -- y を f に置き換え</span><br><span class="line">                                    -- この時点で、(mult m m) の形になってる</span><br><span class="line">        = (λf.λx. ((λh.λz. h (h (h z))) ((λh.λz. h (h (h z))) f)) x)    -- m = 3 = λh.λz. h (h (h z))</span><br><span class="line">        = (λf.λx. ((λh.λz. h (h (h z))) (λz. f (f (f z)))) x)    -- h を f に置き換え</span><br><span class="line">        = (λf.λx. ((λz. (λw. f (f (f w))) ((λw. f (f (f w))) ((λw. f (f (f w))) z)))) x)    -- h を (λw. f (f (f w))) に置き換え</span><br><span class="line">        = (λf.λx. ((λz. (λw. f (f (f w))) ((λw. f (f (f w))) (f (f (f z)))))) x)    -- w を z に置き換え</span><br><span class="line">        = (λf.λx. ((λz. (λw. f (f (f w))) (f (f (f (f (f (f z)))))))) x)    -- w を (f (f (f z))) に置き換え</span><br><span class="line">        = (λf.λx. ((λz. (f (f (f (f (f (f (f (f (f z))))))))))) x)    -- w を (f (f (f (f (f (f z)))))) に置き換え</span><br><span class="line">        = (λf.λx. f (f (f (f (f (f (f (f (f x)))))))))    -- z を x に置き換え</span><br><span class="line">        = 9</span><br></pre></td></tr></table></figure>
+
+<p>ちゃんと計算はできてる、けどなぜかはわからない…。
+n に m を適用するってなんだ？</p>
+<p>succ の逆に、-1 する pred もよくわからない：</p>
+<ul>
+<li>pred = λn.λf.λx. n (λg.λh. h (g f)) (λu. x) (λu. u)</li>
+</ul>
+<p>引き算は、記述はもっともだけど</p>
+<ul>
+<li>minus = λm.λn. n pred m</li>
+</ul>
+<p>なんで計算できるのかはわからない
+。なぜかというと、Haskell でテストしようとしてもエラーが出てしまったから：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">zero</span> = \f x -&gt; x</span><br><span class="line"><span class="title">succ</span> = \n f x -&gt; f (n f x)</span><br><span class="line"><span class="title">plus</span> = \m n -&gt; \f x -&gt; n f (m f x)</span><br><span class="line"><span class="title">mult</span> = \m n -&gt; \f x -&gt; n (m f) x</span><br><span class="line"><span class="title">exp</span>  = \m n -&gt; n m</span><br><span class="line"></span><br><span class="line"><span class="title">pred</span> = \n f x -&gt; n (\g h -&gt; h (g f)) (\u -&gt; x) (\u -&gt; u)</span><br><span class="line"><span class="title">minus</span> = \m n -&gt; n pred m</span><br></pre></td></tr></table></figure>
+
+<p>コンパイルは通る：GHCi で</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- チェック用：チャーチ数を整数に変換</span></span><br><span class="line"><span class="keyword">import</span> Prelude( (+) )</span><br><span class="line"></span><br><span class="line"><span class="title">p</span> f = f (+<span class="number">1</span>) <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="title">one</span>   = succ zero</span><br><span class="line"><span class="title">two</span>   = succ one</span><br><span class="line"><span class="title">three</span> = succ two</span><br><span class="line"></span><br><span class="line"><span class="title">p</span> zero  ;=&gt; <span class="number">0</span></span><br><span class="line"><span class="title">p</span> one   ;=&gt; <span class="number">1</span></span><br><span class="line"><span class="title">p</span> (plus one two)   ;=&gt; <span class="number">3</span></span><br><span class="line"><span class="title">p</span> (mult three two)   ;=&gt; <span class="number">6</span></span><br><span class="line"><span class="title">p</span> (exp three two)   ;=&gt; <span class="number">9</span></span><br><span class="line"><span class="title">p</span> (pred three)  ;=&gt; <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>引き算で、２以上を引こうとすると無限エラーが出る：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line">&gt; p (minus three zero)</span><br><span class="line"><span class="number">3</span></span><br><span class="line">&gt; p (minus three one)</span><br><span class="line"><span class="number">2</span></span><br><span class="line">&gt; p (minus three two)</span><br><span class="line"></span><br><span class="line">&lt;interactive&gt;:<span class="number">1</span>:<span class="number">15</span>:</span><br><span class="line">    <span class="type">Occurs</span> check: cannot construct the infinite <span class="class"><span class="keyword">type</span>:</span></span><br><span class="line">      t1 = (t1 -&gt; t2) -&gt; (t2 -&gt; t3) -&gt; t3</span><br><span class="line">    <span class="type">Probable</span> cause: `two&#x27; is applied to too few arguments</span><br><span class="line">    <span class="type">In</span> the second argument <span class="keyword">of</span> `minus&#x27;, namely `two&#x27;</span><br><span class="line">    <span class="type">In</span> the first argument <span class="keyword">of</span> `p&#x27;, namely `(minus three two)&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>謎。</p>
+<p>いろいろ資料：</p>
+<ul>
+<li><a href="http://winnie.kuis.kyoto-u.ac.jp/~okuno/Lecture/04/IntroAlgDs/Church-numeral.html">http://winnie.kuis.kyoto-u.ac.jp/~okuno/Lecture/04/IntroAlgDs/Church-numeral.html</a></li>
+<li><a href="http://itpro.nikkeibp.co.jp/article/COLUMN/20071101/286199/?P=1">第16回 すべてのものは関数である | 日経 xTECH（クロステック）</a></li>
+<li><a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%83%A0%E3%83%80%E8%A8%88%E7%AE%97">ラムダ計算 - Wikipedia</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Church_numeral">Church encoding - Wikipedia</a></li>
+<li><a href="http://www5d.biglobe.ne.jp/~y0ka/2006-07-31-6.html">http://www5d.biglobe.ne.jp/~y0ka/2006-07-31-6.html</a></li>
+<li><a href="http://www.tom.sfc.keio.ac.jp/~sakai/d/?date=20060423#p02">http://www.tom.sfc.keio.ac.jp/~sakai/d/?date=20060423#p02</a></li>
+<li><a href="http://web.yl.is.s.u-tokyo.ac.jp/~kohei/rinkou/types/resume/type5.pdf">The Untyped Lambda-Calculus</a></li>
+<li><a href="http://blog.bugyo.tk/lyrical/2008/02/y_combinator.html">http://blog.bugyo.tk/lyrical/2008/02/y_combinator.html</a> S と K だけでなんでもできる</li>
+<li><a href="http://blog.livedoor.jp/dankogai/archives/50463152.html">404 Blog Not Found:Y combinator is forbidden in Haskell!?</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/gauss-rand.html" title="正規分布の乱数の生成方法" rel="bookmark">正規分布の乱数の生成方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/21/metropolis-light-transport.html" title="メトロポリス輸送の事始め" rel="bookmark">メトロポリス輸送の事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/22/mlt-color.html" title="メトロポリスサンプリングをカラー値に適用する" rel="bookmark">メトロポリスサンプリングをカラー値に適用する</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

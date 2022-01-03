@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="年末年始に挑戦していたICFP2007は、7Mとかある文字列の切り貼りを大量にする必要があって、最初C++で`std::string`を使って書いたんだけど1枚の絵を出すのに9時間ほどかかっていた。部分文字列を取り出したり文字列の連結を高速に行うデータ形式として[Rope](http://www.k">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ICFP2007ようやく少し進んだ"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ICFP2007ようやく少し進んだ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/04/26/icfp2007-repair-guide.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ICFP2007ようやく少し進んだ</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2013-04-26
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <span id="more"></span>
+
+<a href="/blog/2012/12/31/save-endo.html" title="年末年始に挑戦していた">年末年始に挑戦していた</a>ICFP2007は、7Mとかある文字列の切り貼りを大量にする必要があって、最初C++で`std::string`を使って書いたんだけど1枚の絵を出すのに9時間ほどかかっていた。部分文字列を取り出したり文字列の連結を高速に行うデータ形式として[Rope](http://www.kmonos.net/wlog/39.php#_1841040529)というものがあるらしいんだけど、導入方法がよくわからなくて、じゃあっつって自前で実装しようとしたがうまい実装方法がわからなくてそれほど速くならなかった。[HaskellでData.Sequence](http://d.hatena.ne.jp/katona/20070802/p3)というのを使えば速いというのを見たので、Haskellに書き換えてたんだけどどこかにバグがあるのかうまく動かず放置していた。テストコードも書いて試した限りではうまく動いているふうなんだけど…。ふと気が向いて久しぶりにソースを見てみると、DNAからテンプレートの取り出しの部分でDNAを消費してない箇所があってバグっていた。ので修正するとようやく動くようになった。Haskellで[Data.Sequence](http://www.haskell.org/ghc/docs/latest/html/libraries/containers/Data-Sequence.html)を使った版だと、DNAからRNAへの変換が2分ほどで終わるようになった。
+
+<p>prefixを与えずに描画させた時に、rnaの最初の部分で<code>IIPIFFCPICFPPICIICCIICIPPPFIIC</code>というヒントみたいな基が表示されるので、それをprefixとして与えてみると、FUUN FIELD REPAIR GUIDEというのが表示された：</p>
+<p><img src="/assets/save_endo/fuun_field_repair_guide.png" alt="fuun_field_repair_guild"></p>
+<p>テキスト：</p>
+<pre style="color:white; background-color:black"><center>
+<font color="red">FUUN FIELD REPAIR GUIDE</font>
+<font color="gray">FUUNTECH INC.
+DNA RESEARCH GROUP
+1 FUUNTECH WAY
+RIGEL IV
+STARDATE 90.7.65.44</font>
+
+IF YOU HAV MANAGED TO ACCESS THIS MESSAGE, IT MEANS THAT YOU HAVE
+FOUND A CRASH-LANDED FUUN AND ARE ATTEMPTING TO REPAIR IT. THANK
+YOU FOR YOUR EFFORT IN SAVING A FUUN. ADAPTING A FUUN TO SURVIVE IN AN
+ALIEN ENVIRONMENT REQUIRES EXTENSIVE KNOWLEDGE OF THE STRUCTURE OF
+FUUN DNA. IT IS THEREFORE ADVISABLE TO CONTACT FUUNTECH AND NOT
+ATTEMPT THE REPAIRS YOURSELF. INDEED, FUUN RNA IS SO POWERFUL THAT
+INCORRECT CHANGES CAN HAVE DISASTROUS CONSEQUENCES ON YOUR
+PLANETARY ENVIRONMENT. FOR THE EVENTUALITY THAT YOU ARE UNABLE TO
+CONTACT FUUNTECH. HOWEVER, WE HAVE EMBEDDED THE FUUN FIELD
+REPAIR GUIDE. FOR HELP ON ACCESSING THE REPAIR TOPICS CATALOG,
+PREPEND THE FOLLOWING ACIDS:
+
+<font color="red">IIPIFFCPICFPPICIICCCIICIPPPCFIIC</font>
+
+<font color="orange">IF YOU HAVE DIFFICULTY SEEING YOUR SURROUNDINGS, IT MAY BE THAT THE
+CELESTIAL BODY YOU ARE ON IS ORIENTED AWAY FROM ITS SUN. TO ACTIVATE
+POWERFUL GEENS THAT ROTATE IT TOWARDS THE NEAREST BODY SUSTAININING
+NUCLEAR FUSION, PREPEND THE FOLLOWING ACIDS:</font>
+
+<font color="red">IIPIFFCPICPCIICICIICIPPPPIIC</font>
+
+<font color="#0f0">DON'T PANIC</font>
+</center></pre>
+
+<p>2つのprefixが紹介されている。</p>
+<p>下のを見てみると、</p>
+<p><img src="/assets/save_endo/noon.png" alt="noon"></p>
+<p>昼になった！空が明るくなって地面も照らされて、これだけでグッとそれっぽくなった！</p>
+<p>上のは修理カタログのページで、見てみると</p>
+<p><img src="/assets/save_endo/repair_guide_navigation.png" alt="repair_guide_navigation"></p>
+<p>カタログを見たい場合の説明が書いてあるんだけど、英語がよくわからん…。カタログのページを2進数で下位から上位の順に、0と1を<code>I</code>と<code>C</code>にエンコードして置き換えて長さは変えるな、ということなんだけど、どこにページ数を埋め込めばいいのかわからん…。</p>
+<p>ググったりして調べたところようやくわかった。このページを見るために与えたprefix <code>IIPIFFCPICFPPICIICCCIICIPPPCFIIC</code>は</p>
+<p>パターン：</p>
+<table>
+<thead>
+<tr>
+<th>基</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IIP</td>
+<td>(</td>
+</tr>
+<tr>
+<td>IFF CPICFPPIC</td>
+<td>?”IFPCFFP”</td>
+</tr>
+<tr>
+<td>IIC</td>
+<td>)</td>
+</tr>
+<tr>
+<td>C</td>
+<td>I</td>
+</tr>
+<tr>
+<td>C</td>
+<td>I</td>
+</tr>
+<tr>
+<td>IIC</td>
+<td>終わり</td>
+</tr>
+</tbody></table>
+<p>テンプレート：</p>
+<table>
+<thead>
+<tr>
+<th>基</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IP P P</td>
+<td>{0,0}</td>
+</tr>
+<tr>
+<td>C</td>
+<td>I</td>
+</tr>
+<tr>
+<td>F</td>
+<td>C</td>
+</tr>
+<tr>
+<td>IIC</td>
+<td>終わり</td>
+</tr>
+</tbody></table>
+<p>となっていて、<code>matchreplace</code>でパターンの「<code>(?&quot;IFPCFFP&quot;)</code>」でDNAの先頭から<code>IFPCFFP</code>という並びまでを環境0にセット、「<code>I</code>」「<code>I</code>」を消費して終わり。次に<code>replace</code>でテンプレートで、「{0,0}」で環境0をそのまま出力、「<code>I</code>」「<code>C</code>」を出力して終わり、という処理になる。これで元のDNAの、<code>IFPCFFP</code>に続く<code>II</code>を<code>IC</code>に置き換えたことになる。実際に元のDNAを見てみると、<code>IFPCFFP</code>に続いて24個の<code>I</code>が並び、<code>P</code>で数値の終わりを示している。ここがページ数を表しているものと思われる。</p>
+<p>ということで、カタログの索引ページという1337ページを見るには、<code>1337 = 0x539 = 0b10100111001</code> をエンコードして置き換えるコード、<code>IIPIFFCPICFPPICIICCCCCCCCCCCCIICIPPPFCCFFFCCFCFIIC</code>というprefixをつけて変換してみる：</p>
+<p><img src="/assets/save_endo/catalog_page_index.png" alt="catalog_page_index"></p>
+<p>おおー、違うページが表示された！「Catalog seems to be damaged」と表示されてるのが気になるが…。</p>
+<p>とりあえずここまで。</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

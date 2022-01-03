@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="以前MITのOS教材として使われているというxv6というOSを動かしてみた。
+これは普段使っているパソコンのCPU（Intel x86）がターゲットとなっていて動かして試せるので、非常にモチベがあがる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Xv6-RISCVを試してみた"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Xv6-RISCVを試してみた - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/11/13/xv6-riscv.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Xv6-RISCVを試してみた</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2020-11-13
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/os/">#os</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>以前MITのOS教材として使われているという<a href="https://github.com/mit-pdos/xv6-public">xv6</a>というOSを動かしてみた。
+これは普段使っているパソコンのCPU（Intel x86）がターゲットとなっていて動かして試せるので、非常にモチベがあがる。</p>
+<span id="more"></span>
+
+<p>しかししばらく前からMITはオープンソースなCPUの<strong>RISCV</strong>をターゲットとした別のリポジトリ<a href="https://github.com/mit-pdos/xv6-riscv">xv6-riscv</a>に移行してしまい、x86版のリポジトリはほぼ更新されない状態になってしまった。
+RISCV版を動かすための開発・動作環境をどう用意するのか難しくないかと移行をためらっていたが、ようやく腰を上げて試してみた。</p>
+<p>動作環境：macOS Catalina</p>
+<h3 id="qemu"><a href="#qemu" class="headerlink" title="qemu"></a>qemu</h3><p><code>brew install qemu</code> で入るのかな？
+すでにインストール済みだった：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> qemu-system-riscv64</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/qemu-system-riscv64</span><br><span class="line">$ qemu-system-riscv64 --version</span><br><span class="line">QEMU emulator version 5.1.0</span><br><span class="line">Copyright (c) 2003-2020 Fabrice Bellard and the QEMU Project developers</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="RISCVツールチェインのインストール"><a href="#RISCVツールチェインのインストール" class="headerlink" title="RISCVツールチェインのインストール"></a>RISCVツールチェインのインストール</h3><p><a href="https://github.com/riscv/homebrew-riscv">https://github.com/riscv/homebrew-riscv</a> に書かれている手順に従って、Homebrew でインストール：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ brew tap riscv/riscv</span><br><span class="line">$ brew install riscv-tools</span><br></pre></td></tr></table></figure>
+
+<p><code>/usr/local/bin/</code> 内にシンボリックリンクが貼られる。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ ls /usr/<span class="built_in">local</span>/bin/riscv64-*</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-addr2line   /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gdb</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-ar	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gdb-add-index</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-as	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gprof</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-c++	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-ld</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-c++filt     /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-ld.bfd</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-cpp	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-lto-dump</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-elfedit     /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-nm</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-g++	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-objcopy</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-objdump</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc-10.1.0  /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-ranlib</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc-ar      /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-readelf</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc-nm      /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-run</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc-ranlib  /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-size</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcov        /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-strings</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcov-dump   /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-strip</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcov-tool</span><br></pre></td></tr></table></figure>
+
+<h4 id="自分でビルドする場合"><a href="#自分でビルドする場合" class="headerlink" title="自分でビルドする場合"></a>自分でビルドする場合</h4><p><a href="https://github.com/riscv/riscv-gnu-toolchain">riscv/riscv-gnu-toolchain</a> をビルドするとのこと。
+<code>./configure --prefix=</code> でインストール先を指定するが、 <code>/opt/riscv</code> だと管理者権限を要求する？かよくわからなかったので、自分のホーム以下にした。</p>
+<p>で <code>make</code> すると途中エラーで失敗してしまう。
+Issueに上がっているのと同じで、 <code>free</code> 関数が定義されてないとかでコンパイルエラーが出る
+（<a href="https://github.com/riscv/riscv-gnu-toolchain/issues/745">Getting Issues on make on Mac ( Catalina) · Issue #745</a>）。</p>
+<p>参照しているサブモジュールの <code>riscv-gdb</code> が古い？ようで、更新したところビルドに成功した：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> --recursive https://github.com/riscv/riscv-gnu-toolchain.git  <span class="comment"># サブモジュールもクローンされる</span></span><br><span class="line">$ <span class="built_in">cd</span> riscv-gnu-toolchain</span><br><span class="line">$ git submodule update --remote riscv-gdb  <span class="comment"># risc-gdbサブモジュールを更新してやる</span></span><br><span class="line">$ ./configure --prefix=<span class="variable">$HOME</span>/opt/riscv</span><br><span class="line">$ make</span><br></pre></td></tr></table></figure>
+
+<p><code>configure</code> で指定した <code>~/opt/riscv</code> の <code>bin</code> 内にツールチェインの実行ファイルがインストールされるので、パスを通してやる。</p>
+<h3 id="xv6-riscv-のビルド"><a href="#xv6-riscv-のビルド" class="headerlink" title="xv6-riscv のビルド"></a>xv6-riscv のビルド</h3><p><a href="https://github.com/mit-pdos/xv6-riscv">xv6-riscv</a> をクローンして <code>make</code> する。
+x86用のXV6ではホスト環境のgccなどがそのまま使えるが、RISCV用は先程ビルド・インストールしたツールチェインを使用する必要がある。
+<code>Makefile</code> 内で判定して <code>TOOLPREFIX</code> 変数が設定されるようになっていて、 <code>riscv64-(unknown-elf|linux-gnu-|unknown-linux-gnu-)</code> が使用される。
+（実行ファイルから判定されるので、ツールチェインを自分でビルドした場合にはインストールされた <code>~/opt/riscv</code> にパスを通しておくこと。）</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/mit-pdos/xv6-riscv</span><br><span class="line">$ <span class="built_in">cd</span> xv6-riscv</span><br><span class="line">$ make  <span class="comment"># TOOLPREFIX=riscv64-unknown-elf-</span></span><br></pre></td></tr></table></figure>
+
+<p><code>make</code> のターゲットに <code>qemu</code> を指定することで、qemu 上で実行できる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ make qemu</span><br><span class="line">qemu-system-riscv64 -machine virt -bios none -kernel kernel/kernel -m 128M -smp 3 -nographic -drive file=fs.img,<span class="keyword">if</span>=none,format=raw,id=x0 -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0</span><br><span class="line"></span><br><span class="line">xv6 kernel is booting</span><br><span class="line"></span><br><span class="line">hart 2 starting</span><br><span class="line">hart 1 starting</span><br><span class="line">init: starting sh</span><br><span class="line">$ ls</span><br><span class="line">.              1 1 1024</span><br><span class="line">..             1 1 1024</span><br><span class="line">README         2 2 2059</span><br><span class="line">cat            2 3 24224</span><br><span class="line"><span class="built_in">echo</span>           2 4 23048</span><br><span class="line">forktest       2 5 13272</span><br><span class="line">grep           2 6 27528</span><br><span class="line">init           2 7 23792</span><br><span class="line"><span class="built_in">kill</span>           2 8 22992</span><br><span class="line">ln             2 9 22848</span><br><span class="line">ls             2 10 26424</span><br><span class="line">mkdir          2 11 23144</span><br><span class="line">rm             2 12 23128</span><br><span class="line">sh             2 13 41944</span><br><span class="line">stressfs       2 14 23984</span><br><span class="line">usertests      2 15 154472</span><br><span class="line">grind          2 16 38120</span><br><span class="line">wc             2 17 25312</span><br><span class="line">zombie         2 18 22376</span><br><span class="line">console        3 19 0</span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+
+<p><code>C-A x</code> でqemuから抜けられる。</p>
+<h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><p>RISCV のクロスコンパイル環境やエミュレータが整ってるのがすごい。
+その上にXV6も問題なく動いていうことなし。
+RISCVのCPUをエミュレーションしている？はずなのに普通の速度で動作してしまうってすごすぎるんだが…。
+考えてみればx86版も実機で動かしたことはなく動作確認はもっぱらqemuの<code>-nographic</code>経由だったので、
+ユーザ側としてみればあまり違いはないかもしれない（そもそもそれがOSの目的だしね…）。</p>
+<p>今後触ってみてx86版との違いや、RISCV版が想定しているハードウェア構成がどうなっているのかなどを見ていきたい。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://pdos.csail.mit.edu/6.828/2020/xv6.html">6.S081 / Fall 2020</a> MITのページ</li>
+<li><a href="https://github.com/mit-pdos/xv6-riscv">https://github.com/mit-pdos/xv6-riscv</a> XV6-RISCVのリポジトリ</li>
+<li><a href="https://pdos.csail.mit.edu/6.828/2020/xv6/book-riscv-rev1.pdf">xv6: a simple, Unix-like teaching operating system</a> ドキュメント<ul>
+<li><a href="https://www.sugawara-lab.jp/fig/xv6-riscv-jpn.pdf">xv6: シンプルで Unix 風な教育用オペレーティングシステム</a> 日本語ドキュメント</li>
+</ul>
+</li>
+<li><a href="https://miyanetdev.com/archives/596">MacOSでxv6をインストールする方法｜miyanetdev</a>
+ツールチェインをbrewでインストールする方法</li>
+<li><a href="https://zenn.dev/takuchalle/articles/run-xv6-on-qemu">xv6-riscv を QEMU で動かす</a>
+自前でビルドする方法</li>
+<li><a href="https://nombi.info/posts/computer/xv6-riscv/">xv6-riscvをDockerでビルド</a>
+ホスト環境にRISCVの開発環境を入れずに済むのでDockerを使えたら便利。
+が試してみたところxv6の動作がqemuで動かした場合と比べてちょっと遅い？ような。
+Docker for Macがいけないんだろうか？</li>
+</ul>
+<h3 id="過去記事"><a href="#過去記事" class="headerlink" title="過去記事"></a>過去記事</h3><ul>
+<li><a href="/blog/2018/05/28/xv6.html" title="Xv6を試してみた">Xv6を試してみた</a>: x86版を動かす話</li>
+<li><a href="/blog/2019/07/14/self-hosting-c.html" title="自作Cコンパイラでセルフホスティングを達成した">自作Cコンパイラでセルフホスティングを達成した</a>: XV6（とLinux）上で動くCコンパイラを作る話</li>
+<li><a href="/blog/2019/07/24/history-in-shell.html" title="自作シェルでヒストリを扱えるようにする">自作シェルでヒストリを扱えるようにする</a>: XV6シェルにヒストリ機能を足す話</li>
+</ul>
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">XV6上でCコンパイラが動き出したぞ！ <a href="https://t.co/VBCuc9mMvB">pic.twitter.com/VBCuc9mMvB</a></p>&mdash; tyfkda (@tyfkda) <a href="https://twitter.com/tyfkda/status/1099164774389043201?ref_src=twsrc%5Etfw">February 23, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">自作OS(XV6改)上でテキストエディタ(Kilo)が動くようになったぞ <a href="https://t.co/psl9v0ZEh0">pic.twitter.com/psl9v0ZEh0</a></p>&mdash; tyfkda (@tyfkda) <a href="https://twitter.com/tyfkda/status/1024643080530456576?ref_src=twsrc%5Etfw">August 1, 2018</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<ul>
+<li>リポジトリ内のソースがカーネルとユーザに分かれてわかりやすくなった</li>
+<li>実行すると<a href="https://github.com/mit-pdos/xv6-riscv/blob/231c08dc5e5e39a6fafda832e6935beb38ef3887/kernel/proc.c#L430-L465">ビジーループ</a>で<a href="https://github.com/mit-pdos/xv6-riscv/issues/15">CPUを100%食う</a>のは<a href="https://github.com/mit-pdos/xv6-public/pull/58">相変わらず</a>っぽいね…</li>
+<li>x86版のexitは単にプロセスを終了するだけだったが、<a href="https://github.com/mit-pdos/xv6-riscv/commit/7e6c37e67e6da62e02089fc3292569103b7e94b3">終了コードが渡せる</a>ようになっていた、成長したな…！</li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/12/27/baremetal-ctxswtch-rpz.html" title="Raspberry Pi Zeroでベアメタルコンテキストスイッチ" rel="bookmark">Raspberry Pi Zeroでベアメタルコンテキストスイッチ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/11/build-linux.html" title="Linuxカーネルをビルドしてみる" rel="bookmark">Linuxカーネルをビルドしてみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/18/data-segment.html" title="はりぼてOSアプリのメモリレイアウト" rel="bookmark">はりぼてOSアプリのメモリレイアウト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/23/fin-hariboteos.html" title="「OS自作入門」とりあえず完了" rel="bookmark">「OS自作入門」とりあえず完了</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

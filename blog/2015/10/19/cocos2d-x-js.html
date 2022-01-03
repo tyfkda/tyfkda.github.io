@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ひっさしぶりにCocos2d-xでも触ってみようかなと思って、チャレンジしてみた。今からC++はないよな…てことでJavaScriptで作ってみる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Cocos2d-x(JS)を使ってみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Cocos2d-x(JS)を使ってみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/10/19/cocos2d-x-js.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Cocos2d-x(JS)を使ってみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2015-10-19
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cocos2dx/">#cocos2dx</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ひっさしぶりにCocos2d-xでも触ってみようかなと思って、チャレンジしてみた。今からC++はないよな…てことでJavaScriptで作ってみる。</p>
+<span id="more"></span>
+
+<h3 id="SDKのセットアップ"><a href="#SDKのセットアップ" class="headerlink" title="SDKのセットアップ"></a>SDKのセットアップ</h3><ul>
+<li>ダウンロード：<a href="http://www.cocos2d-x.org/download">Download Cocos2d-x Cocos2d-html5 Cocos Studio | Cocos2d-x</a>の「Cocos2d-x」をダウンロードする（2015/10/18現在 v3.8.1）</li>
+<li>Zipファイルを展開して都合のいいパスに配置</li>
+<li>コマンドラインツールのパス <code>$/tools/cocos-console/bin</code> にパスを通して、 <code>cocos</code> コマンドを使えるようにする</li>
+</ul>
+<h3 id="ドキュメント"><a href="#ドキュメント" class="headerlink" title="ドキュメント"></a>ドキュメント</h3><ul>
+<li>リファレンス：<a href="http://www.cocos2d-x.org/wiki/Reference">Reference</a> &gt; <a href="http://www.cocos2d-x.org/reference/html5-js/V3.8/index.html">Cocos2d-JS Online API Documentation (Version 3.8)</a></li>
+<li>Wiki: <a href="http://www.cocos2d-x.org/wiki/Cocos2d-JS">Cocos2d-JS | Cocos2d-x</a></li>
+</ul>
+<h3 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h3><ul>
+<li><code>cocos new プロジェクト名 -p バンドルID -l js -d 生成先ディレクトリ</code> で新規プロジェクト作成</li>
+</ul>
+<h3 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h3><ul>
+<li><code>cocos run -p &#123;web|android|ios&#125;</code></li>
+<li><code>web</code>を指定するとサーバが走り、ブラウザが開いてそれ上で動く。プログラムを変更した場合リロードしてやれば変更が反映される。</li>
+<li>Androidでの実行にはUSBで端末を繋いで、iOSでの実行はシミュレータで走る</li>
+</ul>
+<p>iOSの実機で動かす場合には、 <code>$/frameworks/runtime-src/proj.ios_mac/$&#123;YOUR_PROJECT&#125;.xcodeproj</code> がXcodeのプロジェクト</p>
+<h3 id="ファイル構成"><a href="#ファイル構成" class="headerlink" title="ファイル構成"></a>ファイル構成</h3><ul>
+<li><a href="http://cocos2d-x.org/docs/manual/framework/html5/v3/project-json/en"><code>$/project.json</code></a> : プロジェクトの定義ファイル。JavaScriptのソースを追加するときは <code>jsList</code> に追加する。</li>
+<li><code>$/src/</code> : JavaScriptのコードはこの中に入れる。</li>
+<li><code>$/res/</code> : 画像などのリソースはこの中に入れる。リソースを追加する場合には、<code>$/src/resource.js</code>で定義されているグローバル変数<code>res</code>に追加する。</li>
+</ul>
+<h2 id="プログラム"><a href="#プログラム" class="headerlink" title="プログラム"></a>プログラム</h2><p>シーンごとに<code>Layer</code>クラスを継承して、そのコンストラクタ内でオブジェクトを階層構造で構築するのがCocos2d-xでのアプリの作り方。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line"><span class="keyword">var</span> HelloWorldLayer = cc.Layer.extend(&#123;</span><br><span class="line">  <span class="attr">ctor</span>:<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">this</span>._super();</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="スプライト"><a href="#スプライト" class="headerlink" title="スプライト"></a>スプライト</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">    <span class="keyword">var</span> sprite = <span class="keyword">new</span> cc.Sprite(res.sprite_png);</span><br><span class="line">    sprite.setPosition(x, y);</span><br><span class="line">    <span class="built_in">this</span>.addChild(sprite, <span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="スプライトフレームキャッシュ・スプライトフレーム"><a href="#スプライトフレームキャッシュ・スプライトフレーム" class="headerlink" title="スプライトフレームキャッシュ・スプライトフレーム"></a>スプライトフレームキャッシュ・スプライトフレーム</h3><p>スプライトをアニメーションさせる場合、スプライトフレームというものを使ってそれを切り替えることで見た目を変えてやる。スプライトフレームは都度作りなおさずに済むように、キャッシュさせてやる。</p>
+<p><code>cc.spriteFrameCache</code>に<code>addSpriteFrame</code>で名前に対応するスプライトフレームを登録しておいて、スプライト作成時に登録したスプライトフレームから作成したり、任意のタイミングで切り替えてやることができる</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">    <span class="keyword">var</span> spriteFrame = <span class="keyword">new</span> cc.SpriteFrame(res.character, cc.rect(x, y, w, h));</span><br><span class="line">    cc.spriteFrameCache.addSpriteFrame(spriteFrame, <span class="string">&#x27;char-walk1&#x27;</span>);</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">var</span> sprite = <span class="keyword">new</span> cc.Sprite(cc.spriteFrameCache.getSpriteFrame(<span class="string">&#x27;char-walk1&#x27;</span>));</span><br><span class="line">    ...</span><br><span class="line">    sprite.setSpriteFrame(cc.spriteFrameCache.getSpriteFrame(<span class="string">&#x27;char-walk2&#x27;</span>));</span><br></pre></td></tr></table></figure>
+
+<p>試してないけどC++版からの推測によれば <a href="http://www.cocos2d-x.org/reference/html5-js/V3.8/index.html">cc.spriteFrameCache.addSpriteFrames</a>でスプライトシートからスプライトフレームが作れると思う。</p>
+<h3 id="メニュー・ボタン"><a href="#メニュー・ボタン" class="headerlink" title="メニュー・ボタン"></a>メニュー・ボタン</h3><p>メニューのボタンを配置して、押されたらなんか反応させるには、ボタン用の画像を用意して</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">    <span class="keyword">var</span> menuBtn = <span class="keyword">new</span> cc.MenuItemImage(res.button_png, res.button_png, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;Pressed!&#x27;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    menuBtn.setPosition(<span class="number">200</span>, <span class="number">100</span>);</span><br><span class="line">    <span class="keyword">var</span> menu = <span class="keyword">new</span> cc.Menu(menuBtn);</span><br><span class="line">    menu.setPosition(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">this</span>.addChild(menu, <span class="number">100</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="シーンの遷移"><a href="#シーンの遷移" class="headerlink" title="シーンの遷移"></a>シーンの遷移</h3><p><code>cc.director</code> シングルトンがシーンを管理していて、シーンを遷移させるには（行ったっきり）</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">      cc.director.runScene(<span class="keyword">new</span> DestinationScene());</span><br></pre></td></tr></table></figure>
+
+<p>戻ってこれるようにするには、試してないけど <a href="http://www.cocos2d-x.org/reference/html5-js/V3.8/index.html">Director#pushScene</a> が使えると思う。</p>
+<p><a href="http://www.cocos2d-x.org/reference/html5-js/V3.8/symbols/cc.TransitionScene.html#constructor">cc.TransitionScene</a>を継承した各エフェクトのクラスを使ってやれば、シーンの遷移が一瞬で切り替わるんじゃなくエフェクトをさせながら遷移させる、はず。</p>
+<h3 id="キー入力"><a href="#キー入力" class="headerlink" title="キー入力"></a>キー入力</h3><p>イベントマネージャ（<a href="http://www.cocos2d-x.org/reference/html5-js/V3.8/symbols/cc.eventManager.html">cc.eventManager</a>）を使ってキー入力を受け取る</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&#x27;keyboard&#x27;</span> <span class="keyword">in</span> cc.sys.capabilities) &#123;</span><br><span class="line">      cc.eventManager.addListener(&#123;</span><br><span class="line">        <span class="attr">event</span>: cc.EventListener.KEYBOARD,</span><br><span class="line">        <span class="attr">onKeyPressed</span>: <span class="function"><span class="keyword">function</span>(<span class="params">key, event</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">switch</span> (key) &#123;</span><br><span class="line">            ...</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">onKeyReleased</span>: <span class="function"><span class="keyword">function</span>(<span class="params">key, event</span>) </span>&#123;</span><br><span class="line">          ...</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;, <span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="タッチ入力"><a href="#タッチ入力" class="headerlink" title="タッチ入力"></a>タッチ入力</h3><p>キーボードと同様にイベントマネージャを使う</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">    cc.eventManager.addListener(&#123;</span><br><span class="line">      <span class="attr">event</span>: cc.EventListener.TOUCH_ONE_BY_ONE,  <span class="comment">// or TOUCH_ALL_AT_ONCE</span></span><br><span class="line">      <span class="attr">onTouchBegan</span>: <span class="function"><span class="keyword">function</span>(<span class="params">touch, event</span>) </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;  <span class="comment">// キャプチャする</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">onTouchMoved</span>: <span class="function"><span class="keyword">function</span>(<span class="params">touch, event</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> x = touch.getLocationX(), y = touch.getLocationY();</span><br><span class="line">        ...</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">onTouchEnded</span>: <span class="function"><span class="keyword">function</span>(<span class="params">touch, event</span>) </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;, <span class="built_in">this</span>);</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザで動かした場合にはマウスにも反応してくれる。</p>
+<h3 id="毎フレームなんか処理する"><a href="#毎フレームなんか処理する" class="headerlink" title="毎フレームなんか処理する"></a>毎フレームなんか処理する</h3><p>初期化時にノードの<a href="http://www.cocos2d-x.org/reference/html5-js/V3.8/index.html">scheduleUpdate</a>を呼び出してやると、その後<code>update</code>メソッドが毎フレーム呼び出される。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line">  <span class="attr">ctor</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="built_in">this</span>.scheduleUpdate();</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="attr">update</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 毎フレーム呼び出される</span></span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><h3 id="cc-Rectの作成はnewじゃなくてcc-rectで"><a href="#cc-Rectの作成はnewじゃなくてcc-rectで" class="headerlink" title="cc.Rectの作成はnewじゃなくてcc.rectで"></a>cc.Rectの作成はnewじゃなくてcc.rectで</h3><p><a href="http://www.cocos2d-x.org/reference/html5-js/V3.8/symbols/cc.Rect.html">cc.Rect</a>の作成に<code>new cc.Rect</code>とすると、ブラウザでは動くけどAndroidなどで動かそうとするとエラーが出る：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">D/cocos2d-x debug info(24118): JS: assets/src/game.js:157:TypeError: cc.Rect is not a constructor</span><br></pre></td></tr></table></figure>
+
+<p>ドキュメントにも<a href="http://www.cocos2d-x.org/reference/html5-js/V3.8/symbols/cc.html#.rect">cc.rect</a>を使え、と書いてある</p>
+<blockquote>
+<p>please do not use its constructor to create rects, use cc.rect() alias function instead.</p>
+</blockquote>
+<h3 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h3><ul>
+<li>サウンド</li>
+<li>ネイティブ連携</li>
+<li><a href="http://www.cocos2d-x.org/sdkbox">SDKBOX</a>サードパーティのSDKが簡単に組み込めるという話</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://qiita.com/fnobi/items/056187ce2cf3ceda79d6">cocos2d-x - Cocos2d-JSはイケてる? イケてない? - Qiita</a></li>
+<li><a href="http://qiita.com/niku/items/2a637b740a2671f773fe">cocos2d-JSではじめるブラウザゲーム開発 - Qiita</a></li>
+</ul>
+<p>.</p>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/14/cocos2dx-bmfont.html" title="cocos2dxで固定ピッチフォント画像を使った文字列表示" rel="bookmark">cocos2dxで固定ピッチフォント画像を使った文字列表示</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/17/cocos2dx-proguard.html" title="Cocos2dxを使ったAndroidアプリにProguardを適用する" rel="bookmark">Cocos2dxを使ったAndroidアプリにProguardを適用する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

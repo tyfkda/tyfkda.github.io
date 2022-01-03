@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="UnityでUIの要素、ImageやTextを生成するとRaycast Targetにチェックが入った状態で生成される。
+しかし表示のみでタップ操作に反応しないUI要素にはチェックしないほうが負荷が低くてよい。
+外れた状態で生成されるようにするにはどうするか。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Unity】UIのRayCast Targetをオフにして生成する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Unity】UIのRayCast Targetをオフにして生成する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2021/07/26/unity-raycast-target-off.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Unity】UIのRayCast Targetをオフにして生成する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2021-07-26
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unity/">#unity</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>UnityでUIの要素、<code>Image</code>や<code>Text</code>を生成すると<code>Raycast Target</code>にチェックが入った状態で生成される。
+しかし表示のみでタップ操作に反応しないUI要素にはチェックしないほうが<a href="https://create.unity3d.com/Unity-UI-optimization-tips">負荷が低くてよい</a>。
+外れた状態で生成されるようにするにはどうするか。</p>
+<span id="more"></span>
+
+<h2 id="エディタスクリプトを使う方法"><a href="#エディタスクリプトを使う方法" class="headerlink" title="エディタスクリプトを使う方法"></a>エディタスクリプトを使う方法</h2><p>次のページで紹介されているエディタスクリプトを配置することで、外した状態で作成される：
+<a href="https://baba-s.hatenablog.com/entry/2017/12/19/090000">【Unity】ボタン以外の UI の raycastTarget をデフォルトで false にするエディタ拡張「GraphicDefaultValueWriter」紹介 - コガネブログ</a></p>
+<p>エディタでの非実行状態で <a href="https://docs.unity3d.com/ja/2019.4/ScriptReference/EditorApplication-hierarchyWindowChanged.html">EditorApplication.hierarchyWindowChanged</a>
+でシーンの変更を監視して、新しく生成されたGraphicに対して操作に反応しないものは<code>Raycast Target</code>をオフにしている。</p>
+<h2 id="プリセットを使う方法"><a href="#プリセットを使う方法" class="headerlink" title="プリセットを使う方法"></a>プリセットを使う方法</h2><p>Unityに<a href="https://docs.unity3d.com/ja/2019.4/Manual/Presets.html">プリセット</a>という仕組みがあって、コンポーネントの初期設定を保存しておける：
+<a href="https://baba-s.hatenablog.com/entry/2020/03/04/230000">【Unity】uGUI のオブジェクト作成時に Raycast Target をデフォルトでオフにする方法 - コガネブログ</a></p>
+<p>これを使って<code>Raycast Target</code>を外した状態をプリセットとして保存してデフォルトに指定すると、外れた状態で生成されるようになる。</p>
+<p>（余談：TextのColorが反映されない。
+FontSizeは反映されるが作成されるRecTransformの縦横サイズはデフォルトなのでWrapとTruncateに引っかかり表示されなくて焦る）</p>
+<h3 id="プリセットを使う方法の問題点"><a href="#プリセットを使う方法の問題点" class="headerlink" title="プリセットを使う方法の問題点"></a>プリセットを使う方法の問題点</h3><p><code>Image</code>オブジェクトの場合は外れて欲しいんだけど、プリセットはコンポーネントに対して効くようで、<code>Scroll View</code>や<code>Input Field</code>を生成した場合にも反映されてしまう。
+<code>Raycast Target</code>のチェックが外れているとタップしてもフォーカスされずに操作できなくなってしまうので困る。</p>
+<p><a href="https://docs.unity3d.com/ja/2019.4/Manual/class-PresetManager.html">プリセットマネージャ</a> の”Adding filters”で対処できるのか？、と思ったが
+書式がわからず、作成しようとしているオブジェクトの種類でフィルタできるのかも不明で断念…。</p>
+<h3 id="対処法"><a href="#対処法" class="headerlink" title="対処法"></a>対処法</h3><p>メニューで<code>Scroll View</code>などを選択した場合の処理を乗っ取ってやればいけるかな、と試してみたらできた：</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyMenuOptions</span> &#123;</span><br><span class="line">    [<span class="meta">MenuItem(<span class="meta-string">&quot;GameObject/UI/Scroll View&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateScrollView</span>(<span class="params">MenuCommand menuCommand</span>)</span> &#123;</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<p>メニュー項目が同名だとワーニングが出てしまう（
+<code>Cannot add menu item &#39;GameObject/UI/Scroll View&#39; for method &#39;MenuOptions.AddScrollView because a menu item with the same name already exists.</code>）
+これを回避するには、メニューを一段深くしてやる必要がある
+（<a href="https://kou-yeung.hatenablog.com/entry/2018/07/30/112435">【Unity】ボタン作成時のカスタム拡張 - 浮遊島</a>）。</p>
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><p>乗っ取ったメニュー内で最初はプレハブからでも生成しようかと思ったが、
+UGUIのメニュー部分を参考にすればプレハブを用意せずに作成できた
+（<code>private</code>で外部から呼び出せないためコピペで対応）：</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"><span class="keyword">using</span> UnityEditor.Experimental.SceneManagement;</span><br><span class="line"><span class="keyword">using</span> UnityEditor.SceneManagement;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.EventSystems;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.SceneManagement;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyMenuOptions</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">MenuItem(<span class="meta-string">&quot;GameObject/UI/Input Field/Create&quot;</span>, false, 2036)</span>]  <span class="comment">// &lt;= 2037?</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AddInputField</span>(<span class="params">MenuCommand menuCommand</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        GameObject go = DefaultControls.CreateInputField(GetStandardResources());</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> graphic <span class="keyword">in</span> go.GetComponentsInChildren&lt;Graphic&gt;())</span><br><span class="line">            graphic.raycastTarget = graphic.gameObject == go;</span><br><span class="line">        PlaceUIElementRoot(go, menuCommand);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">MenuItem(<span class="meta-string">&quot;GameObject/UI/Scroll View/Create&quot;</span>, false, 2062)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateScrollView</span>(<span class="params">MenuCommand menuCommand</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> go = DefaultControls.CreateScrollView(GetStandardResources());</span><br><span class="line">        <span class="comment">// Scroll ViewのルートにあるImageのRaycast Targetのみを有効に、その他はオフにする</span></span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> graphic <span class="keyword">in</span> go.GetComponentsInChildren&lt;Graphic&gt;())</span><br><span class="line">            graphic.raycastTarget = graphic.gameObject == go;</span><br><span class="line">        PlaceUIElementRoot(go, menuCommand);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 以下は UGUI のソースから拝借</span></span><br><span class="line">    <span class="comment">// https://github.com/Unity-Technologies/uGUI/blob/2019.1/UnityEditor.UI/UI/MenuOptions.cs</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> kUILayerName = <span class="string">&quot;UI&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> kStandardSpritePath       = <span class="string">&quot;UI/Skin/UISprite.psd&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> kBackgroundSpritePath     = <span class="string">&quot;UI/Skin/Background.psd&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> kInputFieldBackgroundPath = <span class="string">&quot;UI/Skin/InputFieldBackground.psd&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> kKnobPath                 = <span class="string">&quot;UI/Skin/Knob.psd&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> kCheckmarkPath            = <span class="string">&quot;UI/Skin/Checkmark.psd&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> kDropdownArrowPath        = <span class="string">&quot;UI/Skin/DropdownArrow.psd&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> kMaskPath                 = <span class="string">&quot;UI/Skin/UIMask.psd&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">private</span> DefaultControls.Resources s_StandardResources;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">private</span> DefaultControls.<span class="function">Resources <span class="title">GetStandardResources</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (s_StandardResources.standard == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            s_StandardResources.standard = AssetDatabase.GetBuiltinExtraResource&lt;Sprite&gt;(kStandardSpritePath);</span><br><span class="line">            s_StandardResources.background = AssetDatabase.GetBuiltinExtraResource&lt;Sprite&gt;(kBackgroundSpritePath);</span><br><span class="line">            s_StandardResources.inputField = AssetDatabase.GetBuiltinExtraResource&lt;Sprite&gt;(kInputFieldBackgroundPath);</span><br><span class="line">            s_StandardResources.knob = AssetDatabase.GetBuiltinExtraResource&lt;Sprite&gt;(kKnobPath);</span><br><span class="line">            s_StandardResources.checkmark = AssetDatabase.GetBuiltinExtraResource&lt;Sprite&gt;(kCheckmarkPath);</span><br><span class="line">            s_StandardResources.dropdown = AssetDatabase.GetBuiltinExtraResource&lt;Sprite&gt;(kDropdownArrowPath);</span><br><span class="line">            s_StandardResources.mask = AssetDatabase.GetBuiltinExtraResource&lt;Sprite&gt;(kMaskPath);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> s_StandardResources;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetPositionVisibleinSceneView</span>(<span class="params">RectTransform canvasRTransform, RectTransform itemTransform</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        SceneView sceneView = SceneView.lastActiveSceneView;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Couldn&#x27;t find a SceneView. Don&#x27;t set position.</span></span><br><span class="line">        <span class="keyword">if</span> (sceneView == <span class="literal">null</span> || sceneView.camera == <span class="literal">null</span>)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Create world space Plane from canvas position.</span></span><br><span class="line">        Vector2 localPlanePosition;</span><br><span class="line">        Camera camera = sceneView.camera;</span><br><span class="line">        Vector3 position = Vector3.zero;</span><br><span class="line">        <span class="keyword">if</span> (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRTransform, <span class="keyword">new</span> Vector2(camera.pixelWidth / <span class="number">2</span>, camera.pixelHeight / <span class="number">2</span>), camera, <span class="keyword">out</span> localPlanePosition))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Adjust for canvas pivot</span></span><br><span class="line">            localPlanePosition.x = localPlanePosition.x + canvasRTransform.sizeDelta.x * canvasRTransform.pivot.x;</span><br><span class="line">            localPlanePosition.y = localPlanePosition.y + canvasRTransform.sizeDelta.y * canvasRTransform.pivot.y;</span><br><span class="line"></span><br><span class="line">            localPlanePosition.x = Mathf.Clamp(localPlanePosition.x, <span class="number">0</span>, canvasRTransform.sizeDelta.x);</span><br><span class="line">            localPlanePosition.y = Mathf.Clamp(localPlanePosition.y, <span class="number">0</span>, canvasRTransform.sizeDelta.y);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Adjust for anchoring</span></span><br><span class="line">            position.x = localPlanePosition.x - canvasRTransform.sizeDelta.x * itemTransform.anchorMin.x;</span><br><span class="line">            position.y = localPlanePosition.y - canvasRTransform.sizeDelta.y * itemTransform.anchorMin.y;</span><br><span class="line"></span><br><span class="line">            Vector3 minLocalPosition;</span><br><span class="line">            minLocalPosition.x = canvasRTransform.sizeDelta.x * (<span class="number">0</span> - canvasRTransform.pivot.x) + itemTransform.sizeDelta.x * itemTransform.pivot.x;</span><br><span class="line">            minLocalPosition.y = canvasRTransform.sizeDelta.y * (<span class="number">0</span> - canvasRTransform.pivot.y) + itemTransform.sizeDelta.y * itemTransform.pivot.y;</span><br><span class="line"></span><br><span class="line">            Vector3 maxLocalPosition;</span><br><span class="line">            maxLocalPosition.x = canvasRTransform.sizeDelta.x * (<span class="number">1</span> - canvasRTransform.pivot.x) - itemTransform.sizeDelta.x * itemTransform.pivot.x;</span><br><span class="line">            maxLocalPosition.y = canvasRTransform.sizeDelta.y * (<span class="number">1</span> - canvasRTransform.pivot.y) - itemTransform.sizeDelta.y * itemTransform.pivot.y;</span><br><span class="line"></span><br><span class="line">            position.x = Mathf.Clamp(position.x, minLocalPosition.x, maxLocalPosition.x);</span><br><span class="line">            position.y = Mathf.Clamp(position.y, minLocalPosition.y, maxLocalPosition.y);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        itemTransform.anchoredPosition = position;</span><br><span class="line">        itemTransform.localRotation = Quaternion.identity;</span><br><span class="line">        itemTransform.localScale = Vector3.one;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">PlaceUIElementRoot</span>(<span class="params">GameObject element, MenuCommand menuCommand</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        GameObject parent = menuCommand.context <span class="keyword">as</span> GameObject;</span><br><span class="line">        <span class="built_in">bool</span> explicitParentChoice = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (parent == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            parent = GetOrCreateCanvasGameObject();</span><br><span class="line">            explicitParentChoice = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// If in Prefab Mode, Canvas has to be part of Prefab contents,</span></span><br><span class="line">            <span class="comment">// otherwise use Prefab root instead.</span></span><br><span class="line">            PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();</span><br><span class="line">            <span class="keyword">if</span> (prefabStage != <span class="literal">null</span> &amp;&amp; !prefabStage.IsPartOfPrefabContents(parent))</span><br><span class="line">                parent = prefabStage.prefabContentsRoot;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (parent.GetComponentsInParent&lt;Canvas&gt;(<span class="literal">true</span>).Length == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Create canvas under context GameObject,</span></span><br><span class="line">            <span class="comment">// and make that be the parent which UI element is added under.</span></span><br><span class="line">            GameObject canvas = CreateNewUI();</span><br><span class="line">            canvas.transform.SetParent(parent.transform, <span class="literal">false</span>);</span><br><span class="line">            parent = canvas;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Setting the element to be a child of an element already in the scene should</span></span><br><span class="line">        <span class="comment">// be sufficient to also move the element to that scene.</span></span><br><span class="line">        <span class="comment">// However, it seems the element needs to be already in its destination scene when the</span></span><br><span class="line">        <span class="comment">// RegisterCreatedObjectUndo is performed; otherwise the scene it was created in is dirtied.</span></span><br><span class="line">        SceneManager.MoveGameObjectToScene(element, parent.scene);</span><br><span class="line"></span><br><span class="line">        Undo.RegisterCreatedObjectUndo(element, <span class="string">&quot;Create &quot;</span> + element.name);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (element.transform.parent == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Undo.SetTransformParent(element.transform, parent.transform, <span class="string">&quot;Parent &quot;</span> + element.name);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        GameObjectUtility.EnsureUniqueNameForSibling(element);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// We have to fix up the undo name since the name of the object was only known after reparenting it.</span></span><br><span class="line">        Undo.SetCurrentGroupName(<span class="string">&quot;Create &quot;</span> + element.name);</span><br><span class="line"></span><br><span class="line">        GameObjectUtility.SetParentAndAlign(element, parent);</span><br><span class="line">        <span class="keyword">if</span> (!explicitParentChoice) <span class="comment">// not a context click, so center in sceneview</span></span><br><span class="line">            SetPositionVisibleinSceneView(parent.GetComponent&lt;RectTransform&gt;(), element.GetComponent&lt;RectTransform&gt;());</span><br><span class="line"></span><br><span class="line">        Selection.activeGameObject = element;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Helper methods</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> GameObject <span class="title">CreateNewUI</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Root for the UI</span></span><br><span class="line">        <span class="keyword">var</span> root = <span class="keyword">new</span> GameObject(<span class="string">&quot;Canvas&quot;</span>);</span><br><span class="line">        root.layer = LayerMask.NameToLayer(kUILayerName);</span><br><span class="line">        Canvas canvas = root.AddComponent&lt;Canvas&gt;();</span><br><span class="line">        canvas.renderMode = RenderMode.ScreenSpaceOverlay;</span><br><span class="line">        root.AddComponent&lt;CanvasScaler&gt;();</span><br><span class="line">        root.AddComponent&lt;GraphicRaycaster&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Works for all stages.</span></span><br><span class="line">        StageUtility.PlaceGameObjectInCurrentStage(root);</span><br><span class="line">        <span class="built_in">bool</span> customScene = <span class="literal">false</span>;</span><br><span class="line">        PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();</span><br><span class="line">        <span class="keyword">if</span> (prefabStage != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            root.transform.SetParent(prefabStage.prefabContentsRoot.transform, <span class="literal">false</span>);</span><br><span class="line">            customScene = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Undo.RegisterCreatedObjectUndo(root, <span class="string">&quot;Create &quot;</span> + root.name);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// If there is no event system add one...</span></span><br><span class="line">        <span class="comment">// No need to place event system in custom scene as these are temporary anyway.</span></span><br><span class="line">        <span class="comment">// It can be argued for or against placing it in the user scenes,</span></span><br><span class="line">        <span class="comment">// but let&#x27;s not modify scene user is not currently looking at.</span></span><br><span class="line">        <span class="keyword">if</span> (!customScene)</span><br><span class="line">            CreateEventSystem(<span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateEventSystem</span>(<span class="params"><span class="built_in">bool</span> <span class="keyword">select</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        CreateEventSystem(<span class="keyword">select</span>, <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateEventSystem</span>(<span class="params"><span class="built_in">bool</span> <span class="keyword">select</span>, GameObject parent</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        StageHandle stage = parent == <span class="literal">null</span> ? StageUtility.GetCurrentStageHandle() : StageUtility.GetStageHandle(parent);</span><br><span class="line">        <span class="keyword">var</span> esys = stage.FindComponentOfType&lt;EventSystem&gt;();</span><br><span class="line">        <span class="keyword">if</span> (esys == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> eventSystem = <span class="keyword">new</span> GameObject(<span class="string">&quot;EventSystem&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (parent == <span class="literal">null</span>)</span><br><span class="line">                StageUtility.PlaceGameObjectInCurrentStage(eventSystem);</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                GameObjectUtility.SetParentAndAlign(eventSystem, parent);</span><br><span class="line">            esys = eventSystem.AddComponent&lt;EventSystem&gt;();</span><br><span class="line">            eventSystem.AddComponent&lt;StandaloneInputModule&gt;();</span><br><span class="line"></span><br><span class="line">            Undo.RegisterCreatedObjectUndo(eventSystem, <span class="string">&quot;Create &quot;</span> + eventSystem.name);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">select</span> &amp;&amp; esys != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Selection.activeGameObject = esys.gameObject;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Helper function that returns a Canvas GameObject; preferably a parent of the selection, or other existing Canvas.</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> GameObject <span class="title">GetOrCreateCanvasGameObject</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        GameObject selectedGo = Selection.activeGameObject;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Try to find a gameobject that is the selected GO or one if its parents.</span></span><br><span class="line">        Canvas canvas = (selectedGo != <span class="literal">null</span>) ? selectedGo.GetComponentInParent&lt;Canvas&gt;() : <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (IsValidCanvas(canvas))</span><br><span class="line">            <span class="keyword">return</span> canvas.gameObject;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// No canvas in selection or its parents? Then use any valid canvas.</span></span><br><span class="line">        <span class="comment">// We have to find all loaded Canvases, not just the ones in main scenes.</span></span><br><span class="line">        Canvas[] canvasArray = StageUtility.GetCurrentStageHandle().FindComponentsOfType&lt;Canvas&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; canvasArray.Length; i++)</span><br><span class="line">            <span class="keyword">if</span> (IsValidCanvas(canvasArray[i]))</span><br><span class="line">                <span class="keyword">return</span> canvasArray[i].gameObject;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// No canvas in the scene at all? Then create a new one.</span></span><br><span class="line">        <span class="keyword">return</span> CreateNewUI();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">IsValidCanvas</span>(<span class="params">Canvas canvas</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (canvas == <span class="literal">null</span> || !canvas.gameObject.activeInHierarchy)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// It&#x27;s important that the non-editable canvas from a prefab scene won&#x27;t be rejected,</span></span><br><span class="line">        <span class="comment">// but canvases not visible in the Hierarchy at all do. Don&#x27;t check for HideAndDontSave.</span></span><br><span class="line">        <span class="keyword">if</span> (EditorUtility.IsPersistent(canvas) || (canvas.hideFlags &amp; HideFlags.HideInHierarchy) != <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (StageUtility.GetStageHandle(canvas.gameObject) != StageUtility.GetCurrentStageHandle())</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Input Field</code> の場合は <code>MenuItem</code> 属性の3番目の引数に<code>2036</code>を、<code>Scroll View</code>には<code>2062</code>を与えることで
+<a href="https://github.com/Unity-Technologies/uGUI/blob/2019.1/UnityEditor.UI/UI/MenuOptions.cs#L200">デフォルトと同じ</a>
+メニューの優先度になる。<ul>
+<li>Unity2020だと、<code>Input Field</code>は<code>2037</code>?</li>
+</ul>
+</li>
+<li>しかしこれで作られるGameObjectに含まれるImageやTextはプリセットは無視してデフォルトのものが作られる
+（<code>GetBuiltinExtraResource</code>を使用しているためだと思うが）</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://create.unity3d.com/Unity-UI-optimization-tips">Some of the best optimization tips for Unity UI</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/19/cache-http.html" title="Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する" rel="bookmark">Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/14/fixed-font.html" title="【Unity】固定幅ビットマップフォントを使う" rel="bookmark">【Unity】固定幅ビットマップフォントを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/11/generate-prefabs.html" title="【Unity】スクリプトでプレハブを大量生産する" rel="bookmark">【Unity】スクリプトでプレハブを大量生産する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/23/interior-mapping.html" title="【Unity】Shader Graphでインテリアマッピング" rel="bookmark">【Unity】Shader Graphでインテリアマッピング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/09/modify-xcproj.html" title="【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する" rel="bookmark">【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

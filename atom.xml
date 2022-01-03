@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Kludge Factory</title>
+  
+  <subtitle>tyfkda&#39;s blog</subtitle>
+  <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://tyfkda.github.io/"/>
+  <updated>2022-01-03T08:01:01.640Z</updated>
+  <id>https://tyfkda.github.io/</id>
+  
+  <author>
+    <name>tyfkda</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>カックロをSATソルバーで解く</title>
+    <link href="https://tyfkda.github.io/blog/2022/01/03/kakuro-solver.html"/>
+    <id>https://tyfkda.github.io/blog/2022/01/03/kakuro-solver.html</id>
+    <published>2022-01-03T03:28:56.000Z</published>
+    <updated>2022-01-03T08:01:01.640Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2013/05/17/sudoku-sat.html&quot; title=&quot;数独のソルバーを作った&quot;&gt;数独のソルバーを作った&lt;/a&gt;ことがあったが、今度はカックロのソルバーを作ってみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Unity】UIのRayCast Targetをオフにして生成する</title>
+    <link href="https://tyfkda.github.io/blog/2021/07/26/unity-raycast-target-off.html"/>
+    <id>https://tyfkda.github.io/blog/2021/07/26/unity-raycast-target-off.html</id>
+    <published>2021-07-26T12:39:19.000Z</published>
+    <updated>2022-01-03T02:52:06.341Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;UnityでUIの要素、&lt;code&gt;Image&lt;/code&gt;や&lt;code&gt;Text&lt;/code&gt;を生成すると&lt;code&gt;Raycast Target&lt;/code&gt;にチェックが入った状態で生成される。
+しかし表示のみでタップ操作に反応しないUI要素にはチェックしないほうが&lt;a href=&quot;https://create.unity3d.com/Unity-UI-optimization-tips&quot;&gt;負荷が低くてよい&lt;/a&gt;。
+外れた状態で生成されるようにするにはどうするか。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="unity" scheme="https://tyfkda.github.io/tags/unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Unity】ベクトルの変換メソッド３種類</title>
+    <link href="https://tyfkda.github.io/blog/2021/07/22/unity-transform-vec3.html"/>
+    <id>https://tyfkda.github.io/blog/2021/07/22/unity-transform-vec3.html</id>
+    <published>2021-07-22T10:10:51.000Z</published>
+    <updated>2022-01-03T02:52:06.342Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;表：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;メソッド&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;変換内容&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;用途例&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://docs.unity3d.com/ja/current/ScriptReference/Transform.TransformDirection.html&quot;&gt;TransformDirection&lt;/a&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;回転&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;法線の向きを回転させる、など&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://docs.unity3d.com/ja/current/ScriptReference/Transform.TransformVector.html&quot;&gt;TransformVector&lt;/a&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;拡縮、回転&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;ベクトルの変換（スケールも考慮）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://docs.unity3d.com/ja/current/ScriptReference/Transform.TransformPoint.html&quot;&gt;TransformPoint&lt;/a&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;拡縮、回転、位置&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;ローカル座標をグローバル座標系に変換&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;</summary>
+    
+    
+    
+    
+    <category term="unity" scheme="https://tyfkda.github.io/tags/unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【Unity】シーンを簡単に切り替えるエディタ拡張</title>
+    <link href="https://tyfkda.github.io/blog/2021/07/15/unity-scene-switcher.html"/>
+    <id>https://tyfkda.github.io/blog/2021/07/15/unity-scene-switcher.html</id>
+    <published>2021-07-15T11:00:00.000Z</published>
+    <updated>2022-01-03T02:52:06.341Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Unityを使う際、編集するシーンを切り替えるためにProjectビューから探してダブルクリックするのが大変なので、簡単に切り替えられるエディタ拡張を作った。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/unity-scene-switcher.png&quot; alt=&quot;SceneSwitcherWindow&quot;&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="unity" scheme="https://tyfkda.github.io/tags/unity/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【C++】関数から多値を返す</title>
+    <link href="https://tyfkda.github.io/blog/2021/06/26/cpp-multi-value.html"/>
+    <id>https://tyfkda.github.io/blog/2021/06/26/cpp-multi-value.html</id>
+    <published>2021-06-26T02:32:19.000Z</published>
+    <updated>2022-01-03T02:52:06.314Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;C++で関数から複数の値を返したい場合にどうするか。&lt;/p&gt;
+&lt;p&gt;結論：&lt;code&gt;std::tuple&lt;/code&gt; を使うとよい。&lt;/p&gt;
+&lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;tuple&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;std::tuple&amp;lt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;double&lt;/span&gt;&amp;gt; &lt;span class=&quot;title&quot;&gt;func1&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; x, &lt;span class=&quot;keyword&quot;&gt;double&lt;/span&gt; y)&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &amp;#123;x, y&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    
+    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>PyPyでBrainf*ck</title>
+    <link href="https://tyfkda.github.io/blog/2021/06/20/pypy-bf.html"/>
+    <id>https://tyfkda.github.io/blog/2021/06/20/pypy-bf.html</id>
+    <published>2021-06-20T03:06:48.000Z</published>
+    <updated>2022-01-03T02:52:06.332Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;JIT関連を検索していて見つけた
+&lt;a href=&quot;https://www.pypy.org/posts/2011/04/tutorial-writing-interpreter-with-pypy-3785910476193156295.html&quot;&gt;PyPy Status Blog: Tutorial: Writing an Interpreter with PyPy, Part 1&lt;/a&gt;
+を読んで試してみようと思った。
+しかしリンク切れでソースが見れなかったりPyPyで変換できなかったりでそのままでは動かなかったので修正してみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="jit" scheme="https://tyfkda.github.io/tags/jit/"/>
+    
+    <category term="python" scheme="https://tyfkda.github.io/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【JavaScript】range（整数列）の作成方法</title>
+    <link href="https://tyfkda.github.io/blog/2021/06/01/js-range.html"/>
+    <id>https://tyfkda.github.io/blog/2021/06/01/js-range.html</id>
+    <published>2021-06-01T08:21:01.000Z</published>
+    <updated>2022-01-03T02:52:06.323Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;所定の回数だけインデクスに応じて何か処理をしてそれぞれの結果を配列にしたいという処理をサクッと書きたいんだけど、
+JavaScriptで整数配列を簡単に生成する方法が覚えられなくて毎度ウェブ検索のお世話になっていたので調べた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="javascript" scheme="https://tyfkda.github.io/tags/javascript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>関数ポインタを返す関数のパースと型の構築</title>
+    <link href="https://tyfkda.github.io/blog/2021/05/20/parsing-func-returning-func.html"/>
+    <id>https://tyfkda.github.io/blog/2021/05/20/parsing-func-returning-func.html</id>
+    <published>2021-05-20T01:42:21.000Z</published>
+    <updated>2022-01-03T02:52:06.329Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;C言語の文法は型の記述が複雑で、特に関数ポインタが絡むと非情にややこしくなる。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+    <category term="c" scheme="https://tyfkda.github.io/tags/c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>「ディープラーニングの最も重要なアイディア」</title>
+    <link href="https://tyfkda.github.io/blog/2021/05/05/dl-brief-historical-review.html"/>
+    <id>https://tyfkda.github.io/blog/2021/05/05/dl-brief-historical-review.html</id>
+    <published>2021-05-05T09:01:34.000Z</published>
+    <updated>2022-01-03T02:52:06.315Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;ディープラーニングとやらにまったく詳しくなくてなにをしたらいいかわからない…という中
+&lt;a href=&quot;https://dennybritz.com/blog/deep-learning-most-important-ideas/&quot;&gt;Deep Learning’s Most Important Ideas - A Brief Historical Review&lt;/a&gt;
+という記事を読んだ。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="machine learning" scheme="https://tyfkda.github.io/tags/machine-learning/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>階段三角波と聞き比べ</title>
+    <link href="https://tyfkda.github.io/blog/2021/05/03/quantized-tri-wave.html"/>
+    <id>https://tyfkda.github.io/blog/2021/05/03/quantized-tri-wave.html</id>
+    <published>2021-05-03T01:38:38.000Z</published>
+    <updated>2022-01-03T02:52:06.332Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;ファミコンで鳴らせる波形として三角波があるが、実際には純粋な三角波ではなくて16段階の階段状になっている
+（&lt;a href=&quot;https://wiki.nesdev.com/w/index.php/APU_Triangle&quot;&gt;Nesdev wiki&lt;/a&gt;）。
+その場合に純粋な三角波とどういう違いになるのか聞き比べてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
+    
+    <category term="audio" scheme="https://tyfkda.github.io/tags/audio/"/>
+    
+  </entry>
+  
+</feed>
