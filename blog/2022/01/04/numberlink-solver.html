@@ -10,7 +10,11 @@
 
     <!--Description-->
     
-        <meta name="description" content="以前数独のソルバーを作ったことがあったが、今度はカックロのソルバーを作ってみた。">
+        <meta name="description" content="昨日に引き続き、今度はナンバーリンクのソルバーを作ってみた。
+
+ナンバーリンクとは？ナンバーリンクもニコリの定番ペンシルパズルで、盤面に配置された同じ数字同士を線で結ぶというルール。
+結構解き味が理詰めではなくて直感に頼らないと解けず、大きな盤面はお手上げという印象があるので個人的にはちと苦手…。
+">
     
 
     <!--Author-->
@@ -20,7 +24,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="カックロをSATソルバーで解く"/>
+        <meta property="og:title" content="ナンバーリンクをSATソルバーで解く"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +46,7 @@
 
     <!-- Title -->
     
-    <title>カックロをSATソルバーで解く - Kludge Factory</title>
+    <title>ナンバーリンクをSATソルバーで解く - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +71,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/01/03/kakuro-solver.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/01/04/numberlink-solver.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -170,13 +174,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>カックロをSATソルバーで解く</h1>
+                    <h1>ナンバーリンクをSATソルバーで解く</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2022-01-03
+                            2022-01-04
                         
                     </span>
                 </div>
@@ -212,44 +216,33 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>以前<a href="/blog/2013/05/17/sudoku-sat.html" title="数独のソルバーを作った">数独のソルバーを作った</a>ことがあったが、今度はカックロのソルバーを作ってみた。</p>
-<span id="more"></span>
+                <a href="/blog/2022/01/03/kakuro-solver.html" title="昨日">昨日</a>に引き続き、今度はナンバーリンクのソルバーを作ってみた。
 
-<h3 id="カックロとは？"><a href="#カックロとは？" class="headerlink" title="カックロとは？"></a>カックロとは？</h3><p><a href="https://www.nikoli.co.jp/ja/puzzles/kakuro/">カックロ</a>は縦横のマスの合計が指定どおりになるように１から９の数値を配置するという、ニコリの定番ペンシルパズル。
-また並び内では数値は重複しないという制約がある。</p>
-<h3 id="ソルバーの方針"><a href="#ソルバーの方針" class="headerlink" title="ソルバーの方針"></a>ソルバーの方針</h3><p>パズルを解くプログラムを作るにはルールを基に解くためのアルゴリズムを考案する必要がある。
-しかしパズルの種類ごとにアルゴリズムを考えるのは結構大変。
-そこでSATソルバーを使う。</p>
-<h4 id="SATソルバー"><a href="#SATソルバー" class="headerlink" title="SATソルバー"></a>SATソルバー</h4><p>SATソルバーは真偽値を持つ変数に対して、制約を満たす組合せを解くことができる。
-以前の数独を解く際には各マスに対して、１が入るか、２が入るか、…という具合に真偽値の変数を9つ用意して、条件を指定していくという方法だった。
-数独ではどの数値が入るかという真偽値の組み合わせで解けるため素のSATソルバーを使えばよかったが、カックロでは数値の合計を扱う必要があるのでそのままだと大変そうだ。</p>
-<p>今回はJavaScript/NPMの<a href="https://www.npmjs.com/package/logic-solver">Logic Solver</a>というモジュールを使ってみた。
-このモジュールでは単純な真偽値だけじゃなく、数値・加算、不等式も扱えるのでカックロを解くには好都合。</p>
-<p>便利なメソッド群は以下のとおり（抜粋）：</p>
-<ul>
-<li>Nビット数値変数の作成： <a href="https://github.com/meteor/logic-solver#logicvariablebitsbasename-n"><code>variableBits</code></a></li>
-<li>定数の作成： <a href="https://github.com/meteor/logic-solver#logicconstantbitswholenumber"><code>constantBits</code></a></li>
-<li>不等式： <a href="https://github.com/meteor/logic-solver#logiclessthanorequalbits1-bits2"><code>lessThanOrEqual</code></a> や <a href="https://github.com/meteor/logic-solver#logicgreaterthanorequalbits1-bits2"><code>greaterThanOrEqual</code></a> など</li>
-<li>加算： <a href="https://github.com/meteor/logic-solver#logicsumoperands"><code>sum</code></a></li>
-<li>数値が等しいかどうか： <a href="https://github.com/meteor/logic-solver#logicequalbitsbits1-bits2"><code>equalBits</code></a></li>
-</ul>
-<h3 id="カックロソルバー"><a href="#カックロソルバー" class="headerlink" title="カックロソルバー"></a>カックロソルバー</h3><p>条件は以下の通り：</p>
-<ul>
-<li>各マスには１から９のどれかが入る</li>
-<li>並びの合計が指定の値になる</li>
-<li>並びには同じ数値は入らない</li>
-</ul>
-<p>と、ルールをほぼそのまま記述するだけ。
-あとは問題のテキストフォーマットの読み込み、並びの列挙、解の表示を作ってやれば出来上がり。</p>
-<h3 id="Logic-Solverがどう処理しているか？"><a href="#Logic-Solverがどう処理しているか？" class="headerlink" title="Logic Solverがどう処理しているか？"></a>Logic Solverがどう処理しているか？</h3><p>Logic Solverで真偽値だけじゃなくて数値や加算、不等式なども扱うのはどうやっているのか？
-実際のCPUが論理ゲートから構成されているように、Logic Solverも加算などの高レベルな処理を論理式で構築している
-（<a href="https://github.com/meteor/logic-solver/blob/1d31ea82dd0bdfbf4de11de267dd2570162b32a4/logic-solver.js?_pjax=%23js-repo-pjax-container,%20div%5Bitemtype=%22http://schema.org/SoftwareSourceCode%22%5D%20main,%20%5Bdata-pjax-container%5D#L1308-L1316">ソース</a>）。</p>
-<p>ソルバー自体は<a href="http://minisat.se/">MiniSat</a>をEmpscriptenしてJavaScriptで動かしているとのこと。</p>
-<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><script src="https://gist.github.com/tyfkda/982619932f94ad7dcc50eb3a2fdb14a4.js"></script>
+<h3 id="ナンバーリンクとは？"><a href="#ナンバーリンクとは？" class="headerlink" title="ナンバーリンクとは？"></a>ナンバーリンクとは？</h3><p>ナンバーリンクもニコリの定番ペンシルパズルで、盤面に配置された同じ数字同士を線で結ぶというルール。
+結構解き味が理詰めではなくて直感に頼らないと解けず、大きな盤面はお手上げという印象があるので個人的にはちと苦手…。</p>
+<h3 id="ナンバーリンクソルバー"><a href="#ナンバーリンクソルバー" class="headerlink" title="ナンバーリンクソルバー"></a>ナンバーリンクソルバー</h3><p>前回と同様にSATソルバーの<a href="https://www.npmjs.com/package/logic-solver">Logic Solver</a>モジュールを利用する。
+ナンバーリンクでは線を引いて、同じ数字同士がちゃんとつながっているかという判定をどうするかがキモとなる。</p>
+<p>隣り合うマスに横線または縦線を引くかどうかの真偽値を変数にする。
+そして線はつながるので、それぞれのマスに対して関係する４本のうちの２本が真となる
+（０ということも配置によってはあり得るがニコリの問題では必ず盤面を埋め尽くすためひとまず考えない）。
+例外で数字が入っているマスからは線が１本しか出ない。</p>
+<h4 id="数字の連結判定"><a href="#数字の連結判定" class="headerlink" title="数字の連結判定"></a>数字の連結判定</h4><p>同じ数字同士が結ばれているかどうかを判定するには、各マスごとに <code>variableBits</code> の変数を用意する。
+数字の入っているマスは当然その値、そして線で結ばれているマス同士は同じ数値が入る、という条件を指定することで違う数字同士が結ばれた場合には条件を満たさないため弾かれるようになる。</p>
+<p>「線がつながってたら同じ数値になる」という条件を指定するには、「〜ならば（→）」を表す <a href="https://github.com/meteor/logic-solver#logicimpliesoperand1-operand2"><code>Logic.implies</code></a> が使える。</p>
+<h4 id="追加の条件"><a href="#追加の条件" class="headerlink" title="追加の条件"></a>追加の条件</h4><p>本来は上記のルールだけで足りているがそれだけだと条件が緩いのか、解くのにかなり時間がかかってしまい、場合によってはメモリ不足で求まらない。
+なのでルールから導かれる規則を足してやる。</p>
+<p>線が「コ」の字の形は明らかに無駄でショートカットできるので、そのような経路はないという制約を追加してやる
+（線が入らないマスはないということが前提になっている）。</p>
+<h4 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h4><p>以上で広い盤面でも１秒未満程度で解けるソルバーができた。
+ただし解答が盤面をすべて埋め尽くすということが前提となっている。
+線が通らずに残る空白のマスもありえる、とすると（下記ソースの36行目あたり）なかなか解が求まらずにメモリ不足で終了してしまったりする。
+その対処法はわからなかった…。</p>
+<p>マスを通る線が２本という判定に <code>sum</code> を使ってたのが無駄なんじゃないかと展開してみたりしたけど変わらず。</p>
+<h4 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h4><script src="https://gist.github.com/tyfkda/54dd007cf8607dd2171980b0539500dd.js"></script>
 
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く">【Haskell】SATソルバを使って数独を解く</a></li>
-<li><a href="http://minisat.se/downloads/MiniSat+.pdf">“Translating Pseudo-boolean Constraints into SAT”</a></li>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ul>
+<li><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く">カックロをSATソルバーで解く</a></li>
+<li><a href="https://github.com/meteor/logic-solver">Logic Solver</a></li>
 </ul>
 
 
@@ -274,7 +267,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクをSATソルバーで解く" rel="bookmark">ナンバーリンクをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く" rel="bookmark">【Haskell】SATソルバを使って数独を解く</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く" rel="bookmark">カックロをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く" rel="bookmark">【Haskell】SATソルバを使って数独を解く</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

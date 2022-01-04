@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-01-03T08:01:01.640Z</updated>
+  <updated>2022-01-04T14:14:31.461Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ナンバーリンクをSATソルバーで解く</title>
+    <link href="https://tyfkda.github.io/blog/2022/01/04/numberlink-solver.html"/>
+    <id>https://tyfkda.github.io/blog/2022/01/04/numberlink-solver.html</id>
+    <published>2022-01-04T00:11:56.000Z</published>
+    <updated>2022-01-04T14:14:31.461Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;a href=&quot;/blog/2022/01/03/kakuro-solver.html&quot; title=&quot;昨日&quot;&gt;昨日&lt;/a&gt;に引き続き、今度はナンバーリンクのソルバーを作ってみた。
+
+&lt;h3 id=&quot;ナンバーリンクとは？&quot;&gt;&lt;a href=&quot;#ナンバーリンクとは？&quot; class</summary>
+      
+    
+    
+    
+    
+    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
+    
+  </entry>
   
   <entry>
     <title>カックロをSATソルバーで解く</title>
@@ -205,27 +227,6 @@ JavaScriptで整数配列を簡単に生成する方法が覚えられなくて�
     
     
     <category term="machine learning" scheme="https://tyfkda.github.io/tags/machine-learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>階段三角波と聞き比べ</title>
-    <link href="https://tyfkda.github.io/blog/2021/05/03/quantized-tri-wave.html"/>
-    <id>https://tyfkda.github.io/blog/2021/05/03/quantized-tri-wave.html</id>
-    <published>2021-05-03T01:38:38.000Z</published>
-    <updated>2022-01-03T02:52:06.332Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;ファミコンで鳴らせる波形として三角波があるが、実際には純粋な三角波ではなくて16段階の階段状になっている
-（&lt;a href=&quot;https://wiki.nesdev.com/w/index.php/APU_Triangle&quot;&gt;Nesdev wiki&lt;/a&gt;）。
-その場合に純粋な三角波とどういう違いになるのか聞き比べてみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
-    
-    <category term="audio" scheme="https://tyfkda.github.io/tags/audio/"/>
     
   </entry>
   
