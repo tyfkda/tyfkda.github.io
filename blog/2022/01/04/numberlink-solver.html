@@ -233,14 +233,15 @@
 なのでルールから導かれる規則を足してやる。</p>
 <p>線が「コ」の字の形は明らかに無駄でショートカットできるので、そのような経路はないという制約を追加してやる
 （線が入らないマスはないということが前提になっている）。</p>
-<h4 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h4><p>以上で広い盤面でも１秒未満程度で解けるソルバーができた。
+<h3 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h3><p>以上で広い盤面でも１秒未満程度で解けるソルバーができた。
 ただし解答が盤面をすべて埋め尽くすということが前提となっている。
 線が通らずに残る空白のマスもありえる、とすると（下記ソースの36行目あたり）なかなか解が求まらずにメモリ不足で終了してしまったりする。
 その対処法はわからなかった…。</p>
 <p>マスを通る線が２本という判定に <code>sum</code> を使ってたのが無駄なんじゃないかと展開してみたりしたけど変わらず。</p>
-<h4 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h4><script src="https://gist.github.com/tyfkda/54dd007cf8607dd2171980b0539500dd.js"></script>
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><script src="https://gist.github.com/tyfkda/54dd007cf8607dd2171980b0539500dd.js"></script>
 
-<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く">【Haskell】SATソルバを使って数独を解く</a></li>
 <li><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く">カックロをSATソルバーで解く</a></li>
 <li><a href="https://github.com/meteor/logic-solver">Logic Solver</a></li>
 </ul>
@@ -267,7 +268,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く" rel="bookmark">カックロをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く" rel="bookmark">【Haskell】SATソルバを使って数独を解く</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く" rel="bookmark">カックロをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/05/slitherlink-solver.html" title="スリザーリンクをSATソルバーで解く" rel="bookmark">スリザーリンクをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く" rel="bookmark">【Haskell】SATソルバを使って数独を解く</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

@@ -10,7 +10,11 @@
 
     <!--Description-->
     
-        <meta name="description" content="cocos2dxでフォント表示をする場合、TrueTypeのCCLabelTTFとビットマップフォントのCCLabelBMFontが使える。ビットマップフォントを使う場合、.fntファイルというものが必要になる。">
+        <meta name="description" content="おととい、昨日に引き続き、今度はスリザーリンクのソルバーを作ってみた。
+
+スリザーリンクとは？スリザーリンクもまたニコリの定番ペンシルパズルで、格子状の盤面に線を引いて１つのループを作るというルール。
+数字（０〜３）のあるマスは、接する線４本のうちの何本に線が引かれるかを示している。
+スリザーリンク">
     
 
     <!--Author-->
@@ -20,7 +24,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="cocos2dxで固定ピッチフォント画像を使った文字列表示"/>
+        <meta property="og:title" content="スリザーリンクをSATソルバーで解く"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +46,7 @@
 
     <!-- Title -->
     
-    <title>cocos2dxで固定ピッチフォント画像を使った文字列表示 - Kludge Factory</title>
+    <title>スリザーリンクをSATソルバーで解く - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +71,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/09/14/cocos2dx-bmfont.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/01/05/slitherlink-solver.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -170,13 +174,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>cocos2dxで固定ピッチフォント画像を使った文字列表示</h1>
+                    <h1>スリザーリンクをSATソルバーで解く</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2013-09-14
+                            2022-01-05
                         
                     </span>
                 </div>
@@ -197,7 +201,7 @@
                         
 
 
-<a href="/tags/cocos2dx/">#cocos2dx</a>
+<a href="/tags/puzzle/">#puzzle</a>
 
 
                     
@@ -212,23 +216,39 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>cocos2dxでフォント表示をする場合、TrueTypeの<a href="https://github.com/cocos2d/cocos2d-x/blob/develop/cocos2dx/label_nodes/CCLabelTTF.h#L57">CCLabelTTF</a>とビットマップフォントの<a href="https://github.com/cocos2d/cocos2d-x/blob/develop/cocos2dx/label_nodes/CCLabelBMFont.h#L182">CCLabelBMFont</a>が使える。ビットマップフォントを使う場合、.fntファイルというものが必要になる。</p>
-<span id="more"></span>
+                <a href="/blog/2022/01/03/kakuro-solver.html" title="おととい">おととい</a>、<a href="/blog/2022/01/04/numberlink-solver.html" title="昨日">昨日</a>に引き続き、今度はスリザーリンクのソルバーを作ってみた。
 
-<p>ビットマップフォントと.fntを作るツールとしては<a href="http://www.71squared.com/glyphdesigner">Glyph Designer</a>などのツールがある（<a href="http://d.hatena.ne.jp/nakamura001/20120908/1347136958">NGUI 向けのビットマップフォントを作成出来るアプリ一覧 - 強火で進め</a>）。.fntファイルのフォーマットの正式な仕様は知らないけど、<a href="http://sarudeki.jp/fernweh/fnt-fntfile/">[Cocos2d-X] CCLabelBMFont で使用する .fnt ファイルの仕様 | 学習A4デスノート @ Cocos2d-x とかの勉強メモ</a>のような構成になっている。</p>
-<p>でオールドタイプとしては固定ピッチで１枚に固められた（下のような）画像を使ってフォント表示をしたいんだけど、こういった場合でも<code>CCLabelBMFont</code>には.fntファイルが必要となる。</p>
-<p><img src="/assets/x1font.png" alt="x1font"></p>
-<p>でもそのためにわざわざ新しいツールとか使いたくない…ので.fntをでっちあげるスクリプトを作った：</p>
-<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/ruby</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create .fnt file for fixed font.</span></span><br><span class="line"></span><br><span class="line">font_image_file_name = ARGV.shift <span class="params">||</span> <span class="string">&#x27;font.png&#x27;</span></span><br><span class="line">fontw = ARGV.shift <span class="params">||</span> <span class="number">8</span></span><br><span class="line">fonth = ARGV.shift <span class="params">||</span> <span class="number">8</span></span><br><span class="line">cols = ARGV.shift <span class="params">||</span> <span class="number">16</span></span><br><span class="line">rows = ARGV.shift <span class="params">||</span> <span class="number">6</span></span><br><span class="line">start = ARGV.shift <span class="params">||</span> <span class="number">32</span>  <span class="comment"># Space</span></span><br><span class="line"></span><br><span class="line">puts <span class="string">&lt;&lt;EOD</span></span><br><span class="line"><span class="string">info face=&quot;&quot; size=0 bold=0 italic=0 charset=&quot;&quot; unicode=0 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=1,1</span></span><br><span class="line"><span class="string">common lineHeight=<span class="subst">#&#123;fonth&#125;</span> base=0 scaleW=10 scaleH=100 pages=1 packed=0</span></span><br><span class="line"><span class="string">page id=0 file=&quot;<span class="subst">#&#123;font_image_file_name&#125;</span>&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">chars count=<span class="subst">#&#123;rows * cols&#125;</span></span></span><br><span class="line"><span class="string">EOD</span></span><br><span class="line"></span><br><span class="line">rows.times <span class="keyword">do</span> <span class="params">|i|</span></span><br><span class="line">  cols.times <span class="keyword">do</span> <span class="params">|j|</span></span><br><span class="line">    c = start + i * cols + j</span><br><span class="line"></span><br><span class="line">    puts <span class="string">&lt;&lt;EOD</span></span><br><span class="line"><span class="string">char id=<span class="subst">#&#123;c&#125;</span> x=<span class="subst">#&#123;j * fontw&#125;</span> y=<span class="subst">#&#123;i * fonth&#125;</span> width=<span class="subst">#&#123;fontw&#125;</span> height=<span class="subst">#&#123;fonth&#125;</span> xoffset=0 yoffset=0 xadvance=<span class="subst">#&#123;fontw&#125;</span> page=0 chnl=0   // <span class="subst">#&#123;c.chr&#125;</span></span></span><br><span class="line"><span class="string">EOD</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h3 id="スリザーリンクとは？"><a href="#スリザーリンクとは？" class="headerlink" title="スリザーリンクとは？"></a>スリザーリンクとは？</h3><p><a href="https://www.nikoli.co.jp/ja/puzzles/slitherlink/">スリザーリンク</a>もまたニコリの定番ペンシルパズルで、格子状の盤面に線を引いて１つのループを作るというルール。
+数字（０〜３）のあるマスは、接する線４本のうちの何本に線が引かれるかを示している。</p>
+<h3 id="スリザーリンクソルバー"><a href="#スリザーリンクソルバー" class="headerlink" title="スリザーリンクソルバー"></a>スリザーリンクソルバー</h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクソルバー">ナンバーリンクソルバー</a>と同様に、格子を結ぶ線を引くか引かないかの真偽値を変数にする。
+<p>そして線は途切れないので、それぞれの頂点につながる線のうち２本に線が引かれる、または１本も引かれない、という条件になる。</p>
+<p>全体でループがひとつながりになっているかどうかの判定は、SATソルバー内で判定する方法が思いつかなかった。
+なので <a href="https://github.com/meteor/logic-solver#logicsolversolve"><code>solve</code></a> で得られた解を判定して、２つ以上だったらその解は無効にして再度調べることにした。</p>
+<p><code>solve</code> で得られた解の <a href="https://github.com/meteor/logic-solver#logicsolutiongetformula"><code>getFormula</code></a>メソッドを <a href="https://github.com/meteor/logic-solver#logicsolverforbidargs"><code>forbid</code></a>することでその解を無効にすることもできるが、
+それだと全体がその状態となるのを除外するだけなのであまり絞り込まれず試行回数が増えてしまう。</p>
+<p>そうではなく複数あるループごとに <code>forbid</code> してやると、現実的な時間で解を求めることができる。</p>
+<h3 id="他のパズルは？"><a href="#他のパズルは？" class="headerlink" title="他のパズルは？"></a>他のパズルは？</h3><p>他のペンシルパズルもSATソルバーで解けるかどうか考えてみた。</p>
+<p>解けそうなもの：</p>
+<ul>
+<li>ひとりにしてくれ</li>
+<li>へやわけ</li>
+<li>ましゅ</li>
+</ul>
+<p>解けなそうなもの：</p>
+<ul>
+<li>ぬりかべ</li>
+<li>フィルオミノ</li>
+</ul>
+<p>マスごとや行・列・指定の領域ごとなどといった決まった範囲で判定すればよいルールは解きやすそうに思うが、
+ぬりかべやフィルオミノなどのマスのつながりを調べる必要があるパズルはどうやってSATのルールに起こしたらいいのか、ちょっと見当がつかない。</p>
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><script src="https://gist.github.com/tyfkda/63b1bd89713ab3e84b6faded1303acba.js"></script>
 
-<p>生成された.fntファイル：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">info face=&quot;&quot; size=0 bold=0 italic=0 charset=&quot;&quot; unicode=0 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=1,1</span><br><span class="line">common lineHeight=8 base=0 scaleW=10 scaleH=100 pages=1 packed=0</span><br><span class="line">page id=0 file=&quot;font.png&quot;</span><br><span class="line"></span><br><span class="line">chars count=96</span><br><span class="line">char id=32 x=0 y=0 width=8 height=8 xoffset=0 yoffset=0 xadvance=8 page=0 chnl=0   //  </span><br><span class="line">char id=33 x=8 y=0 width=8 height=8 xoffset=0 yoffset=0 xadvance=8 page=0 chnl=0   // !</span><br><span class="line">char id=34 x=16 y=0 width=8 height=8 xoffset=0 yoffset=0 xadvance=8 page=0 chnl=0   // &quot;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p>これと画像ファイルをResourcesに追加してやって</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">CCLabelBMFont* label = CCLabelBMFont::<span class="built_in">create</span>(<span class="string">&quot;Hello, world!&quot;</span>, <span class="string">&quot;font.fnt&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>などとすればよい。</p>
-<p><code>CCLabelBMFont</code>は<code>CCSpriteBatchNode</code>を使って文字を表示しているのでパフォーマンスもなかなかよいだろう。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く">【Haskell】SATソルバを使って数独を解く</a></li>
+<li><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く">カックロをSATソルバーで解く</a></li>
+<li><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクをSATソルバーで解く">ナンバーリンクをSATソルバーで解く</a></li>
+<li><a href="https://github.com/meteor/logic-solver">Logic Solver</a></li>
+</ul>
 
 
                 
@@ -252,7 +272,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/10/19/cocos2d-x-js.html" title="Cocos2d-x(JS)を使ってみる" rel="bookmark">Cocos2d-x(JS)を使ってみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/17/cocos2dx-proguard.html" title="Cocos2dxを使ったAndroidアプリにProguardを適用する" rel="bookmark">Cocos2dxを使ったAndroidアプリにProguardを適用する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く" rel="bookmark">カックロをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクをSATソルバーで解く" rel="bookmark">ナンバーリンクをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く" rel="bookmark">【Haskell】SATソルバを使って数独を解く</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

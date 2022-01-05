@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-01-04T14:14:31.461Z</updated>
+  <updated>2022-01-05T00:38:53.887Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,31 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>スリザーリンクをSATソルバーで解く</title>
+    <link href="https://tyfkda.github.io/blog/2022/01/05/slitherlink-solver.html"/>
+    <id>https://tyfkda.github.io/blog/2022/01/05/slitherlink-solver.html</id>
+    <published>2022-01-04T23:33:45.000Z</published>
+    <updated>2022-01-05T00:38:53.887Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;a href=&quot;/blog/2022/01/03/kakuro-solver.html&quot; title=&quot;おととい&quot;&gt;おととい&lt;/a&gt;、&lt;a href=&quot;/blog/2022/01/04/numberlink-solver.html&quot; title=&quot;昨日&quot;&gt;昨日&lt;/a&gt;に引き続き</summary>
+      
+    
+    
+    
+    
+    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
+    
+  </entry>
+  
+  <entry>
     <title>ナンバーリンクをSATソルバーで解く</title>
     <link href="https://tyfkda.github.io/blog/2022/01/04/numberlink-solver.html"/>
     <id>https://tyfkda.github.io/blog/2022/01/04/numberlink-solver.html</id>
     <published>2022-01-04T00:11:56.000Z</published>
-    <updated>2022-01-04T14:14:31.461Z</updated>
+    <updated>2022-01-05T00:34:48.783Z</updated>
     
     
       
@@ -208,25 +228,6 @@ JavaScriptで整数配列を簡単に生成する方法が覚えられなくて�
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
     
     <category term="c" scheme="https://tyfkda.github.io/tags/c/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>「ディープラーニングの最も重要なアイディア」</title>
-    <link href="https://tyfkda.github.io/blog/2021/05/05/dl-brief-historical-review.html"/>
-    <id>https://tyfkda.github.io/blog/2021/05/05/dl-brief-historical-review.html</id>
-    <published>2021-05-05T09:01:34.000Z</published>
-    <updated>2022-01-03T02:52:06.315Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;ディープラーニングとやらにまったく詳しくなくてなにをしたらいいかわからない…という中
-&lt;a href=&quot;https://dennybritz.com/blog/deep-learning-most-important-ideas/&quot;&gt;Deep Learning’s Most Important Ideas - A Brief Historical Review&lt;/a&gt;
-という記事を読んだ。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="machine learning" scheme="https://tyfkda.github.io/tags/machine-learning/"/>
     
   </entry>
   
