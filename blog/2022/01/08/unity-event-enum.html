@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="インスペクタでボタンの OnClick イベントの引数に enum の値も指定できるように修正した。
+動作環境： Unity 2021.1.6f1">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Unity】ボタンのOnClickの引数にenumを使えるようにする（2020対応）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Unity】ボタンのOnClickの引数にenumを使えるようにする（2020対応） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/01/08/unity-event-enum.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Unity】ボタンのOnClickの引数にenumを使えるようにする（2020対応）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-01-08
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unity/">#unity</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>インスペクタでボタンの <code>OnClick</code> イベントの引数に <code>enum</code> の値も指定できるように修正した。</p>
+<p>動作環境： Unity 2021.1.6f1</p>
+<span id="more"></span>
+
+<h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>UnityのUIボタンのOnClickイベントの引数として <code>enum</code> の値を指定したいときがあるが標準だと <code>int</code> 型の１引数メソッドしか列挙されないため、
+インスペクタから整数値で指定するしかない。
+使えるようにするにはどうするか。</p>
+<p>ググって出てきた
+<a href="https://hoppoco.blogspot.com/2017/01/unitybuttononclick.html">ほっぽこ開発: UnityのButtonのOnClickに列挙型の引数を与える</a>
+を見ると、
+<a href="https://forum.unity.com/threads/ability-to-add-enum-argument-to-button-functions.270817/#post-2785739">“Ability to add enum argument to button functions” への回答</a>
+でできるとのこと。
+しかし試したところUnityのバージョンアップによりエラーが出てしまっていた：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NullReferenceException: Object reference not set to an instance of an object</span><br><span class="line">UnityEventDrawer.GetDummyEvent (UnityEditor.SerializedProperty prop) (at Assets/EnumAction/Editor/UnityEventDrawer.cs:311)</span><br><span class="line">UnityEventDrawer.OnGUI (UnityEngine.Rect position) (at Assets/EnumAction/Editor/UnityEventDrawer.cs:97)</span><br><span class="line">UnityEventDrawer.OnGUI (UnityEngine.Rect position, UnityEditor.SerializedProperty property, UnityEngine.GUIContent label) (at Assets/EnumAction/Editor/UnityEventDrawer.cs:80)</span><br><span class="line">UnityEditor.PropertyDrawer.OnGUISafe (UnityEngine.Rect position, UnityEditor.SerializedProperty property, UnityEngine.GUIContent label) (at &lt;9b8dec54b88e4aa9b9661a30f7e3f61e&gt;:0)</span><br><span class="line">UnityEditor.PropertyHandler.OnGUI (UnityEngine.Rect position, UnityEditor.SerializedProperty property, UnityEngine.GUIContent label, System.Boolean includeChildren, UnityEngine.Rect visibleArea) (at &lt;9b8dec54b88e4aa9b9661a30f7e3f61e&gt;:0)</span><br><span class="line">UnityEditor.PropertyHandler.OnGUI (UnityEngine.Rect position, UnityEditor.SerializedProperty property, UnityEngine.GUIContent label, System.Boolean includeChildren) (at &lt;9b8dec54b88e4aa9b9661a30f7e3f61e&gt;:0)</span><br><span class="line">UnityEditor.PropertyHandler.OnGUILayout (UnityEditor.SerializedProperty property, UnityEngine.GUIContent label, System.Boolean includeChildren, UnityEngine.GUILayoutOption[] options) (at &lt;9b8dec54b88e4aa9b9661a30f7e3f61e&gt;:0)</span><br><span class="line">UnityEditor.EditorGUILayout.PropertyField (UnityEditor.SerializedProperty property, UnityEngine.GUIContent label, System.Boolean includeChildren, UnityEngine.GUILayoutOption[] options) (at &lt;9b8dec54b88e4aa9b9661a30f7e3f61e&gt;:0)</span><br><span class="line">UnityEditor.EditorGUILayout.PropertyField (UnityEditor.SerializedProperty property, UnityEngine.GUILayoutOption[] options) (at &lt;9b8dec54b88e4aa9b9661a30f7e3f61e&gt;:0)</span><br><span class="line">UnityEditor.UI.ButtonEditor.OnInspectorGUI () (at Library/PackageCache/com.unity.ugui@1.0.0/Editor/UI/ButtonEditor.cs:27)</span><br><span class="line">UnityEditor.UIElements.InspectorElement+&lt;&gt;c__DisplayClass59_0.&lt;CreateIMGUIInspectorFromEditor&gt;b__0 () (at &lt;47d44085adbe43bd896d97295bdef4f5&gt;:0)</span><br><span class="line">UnityEngine.GUIUtility:ProcessEvent(Int32, IntPtr, Boolean&amp;)</span><br></pre></td></tr></table></figure>
+
+<p><code>UnityEventDrawer.cs</code> でのイベントに対するアクセス方法が変わってしまっているぽい。</p>
+<p><code>FindMethod</code> などでググっていると
+<a href="https://github.com/MerlinVR/EasyEventEditor/blob/2078e15183c7cfc1d5df5b676635bb1f70c64eeb/EasyEventEditor.cs">EasyEventEditorというソース</a>がヒットしたのでそれを元に修正してみた。</p>
+<h3 id="差分"><a href="#差分" class="headerlink" title="差分"></a>差分</h3><p><code>UnityEventDrawer.cs</code> の差分は以下の通り
+（<a href="https://gist.github.com/tyfkda/d2d2f0ea55b90eaa94789e896ec39e05">ソース全体はgistに置いた</a>）：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line"><span class="meta">@@ -13,7 +13,18 @@</span></span><br><span class="line"> &#123;</span><br><span class="line">     private Dictionary&lt;string, State&gt; m_States = new Dictionary&lt;string, State&gt;();</span><br><span class="line">     // Find internal methods with reflection</span><br><span class="line"><span class="deletion">-    private static MethodInfo findMethod = typeof(UnityEventBase).GetMethod(&quot;FindMethod&quot;, BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard, new Type[] &#123; typeof(string), typeof(object), typeof(PersistentListenerMode), typeof(Type) &#125;, null);</span></span><br><span class="line"><span class="addition">+    private static MethodInfo findMethod = typeof(UnityEventBase).GetMethod(</span></span><br><span class="line"><span class="addition">+        &quot;FindMethod&quot;, BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard,</span></span><br><span class="line"><span class="addition">+        new Type[] &#123;</span></span><br><span class="line"><span class="addition">+            typeof(string),</span></span><br><span class="line"><span class="addition">+#if UNITY_2020_1_OR_NEWER</span></span><br><span class="line"><span class="addition">+            typeof(Type),</span></span><br><span class="line"><span class="addition">+#else</span></span><br><span class="line"><span class="addition">+            typeof(object),</span></span><br><span class="line"><span class="addition">+#endif</span></span><br><span class="line"><span class="addition">+            typeof(PersistentListenerMode),</span></span><br><span class="line"><span class="addition">+            typeof(Type),</span></span><br><span class="line"><span class="addition">+        &#125;, null);</span></span><br><span class="line">     private static MethodInfo temp = typeof(GUIContent).GetMethod(&quot;Temp&quot;, BindingFlags.NonPublic | BindingFlags.Static, null, CallingConventions.Standard, new Type[] &#123; typeof(string) &#125;, null);</span><br><span class="line">     private static PropertyInfo mixedValueContent = typeof(EditorGUI).GetProperty(&quot;mixedValueContent&quot;, BindingFlags.NonPublic | BindingFlags.Static);</span><br><span class="line">     private Styles m_Styles;</span><br><span class="line"><span class="meta">@@ -26,7 +37,14 @@</span></span><br><span class="line"></span><br><span class="line">     private static string GetEventParams(UnityEventBase evt)</span><br><span class="line">     &#123;</span><br><span class="line"><span class="deletion">-        var method = (MethodInfo)findMethod.Invoke(evt, new object[] &#123; &quot;Invoke&quot;, evt, PersistentListenerMode.EventDefined, null &#125;);</span></span><br><span class="line"><span class="addition">+        var method = (MethodInfo)findMethod.Invoke(evt, new object[] &#123;</span></span><br><span class="line"><span class="addition">+            &quot;Invoke&quot;,</span></span><br><span class="line"><span class="addition">+#if UNITY_2020_1_OR_NEWER</span></span><br><span class="line"><span class="addition">+            evt.GetType(),</span></span><br><span class="line"><span class="addition">+#else</span></span><br><span class="line"><span class="addition">+            evt,</span></span><br><span class="line"><span class="addition">+#endif</span></span><br><span class="line"><span class="addition">+            PersistentListenerMode.EventDefined, null &#125;);</span></span><br><span class="line">         var stringBuilder = new StringBuilder();</span><br><span class="line">         stringBuilder.Append(&quot; (&quot;);</span><br><span class="line">         var array = ((IEnumerable&lt;ParameterInfo&gt;)method.GetParameters()).Select(x =&gt; x.ParameterType).ToArray();</span><br><span class="line"><span class="meta">@@ -306,6 +324,67 @@</span></span><br><span class="line">         m_LastSelectedIndex = list.index;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line"><span class="addition">+#if UNITY_2020_1_OR_NEWER</span></span><br><span class="line"><span class="addition">+    private static UnityEventBase GetDummyEventStep(string propertyPath, System.Type propertyType, BindingFlags bindingFlags)</span></span><br><span class="line"><span class="addition">+    &#123;</span></span><br><span class="line"><span class="addition">+        UnityEventBase dummyEvent = null;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+        while (propertyPath.Length &gt; 0)</span></span><br><span class="line"><span class="addition">+        &#123;</span></span><br><span class="line"><span class="addition">+            if (propertyPath.StartsWith(&quot;.&quot;))</span></span><br><span class="line"><span class="addition">+                propertyPath = propertyPath.Substring(1);</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+            string[] splitPath = propertyPath.Split(new char[] &#123; &#x27;.&#x27; &#125;, 2);</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+            FieldInfo newField = propertyType.GetField(splitPath[0], bindingFlags);</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+            if (newField == null)</span></span><br><span class="line"><span class="addition">+                break;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+            propertyType = newField.FieldType;</span></span><br><span class="line"><span class="addition">+            if (propertyType.IsArray)</span></span><br><span class="line"><span class="addition">+            &#123;</span></span><br><span class="line"><span class="addition">+                propertyType = propertyType.GetElementType();</span></span><br><span class="line"><span class="addition">+            &#125;</span></span><br><span class="line"><span class="addition">+            else if (propertyType.IsGenericType &amp;&amp; propertyType.GetGenericTypeDefinition() == typeof(List&lt;&gt;))</span></span><br><span class="line"><span class="addition">+            &#123;</span></span><br><span class="line"><span class="addition">+                propertyType = propertyType.GetGenericArguments()[0];</span></span><br><span class="line"><span class="addition">+            &#125;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+            if (splitPath.Length == 1)</span></span><br><span class="line"><span class="addition">+                break;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+            propertyPath = splitPath[1];</span></span><br><span class="line"><span class="addition">+            if (propertyPath.StartsWith(&quot;Array.data[&quot;))</span></span><br><span class="line"><span class="addition">+                propertyPath = propertyPath.Split(new char[] &#123; &#x27;]&#x27; &#125;, 2)[1];</span></span><br><span class="line"><span class="addition">+        &#125;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+        if (propertyType.IsSubclassOf(typeof(UnityEventBase)))</span></span><br><span class="line"><span class="addition">+            dummyEvent = System.Activator.CreateInstance(propertyType) as UnityEventBase;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+        return dummyEvent;</span></span><br><span class="line"><span class="addition">+    &#125;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+    private static UnityEventBase GetDummyEvent(SerializedProperty property)</span></span><br><span class="line"><span class="addition">+    &#123;</span></span><br><span class="line"><span class="addition">+        UnityEngine.Object targetObject = property.serializedObject.targetObject;</span></span><br><span class="line"><span class="addition">+        if (targetObject == null)</span></span><br><span class="line"><span class="addition">+            return new UnityEvent();</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+        UnityEventBase dummyEvent = null;</span></span><br><span class="line"><span class="addition">+        Type targetType = targetObject.GetType();</span></span><br><span class="line"><span class="addition">+        BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+        do</span></span><br><span class="line"><span class="addition">+        &#123;</span></span><br><span class="line"><span class="addition">+            dummyEvent = GetDummyEventStep(property.propertyPath, targetType, bindingFlags);</span></span><br><span class="line"><span class="addition">+            bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;</span></span><br><span class="line"><span class="addition">+            targetType = targetType.BaseType;</span></span><br><span class="line"><span class="addition">+        &#125; while (dummyEvent == null &amp;&amp; targetType != null);</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+        return dummyEvent ?? new UnityEvent();</span></span><br><span class="line"><span class="addition">+    &#125;</span></span><br><span class="line"><span class="addition">+#else</span></span><br><span class="line">     private static UnityEventBase GetDummyEvent(SerializedProperty prop)</span><br><span class="line">     &#123;</span><br><span class="line">         var type = Type.GetType(prop.FindPropertyRelative(&quot;m_TypeName&quot;).stringValue, false);</span><br><span class="line"><span class="meta">@@ -313,6 +392,7 @@</span></span><br><span class="line">             return new UnityEvent();</span><br><span class="line">         return Activator.CreateInstance(type) as UnityEventBase;</span><br><span class="line">     &#125;</span><br><span class="line"><span class="addition">+#endif</span></span><br><span class="line"></span><br><span class="line">     private static IEnumerable&lt;ValidMethodMap&gt; CalculateMethodMap(UnityEngine.Object target, Type[] t, bool allowSubclasses)</span><br><span class="line">     &#123;</span><br><span class="line"><span class="meta">@@ -365,7 +445,14 @@</span></span><br><span class="line"></span><br><span class="line">     private static MethodInfo GetMethod(UnityEventBase dummyEvent, string methodName, UnityEngine.Object uObject, PersistentListenerMode modeEnum, Type argumentType)</span><br><span class="line">     &#123;</span><br><span class="line"><span class="deletion">-        return (MethodInfo)findMethod.Invoke(dummyEvent, new object[] &#123; methodName, uObject, modeEnum, argumentType &#125;);</span></span><br><span class="line"><span class="addition">+        return (MethodInfo)findMethod.Invoke(dummyEvent, new object[] &#123;</span></span><br><span class="line"><span class="addition">+            methodName,</span></span><br><span class="line"><span class="addition">+#if UNITY_2020_1_OR_NEWER</span></span><br><span class="line"><span class="addition">+            uObject?.GetType(),</span></span><br><span class="line"><span class="addition">+#else</span></span><br><span class="line"><span class="addition">+            uObject,</span></span><br><span class="line"><span class="addition">+#endif</span></span><br><span class="line"><span class="addition">+            modeEnum, argumentType &#125;);</span></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     private static GenericMenu BuildPopupList(UnityEngine.Object target, UnityEventBase dummyEvent, SerializedProperty listener)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="所感"><a href="#所感" class="headerlink" title="所感"></a>所感</h3><ul>
+<li>Unity2021.1.6f1でちょっと試したところではちゃんと動作した<ul>
+<li>軽く使ってみる分には問題ないが、実際には <code>enum</code> の並びに変更があった場合に追従できない点は注意が必要だと思う</li>
+</ul>
+</li>
+<li>受け取り側は結局 <code>int</code> なのでキャストする必要があって面倒</li>
+<li><code>UnityEvent</code> のインスペクタ表示を乗っ取ってしまっているため、
+バージョンアップに弱くあまりよろしくはないとは思う…<ul>
+<li>実際<a href="https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/Inspector/UnityEventDrawer.cs">UnityEventDrawer.csの最新</a>とはだいぶ差分がある</li>
+</ul>
+</li>
+<li>Unity が公式サポートしてくれるのが望ましいのだが…</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://hoppoco.blogspot.com/2017/01/unitybuttononclick.html">ほっぽこ開発: UnityのButtonのOnClickに列挙型の引数を与える</a></li>
+<li><a href="https://forum.unity.com/threads/ability-to-add-enum-argument-to-button-functions.270817/#post-2785739">Ability to add enum argument to button functions - Unity Forum</a></li>
+<li><a href="https://github.com/MerlinVR/EasyEventEditor/blob/2078e15183c7cfc1d5df5b676635bb1f70c64eeb/EasyEventEditor.cs">MerlinVR/EasyEventEditor/EasyEventEditor.cs</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/19/cache-http.html" title="Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する" rel="bookmark">Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/14/fixed-font.html" title="【Unity】固定幅ビットマップフォントを使う" rel="bookmark">【Unity】固定幅ビットマップフォントを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/11/generate-prefabs.html" title="【Unity】スクリプトでプレハブを大量生産する" rel="bookmark">【Unity】スクリプトでプレハブを大量生産する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/23/interior-mapping.html" title="【Unity】Shader Graphでインテリアマッピング" rel="bookmark">【Unity】Shader Graphでインテリアマッピング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/09/modify-xcproj.html" title="【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する" rel="bookmark">【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

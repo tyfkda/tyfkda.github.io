@@ -221,13 +221,13 @@
 <h3 id="スリザーリンクとは？"><a href="#スリザーリンクとは？" class="headerlink" title="スリザーリンクとは？"></a>スリザーリンクとは？</h3><p><a href="https://www.nikoli.co.jp/ja/puzzles/slitherlink/">スリザーリンク</a>もまたニコリの定番ペンシルパズルで、格子状の盤面に線を引いて１つのループを作るというルール。
 数字（０〜３）のあるマスは、接する線４本のうちの何本に線が引かれるかを示している。</p>
 <h3 id="スリザーリンクソルバー"><a href="#スリザーリンクソルバー" class="headerlink" title="スリザーリンクソルバー"></a>スリザーリンクソルバー</h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクソルバー">ナンバーリンクソルバー</a>と同様に、格子を結ぶ線を引くか引かないかの真偽値を変数にする。
-<p>そして線は途切れないので、それぞれの頂点につながる線のうち２本に線が引かれる、または１本も引かれない、という条件になる。</p>
+<p>そして線は途切れないので、それぞれの頂点につながる線の４本中２本に線が引かれる、または１本も引かれない、という条件になる。</p>
 <p>全体でループがひとつながりになっているかどうかの判定は、SATソルバー内で判定する方法が思いつかなかった。
 なので <a href="https://github.com/meteor/logic-solver#logicsolversolve"><code>solve</code></a> で得られた解を判定して、２つ以上だったらその解は無効にして再度調べることにした。</p>
 <p><code>solve</code> で得られた解の <a href="https://github.com/meteor/logic-solver#logicsolutiongetformula"><code>getFormula</code></a>メソッドを <a href="https://github.com/meteor/logic-solver#logicsolverforbidargs"><code>forbid</code></a>することでその解を無効にすることもできるが、
 それだと全体がその状態となるのを除外するだけなのであまり絞り込まれず試行回数が増えてしまう。</p>
-<p>そうではなく複数あるループごとに <code>forbid</code> してやると、現実的な時間で解を求めることができる。</p>
-<h3 id="他のパズルは？"><a href="#他のパズルは？" class="headerlink" title="他のパズルは？"></a>他のパズルは？</h3><p>他のペンシルパズルもSATソルバーで解けるかどうか考えてみた。</p>
+<p>そうではなく複数できたループごとに <code>forbid</code> してやると、現実的な時間で解を求めることができる。</p>
+<h3 id="他のパズルは？"><a href="#他のパズルは？" class="headerlink" title="他のパズルは？"></a>他のパズルは？</h3><p>メジャーなペンシルパズルのソルバーが作れたので、他のパズルもSATソルバーで解けるかどうか考えてみた。</p>
 <p>解けそうなもの：</p>
 <ul>
 <li>ひとりにしてくれ</li>
@@ -272,7 +272,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く" rel="bookmark">カックロをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクをSATソルバーで解く" rel="bookmark">ナンバーリンクをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く" rel="bookmark">【Haskell】SATソルバを使って数独を解く</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く" rel="bookmark">カックロをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクをSATソルバーで解く" rel="bookmark">ナンバーリンクをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く" rel="bookmark">【Haskell】SATソルバを使って数独を解く</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

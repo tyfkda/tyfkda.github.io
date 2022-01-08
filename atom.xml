@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-01-05T00:38:53.887Z</updated>
+  <updated>2022-01-08T08:25:51.829Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,29 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>【Unity】ボタンのOnClickの引数にenumを使えるようにする（2020対応）</title>
+    <link href="https://tyfkda.github.io/blog/2022/01/08/unity-event-enum.html"/>
+    <id>https://tyfkda.github.io/blog/2022/01/08/unity-event-enum.html</id>
+    <published>2022-01-08T07:15:51.000Z</published>
+    <updated>2022-01-08T08:25:51.829Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;インスペクタでボタンの &lt;code&gt;OnClick&lt;/code&gt; イベントの引数に &lt;code&gt;enum&lt;/code&gt; の値も指定できるように修正した。&lt;/p&gt;
+&lt;p&gt;動作環境： Unity 2021.1.6f1&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="unity" scheme="https://tyfkda.github.io/tags/unity/"/>
+    
+  </entry>
+  
+  <entry>
     <title>スリザーリンクをSATソルバーで解く</title>
     <link href="https://tyfkda.github.io/blog/2022/01/05/slitherlink-solver.html"/>
     <id>https://tyfkda.github.io/blog/2022/01/05/slitherlink-solver.html</id>
     <published>2022-01-04T23:33:45.000Z</published>
-    <updated>2022-01-05T00:38:53.887Z</updated>
+    <updated>2022-01-05T23:23:05.159Z</updated>
     
     
       
@@ -209,25 +227,6 @@ JavaScriptで整数配列を簡単に生成する方法が覚えられなくて�
     
     
     <category term="javascript" scheme="https://tyfkda.github.io/tags/javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>関数ポインタを返す関数のパースと型の構築</title>
-    <link href="https://tyfkda.github.io/blog/2021/05/20/parsing-func-returning-func.html"/>
-    <id>https://tyfkda.github.io/blog/2021/05/20/parsing-func-returning-func.html</id>
-    <published>2021-05-20T01:42:21.000Z</published>
-    <updated>2022-01-03T02:52:06.329Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;C言語の文法は型の記述が複雑で、特に関数ポインタが絡むと非情にややこしくなる。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-    <category term="c" scheme="https://tyfkda.github.io/tags/c/"/>
     
   </entry>
   
