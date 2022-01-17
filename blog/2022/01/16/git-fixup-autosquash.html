@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="gitでコミットをいくつか進めているうちに「以前のコミットにこの修正もまとめたい」ということが結構ある。
+そういう場合に fixup と autosquash が使える。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【git】修正を差し込む（fixupとautosquash）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【git】修正を差し込む（fixupとautosquash） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/01/16/git-fixup-autosquash.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<!-- adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-1024548460697919",
+          enable_page_level_ads: true
+     });
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【git】修正を差し込む（fixupとautosquash）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-01-16
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/git/">#git</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>gitでコミットをいくつか進めているうちに「以前のコミットにこの修正もまとめたい」ということが結構ある。
+そういう場合に <code>fixup</code> と <code>autosquash</code> が使える。</p>
+<span id="more"></span>
+
+<h3 id="squash"><a href="#squash" class="headerlink" title="squash"></a>squash</h3><p>加えたい修正が直前のコミットに対してだったら <code>commit --amend</code> によるコミットの訂正で対応できる。
+いくつか前のコミットだった場合には <code>rebase -i</code> でのインタラクティブ編集画面で過去のコミットを <code>edit</code> で状態を戻して編集するか、
+修正をコミットしておき同じく <code>rebase -i</code> でコミット順を並べ替えて <code>pick</code> を <code>squash</code> に変更してまとめてやる必要がある。</p>
+<p>例えば以下のような状態の時：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">log</span> --oneline</span><br><span class="line">c7f44a1 (HEAD -&gt; main) １つ目の修正コミット</span><br><span class="line">107caa8 ２つ目のコミット</span><br><span class="line">904b22f １つ目のコミット</span><br><span class="line">9f0df60 git init</span><br></pre></td></tr></table></figure>
+
+<p>「１つ目の修正コミット」を「１つ目のコミット」にまとめたい場合、 <code>git rebase -i HEAD~3</code> として表示されるコミット履歴を編集する：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pick 904b22f １つ目のコミット</span><br><span class="line">squash c7f44a1 １つ目の修正コミット  # 順番を入れ替えて、pickからsquashに変更する</span><br><span class="line">pick 107caa8 ２つ目のコミット</span><br></pre></td></tr></table></figure>
+
+<p>するとまとめるコミットのメッセージ編集画面が開いて、それを保存して閉じることでまとめられる：</p>
+<h3 id="fixup"><a href="#fixup" class="headerlink" title="fixup"></a>fixup</h3><p>上記の手順で、 <code>squash</code> の代わりに <code>fixup</code> とすることで、メッセージの編集をスキップすることができる。
+<code>fixup</code> の上のコミットメッセージが維持されるので、簡単にまとめることができる。</p>
+<p><code>fixup</code> に関しては <code>rebsae -i</code> の編集画面に説明がされている：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># f, fixup [-C | -c] &lt;commit&gt; = like &quot;squash&quot; but keep only the previous</span><br><span class="line">#                    commit&#x27;s log message, unless -C is used, in which case</span><br><span class="line">#                    keep only this commit&#x27;s message; -c is same as -C but</span><br><span class="line">#                    opens the editor</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="commit-–fixup"><a href="#commit-–fixup" class="headerlink" title="commit –fixup"></a>commit –fixup</h3><p><code>squash</code> や <code>fixup</code> でまとめる時にコミット順を自分で入れ替えるのが面倒。
+そこで修正コミットを <code>commit</code> するときにオプションで <code>--fixup &lt;対象コミット&gt;</code> とすることで簡単に行うことができる。</p>
+<p>例えば上記の「１つ目の修正コミット」をコミットする際に、 <code>git commit --fixup 904b22f</code> と
+「１つ目のコミット」のハッシュ値を指定することで、そのコミットに対する修正コミットだということを指定できる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git commit --fixup 904b22f</span><br><span class="line">[main 3ca7918] fixup! １つ目のコミット</span><br><span class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</span><br><span class="line"> create mode 100644 3.txt</span><br><span class="line">$ git <span class="built_in">log</span> --oneline</span><br><span class="line">20ba3ff (HEAD -&gt; main) fixup! １つ目のコミット</span><br><span class="line">107caa8 ２つ目のコミット</span><br><span class="line">904b22f １つ目のコミット</span><br><span class="line">9f0df60 git init</span><br></pre></td></tr></table></figure>
+
+<p>コミットメッセージは自動的に「fixup! （対象コミットのタイトル）」となる。</p>
+<h4 id="rebase-–autosquash"><a href="#rebase-–autosquash" class="headerlink" title="rebase –autosquash"></a>rebase –autosquash</h4><p><code>commit --fixup</code> は単にコミットが追加されるだけなので、 <code>rebase -i</code> してやる必要がある。
+その際に <code>--autosquash</code> というオプションを指定すると自動的に並び替えられた状態で表示してくれる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git rebase -i --autosquash HEAD~3</span><br><span class="line">（エディタが開く）</span><br><span class="line">pick 904b22f １つ目のコミット</span><br><span class="line">fixup 20ba3ff fixup! １つ目のコミット</span><br><span class="line">pick 107caa8 ２つ目のコミット</span><br></pre></td></tr></table></figure>
+
+<p>そのまま保存して閉じれば目的が達成される。</p>
+<p>そのオプションを毎度指定するのも面倒なので、 gitconfig に指定することで自動的にできる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git config --global rebase.autosquash <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="エイリアス登録"><a href="#エイリアス登録" class="headerlink" title="エイリアス登録"></a>エイリアス登録</h3><p>しかしまだ <code>commit --fixup</code> 〜 <code>rebase -i --auutosquash</code> の流れがめんどくさい。
+そこでエイリアスを登録してやる。
+ここではエイリアス名を <code>fix</code> とする：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># .gitconfig</span><br><span class="line">[alias]</span><br><span class="line">	...</span><br><span class="line">	fix = &quot;!sh -c &#x27;git commit --fixup $1 &amp;&amp; git rebase -i --autosquash $1~1 --autostash&#x27; -&quot;</span><br></pre></td></tr></table></figure>
+
+<p>直接.gitconfigファイルを編集してもよいし、 <code>git config --global --edit</code> で編集してもよい
+（コマンドラインから直接 <code>git config --global alias.fix ...</code> と登録するのは、エスケープが大変なのでおすすめしない）。</p>
+<p>これによって修正コミットを <code>git commit --fixup</code> でコミットする代わりに、 <code>git fix &lt;対象コミット&gt;</code> とすることで、自動的に変更を対象コミットに適用できる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git fix 904b22f</span><br><span class="line">（エディタが開く）</span><br><span class="line">pick 904b22f １つ目のコミット</span><br><span class="line">fixup ed580bc fixup! １つ目のコミット</span><br><span class="line">pick 107caa8 ２つ目のコミット</span><br></pre></td></tr></table></figure>
+
+<p>エディタも開かずに勝手に適用して欲しいが、そこまではわからなかった。</p>
+<h3 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h3><ul>
+<li><a href="https://git-scm.com/docs/git-commit">Git - git-commit Documentation</a></li>
+<li><a href="https://git-scm.com/docs/git-rebase">Git - git-rebase Documentation</a></li>
+</ul>
+
+
+                
+
+<div align="center">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1024548460697919"
+     data-ad-slot="4709138378"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/18/git-flow.html" title="git-flowコマンドラインツールをgithub-flowとして使う" rel="bookmark">git-flowコマンドラインツールをgithub-flowとして使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/17/git-log.html" title="自分が今日一日何をしたのか調べる(gitのlogから)" rel="bookmark">自分が今日一日何をしたのか調べる(gitのlogから)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/07/git-worktree.html" title="gh-pagesをサブディレクトリ内で管理" rel="bookmark">gh-pagesをサブディレクトリ内で管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/10/22/pull-request.html" title="GitHubでプルリクエストを送るときの操作手順" rel="bookmark">GitHubでプルリクエストを送るときの操作手順</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
