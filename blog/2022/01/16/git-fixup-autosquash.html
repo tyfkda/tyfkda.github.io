@@ -21,7 +21,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="【git】修正を差し込む（fixupとautosquash）"/>
+        <meta property="og:title" content="【git】あとから修正を差し込む（fixupとautosquash）"/>
     
 
     <!--Open Graph Description-->
@@ -43,7 +43,7 @@
 
     <!-- Title -->
     
-    <title>【git】修正を差し込む（fixupとautosquash） - Kludge Factory</title>
+    <title>【git】あとから修正を差し込む（fixupとautosquash） - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -171,7 +171,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>【git】修正を差し込む（fixupとautosquash）</h1>
+                    <h1>【git】あとから修正を差し込む（fixupとautosquash）</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
@@ -218,17 +218,17 @@
 <span id="more"></span>
 
 <h3 id="squash"><a href="#squash" class="headerlink" title="squash"></a>squash</h3><p>加えたい修正が直前のコミットに対してだったら <code>commit --amend</code> によるコミットの訂正で対応できる。
-いくつか前のコミットだった場合には <code>rebase -i</code> でのインタラクティブ編集画面で過去のコミットを <code>edit</code> で状態を戻して編集するか、
-修正をコミットしておき同じく <code>rebase -i</code> でコミット順を並べ替えて <code>pick</code> を <code>squash</code> に変更してまとめてやる必要がある。</p>
+いくつか前のコミットだった場合には <code>rebase -i</code> でのインタラクティブ編集画面で過去のコミットを <code>edit</code> にして状態を戻してから編集するか、
+修正をコミットしておき <code>rebase -i</code> でコミット順を並べ替えて <code>pick</code> を <code>squash</code> に変更してまとめてやる必要がある。</p>
 <p>例えば以下のような状態の時：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">log</span> --oneline</span><br><span class="line">c7f44a1 (HEAD -&gt; main) １つ目の修正コミット</span><br><span class="line">107caa8 ２つ目のコミット</span><br><span class="line">904b22f １つ目のコミット</span><br><span class="line">9f0df60 git init</span><br></pre></td></tr></table></figure>
 
 <p>「１つ目の修正コミット」を「１つ目のコミット」にまとめたい場合、 <code>git rebase -i HEAD~3</code> として表示されるコミット履歴を編集する：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pick 904b22f １つ目のコミット</span><br><span class="line">squash c7f44a1 １つ目の修正コミット  # 順番を入れ替えて、pickからsquashに変更する</span><br><span class="line">pick 107caa8 ２つ目のコミット</span><br></pre></td></tr></table></figure>
 
-<p>するとまとめるコミットのメッセージ編集画面が開いて、それを保存して閉じることでまとめられる：</p>
+<p>するとまとめるコミットのメッセージ編集画面が開いて、それを保存して閉じることでまとめられる。</p>
 <h3 id="fixup"><a href="#fixup" class="headerlink" title="fixup"></a>fixup</h3><p>上記の手順で、 <code>squash</code> の代わりに <code>fixup</code> とすることで、メッセージの編集をスキップすることができる。
-<code>fixup</code> の上のコミットメッセージが維持されるので、簡単にまとめることができる。</p>
+<code>fixup</code> に指定したコミットメッセージは破棄され、その上のメッセージが維持されるので、簡単にまとめることができる。</p>
 <p><code>fixup</code> に関しては <code>rebsae -i</code> の編集画面に説明がされている：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># f, fixup [-C | -c] &lt;commit&gt; = like &quot;squash&quot; but keep only the previous</span><br><span class="line">#                    commit&#x27;s log message, unless -C is used, in which case</span><br><span class="line">#                    keep only this commit&#x27;s message; -c is same as -C but</span><br><span class="line">#                    opens the editor</span><br></pre></td></tr></table></figure>
 
@@ -245,18 +245,18 @@
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git rebase -i --autosquash HEAD~3</span><br><span class="line">（エディタが開く）</span><br><span class="line">pick 904b22f １つ目のコミット</span><br><span class="line">fixup 20ba3ff fixup! １つ目のコミット</span><br><span class="line">pick 107caa8 ２つ目のコミット</span><br></pre></td></tr></table></figure>
 
 <p>そのまま保存して閉じれば目的が達成される。</p>
-<p>そのオプションを毎度指定するのも面倒なので、 gitconfig に指定することで自動的にできる：</p>
+<p><code>--autosquash</code> オプションを毎度指定するのも面倒なので、 gitconfig に指定することで自動的にできる：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git config --global rebase.autosquash <span class="literal">true</span></span><br></pre></td></tr></table></figure>
 
 
-<h3 id="エイリアス登録"><a href="#エイリアス登録" class="headerlink" title="エイリアス登録"></a>エイリアス登録</h3><p>しかしまだ <code>commit --fixup</code> 〜 <code>rebase -i --auutosquash</code> の流れがめんどくさい。
+<h3 id="エイリアス登録"><a href="#エイリアス登録" class="headerlink" title="エイリアス登録"></a>エイリアス登録</h3><p>fixupとautosquashの手順が分かれているが、気持ちとしては１動作で済ませたい。
 そこでエイリアスを登録してやる。
 ここではエイリアス名を <code>fix</code> とする：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># .gitconfig</span><br><span class="line">[alias]</span><br><span class="line">	...</span><br><span class="line">	fix = &quot;!sh -c &#x27;git commit --fixup $1 &amp;&amp; git rebase -i --autosquash $1~1 --autostash&#x27; -&quot;</span><br></pre></td></tr></table></figure>
 
 <p>直接.gitconfigファイルを編集してもよいし、 <code>git config --global --edit</code> で編集してもよい
 （コマンドラインから直接 <code>git config --global alias.fix ...</code> と登録するのは、エスケープが大変なのでおすすめしない）。</p>
-<p>これによって修正コミットを <code>git commit --fixup</code> でコミットする代わりに、 <code>git fix &lt;対象コミット&gt;</code> とすることで、自動的に変更を対象コミットに適用できる：</p>
+<p>これによって修正コミットを <code>git fix &lt;対象コミット&gt;</code> とすることで、自動的に変更を対象コミットに適用できる：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git fix 904b22f</span><br><span class="line">（エディタが開く）</span><br><span class="line">pick 904b22f １つ目のコミット</span><br><span class="line">fixup ed580bc fixup! １つ目のコミット</span><br><span class="line">pick 107caa8 ２つ目のコミット</span><br></pre></td></tr></table></figure>
 
 <p>エディタも開かずに勝手に適用して欲しいが、そこまではわからなかった。</p>
