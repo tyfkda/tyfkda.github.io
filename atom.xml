@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-01-18T09:16:04.744Z</updated>
+  <updated>2022-01-23T00:57:07.584Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【git】まれに使用するエイリアス６選</title>
+    <link href="https://tyfkda.github.io/blog/2022/01/23/git-my-alias.html"/>
+    <id>https://tyfkda.github.io/blog/2022/01/23/git-my-alias.html</id>
+    <published>2022-01-23T00:50:00.000Z</published>
+    <updated>2022-01-23T00:57:07.584Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;gitでたまによく使う操作、だからどうも覚えられないというものがある。
+そういうものはエイリアスとして登録しておくと便利。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="git" scheme="https://tyfkda.github.io/tags/git/"/>
+    
+  </entry>
   
   <entry>
     <title>【git】あとから修正を差し込む（fixupとautosquash）</title>
@@ -205,28 +223,6 @@
     
     
     <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>PyPyでBrainf*ck</title>
-    <link href="https://tyfkda.github.io/blog/2021/06/20/pypy-bf.html"/>
-    <id>https://tyfkda.github.io/blog/2021/06/20/pypy-bf.html</id>
-    <published>2021-06-20T03:06:48.000Z</published>
-    <updated>2022-01-03T02:52:06.332Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;JIT関連を検索していて見つけた
-&lt;a href=&quot;https://www.pypy.org/posts/2011/04/tutorial-writing-interpreter-with-pypy-3785910476193156295.html&quot;&gt;PyPy Status Blog: Tutorial: Writing an Interpreter with PyPy, Part 1&lt;/a&gt;
-を読んで試してみようと思った。
-しかしリンク切れでソースが見れなかったりPyPyで変換できなかったりでそのままでは動かなかったので修正してみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="jit" scheme="https://tyfkda.github.io/tags/jit/"/>
-    
-    <category term="python" scheme="https://tyfkda.github.io/tags/python/"/>
     
   </entry>
   
