@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="自由変数への代入の続きで、末尾呼び出しの実装方法。今回も[Three implementation models for Scheme](http://www.cs.indiana.edu/~dyb/papers/3imp.pdf)の、4.6節を参考にする。">
+        <meta name="description" content="VSCodeでC#のコードを書いていて、配列の最後の要素を取得したところ「Use index operator」というサジェストが出てきた：">
     
 
     <!--Author-->
@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="スタックベースVMのスクリプト言語での末尾呼び出しの実装方法"/>
+        <meta property="og:title" content="【C#】インデックスオペレータ"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>スタックベースVMのスクリプト言語での末尾呼び出しの実装方法 - Kludge Factory</title>
+    <title>【C#】インデックスオペレータ - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +67,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/04/24/tail-recursion.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/01/27/cs-index-operator.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -170,13 +170,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>スタックベースVMのスクリプト言語での末尾呼び出しの実装方法</h1>
+                    <h1>【C#】インデックスオペレータ</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2013-04-24
+                            2022-01-27
                         
                     </span>
                 </div>
@@ -197,7 +197,7 @@
                         
 
 
-<a href="/tags/compiler/">#compiler</a>
+<a href="/tags/csharp/">#csharp</a>
 
 
                     
@@ -212,14 +212,25 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <a href="/blog/2013/04/20/assign-free-variable.html" title="自由変数への代入">自由変数への代入</a>の続きで、末尾呼び出しの実装方法。今回も[Three implementation models for Scheme](http://www.cs.indiana.edu/~dyb/papers/3imp.pdf)の、4.6節を参考にする。
-
+                <p>VSCodeでC#のコードを書いていて、配列の最後の要素を取得したところ「Use index operator」というサジェストが出てきた：</p>
 <span id="more"></span>
 
-<p>VMをスタックベースにした場合、末尾呼び出しのときにその呼び出された関数への変数バインディングをスタックから取り除かなければいけないが、参照が生き残る可能性があるので簡単にはいかない？ちょっと英文がよくわからなかった。結局のところ、末尾呼び出しの場合は新しいコールフレームの作成をせずに、呼び出す関数への引数をスタックに積むコードを通常の関数呼び出しと同じように出力して、実際に<code>apply</code>（関数の命令の先頭にジャンプ）する前に自分自身に渡された引数を取り除いてやればいい。この論文のVMでは、戻り先の命令やフレームポインタは関数への引数より前に積まれているので、簡単にシフトできる。</p>
-<p>どの式が末尾呼び出しかという判定は、論文ではコンパイルの関数が次に実行すべき命令を常に持っていて、それが<code>return</code>だったら、というように判定している。自作のスクリプト言語で構文木を構築した場合はどうしたらいいかとちょっと悩んだが、なんのことはない、再帰で伝搬していけばいいだけだった。</p>
-<p>関数定義の場合は、関数本体の最後の式に「末尾だよ」、という設定を行う。または<code>return</code>式だったら戻す値に末尾設定を行う。</p>
-<p>末尾だと指定されたノードは、自分の種類によってそれをどう伝搬させるかを定義する。ノードが関数呼び出しだったら、めでたくそいつは末尾呼び出しと判定される。if式だったらthenノードとelseノードの両方に伝搬させる。他のノードの場合は伝搬させない。例えば二項演算とかであればその左右のノードは末尾とはならないので、伝搬を打ち切る。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> array = <span class="keyword">new</span> <span class="built_in">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line"><span class="keyword">var</span> last = array[array.Length - <span class="number">1</span>];</span><br><span class="line">                 ~~~~~~~~~~~~~~~~ Use index <span class="keyword">operator</span></span><br></pre></td></tr></table></figure>
+
+<p>などと書いたらサジェストされて、選ぶとコードが変換される：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> last = array[^<span class="number">1</span>];</span><br></pre></td></tr></table></figure>
+
+<p><code>^n</code> は <code>System.Index</code> のシンタックスシュガーで、 <code>[]</code> に渡すと後ろからの参照 <code>[array.Length - n]</code> という意味になるらしい。
+配列に限らず、 <code>List</code> でも使える。</p>
+<p>全然C#の新しい言語仕様を追いかけてなくてエディタに指摘される日々、
+Linqの <code>.Last()</code> を使うので精一杯だったんじゃが…。</p>
+<p>コンパイラが適切に処理してくれるようなので、「 <code>Index</code> の一次オブジェクトが〜」とか細かいことは考えなくていいらしい。
+（<a href="https://sharplab.io/#v2:D4AQTAjAsAUCDMACciDCiDetE+UkALIgLIAUAlJtrjQG4CGATok4/QJ6IC8iAdgKYB3RAEteAFwDaAXUwQANIjCL4igooCsAXwDc1GjgbMANvQDO47i0Zt2kgHoRpemDS2wtQA==">Sharplabで確認</a>）</p>
+<p>タイプ量は少なくすむが、わかりやすいか・便利かどうかは…うーん微妙。
+RubyやPythonの <code>[-1]</code> よりはコンサバでよいとは思うが。</p>
+<h3 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h3><ul>
+<li><a href="https://docs.microsoft.com/ja-jp/dotnet/csharp/language-reference/proposals/csharp-8.0/ranges">Ranges and indices - C# 8.0 specification proposals | Microsoft Docs</a></li>
+</ul>
 
 
                 
@@ -243,7 +254,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/03/enum-cs.html" title="C#で列挙型への変換" rel="bookmark">C#で列挙型への変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/08/foreach-scope.html" title="UnityのC#でforeachの変数をクロージャで束縛すると共通の値が束縛されてしまう" rel="bookmark">UnityのC#でforeachの変数をクロージャで束縛すると共通の値が束縛されてしまう</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

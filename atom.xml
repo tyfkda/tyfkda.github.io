@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-01-23T00:57:07.584Z</updated>
+  <updated>2022-01-27T08:19:57.555Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【C#】インデックスオペレータ</title>
+    <link href="https://tyfkda.github.io/blog/2022/01/27/cs-index-operator.html"/>
+    <id>https://tyfkda.github.io/blog/2022/01/27/cs-index-operator.html</id>
+    <published>2022-01-27T08:00:00.000Z</published>
+    <updated>2022-01-27T08:19:57.555Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;VSCodeでC#のコードを書いていて、配列の最後の要素を取得したところ「Use index operator」というサジェストが出てきた：&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="csharp" scheme="https://tyfkda.github.io/tags/csharp/"/>
+    
+  </entry>
   
   <entry>
     <title>【git】まれに使用するエイリアス６選</title>
@@ -204,25 +221,6 @@
     
     
     <category term="unity" scheme="https://tyfkda.github.io/tags/unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【C++】関数から多値を返す</title>
-    <link href="https://tyfkda.github.io/blog/2021/06/26/cpp-multi-value.html"/>
-    <id>https://tyfkda.github.io/blog/2021/06/26/cpp-multi-value.html</id>
-    <published>2021-06-26T02:32:19.000Z</published>
-    <updated>2022-01-03T02:52:06.314Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;C++で関数から複数の値を返したい場合にどうするか。&lt;/p&gt;
-&lt;p&gt;結論：&lt;code&gt;std::tuple&lt;/code&gt; を使うとよい。&lt;/p&gt;
-&lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;tuple&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;std::tuple&amp;lt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;double&lt;/span&gt;&amp;gt; &lt;span class=&quot;title&quot;&gt;func1&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; x, &lt;span class=&quot;keyword&quot;&gt;double&lt;/span&gt; y)&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &amp;#123;x, y&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   
