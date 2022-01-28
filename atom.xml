@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-01-27T08:19:57.555Z</updated>
+  <updated>2022-01-28T06:49:20.663Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【VSCode】Ctrl-mで改行入力</title>
+    <link href="https://tyfkda.github.io/blog/2022/01/28/vscode-return.html"/>
+    <id>https://tyfkda.github.io/blog/2022/01/28/vscode-return.html</id>
+    <published>2022-01-28T03:00:00.000Z</published>
+    <updated>2022-01-28T06:49:20.663Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;VSCodeのキーバインドで「Ctrl-m」を改行にしたかったが、一手間必要だった話。&lt;/p&gt;
+&lt;p&gt;環境：macOS Monterey、VSCode 1.63.2&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="texteditor" scheme="https://tyfkda.github.io/tags/texteditor/"/>
+    
+  </entry>
   
   <entry>
     <title>【C#】インデックスオペレータ</title>
@@ -198,24 +216,6 @@
 &lt;td align=&quot;left&quot;&gt;ローカル座標をグローバル座標系に変換&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;&lt;/table&gt;</summary>
-    
-    
-    
-    
-    <category term="unity" scheme="https://tyfkda.github.io/tags/unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Unity】シーンを簡単に切り替えるエディタ拡張</title>
-    <link href="https://tyfkda.github.io/blog/2021/07/15/unity-scene-switcher.html"/>
-    <id>https://tyfkda.github.io/blog/2021/07/15/unity-scene-switcher.html</id>
-    <published>2021-07-15T11:00:00.000Z</published>
-    <updated>2022-01-03T02:52:06.341Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;Unityを使う際、編集するシーンを切り替えるためにProjectビューから探してダブルクリックするのが大変なので、簡単に切り替えられるエディタ拡張を作った。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/unity-scene-switcher.png&quot; alt=&quot;SceneSwitcherWindow&quot;&gt;&lt;/p&gt;</summary>
     
     
     

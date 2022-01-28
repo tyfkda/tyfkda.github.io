@@ -10,10 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="Neural networks and deep learningの３章、Improving the way neural networks learn
-で、ニューラルネットワークの学習を改善する手法がいろいろ述べられていて、
-クロスエントロピーコスト関数
-で二乗誤差とは別のコスト関数について書かれている。">
+        <meta name="description" content="VSCodeのキーバインドで「Ctrl-m」を改行にしたかったが、一手間必要だった話。
+環境：macOS Monterey、VSCode 1.63.2">
     
 
     <!--Author-->
@@ -23,7 +21,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="クロスエントロピー"/>
+        <meta property="og:title" content="【VSCode】Ctrl-mで改行入力"/>
     
 
     <!--Open Graph Description-->
@@ -45,7 +43,7 @@
 
     <!-- Title -->
     
-    <title>クロスエントロピー - Kludge Factory</title>
+    <title>【VSCode】Ctrl-mで改行入力 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -70,7 +68,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/12/19/cross-entropy.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/01/28/vscode-return.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -173,13 +171,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>クロスエントロピー</h1>
+                    <h1>【VSCode】Ctrl-mで改行入力</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2015-12-19
+                            2022-01-28
                         
                     </span>
                 </div>
@@ -200,7 +198,7 @@
                         
 
 
-<a href="/tags/machine-learning/">#machine learning</a>
+<a href="/tags/texteditor/">#texteditor</a>
 
 
                     
@@ -215,89 +213,47 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>Neural networks and deep learningの３章、<a href="http://neuralnetworksanddeeplearning.com/chap3.html">Improving the way neural networks learn</a>
-で、ニューラルネットワークの学習を改善する手法がいろいろ述べられていて、
-<a href="http://neuralnetworksanddeeplearning.com/chap3.html#the_cross-entropy_cost_function">クロスエントロピーコスト関数</a>
-で二乗誤差とは別のコスト関数について書かれている。</p>
+                <p>VSCodeのキーバインドで「Ctrl-m」を改行にしたかったが、一手間必要だった話。</p>
+<p>環境：macOS Monterey、VSCode 1.63.2</p>
 <span id="more"></span>
 
-<h3 id="クロスエントロピーコスト関数"><a href="#クロスエントロピーコスト関数" class="headerlink" title="クロスエントロピーコスト関数"></a>クロスエントロピーコスト関数</h3><p>簡単な例で、二乗誤差のコスト関数で学習する時に
-ニューロンが出力する値が期待される値と大きく違う場合に
-学習が遅いことを示す。</p>
-<p>これはコスト関数の微分に<script type="math/tex">\sigma(z)^\prime</script>が含まれているからで、
-シグモイド関数が飽和している領域だと学習が遅くなってしまう。</p>
-<p>コスト関数としてクロスエントロピーを導入する：</p>
-<script type="math/tex; mode=display">% <![CDATA[
+<h3 id="前口上"><a href="#前口上" class="headerlink" title="前口上"></a>前口上</h3><p>改行の入力にreturn(enter)キーを使うのは、ホームポジションから手が離れてしまうのでできれば避けたい。
+以前はemacsを使用していたというのと、macのターミナルでもCtrl-mで受け付けるので同じにしたい。</p>
+<p>エクステンションでemacsバインディングにできるものもあるが、コピー＆ペーストなどの機能はOS標準で使いたかったので、使わないことにした。
+キーバインディングで設定できるかと思ったが、そのままではできなかった。</p>
+<h3 id="VSCodeのキーバインディング設定"><a href="#VSCodeのキーバインディング設定" class="headerlink" title="VSCodeのキーバインディング設定"></a>VSCodeのキーバインディング設定</h3><p>VSCodeでキーバインディングの設定をするにはメニューのPreferences &gt; Keyboard Shortcutsを選んだり、
+Shift-Command-pでコマンドパレットから”keyboard”と入力して「Preferences: Open Keyboard Shortcuts」を選ぶなどで開ける。</p>
+<h4 id="キーバインディングの編集方法"><a href="#キーバインディングの編集方法" class="headerlink" title="キーバインディングの編集方法"></a>キーバインディングの編集方法</h4><p>開いた「Keyboard Shortcuts」は表形式になっていて、設定を検索したりインタラクティブにショートカットキーを設定したりできる。</p>
+<p>またそのペイン右上に表示されるアイコン（Open Keyboard Shortcuts (JSON)）のクリックで、JSONファイル（keybindings.json）での表示や変更ができる。</p>
+<h3 id="使えそうだったコマンド"><a href="#使えそうだったコマンド" class="headerlink" title="使えそうだったコマンド"></a>使えそうだったコマンド</h3><p>ショートカットキーはコマンドに対して割り当てるので、どんなコマンドがあるかと、そのコマンド名を知る必要がある。
+どういうコマンドがあるのか、一覧をどこで見れるのか、というのはちょっとわからなかったが、
+使えそうだった（だけどちょっと違った）ものを少し記述する：</p>
+<h4 id="lineBreakInsert"><a href="#lineBreakInsert" class="headerlink" title="lineBreakInsert"></a>lineBreakInsert</h4><p><code>lineBreakInsert</code> コマンドで改行の挿入ができる：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;key&quot;</span>: <span class="string">&quot;ctrl+m&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;lineBreakInsert&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;when&quot;</span>: <span class="string">&quot;textInputFocus &amp;&amp; !editorReadonly&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-C(\mathbf{x}) = y \ln a + (1 - y) \ln (1 - a)
-%]]></script>
+<p>これがそのまま使えるかと思ったが、改行をいれるだけでカーソル位置が移動しなかった。</p>
+<h4 id="insertLineAfter"><a href="#insertLineAfter" class="headerlink" title="insertLineAfter"></a>insertLineAfter</h4><p><a href="https://toburau.hatenablog.jp/entry/20170805/1501952326">Visual Studio CodeでCtrl+MをEnterに割り当てる方法が分からない - ゲームが作れるようになるまでがんばる日記</a> を見て、
+<code>insertLineAfter</code> コマンドが使えそう：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;key&quot;</span>: <span class="string">&quot;ctrl+m&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;editor.action.insertLineAfter&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;when&quot;</span>: <span class="string">&quot;textInputFocus &amp;&amp; !editorReadonly&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一見うまく動くんだけど行の途中で入力した場合に、その位置に改行挿入で以降が次の行になるんではなく、単に下に新しい行が挿入されてしまう。</p>
+<h3 id="解決した方法"><a href="#解決した方法" class="headerlink" title="解決した方法"></a>解決した方法</h3><p>標準で return キー入力と同じ動作のコマンドはない？ようなので、別の方法を使う必要があった。
+手順は以下の通り：</p>
+<ul>
+<li><a href="https://qiita.com/mh326/items/6e2c3cf262cc1dfccdbe">【VSCode】複数のコマンドを一つのキーで実行したい - Qiita</a>
+に書かれている
+<a href="https://marketplace.visualstudio.com/items?itemName=ryuta46.multi-command">multi-command</a>
+というVSCodeのエクステンションを入れる</li>
+<li>設定ファイル settings.json に複数コマンドの定義を追加：（コマンド名は <code>insertCarriageReturn</code> とした）</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="attr">&quot;multiCommand.commands&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;multiCommand.insertCarriageReturn&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;sequence&quot;</span>: [</span><br><span class="line">                <span class="string">&quot;lineBreakInsert&quot;</span>,</span><br><span class="line">                <span class="string">&quot;cursorRight&quot;</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>非負</li>
-<li>すべての学習パターンに対するニューロンの出力結果と期待される出力が近い場合に0となる</li>
+<li>keybindings.json にマルチコマンドを指定する：</li>
 </ul>
-<p>関係するのは出力層のデルタを求めるところのみで、
-誤差逆伝播法で中間層に誤差を伝播していく計算は変わらない。</p>
-<p>出力層のニューロンの活性関数がシグモイドじゃなくてリニア関数だった場合には、
-デルタにシグモイドの微分が入ってこないので、問題は起こらない。</p>
-<h3 id="クロスエントロピーの微分"><a href="#クロスエントロピーの微分" class="headerlink" title="クロスエントロピーの微分"></a>クロスエントロピーの微分</h3><p>クロスエントロピー<script type="math/tex">C</script>を<script type="math/tex">z^{l}_j</script>で微分した値<script type="math/tex">\delta^L_j</script>を計算するには、
-チェインルールで<script type="math/tex">a^L_j</script>を使って：</p>
-<script type="math/tex; mode=display">% <![CDATA[
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;key&quot;</span>: <span class="string">&quot;ctrl+m&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;extension.multiCommand.execute&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;args&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;multiCommand.insertCarriageReturn&quot;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;when&quot;</span>: <span class="string">&quot;textInputFocus &amp;&amp; !editorReadonly&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-\delta^L_j = \frac{\partial C}{\partial z^L_j}
-           = \frac{\partial C}{\partial a^L_j} \cdot \frac{\partial a^L_j}{\partial z^L_j} \\
-%]]></script>
-
-<script type="math/tex">\frac{\partial C}{\partial a^L_j}</script> を計算：
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{align}
-\frac{\partial C}{\partial a^L_j} &= \frac{\partial}{\partial a^L_j} \big\{ y \ln a^L_j + (1 - y) \ln (1 - a^L_j) \big\} \\
-                                  &= y \frac{1}{a^L_j} - (1 - y) \frac{1}{1 - a^L_j} \\
-                                  &= \frac{y(1 - a^L_j) - (1 - y) a^L_j}{a^L_j (1 - a^L_j)} \\
-                                  &= \frac{y - y a^L_j - a^L_j + y a^L_j}{a^L_j (1 - a^L_j)} \\
-                                  &= \frac{y - a^L_j}{a^L_j (1 - a^L_j)} \\
-\end{align}
-%]]></script>
-
-<script type="math/tex">\frac{\partial a^L_j}{\partial z^L_j}</script> は、<script type="math/tex">a^L_j = \sigma (z^L_j)</script>で、
-<p>シグモイド関数の微分は：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{align}
-\sigma(z)^\prime &= \left( \frac{1}{1 + e^{-z}} \right)^\prime \\
-                 &= \left( (1 + e^{-z}) ^ {-1} \right)^\prime \\
-                 &= -1 (1 + e^{-z}) ^ {-2} \cdot (-1) e^{-z} \\
-                 &= \frac{e^{-z}}{(1 + e^{-z})^2} \\
-                 &= \frac{1}{1 + e^{-z}} \cdot \frac{e^{-z}}{1 + e^{-z}} \\
-                 &= \frac{1}{1 + e^{-z}} \cdot \frac{1 + e^{-z} - 1}{1 + e^{-z}} \\
-                 &= \frac{1}{1 + e^{-z}} \cdot \left( 1 - \frac{1}{1 + e^{-z}} \right) \\
-                 &= \sigma(z) \cdot \left( 1 - \sigma(z) \right) \\
-\end{align}
-%]]></script>
-
-<p>より、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{align}
-\frac{\partial a^L_j}{\partial z^L_j} &= \sigma(z^L_j) \cdot \left( 1 - \sigma(z^L_j) \right) \\
-                                      &= a^L_j \cdot \left( 1 - a^L_j \right)
-\end{align}
-%]]></script>
-
-<p>これを式に代入すると：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{align}
-\delta^L_j &= \frac{\partial C}{\partial a^L_j} \cdot \frac{\partial a^L_j}{\partial z^L_j} \\
-           &= \left\{ \frac{y - a^L_j}{a^L_j (1 - a^L_j)} \right\} \cdot \left\{ a^L_j (1 - a^L_j) \right\} \\
-           &= y - a^L_j
-\end{align}
-%]]></script>
-
-<p>と、<script type="math/tex">\sigma(z)^\prime</script>が出てこないきれいな式になる。</p>
-<p>この結果を<a href="/blog/2015/11/27/back-propagation.html" title="誤差拡散法">誤差拡散法</a>の出力層に当てはめればよい。</p>
+<p>これで望みの動作になりました…やりたいことは単純なのにすんなりいかんな…という印象。</p>
 
 
                 
@@ -321,7 +277,7 @@ C(\mathbf{x}) = y \ln a + (1 - y) \ln (1 - a)
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/05/dl-brief-historical-review.html" title="「ディープラーニングの最も重要なアイディア」" rel="bookmark">「ディープラーニングの最も重要なアイディア」</a></h3></div></li></ul>
+                
             </div>
 
             <!-- Comments -->
