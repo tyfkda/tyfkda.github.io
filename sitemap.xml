@@ -101,7 +101,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/assets/tweenjs-scale-plugin.html</loc>
+    <loc>https://tyfkda.github.io/assets/square_duty.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -110,7 +110,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/assets/square_duty.html</loc>
+    <loc>https://tyfkda.github.io/assets/tweenjs-scale-plugin.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -182,7 +182,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/assets/raytrace/reflection.html</loc>
+    <loc>https://tyfkda.github.io/assets/raytrace/refraction.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -191,7 +191,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/assets/raytrace/refraction.html</loc>
+    <loc>https://tyfkda.github.io/assets/raytrace/reflection.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -263,7 +263,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2018/05/28/xv6.html</loc>
+    <loc>https://tyfkda.github.io/blog/2015/09/09/yaml.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -272,7 +272,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/09/09/yaml.html</loc>
+    <loc>https://tyfkda.github.io/blog/2018/05/28/xv6.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -299,7 +299,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/03/01/x68k-emu.html</loc>
+    <loc>https://tyfkda.github.io/blog/2013/09/11/xbyak-jit.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -308,7 +308,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/09/11/xbyak-jit.html</loc>
+    <loc>https://tyfkda.github.io/blog/2015/03/01/x68k-emu.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -326,15 +326,6 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/10/09/xcode-unity.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://tyfkda.github.io/blog/2015/09/26/xcodeapi.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -344,7 +335,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/01/08/xcodeproj-compiler-flags.html</loc>
+    <loc>https://tyfkda.github.io/blog/2014/12/10/xcodeproj-copy-bundle-resources.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -353,7 +344,16 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2014/12/10/xcodeproj-copy-bundle-resources.html</loc>
+    <loc>https://tyfkda.github.io/blog/2015/10/09/xcode-unity.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://tyfkda.github.io/blog/2015/01/08/xcodeproj-compiler-flags.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -407,7 +407,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2020/11/22/wasm-bin-format.html</loc>
+    <loc>https://tyfkda.github.io/blog/2011/12/25/webgl-test.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -416,7 +416,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2011/12/25/webgl-test.html</loc>
+    <loc>https://tyfkda.github.io/blog/2020/11/22/wasm-bin-format.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -560,15 +560,6 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/01/28/unity-android-plugin.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://tyfkda.github.io/blog/2017/06/15/unique_ptr-forward-decl.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -578,7 +569,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2018/08/29/unity-culling-shader.html</loc>
+    <loc>https://tyfkda.github.io/blog/2015/01/28/unity-android-plugin.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -588,6 +579,15 @@
   
   <url>
     <loc>https://tyfkda.github.io/blog/2015/07/04/unity-build-from-shell.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://tyfkda.github.io/blog/2018/08/29/unity-culling-shader.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -641,7 +641,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2019/06/29/tic-tac-toe-qlearning.html</loc>
+    <loc>https://tyfkda.github.io/blog/2016/01/29/touch-directive.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -650,7 +650,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2016/01/29/touch-directive.html</loc>
+    <loc>https://tyfkda.github.io/blog/2019/06/29/tic-tac-toe-qlearning.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -686,15 +686,6 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/11/15/type-inference.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://tyfkda.github.io/blog/2008/12/02/ucb1.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -705,6 +696,15 @@
   
   <url>
     <loc>https://tyfkda.github.io/blog/2010/01/29/uniformgrid.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://tyfkda.github.io/blog/2015/11/15/type-inference.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -731,7 +731,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2016/08/17/tensorflow-cnn.html</loc>
+    <loc>https://tyfkda.github.io/blog/2016/09/14/tensorflow-protobuf.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -740,7 +740,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2016/09/14/tensorflow-protobuf.html</loc>
+    <loc>https://tyfkda.github.io/blog/2016/08/17/tensorflow-cnn.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -812,7 +812,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/05/18/solve-slither-link.html</loc>
+    <loc>https://tyfkda.github.io/blog/2020/03/13/split-string.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -821,7 +821,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2020/03/13/split-string.html</loc>
+    <loc>https://tyfkda.github.io/blog/2013/05/18/solve-slither-link.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -884,7 +884,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/09/19/self-organizing-computer-course.html</loc>
+    <loc>https://tyfkda.github.io/blog/2014/11/07/self-script-tag.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -893,7 +893,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2014/11/07/self-script-tag.html</loc>
+    <loc>https://tyfkda.github.io/blog/2015/09/19/self-organizing-computer-course.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1028,6 +1028,15 @@
   </url>
   
   <url>
+    <loc>https://tyfkda.github.io/blog/2015/02/15/ruby-session.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://tyfkda.github.io/blog/2012/03/04/run-on-interpreter.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -1038,15 +1047,6 @@
   
   <url>
     <loc>https://tyfkda.github.io/blog/2012/09/07/run-shell-on-python.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://tyfkda.github.io/blog/2015/02/15/ruby-session.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1136,15 +1136,6 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2020/04/02/rewindable-slice.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://tyfkda.github.io/blog/2013/06/07/robot.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -1163,7 +1154,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2014/01/28/re2c-fill.html</loc>
+    <loc>https://tyfkda.github.io/blog/2020/04/02/rewindable-slice.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1173,6 +1164,15 @@
   
   <url>
     <loc>https://tyfkda.github.io/blog/2009/07/16/raycast.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://tyfkda.github.io/blog/2014/01/28/re2c-fill.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1307,7 +1307,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/02/11/printf-arg-index.html</loc>
+    <loc>https://tyfkda.github.io/blog/2015/02/11/printf-substring.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1316,7 +1316,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/02/11/printf-substring.html</loc>
+    <loc>https://tyfkda.github.io/blog/2015/02/11/printf-arg-index.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1352,7 +1352,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2014/05/24/processing-mode.html</loc>
+    <loc>https://tyfkda.github.io/blog/2014/06/05/processing-ruby-mode.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1361,7 +1361,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2014/06/05/processing-ruby-mode.html</loc>
+    <loc>https://tyfkda.github.io/blog/2014/05/24/processing-mode.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1505,6 +1505,15 @@
   </url>
   
   <url>
+    <loc>https://tyfkda.github.io/blog/2015/11/15/parsec-ast.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://tyfkda.github.io/blog/2021/05/20/parsing-func-returning-func.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -1515,15 +1524,6 @@
   
   <url>
     <loc>https://tyfkda.github.io/blog/2013/12/30/part-from-3imp.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://tyfkda.github.io/blog/2015/11/15/parsec-ast.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1604,15 +1604,6 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/01/22/opencv-mac-install.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://tyfkda.github.io/blog/2016/06/09/optcarrot.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -1622,7 +1613,25 @@
   </url>
   
   <url>
+    <loc>https://tyfkda.github.io/blog/2013/01/22/opencv-mac-install.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://tyfkda.github.io/blog/2015/09/02/multiple-coin-toss.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://tyfkda.github.io/blog/2013/03/11/mruby.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1658,15 +1667,6 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/03/11/mruby.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://tyfkda.github.io/blog/2019/07/07/nes-scrolling.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -1694,7 +1694,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2016/01/15/ng-click.html</loc>
+    <loc>https://tyfkda.github.io/blog/2016/03/30/ng-sake.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1703,7 +1703,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2016/03/30/ng-sake.html</loc>
+    <loc>https://tyfkda.github.io/blog/2016/01/15/ng-click.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1731,15 +1731,6 @@
   
   <url>
     <loc>https://tyfkda.github.io/blog/2014/12/22/mlt-color.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://tyfkda.github.io/blog/2014/12/09/modify-xcproj.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1802,6 +1793,15 @@
   </url>
   
   <url>
+    <loc>https://tyfkda.github.io/blog/2014/12/09/modify-xcproj.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://tyfkda.github.io/blog/2008/10/01/make-subdir.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -1856,7 +1856,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2008/11/28/mcgo.html</loc>
+    <loc>https://tyfkda.github.io/blog/2014/01/26/meta.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1865,7 +1865,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2014/01/26/meta.html</loc>
+    <loc>https://tyfkda.github.io/blog/2008/11/28/mcgo.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1946,7 +1946,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2012/07/31/mac-java-opengl-jogl.html</loc>
+    <loc>https://tyfkda.github.io/blog/2008/10/29/lua4-gc.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -1955,7 +1955,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2008/10/29/lua4-gc.html</loc>
+    <loc>https://tyfkda.github.io/blog/2012/07/31/mac-java-opengl-jogl.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2189,7 +2189,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/04/26/icfp2007-repair-guide.html</loc>
+    <loc>https://tyfkda.github.io/blog/2013/04/11/implement-closure.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2198,7 +2198,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/04/11/implement-closure.html</loc>
+    <loc>https://tyfkda.github.io/blog/2013/04/26/icfp2007-repair-guide.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2423,15 +2423,6 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2016/07/13/ftp-upload.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://tyfkda.github.io/blog/2014/11/01/full-canvas.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -2441,7 +2432,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/05/03/fuun-security-features.html</loc>
+    <loc>https://tyfkda.github.io/blog/2013/06/01/ga-helloworld.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2450,7 +2441,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/06/01/ga-helloworld.html</loc>
+    <loc>https://tyfkda.github.io/blog/2016/07/13/ftp-upload.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2495,7 +2486,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/02/02/gawa-native-swift-result.html</loc>
+    <loc>https://tyfkda.github.io/blog/2013/05/03/fuun-security-features.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2505,6 +2496,15 @@
   
   <url>
     <loc>https://tyfkda.github.io/blog/2014/02/11/gcc-os.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://tyfkda.github.io/blog/2015/02/02/gawa-native-swift-result.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2621,7 +2621,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2019/03/06/elf-quine.html</loc>
+    <loc>https://tyfkda.github.io/blog/2015/12/24/emacs-reload.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2630,7 +2630,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/12/24/emacs-reload.html</loc>
+    <loc>https://tyfkda.github.io/blog/2019/03/06/elf-quine.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2657,7 +2657,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/01/10/error-diffusion-gamma.html</loc>
+    <loc>https://tyfkda.github.io/blog/2014/11/18/fastclick.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2666,7 +2666,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2014/11/18/fastclick.html</loc>
+    <loc>https://tyfkda.github.io/blog/2013/01/10/error-diffusion-gamma.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2702,15 +2702,6 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2009/05/15/dft.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://tyfkda.github.io/blog/2009/07/16/diffuse-shading.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -2720,7 +2711,25 @@
   </url>
   
   <url>
+    <loc>https://tyfkda.github.io/blog/2009/05/15/dft.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://tyfkda.github.io/blog/2013/02/22/dijkstra-haskell.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://tyfkda.github.io/blog/2013/02/23/dot-matrix.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2739,15 +2748,6 @@
   
   <url>
     <loc>https://tyfkda.github.io/blog/2013/08/27/downhill-supreme.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://tyfkda.github.io/blog/2013/02/23/dot-matrix.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2945,7 +2945,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2021/02/04/c-on-browser.html</loc>
+    <loc>https://tyfkda.github.io/blog/2018/08/14/c-const.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2954,7 +2954,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2018/08/14/c-const.html</loc>
+    <loc>https://tyfkda.github.io/blog/2021/02/04/c-on-browser.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2981,7 +2981,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2016/06/10/capture-mouse.html</loc>
+    <loc>https://tyfkda.github.io/blog/2014/12/26/canvas-pixel.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -2990,7 +2990,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2014/12/26/canvas-pixel.html</loc>
+    <loc>https://tyfkda.github.io/blog/2016/06/10/capture-mouse.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3017,7 +3017,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2015/09/05/bayes-error.html</loc>
+    <loc>https://tyfkda.github.io/blog/2017/07/23/bayes-graphical-model.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3026,7 +3026,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2017/07/23/bayes-graphical-model.html</loc>
+    <loc>https://tyfkda.github.io/blog/2015/09/05/bayes-error.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3053,6 +3053,15 @@
   </url>
   
   <url>
+    <loc>https://tyfkda.github.io/blog/2015/02/04/bidirectional-path-tracing.html</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://tyfkda.github.io/blog/2019/03/23/binssearch.html</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -3063,15 +3072,6 @@
   
   <url>
     <loc>https://tyfkda.github.io/blog/2015/01/08/bounces-false.html</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://tyfkda.github.io/blog/2015/02/04/bidirectional-path-tracing.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3152,7 +3152,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2018/12/27/baremetal-ctxswtch-rpz.html</loc>
+    <loc>https://tyfkda.github.io/blog/2016/09/14/batch-norm-mnist.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3161,7 +3161,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2016/09/14/batch-norm-mnist.html</loc>
+    <loc>https://tyfkda.github.io/blog/2018/12/27/baremetal-ctxswtch-rpz.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3188,7 +3188,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2013/05/05/ai-localization.html</loc>
+    <loc>https://tyfkda.github.io/blog/2018/02/21/adv-in-jit-compilation.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3197,7 +3197,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2018/02/21/adv-in-jit-compilation.html</loc>
+    <loc>https://tyfkda.github.io/blog/2013/05/05/ai-localization.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3224,7 +3224,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2014/11/03/android-gawa-native.html</loc>
+    <loc>https://tyfkda.github.io/blog/2017/01/19/android-studio-jar.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3233,7 +3233,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2017/01/19/android-studio-jar.html</loc>
+    <loc>https://tyfkda.github.io/blog/2014/11/03/android-gawa-native.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3269,7 +3269,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2012/02/27/2week-script.html</loc>
+    <loc>https://tyfkda.github.io/blog/2012/03/03/2week-script-parser.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3278,7 +3278,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/blog/2012/03/03/2week-script-parser.html</loc>
+    <loc>https://tyfkda.github.io/blog/2012/02/27/2week-script.html</loc>
     
     <lastmod>2022-01-03</lastmod>
     
@@ -3323,14 +3323,14 @@
 
   
   <url>
-    <loc>https://tyfkda.github.io/tags/compiler/</loc>
+    <loc>https://tyfkda.github.io/tags/java/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/tags/java/</loc>
+    <loc>https://tyfkda.github.io/tags/compiler/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -3379,14 +3379,14 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/tags/os/</loc>
+    <loc>https://tyfkda.github.io/tags/probability/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/tags/probability/</loc>
+    <loc>https://tyfkda.github.io/tags/os/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -3407,6 +3407,13 @@
   </url>
   
   <url>
+    <loc>https://tyfkda.github.io/tags/cg/</loc>
+    <lastmod>2022-01-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://tyfkda.github.io/tags/algorithm/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
@@ -3421,21 +3428,7 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/tags/cg/</loc>
-    <lastmod>2022-01-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://tyfkda.github.io/tags/processing/</loc>
-    <lastmod>2022-01-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://tyfkda.github.io/tags/wasm/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -3449,6 +3442,13 @@
   </url>
   
   <url>
+    <loc>https://tyfkda.github.io/tags/wasm/</loc>
+    <lastmod>2022-01-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://tyfkda.github.io/tags/unity/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
@@ -3456,14 +3456,14 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/tags/dom/</loc>
+    <loc>https://tyfkda.github.io/tags/html/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/tags/html/</loc>
+    <loc>https://tyfkda.github.io/tags/dom/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -3526,14 +3526,14 @@
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/tags/math/</loc>
+    <loc>https://tyfkda.github.io/tags/gi/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://tyfkda.github.io/tags/gi/</loc>
+    <loc>https://tyfkda.github.io/tags/math/</loc>
     <lastmod>2022-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
