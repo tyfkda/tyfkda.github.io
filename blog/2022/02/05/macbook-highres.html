@@ -210,9 +210,10 @@
 <script src="https://gist.github.com/tyfkda/51bd043d4bbaf216a0c41282fbc0cd30.js"></script>
 
 <p>して、コンパイル：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ c++ setgetscreenres.m -framework ApplicationServices -o setgetscreenres</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ c++ setgetscreenres.m -framework ApplicationServices -o setgetscreenres</span><br><span class="line">setgetscreenres.m:35:16: warning: <span class="string">&#x27;CGDisplayBestModeForParameters&#x27;</span> is deprecated: first deprecated <span class="keyword">in</span> macOS 10.6 - No longer supported [-Wdeprecated-declarations]</span><br><span class="line">  switchMode = CGDisplayBestModeForParameters(mainDisplay, 32, h, v, NULL);</span><br><span class="line">               ^</span><br><span class="line">/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGDirectDisplay.h:474:38: note: <span class="string">&#x27;CGDisplayBestModeForParameters&#x27;</span> has been explicitly marked deprecated here</span><br><span class="line">CG_EXTERN CFDictionaryRef __nullable CGDisplayBestModeForParameters(</span><br><span class="line">                                     ^</span><br><span class="line">setgetscreenres.m:49:5: warning: <span class="string">&#x27;CGConfigureDisplayMode&#x27;</span> is deprecated: first deprecated <span class="keyword">in</span> macOS 10.6 - No longer supported [-Wdeprecated-declarations]</span><br><span class="line">    CGConfigureDisplayMode(config, display, mode);</span><br><span class="line">    ^</span><br><span class="line">/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGDisplayConfiguration.h:408:19: note: <span class="string">&#x27;CGConfigureDisplayMode&#x27;</span> has been explicitly marked deprecated here</span><br><span class="line">CG_EXTERN CGError CGConfigureDisplayMode(CGDisplayConfigRef __nullable config,</span><br><span class="line">                  ^</span><br><span class="line">2 warnings generated.</span><br></pre></td></tr></table></figure>
 
-<p>生成される実行ファイルに望みの解像度を渡すと、サポートする近い解像度に変更できる：</p>
+<p>APIがdeprecatedになってしまったようでワーニングは出るが、一応成功する。
+生成される実行ファイルに望みの解像度を渡すと、サポートする近い解像度に変更できる：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ setgetscreenres 2560 1600</span><br></pre></td></tr></table></figure>
 
 
