@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-01-28T12:59:25.260Z</updated>
+  <updated>2022-02-05T02:22:40.318Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,21 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MacBookで画面を高解像度にする</title>
+    <link href="https://tyfkda.github.io/blog/2022/02/05/macbook-highres.html"/>
+    <id>https://tyfkda.github.io/blog/2022/02/05/macbook-highres.html</id>
+    <published>2022-02-05T06:13:26.000Z</published>
+    <updated>2022-02-05T02:22:40.318Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;MacBookで、画面を広くしてとにかくたくさんの情報を表示させたい主義の人向け。&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>【VSCode】Ctrl-mで改行入力</title>
@@ -175,47 +190,6 @@
     <summary type="html">&lt;p&gt;UnityでUIの要素、&lt;code&gt;Image&lt;/code&gt;や&lt;code&gt;Text&lt;/code&gt;を生成すると&lt;code&gt;Raycast Target&lt;/code&gt;にチェックが入った状態で生成される。
 しかし表示のみでタップ操作に反応しないUI要素にはチェックしないほうが&lt;a href=&quot;https://create.unity3d.com/Unity-UI-optimization-tips&quot;&gt;負荷が低くてよい&lt;/a&gt;。
 外れた状態で生成されるようにするにはどうするか。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="unity" scheme="https://tyfkda.github.io/tags/unity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Unity】ベクトルの変換メソッド３種類</title>
-    <link href="https://tyfkda.github.io/blog/2021/07/22/unity-transform-vec3.html"/>
-    <id>https://tyfkda.github.io/blog/2021/07/22/unity-transform-vec3.html</id>
-    <published>2021-07-22T10:10:51.000Z</published>
-    <updated>2022-01-03T02:52:06.342Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;表：&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th align=&quot;left&quot;&gt;メソッド&lt;/th&gt;
-&lt;th align=&quot;left&quot;&gt;変換内容&lt;/th&gt;
-&lt;th align=&quot;left&quot;&gt;用途例&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;&lt;tr&gt;
-&lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://docs.unity3d.com/ja/current/ScriptReference/Transform.TransformDirection.html&quot;&gt;TransformDirection&lt;/a&gt;&lt;/td&gt;
-&lt;td align=&quot;left&quot;&gt;回転&lt;/td&gt;
-&lt;td align=&quot;left&quot;&gt;法線の向きを回転させる、など&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://docs.unity3d.com/ja/current/ScriptReference/Transform.TransformVector.html&quot;&gt;TransformVector&lt;/a&gt;&lt;/td&gt;
-&lt;td align=&quot;left&quot;&gt;拡縮、回転&lt;/td&gt;
-&lt;td align=&quot;left&quot;&gt;ベクトルの変換（スケールも考慮）&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://docs.unity3d.com/ja/current/ScriptReference/Transform.TransformPoint.html&quot;&gt;TransformPoint&lt;/a&gt;&lt;/td&gt;
-&lt;td align=&quot;left&quot;&gt;拡縮、回転、位置&lt;/td&gt;
-&lt;td align=&quot;left&quot;&gt;ローカル座標をグローバル座標系に変換&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;&lt;/table&gt;</summary>
     
     
     
