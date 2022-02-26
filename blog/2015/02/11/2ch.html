@@ -96,15 +96,6 @@ ex. プログラマ板：http://kanae.2ch.net/prog/subject.txt
     <!-- favicon -->
     
 
-<!-- adsense -->
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: "ca-pub-1024548460697919",
-          enable_page_level_ads: true
-     });
-</script>
-
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 
@@ -223,19 +214,6 @@ ex. プログラマ板：http://kanae.2ch.net/prog/subject.txt
 <figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">ita_url = <span class="string">&#x27;http://kanae.2ch.net/prog/&#x27;</span></span><br><span class="line">two_channel = TwoChannel.new</span><br><span class="line"><span class="comment"># スレ一覧を取得して表示</span></span><br><span class="line">threads = two_channel.get_threads(ita_url)</span><br><span class="line">threads.each <span class="keyword">do</span> <span class="params">|thread|</span></span><br><span class="line">  puts <span class="string">&quot;<span class="subst">#&#123;thread[<span class="symbol">:title</span>]&#125;</span>(<span class="subst">#&#123;thread[<span class="symbol">:res_count</span>]&#125;</span>)&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 適当にスレをピックアップして、レスを表示してみる</span></span><br><span class="line">thread = threads[threads.size / <span class="number">2</span>]</span><br><span class="line"><span class="comment">#thread = &#123;:dat_name=&gt;&quot;1383350342.dat&quot;, :title=&gt;&quot;プログラマなら艦コレやってるよな？&quot;, :res_count=&gt;&quot;49&quot;&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#etag = &quot;W/\&quot;163e1ab-221b-4ffb481293440\&quot;&quot;</span></span><br><span class="line"><span class="comment">#last_modified = &#x27;Sun, 03 Aug 2014 07:23:53 GMT&#x27;</span></span><br><span class="line"><span class="comment">#last_bytes = 0</span></span><br><span class="line"></span><br><span class="line">header = &#123;</span><br><span class="line">  <span class="comment">#&#x27;If-None-Match&#x27; =&gt; etag,</span></span><br><span class="line">  <span class="comment">#&#x27;If-Modified-Sicne&#x27; =&gt; last_modified,</span></span><br><span class="line">  <span class="comment">#&#x27;Range&#x27; =&gt; &quot;bytes=#&#123;last_bytes&#125;-&quot;,</span></span><br><span class="line">&#125;</span><br><span class="line">reses = two_channel.get_reses(ita_url, thread[<span class="symbol">:dat_name</span>], header)</span><br><span class="line">reses.each <span class="keyword">do</span> <span class="params">|res|</span></span><br><span class="line">  puts <span class="string">&quot;<span class="subst">#&#123;res[<span class="symbol">:name</span>]&#125;</span>(<span class="subst">#&#123;res[<span class="symbol">:email</span>]&#125;</span>)[<span class="subst">#&#123;res[<span class="symbol">:date</span>]&#125;</span>] <span class="subst">#&#123;res[<span class="symbol">:res_html</span>]&#125;</span>)&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
                 
-
-<div align="center">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-     style="display:block; text-align:center;"
-     data-ad-layout="in-article"
-     data-ad-format="fluid"
-     data-ad-client="ca-pub-1024548460697919"
-     data-ad-slot="4709138378"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
             </div>
 

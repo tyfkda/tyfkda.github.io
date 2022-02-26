@@ -90,15 +90,6 @@
     <!-- favicon -->
     
 
-<!-- adsense -->
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: "ca-pub-1024548460697919",
-          enable_page_level_ads: true
-     });
-</script>
-
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 
@@ -222,19 +213,6 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> renderY = <span class="number">0</span>;</span><br><span class="line">color LineBuf[];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  size(<span class="number">256</span>, <span class="number">256</span>);</span><br><span class="line">  LineBuf = <span class="keyword">new</span> color[width];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  render_line(LineBuf, width, height, renderY);</span><br><span class="line">  copy_line(LineBuf, renderY);</span><br><span class="line">  <span class="keyword">if</span> (++renderY &gt;= height) &#123;</span><br><span class="line">    noLoop();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">copy_line</span><span class="params">(color[] img, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  loadPixels();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; width; ++i) &#123;</span><br><span class="line">    pixels[y * width + i] = img[i];</span><br><span class="line">  &#125;</span><br><span class="line">  updatePixels();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 線分と球の交差判定</span></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">intersect_line_sphere</span><span class="params">(vec orig, vec dir, vec sphere_center, <span class="keyword">float</span> sphere_radius)</span> </span>&#123;</span><br><span class="line">  vec c = sphere_center;</span><br><span class="line">  vec s = orig;</span><br><span class="line">  vec d = dir;</span><br><span class="line">  <span class="keyword">float</span> r = sphere_radius;</span><br><span class="line">  vec v = s.sub(c);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">float</span> dd = sq(v.dot(d)) - (v.dot(v) - sq(r));</span><br><span class="line">  <span class="keyword">if</span> (dd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;  <span class="comment">// not intersect</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">float</span> sqdd = sqrt(dd);</span><br><span class="line">    <span class="keyword">float</span> t1 = -v.dot(d) - sqdd;</span><br><span class="line">    <span class="keyword">return</span> t1;  <span class="comment">// maybe intersect</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vec eyepos = <span class="keyword">new</span> vec(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>);</span><br><span class="line">vec sphere_center = <span class="keyword">new</span> vec(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">float</span> sphere_radius = <span class="number">0.5</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">render_line</span><span class="params">(color[] img, <span class="keyword">int</span> width, <span class="keyword">int</span> height, <span class="keyword">int</span> iy)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">float</span> w2 = width / <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">float</span> h2 = height / <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">float</span> xofs = w2 - <span class="number">0.5</span>;</span><br><span class="line">  <span class="keyword">float</span> yofs = h2 - <span class="number">0.5</span>;</span><br><span class="line">  <span class="keyword">float</span> py = -((iy - yofs) / h2);    <span class="comment">// flip Y</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;width; ++j) &#123;</span><br><span class="line">    <span class="keyword">float</span> px = (j - xofs) / w2;</span><br><span class="line">    vec raydir = (<span class="keyword">new</span> vec(px, py, <span class="number">1</span>)).normal();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">float</span> t = intersect_line_sphere(eyepos, raydir, sphere_center, sphere_radius);</span><br><span class="line">    <span class="keyword">if</span> (t &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">      img[j] = color(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      img[j] = color(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
                 
-
-<div align="center">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-     style="display:block; text-align:center;"
-     data-ad-layout="in-article"
-     data-ad-format="fluid"
-     data-ad-client="ca-pub-1024548460697919"
-     data-ad-slot="4709138378"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
             </div>
 
