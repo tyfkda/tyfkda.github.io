@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-02-05T09:50:27.310Z</updated>
+  <updated>2022-02-26T03:08:42.290Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【C++】多重継承の仮想関数呼び出しはどう実現されるか？</title>
+    <link href="https://tyfkda.github.io/blog/2022/02/26/multiple-inheritance-vtable.html"/>
+    <id>https://tyfkda.github.io/blog/2022/02/26/multiple-inheritance-vtable.html</id>
+    <published>2022-02-26T03:00:00.000Z</published>
+    <updated>2022-02-26T03:08:42.290Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;C++でクラスを多重継承した場合にどのようなコードが生成されて、 &lt;code&gt;virtual&lt;/code&gt; 関数の呼び出しがどのようになるのかを調べた。
+多重継承できるのはC++くらいだけど、JavaやC#などでインタフェースを使用する場合にも同じような動作が求められるので、どういう処理になるか推測できると思う。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
+    
+  </entry>
   
   <entry>
     <title>MacBookで画面を高解像度にする</title>
@@ -176,25 +194,6 @@
     
     
     <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Unity】UIのRayCast Targetをオフにして生成する</title>
-    <link href="https://tyfkda.github.io/blog/2021/07/26/unity-raycast-target-off.html"/>
-    <id>https://tyfkda.github.io/blog/2021/07/26/unity-raycast-target-off.html</id>
-    <published>2021-07-26T12:39:19.000Z</published>
-    <updated>2022-01-03T02:52:06.341Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;UnityでUIの要素、&lt;code&gt;Image&lt;/code&gt;や&lt;code&gt;Text&lt;/code&gt;を生成すると&lt;code&gt;Raycast Target&lt;/code&gt;にチェックが入った状態で生成される。
-しかし表示のみでタップ操作に反応しないUI要素にはチェックしないほうが&lt;a href=&quot;https://create.unity3d.com/Unity-UI-optimization-tips&quot;&gt;負荷が低くてよい&lt;/a&gt;。
-外れた状態で生成されるようにするにはどうするか。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="unity" scheme="https://tyfkda.github.io/tags/unity/"/>
     
   </entry>
   
