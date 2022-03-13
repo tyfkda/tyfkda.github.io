@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="自作Cコンパイラではすべて自分で実装してみるというつもりでCコンパイラ、プリプロセッサ、アセンブラを作ってきたが、ついに欠けている最後の要素だったリンカーを作った。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="リンカーを自作した"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>リンカーを自作した - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/03/13/elf-linker.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>リンカーを自作した</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-03-13
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/elf/">#elf</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://github.com/tyfkda/xcc/">自作Cコンパイラ</a>ではすべて自分で実装してみるというつもりでCコンパイラ、プリプロセッサ、アセンブラを作ってきたが、ついに欠けている最後の要素だったリンカーを作った。</p>
+<span id="more"></span>
+
+<p>今まではアセンブラですべてのアセンブリコードを受け取って、マシンコード生成とラベルのアドレスを解決して直接ELF形式の実行ファイルを出力していた。
+それでほとんど問題はないんだけど、リンカーが使えるとオブジェクトファイルを生成しておくことで分割コンパイルできるようになりコンパイル時間が短縮できたり、
+他のコンパイラの出力結果も使用できるようになるという利点がある。</p>
+<p>またリンカーがなくてすべてのコードを一緒にアセンブルしていることにより、ソースファイル中の <code>static</code> 変数や関数でも実際には漏れてしまっているため、プログラム全体で衝突しない名前を使う必要があるという欠点があった。</p>
+<p>アセンブラからは実行ファイルだけじゃなくオブジェクトファイルの出力もできるようにはしていたので、リンカーを用意できれば一通り揃うことになる。</p>
+<h3 id="リンカーの仕事"><a href="#リンカーの仕事" class="headerlink" title="リンカーの仕事"></a>リンカーの仕事</h3><p>リンカーは複数のオブジェクトファイルを受け取ってアドレスを計算して実行ファイルを出力するのが主な仕事となる。
+各オブジェクトファイルにはシンボルや再配置情報などが含まれているので、それらを組み合わせて処理することになる。</p>
+<h3 id="オブジェクトファイルの構造"><a href="#オブジェクトファイルの構造" class="headerlink" title="オブジェクトファイルの構造"></a>オブジェクトファイルの構造</h3><p>ELF64フォーマットのオブジェクトファイルの大雑把に解説：</p>
+<ul>
+<li>データがセクションに別れていて、それぞれ実行するマシンコードやデータなどが格納されれている</li>
+<li>シンボルは「このセクションのこのオフセット位置」というのを示していて、外部から参照する場合にどこかわかるようになっている</li>
+<li>再配置テーブルは「セクション内のこの部分は、シンボルこれこれからこのように計算する」という情報が入っている</li>
+</ul>
+<p>もう少し詳しい説明は「<a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する">ELFのオブジェクトファイル形式を生成する</a>」を見るといいかもしれない。</p>
+<h3 id="リンクの処理"><a href="#リンクの処理" class="headerlink" title="リンクの処理"></a>リンクの処理</h3><p>実際のリンクの処理の流れは、</p>
+<ol>
+<li>すべてのオブジェクトファイルを読み込む</li>
+<li>セクションに含まれるデータの種類によって分類する</li>
+<li>各セクションのアドレスを計算する（それによりシンボルのアドレスも決定される）</li>
+<li>再配置情報でデータを書き換える</li>
+<li>実行ファイル出力</li>
+</ol>
+<p>となる。</p>
+<p>以降に重要なデータの構造と扱い方を示す。</p>
+<h4 id="セクション"><a href="#セクション" class="headerlink" title="セクション"></a>セクション</h4><p>セクションの構造体は以下の通り：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  Elf64_Word    sh_name;                <span class="comment">/* Section name (string tbl index) */</span></span><br><span class="line">  Elf64_Word    sh_type;                <span class="comment">/* Section type */</span></span><br><span class="line">  Elf64_Xword   sh_flags;               <span class="comment">/* Section flags */</span></span><br><span class="line">  Elf64_Addr    sh_addr;                <span class="comment">/* Section virtual addr at execution */</span></span><br><span class="line">  Elf64_Off     sh_offset;              <span class="comment">/* Section file offset */</span></span><br><span class="line">  Elf64_Xword   sh_size;                <span class="comment">/* Section size in bytes */</span></span><br><span class="line">  Elf64_Word    sh_link;                <span class="comment">/* Link to another section */</span></span><br><span class="line">  Elf64_Word    sh_info;                <span class="comment">/* Additional section information */</span></span><br><span class="line">  Elf64_Xword   sh_addralign;           <span class="comment">/* Section alignment */</span></span><br><span class="line">  Elf64_Xword   sh_entsize;             <span class="comment">/* Entry size if section holds table */</span></span><br><span class="line">&#125; Elf64_Shdr;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>sh_type</code> がセクションタイプ<ul>
+<li><code>SHT_PROGBITS (=1)</code> がマシンコードやデータを表す<ul>
+<li><code>sh_flags</code> のビットで役割を判別：</li>
+<li><code>SHF_EXECINSTR (=1&lt;&lt;2)</code> で実行可能（マシンコード）</li>
+<li><code>SHF_WRITE (=1&lt;&lt;0)</code> で書き込み可</li>
+</ul>
+</li>
+<li><code>SHT_NOBITS (=8)</code> だと初期値のない変数（<code>.bss</code>）領域</li>
+</ul>
+</li>
+</ul>
+<h4 id="シンボル"><a href="#シンボル" class="headerlink" title="シンボル"></a>シンボル</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  Elf64_Word      st_name;</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span>   st_info;</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span>   st_other;</span><br><span class="line">  Elf64_Half      st_shndx;</span><br><span class="line">  Elf64_Addr      st_value;</span><br><span class="line">  Elf64_Xword     st_size;</span><br><span class="line">&#125; Elf64_Sym;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>st_info</code>: 下位4ビットが <code>type</code>、上位4ビットが <code>bind</code> となっている<ul>
+<li><code>bind</code> が <code>STB_LOCAL (=0)</code> で同じオブジェクトファイル内の別セクション、 <code>STB_GLOBAL (=1)</code> で別オブジェクトファイルのシンボル参照</li>
+</ul>
+</li>
+</ul>
+<h4 id="再配置情報"><a href="#再配置情報" class="headerlink" title="再配置情報"></a>再配置情報</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  Elf64_Addr      r_offset;</span><br><span class="line">  Elf64_Xword     r_info;</span><br><span class="line">  Elf64_Sxword    r_addend;</span><br><span class="line">&#125; Elf64_Rela;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>r_offset</code>: セクション内のオフセット位置</li>
+<li><code>r_addend</code>: 計算結果への加算値</li>
+<li><code>r_info</code>: 下位32ビットがタイプ、上位32ビットがシンボル<ul>
+<li>再配置タイプ（主要なもののみ）：<ul>
+<li><code>R_X86_64_64 (=1)</code>: 絶対アドレス（64ビット）</li>
+<li><code>R_X86_64_PC32 (=2)</code>: <code>PC</code> からの相対（32ビット）</li>
+<li><code>R_X86_64_PLT32 (=4)</code>: <code>PC</code> からの相対（32ビット）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>再配置情報は対応するセクションごとに出力されるので、相対アドレスを計算するための <code>PC</code> は、<code>再配置のセクションの先頭アドレス + r_offset</code> となり、実際の値は <code>シンボルのアドレス - PC + r_addend</code> となる
+（<code>STB_LOCAL</code> （＝同オブジェクトファイル別セクション）の場合は <code>セクションの先頭アドレス - PC + r_addend</code>）。</p>
+<p>再配置情報は <code>Elf64_Rela</code> 以外にも <code>Elf64_Rel</code> という <code>addend</code> がないものあるようだが自作のアセンブラからは出力されないのでひとまず保留。
+再配置タイプも他にいろいろあるが、必要なものだけ実装。</p>
+<h4 id="ELFの実行形式"><a href="#ELFの実行形式" class="headerlink" title="ELFの実行形式"></a>ELFの実行形式</h4><p>実行形式は以前から出力していたので特に新しいことはないが、「<a href="/blog/2019/03/06/elf-quine.html" title="ELF64でQuine">ELF64でQuine</a>」あたりを見るとちょっとわかるかもしれない。</p>
+<h3 id="締め"><a href="#締め" class="headerlink" title="締め"></a>締め</h3><p>ソースは <a href="https://github.com/tyfkda/xcc/blob/main/src/ld/ld.c">ld.c</a> 、
+今のところソースファイル一つで済むくらいの規模なので、案外単純だった。</p>
+<p>静的リンクしかサポートしてないしライブラリファイル.aを扱ってないので今後の課題。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://github.com/rui314/mold">rui314/mold: mold: A Modern Linker</a>: <a href="https://www.sigbus.info/compilerbook">低レイヤを知りたい人のためのCコンパイラ作成入門</a> を書いたRui Ueyama氏の作ったリンカー</li>
+</ul>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/tAMruxkwVf0?start=4164" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<ul>
+<li>mold での並列処理の説明</li>
+<li>リンカーみたく古くから作られて使われているソフトに今になって革新を起こせるなんてすごいですね</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

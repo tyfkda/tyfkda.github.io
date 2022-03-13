@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-02-26T03:28:03.465Z</updated>
+  <updated>2022-03-13T00:52:15.537Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>リンカーを自作した</title>
+    <link href="https://tyfkda.github.io/blog/2022/03/13/elf-linker.html"/>
+    <id>https://tyfkda.github.io/blog/2022/03/13/elf-linker.html</id>
+    <published>2022-03-13T00:00:00.000Z</published>
+    <updated>2022-03-13T00:52:15.537Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc/&quot;&gt;自作Cコンパイラ&lt;/a&gt;ではすべて自分で実装してみるというつもりでCコンパイラ、プリプロセッサ、アセンブラを作ってきたが、ついに欠けている最後の要素だったリンカーを作った。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+    <category term="elf" scheme="https://tyfkda.github.io/tags/elf/"/>
+    
+  </entry>
   
   <entry>
     <title>【C++】多重継承の仮想関数呼び出しはどう実現されるか？</title>
@@ -172,23 +191,6 @@
 
 &lt;h3 id=&quot;ナンバーリンクとは？&quot;&gt;&lt;a href=&quot;#ナンバーリンクとは？&quot; class</summary>
       
-    
-    
-    
-    
-    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>カックロをSATソルバーで解く</title>
-    <link href="https://tyfkda.github.io/blog/2022/01/03/kakuro-solver.html"/>
-    <id>https://tyfkda.github.io/blog/2022/01/03/kakuro-solver.html</id>
-    <published>2022-01-03T03:28:56.000Z</published>
-    <updated>2022-01-03T08:01:01.640Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2013/05/17/sudoku-sat.html&quot; title=&quot;数独のソルバーを作った&quot;&gt;数独のソルバーを作った&lt;/a&gt;ことがあったが、今度はカックロのソルバーを作ってみた。&lt;/p&gt;</summary>
     
     
     
