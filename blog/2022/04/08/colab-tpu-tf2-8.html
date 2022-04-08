@@ -10,7 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="画像処理のニューラルネットワークの解説記事とかを見ているとNetwork In Networkというものがよく参照されていて、パラメータが少なくて層を厚くできてよいということだったので試してみた。">
+        <meta name="description" content="Google ColaboratoryのランタイムタイプのハードウェアアクセラレータでGPU以外にも「TPU」が選べる。
+TPUを使用する場合にコードの変更が必要だった。">
     
 
     <!--Author-->
@@ -20,7 +21,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="Network In Networkを動かしてみた"/>
+        <meta property="og:title" content="GoogleColabでTPUを使う（TensorFlow 2.8）"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +43,7 @@
 
     <!-- Title -->
     
-    <title>Network In Networkを動かしてみた - Kludge Factory</title>
+    <title>GoogleColabでTPUを使う（TensorFlow 2.8） - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +68,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/10/05/network-in-network.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/04/08/colab-tpu-tf2-8.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -161,13 +162,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>Network In Networkを動かしてみた</h1>
+                    <h1>GoogleColabでTPUを使う（TensorFlow 2.8）</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2016-10-05
+                            2022-04-08
                         
                     </span>
                 </div>
@@ -183,44 +184,57 @@
 
             <!-- Tags and categories -->
            
-                <div class="col-lg-4 col-md-5 post-tags">
-                    
-                        
-
-
-<a href="/tags/machine-learning/">#machine learning</a>
-
-
-                    
-                </div>
-                <div class="col-lg-4 col-md-5 post-categories">
-                    
-                </div>
-            
 
             <!-- Gallery -->
             
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>画像処理のニューラルネットワークの解説記事とかを見ているとNetwork In Networkというものがよく参照されていて、パラメータが少なくて層を厚くできてよいということだったので試してみた。</p>
+                <p>Google ColaboratoryのランタイムタイプのハードウェアアクセラレータでGPU以外にも「TPU」が選べる。
+TPUを使用する場合にコードの変更が必要だった。</p>
 <span id="more"></span>
 
-<h3 id="論文"><a href="#論文" class="headerlink" title="論文"></a>論文</h3><p>論文は<a href="http://arxiv.org/pdf/1312.4400v3.pdf">Network In Network</a>。従来の畳込みニューラルネットワークではパッチ内の畳み込みを線形モデル（Generalized Linear Model, GLM）で行っているが、これは線形分離可能であることを仮定している。
-これを多層パーセプトロンを使った<strong>マイクロネットワーク</strong>に置き換えることによって一般化する。</p>
-<p>さらに、従来の畳込みニューラルネットワークでは畳み込んだあとに全結合層で接続して望みのクラスかどうかの分類を行うが、畳込み層で作られた特徴マップがどのように使われるのかブラックボックスになってしまう。
-それをこの論文では、全結合層を入れずに全体を平均プーリングして(Global Average Pooling)望みのクラス分の特徴マップに変換し、直接判定する。</p>
-<h3 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h3><p>これをどうやって実装するのかなとググったところ、<a href="https://github.com/tflearn/tflearn/blob/master/examples/images/network_in_network.py">TFLearnの例</a>が見つかった。
-ソースを見てみると、5x5の<code>conv_2d</code>の後に1x1の<code>conv_2d</code>を２回とか、全然違うじゃん！と思ったんだけど、これでいいらしい。
-1x1で2段階の畳み込みをすることで、各ピクセル位置に対する特徴をニューラルネットワークで学習することになる。
-（でも1x1の畳み込みは1回でいいんじゃないかと思うんだけど？）</p>
-<h3 id="動作"><a href="#動作" class="headerlink" title="動作"></a>動作</h3><p>でNetwork In NetworkをMNISTに対して動かしてみたけどあまり性能が出なくて、89%くらいにしかならなかった。
-また1x1の畳み込みをせずに、全結合層の代わりにGlobal Average Poolingだけを適用してみたけど、それも性能は良くなかった。</p>
-<p><a href="http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html#4d4e495354">Classification datasets results</a>にはエラー率0.47%と書かれているので、なんか実装をミスっているんだろうか…。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="http://qiita.com/muddydixon/items/11ce0e7352c82bc07fcc">[論文] Network In Network - Qiita</a></li>
-</ul>
 
+<h3 id="あらまし"><a href="#あらまし" class="headerlink" title="あらまし"></a>あらまし</h3><p>書籍「AlphaZero 人工知能プログラミング実践入門」の３章３節「畳み込みニューラルネットワークで画像分類」ではCIFAR-10の画像分類を行うが、
+その後半でGoogleColabのランタイムタイプをTPUにする際の変更点が示されている。
+指示通りに動かしてみようとしたところバージョンの違いか、エラーが出てしまう。
+これを動くようにしてみた。</p>
+<p>本が想定しているバージョン（執筆時点：2019年5月）：</p>
+<ul>
+<li>Python 3.6.7</li>
+<li>tensorflow 1.13.1</li>
+</ul>
+<p>動かしたバージョン：</p>
+<ul>
+<li>tensorflow 2.8.0</li>
+</ul>
+<h3 id="修正点"><a href="#修正点" class="headerlink" title="修正点"></a>修正点</h3><p>本には作成したモデルを <code>tf.contrib.tpu.keras_to_tpu_model</code> でTPU用に変換するよう書かれているが、<code>contrib</code> は統合され、コンバートする関数はなくなったぽい。
+<a href="https://colab.research.google.com/notebooks/tpu.ipynb#scrollTo=FpvUOuC3j27n">TPUs in Colab - Colaboratory</a> を参考する。</p>
+<h4 id="TPUの初期化"><a href="#TPUの初期化" class="headerlink" title="TPUの初期化"></a>TPUの初期化</h4><figure class="highlight py"><table><tr><td class="code"><pre><span class="line">%tensorflow_version <span class="number">2.</span>x</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Tensorflow version &quot;</span> + tf.__version__)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">  tpu = tf.distribute.cluster_resolver.TPUClusterResolver()  <span class="comment"># TPU detection</span></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;Running on TPU &#x27;</span>, tpu.cluster_spec().as_dict()[<span class="string">&#x27;worker&#x27;</span>])</span><br><span class="line"><span class="keyword">except</span> ValueError:</span><br><span class="line">  <span class="keyword">raise</span> BaseException(<span class="string">&#x27;ERROR: Not connected to a TPU runtime; please see the previous cell in this notebook for instructions!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">tf.config.experimental_connect_to_cluster(tpu)</span><br><span class="line">tf.tpu.experimental.initialize_tpu_system(tpu)</span><br><span class="line">tpu_strategy = tf.distribute.TPUStrategy(tpu)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>「TPUs in Colab」のままだと <code>WARNING:absl:`tf.distribute.experimental.TPUStrategy` is deprecated, please use  the non experimental symbol `tf.distribute.TPUStrategy` instead.</code> というワーニングが出ているので、 <a href="https://www.tensorflow.org/api_docs/python/tf/distribute/TPUStrategy"><code>tf.distribute.TPUStrategy</code></a> に変更する</li>
+</ul>
+<h4 id="モデルの作成"><a href="#モデルの作成" class="headerlink" title="モデルの作成"></a>モデルの作成</h4><p>モデルの作成は、直接行う代わりに <code>with</code> にスコープを指定した状態で行う：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tpu_strategy.scope():</span><br><span class="line">  <span class="comment"># モデルの作成</span></span><br><span class="line">  model = Sequential()</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h3><p>以上の修正でTPUで動くようになった。</p>
+<ul>
+<li><a href="https://colab.research.google.com/drive/1lZjV8mV5pWIL1Web5FA8F0gLGcFfrOdb?usp=sharing">全ソース</a></li>
+<li>GPU 207.707秒に対して、TPU 178.723秒（GPUに対し1.16倍高速）でした<ul>
+<li>より複雑なモデルなら効果は大きいかもしれない</li>
+</ul>
+</li>
+<li>TPUの場合はバッチサイズは <code>tpu_strategy.num_replicas_in_sync</code> から決定するほうがいい？
+下手に変更するとAccuracyに影響が出る。</li>
+<li>TensorFlowのバージョンが変わるたびに修正が必要なのは困ったもんだ…<ul>
+<li><code>config.experimental_connect_to_cluster</code> とか、また <code>tpu</code> には <code>experimental</code> しかないのでこれも後々修正になるんだろう</li>
+<li>オプティマイザの <code>Adam</code> に渡す引数が <code>lr</code> だとワーニングで <code>learning_rate</code> に修正する必要がある</li>
+</ul>
+</li>
+</ul>
+<iframe sandbox="allow-popups allow-scripts allow-modals allow-forms allow-same-origin" style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=tyfkda-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=4862464505&linkId=1ac0128d2a7d2b3b7d554c6e13ac2887"></iframe>
 
                 
 
@@ -230,7 +244,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
+                
             </div>
 
             <!-- Comments -->

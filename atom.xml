@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-03-13T00:52:15.537Z</updated>
+  <updated>2022-04-08T10:36:51.233Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,22 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>GoogleColabでTPUを使う（TensorFlow 2.8）</title>
+    <link href="https://tyfkda.github.io/blog/2022/04/08/colab-tpu-tf2-8.html"/>
+    <id>https://tyfkda.github.io/blog/2022/04/08/colab-tpu-tf2-8.html</id>
+    <published>2022-04-08T10:30:00.000Z</published>
+    <updated>2022-04-08T10:36:51.233Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Google ColaboratoryのランタイムタイプのハードウェアアクセラレータでGPU以外にも「TPU」が選べる。
+TPUを使用する場合にコードの変更が必要だった。&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>リンカーを自作した</title>
@@ -168,28 +184,6 @@
       
       
     <summary type="html">&lt;a href=&quot;/blog/2022/01/03/kakuro-solver.html&quot; title=&quot;おととい&quot;&gt;おととい&lt;/a&gt;、&lt;a href=&quot;/blog/2022/01/04/numberlink-solver.html&quot; title=&quot;昨日&quot;&gt;昨日&lt;/a&gt;に引き続き</summary>
-      
-    
-    
-    
-    
-    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ナンバーリンクをSATソルバーで解く</title>
-    <link href="https://tyfkda.github.io/blog/2022/01/04/numberlink-solver.html"/>
-    <id>https://tyfkda.github.io/blog/2022/01/04/numberlink-solver.html</id>
-    <published>2022-01-04T00:11:56.000Z</published>
-    <updated>2022-01-05T00:34:48.783Z</updated>
-    
-    
-      
-      
-    <summary type="html">&lt;a href=&quot;/blog/2022/01/03/kakuro-solver.html&quot; title=&quot;昨日&quot;&gt;昨日&lt;/a&gt;に引き続き、今度はナンバーリンクのソルバーを作ってみた。
-
-&lt;h3 id=&quot;ナンバーリンクとは？&quot;&gt;&lt;a href=&quot;#ナンバーリンクとは？&quot; class</summary>
       
     
     

@@ -10,8 +10,6 @@
 
     <!--Description-->
     
-        <meta name="description" content="画像処理のニューラルネットワークの解説記事とかを見ているとNetwork In Networkというものがよく参照されていて、パラメータが少なくて層を厚くできてよいということだったので試してみた。">
-    
 
     <!--Author-->
     
@@ -20,7 +18,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="Network In Networkを動かしてみた"/>
+        <meta property="og:title" content="Kludge Factory"/>
     
 
     <!--Open Graph Description-->
@@ -31,7 +29,7 @@
 
     <!--Type page-->
     
-        <meta property="og:type" content="article" />
+        <meta property="og:type" content="website" />
     
 
     <!--Page Cover-->
@@ -42,7 +40,7 @@
 
     <!-- Title -->
     
-    <title>Network In Networkを動かしてみた - Kludge Factory</title>
+    <title>アーカイブ: 2022/4 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +65,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/10/05/network-in-network.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/archive/2022/04/"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -153,97 +151,52 @@
 </nav>
 
     <!-- Main Content -->
-    <!-- Page Header -->
-<!-- Set your background image for this header in your post front-matter: cover -->
+    
 
+<!-- Page Header -->
+<!-- Set your background image for this header in the theme's configuration: index_cover -->
 <header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <h1>Network In Networkを動かしてみた</h1>
-                    
-                    <span class="meta">
-                        <!-- Date and Author -->
-                        
-                        
-                            2016-10-05
-                        
-                    </span>
+                <div class="site-heading">
+                    <h1>2022/4</h1>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
-
-            <!-- Tags and categories -->
-           
-                <div class="col-lg-4 col-md-5 post-tags">
-                    
-                        
-
-
-<a href="/tags/machine-learning/">#machine learning</a>
-
-
-                    
-                </div>
-                <div class="col-lg-4 col-md-5 post-categories">
-                    
-                </div>
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             
+                <div class="post-preview">
+    <a href="/blog/2022/04/08/colab-tpu-tf2-8.html">
+        <h1 class="post-title archive">
+            GoogleColabでTPUを使う（TensorFlow 2.8）
+        </h1>
+    </a>
+    <p class="post-meta archive">
+        <!-- Date and Author -->
+        
+        2022-04-08
 
-            <!-- Gallery -->
+        
+
+    </p>
+</div>
             
-
-            <!-- Post Main Content -->
-            <div class="col-lg-9 col-md-9">
-                <p>画像処理のニューラルネットワークの解説記事とかを見ているとNetwork In Networkというものがよく参照されていて、パラメータが少なくて層を厚くできてよいということだったので試してみた。</p>
-<span id="more"></span>
-
-<h3 id="論文"><a href="#論文" class="headerlink" title="論文"></a>論文</h3><p>論文は<a href="http://arxiv.org/pdf/1312.4400v3.pdf">Network In Network</a>。従来の畳込みニューラルネットワークではパッチ内の畳み込みを線形モデル（Generalized Linear Model, GLM）で行っているが、これは線形分離可能であることを仮定している。
-これを多層パーセプトロンを使った<strong>マイクロネットワーク</strong>に置き換えることによって一般化する。</p>
-<p>さらに、従来の畳込みニューラルネットワークでは畳み込んだあとに全結合層で接続して望みのクラスかどうかの分類を行うが、畳込み層で作られた特徴マップがどのように使われるのかブラックボックスになってしまう。
-それをこの論文では、全結合層を入れずに全体を平均プーリングして(Global Average Pooling)望みのクラス分の特徴マップに変換し、直接判定する。</p>
-<h3 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h3><p>これをどうやって実装するのかなとググったところ、<a href="https://github.com/tflearn/tflearn/blob/master/examples/images/network_in_network.py">TFLearnの例</a>が見つかった。
-ソースを見てみると、5x5の<code>conv_2d</code>の後に1x1の<code>conv_2d</code>を２回とか、全然違うじゃん！と思ったんだけど、これでいいらしい。
-1x1で2段階の畳み込みをすることで、各ピクセル位置に対する特徴をニューラルネットワークで学習することになる。
-（でも1x1の畳み込みは1回でいいんじゃないかと思うんだけど？）</p>
-<h3 id="動作"><a href="#動作" class="headerlink" title="動作"></a>動作</h3><p>でNetwork In NetworkをMNISTに対して動かしてみたけどあまり性能が出なくて、89%くらいにしかならなかった。
-また1x1の畳み込みをせずに、全結合層の代わりにGlobal Average Poolingだけを適用してみたけど、それも性能は良くなかった。</p>
-<p><a href="http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html#4d4e495354">Classification datasets results</a>にはエラー率0.47%と書かれているので、なんか実装をミスっているんだろうか…。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="http://qiita.com/muddydixon/items/11ce0e7352c82bc07fcc">[論文] Network In Network - Qiita</a></li>
+            <div class="archive-before-pagination"></div>
+            <ul class="pager">
+    
+    
 </ul>
-
-
-                
-
-            </div>
-
-            <!-- Related posts -->
-            <div class="related-posts col-lg-3 col-md-3">
-                <hr>
-                <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
-            </div>
-
-            <!-- Comments -->
-            
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    
-
-
-                </div>
-            
         </div>
     </div>
-</article>
+</div>
+
 
     <!-- Footer -->
     <hr />
