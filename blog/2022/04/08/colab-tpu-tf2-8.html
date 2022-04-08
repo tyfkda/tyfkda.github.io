@@ -209,20 +209,20 @@ TPUを使用する場合にコードの変更が必要だった。</p>
 <li>tensorflow 2.8.0</li>
 </ul>
 <h3 id="修正点"><a href="#修正点" class="headerlink" title="修正点"></a>修正点</h3><p>本には作成したモデルを <code>tf.contrib.tpu.keras_to_tpu_model</code> でTPU用に変換するよう書かれているが、<code>contrib</code> は統合され、コンバートする関数はなくなったぽい。
-<a href="https://colab.research.google.com/notebooks/tpu.ipynb#scrollTo=FpvUOuC3j27n">TPUs in Colab - Colaboratory</a> を参考する。</p>
+<a href="https://colab.research.google.com/notebooks/tpu.ipynb#scrollTo=FpvUOuC3j27n">TPUs in Colab - Colaboratory</a> を参考にする。</p>
 <h4 id="TPUの初期化"><a href="#TPUの初期化" class="headerlink" title="TPUの初期化"></a>TPUの初期化</h4><figure class="highlight py"><table><tr><td class="code"><pre><span class="line">%tensorflow_version <span class="number">2.</span>x</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Tensorflow version &quot;</span> + tf.__version__)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">  tpu = tf.distribute.cluster_resolver.TPUClusterResolver()  <span class="comment"># TPU detection</span></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;Running on TPU &#x27;</span>, tpu.cluster_spec().as_dict()[<span class="string">&#x27;worker&#x27;</span>])</span><br><span class="line"><span class="keyword">except</span> ValueError:</span><br><span class="line">  <span class="keyword">raise</span> BaseException(<span class="string">&#x27;ERROR: Not connected to a TPU runtime; please see the previous cell in this notebook for instructions!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">tf.config.experimental_connect_to_cluster(tpu)</span><br><span class="line">tf.tpu.experimental.initialize_tpu_system(tpu)</span><br><span class="line">tpu_strategy = tf.distribute.TPUStrategy(tpu)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>「TPUs in Colab」のままだと <code>WARNING:absl:`tf.distribute.experimental.TPUStrategy` is deprecated, please use  the non experimental symbol `tf.distribute.TPUStrategy` instead.</code> というワーニングが出ているので、 <a href="https://www.tensorflow.org/api_docs/python/tf/distribute/TPUStrategy"><code>tf.distribute.TPUStrategy</code></a> に変更する</li>
 </ul>
-<h4 id="モデルの作成"><a href="#モデルの作成" class="headerlink" title="モデルの作成"></a>モデルの作成</h4><p>モデルの作成は、直接行う代わりに <code>with</code> にスコープを指定した状態で行う：</p>
+<h4 id="モデルの作成"><a href="#モデルの作成" class="headerlink" title="モデルの作成"></a>モデルの作成</h4><p>モデルの作成は、直接行う代わりに <code>with</code> にストラテジのスコープを指定した状態で行う：</p>
 <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> tpu_strategy.scope():</span><br><span class="line">  <span class="comment"># モデルの作成</span></span><br><span class="line">  model = Sequential()</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h3><p>以上の修正でTPUで動くようになった。</p>
 <ul>
 <li><a href="https://colab.research.google.com/drive/1lZjV8mV5pWIL1Web5FA8F0gLGcFfrOdb?usp=sharing">全ソース</a></li>
-<li>GPU 207.707秒に対して、TPU 178.723秒（GPUに対し1.16倍高速）でした<ul>
+<li>GPU 207.707秒に対して、TPU 178.723秒でした（GPUに対し1.16倍高速）<ul>
 <li>より複雑なモデルなら効果は大きいかもしれない</li>
 </ul>
 </li>
