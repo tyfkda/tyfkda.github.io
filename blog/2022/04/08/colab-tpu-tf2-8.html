@@ -221,13 +221,15 @@ TPUを使用する場合にコードの変更が必要だった。</p>
 
 <h3 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h3><p>以上の修正でTPUで動くようになった。</p>
 <ul>
-<li><a href="https://colab.research.google.com/drive/1lZjV8mV5pWIL1Web5FA8F0gLGcFfrOdb?usp=sharing">全ソース</a></li>
+<li><a href="https://colab.research.google.com/drive/16wvjva8BeiKrQHde7-xhmXYoAqcpOtCR?usp=sharing">全ソース</a></li>
 <li>GPU 207.707秒に対して、TPU 178.723秒でした（GPUに対し1.16倍高速）<ul>
 <li>より複雑なモデルなら効果は大きいかもしれない</li>
+<li>本にはGPU 6,800秒、TPU 225秒と書いてあり、当時とはGPUのスペックが変わったのかも</li>
 </ul>
 </li>
 <li>TPUの場合はバッチサイズは <code>tpu_strategy.num_replicas_in_sync</code> から決定するほうがいい？
 下手に変更するとAccuracyに影響が出る。</li>
+<li>TPUの場合には推論のテスト時に『「学習データ数」 と「バッチサイズ」は「TPUコアの数」で割り切れる必要があります』として10から16に変更するよう書いてあるが、そうしなくても動いた</li>
 <li>TensorFlowのバージョンが変わるたびに修正が必要なのは困ったもんだ…<ul>
 <li><code>config.experimental_connect_to_cluster</code> とか、また <code>tpu</code> には <code>experimental</code> しかないのでこれも後々修正になるんだろう</li>
 <li>オプティマイザの <code>Adam</code> に渡す引数が <code>lr</code> だとワーニングで <code>learning_rate</code> に修正する必要がある</li>
