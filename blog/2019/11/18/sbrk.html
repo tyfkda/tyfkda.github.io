@@ -11,9 +11,9 @@
     <!--Description-->
     
         <meta name="description" content="C言語での malloc のお手本実装がK&amp;amp;Rの本に載っていて（リンク）、
-その中で実際にヒープとして使えるメモリ領域をOSに要求するシステムコールとして sbrk というものを使っている。
-これをlibcを使わずにシステムコールの直接呼び出しで同様のことを行いたい。
-libc関数を調べるま">
+その中で実際にヒープとして使えるメモリ領域をOSに要求するライブラリ関数として sbrk というものを使っている。
+これをCのライブラリを使わずにシステムコールの直接呼び出しで同様のことを行いたい。
+libc関数を調">
     
 
     <!--Author-->
@@ -207,14 +207,14 @@ libc関数を調べるま">
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
                 <p>C言語での <code>malloc</code> のお手本実装がK&amp;Rの本に載っていて（<a href="https://stackoverflow.com/q/13159564/6667631">リンク</a>）、
-その中で実際にヒープとして使えるメモリ領域をOSに要求するシステムコールとして <code>sbrk</code> というものを使っている。</p>
-<p>これをlibcを使わずにシステムコールの直接呼び出しで同様のことを行いたい。</p>
-<h3 id="libc関数を調べる"><a href="#libc関数を調べる" class="headerlink" title="libc関数を調べる"></a>libc関数を調べる</h3><p>まずはlibcの <code>brk</code>、<code>sbrk</code> 関数がどんなものかを調べると以下の通り：</p>
+その中で実際にヒープとして使えるメモリ領域をOSに要求するライブラリ関数として <code>sbrk</code> というものを使っている。</p>
+<p>これをCのライブラリを使わずにシステムコールの直接呼び出しで同様のことを行いたい。</p>
+<h3 id="libc関数を調べる"><a href="#libc関数を調べる" class="headerlink" title="libc関数を調べる"></a>libc関数を調べる</h3><p>まずは <code>brk</code>、<code>sbrk</code> 関数がどんなものかを調べると以下の通り：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">brk</span><span class="params">(<span class="keyword">void</span> *addr)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">sbrk</span><span class="params">(<span class="keyword">intptr_t</span> increment)</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p><code>brk</code> でデータセグメントの最後のアドレスを変更、 <code>sbrk</code> は増分を指定することができる。
 ヒープを増やすだけでOSに返却しないのであれば <code>brk</code> は使わずに、メモリが必要になったら <code>sbrk</code> を呼び出して取得したアドレスを使用すればよい。</p>
-<h3 id="システムコールを調べる"><a href="#システムコールを調べる" class="headerlink" title="システムコールを調べる"></a>システムコールを調べる</h3><p>libcの助けを借りずにシステムコールだけで実現したいので、まずは64bit Linuxのシステムコールを調べる：</p>
+<h3 id="システムコールを調べる"><a href="#システムコールを調べる" class="headerlink" title="システムコールを調べる"></a>システムコールを調べる</h3><p>ライブラリcの助けを借りずにシステムコールだけで実現したいので、まずは64bit Linuxのシステムコールを調べる：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ grep sbrk &lt; /usr/include/asm/unistd_64.h  <span class="comment"># 結果：なし</span></span><br></pre></td></tr></table></figure>
 
 <p>結果が空ということで、 <code>sbrk</code> はシステムコールではなかった…。
