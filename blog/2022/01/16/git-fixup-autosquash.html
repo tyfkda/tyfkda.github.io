@@ -250,7 +250,13 @@
 <p>これによって修正コミットを <code>git fix &lt;対象コミット&gt;</code> とすることで、自動的に変更を対象コミットに適用できる：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git fix 904b22f</span><br><span class="line">（エディタが開く）</span><br><span class="line">pick 904b22f １つ目のコミット</span><br><span class="line">fixup ed580bc fixup! １つ目のコミット</span><br><span class="line">pick 107caa8 ２つ目のコミット</span><br></pre></td></tr></table></figure>
 
-<p>エディタも開かずに勝手に適用して欲しいが、そこまではわからなかった。</p>
+<p><del>エディタも開かずに勝手に適用して欲しいが、そこまではわからなかった。</del>
+以下に追記：</p>
+<h4 id="エディタを開かずに修正する"><a href="#エディタを開かずに修正する" class="headerlink" title="エディタを開かずに修正する"></a>エディタを開かずに修正する</h4><p><a href="https://stackoverflow.com/a/68048841">Git interactive rebase without opening the editor - Stack Overflow</a>
+にエディタを開かない方法が書かれていた。
+<code>rebase</code> のオプションに <code>-c sequence.editor=:</code> を指定すればよい：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># .gitconfig</span><br><span class="line">[alias]</span><br><span class="line">	...</span><br><span class="line">	fix = &quot;!sh -c &#x27;git commit --fixup $1 &amp;&amp; git -c sequence.editor=: rebase -i --autosquash $1~1 --autostash&#x27; -&quot;</span><br></pre></td></tr></table></figure>
+
 <h3 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h3><ul>
 <li><a href="https://git-scm.com/docs/git-commit">Git - git-commit Documentation</a></li>
 <li><a href="https://git-scm.com/docs/git-rebase">Git - git-rebase Documentation</a></li>
@@ -265,7 +271,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/18/git-flow.html" title="git-flowコマンドラインツールをgithub-flowとして使う" rel="bookmark">git-flowコマンドラインツールをgithub-flowとして使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/17/git-log.html" title="自分が今日一日何をしたのか調べる(gitのlogから)" rel="bookmark">自分が今日一日何をしたのか調べる(gitのlogから)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/23/git-my-alias.html" title="【git】まれに使用するエイリアス６選" rel="bookmark">【git】まれに使用するエイリアス６選</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/07/git-worktree.html" title="gh-pagesをサブディレクトリ内で管理" rel="bookmark">gh-pagesをサブディレクトリ内で管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/10/22/pull-request.html" title="GitHubでプルリクエストを送るときの操作手順" rel="bookmark">GitHubでプルリクエストを送るときの操作手順</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/18/git-flow.html" title="git-flowコマンドラインツールをgithub-flowとして使う" rel="bookmark">git-flowコマンドラインツールをgithub-flowとして使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/17/git-log.html" title="自分が今日一日何をしたのか調べる(gitのlogから)" rel="bookmark">自分が今日一日何をしたのか調べる(gitのlogから)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/07/git-worktree.html" title="gh-pagesをサブディレクトリ内で管理" rel="bookmark">gh-pagesをサブディレクトリ内で管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/23/git-my-alias.html" title="【git】まれに使用するエイリアス６選" rel="bookmark">【git】まれに使用するエイリアス６選</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/10/22/pull-request.html" title="GitHubでプルリクエストを送るときの操作手順" rel="bookmark">GitHubでプルリクエストを送るときの操作手順</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
