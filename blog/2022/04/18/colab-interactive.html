@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Google Colaboratoryでボードゲームの対戦といった、リアルタイムではないインタラクティブな処理をさせる方法を調べた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="GoogleColabでインタラクティブな処理をする"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>GoogleColabでインタラクティブな処理をする - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/04/18/colab-interactive.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>GoogleColabでインタラクティブな処理をする</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-04-18
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Google Colaboratoryでボードゲームの対戦といった、リアルタイムではないインタラクティブな処理をさせる方法を調べた。</p>
+<span id="more"></span>
+
+<h3 id="あらまし"><a href="#あらまし" class="headerlink" title="あらまし"></a>あらまし</h3><p>書籍「AlphaZero 人工知能プログラミング実践入門」の「人間とAIの対戦」では
+ローカル環境でPythonのGUIライブラリTkinterを使用して動かすよう書かれている。
+しかし他にAnacondaやTensorFlowなどの環境を構築しないといけないので面倒。
+なので対戦もColab上で動かしたい。</p>
+<p>当初は <code>print</code> での盤面表示と１行入力でいいかと思ってたんだけど、プロポーショナルフォントなので幅がずれるのとキーボード入力が手間だったので、
+グラフィックス表示やボタン入力ができないかと調べてみた。</p>
+<h3 id="グラフィックス表示"><a href="#グラフィックス表示" class="headerlink" title="グラフィックス表示"></a>グラフィックス表示</h3><p><a href="https://qiita.com/kaityo256/items/ce34f412ceec1b72755d">Google ColaboratoryでPILで何か描画して表示する - Qiita</a>
+を参考に、PILの <code>Image</code> を使用してみた。
+<a href="https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html"><code>ImageDraw</code></a> でプリミティブの描画（<code>line</code>, <code>rectangle</code>, <code>ellipse</code> など）ができる：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image, ImageDraw</span><br><span class="line">im = Image.new(<span class="string">&#x27;RGB&#x27;</span>, (<span class="number">512</span>, <span class="number">512</span>))</span><br><span class="line">draw = ImageDraw.Draw(im)</span><br><span class="line">draw.rectangle((<span class="number">0</span>, <span class="number">0</span>, <span class="number">512</span>, <span class="number">512</span>), fill=(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>))</span><br><span class="line">draw.ellipse((<span class="number">64</span>, <span class="number">64</span>, <span class="number">192</span>, <span class="number">192</span>), fill=(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>), outline=(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>))</span><br><span class="line">draw.line((<span class="number">500</span>, <span class="number">12</span>, <span class="number">12</span>, <span class="number">500</span>), fill=(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>), width=<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> display</span><br><span class="line">display(im)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="UI表示"><a href="#UI表示" class="headerlink" title="UI表示"></a>UI表示</h3><p>Coalb上でボタンなどのUIを表示するには <code>ipywidgets</code> モジュール（Jupyter Widgets）が使える。</p>
+<p>ボードゲームの盤面のようなグリッド状の要素は <a href="https://ipywidgets.readthedocs.io/en/latest/examples/Widget%20Styling.html#The-Grid-layout"><code>GridBox</code></a> が使える。
+子要素に <a href="https://ipywidgets.readthedocs.io/en/latest/examples/Widget%20List.html#Button"><code>Button</code></a> を指定して、クリックを判定できるようにする：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> ipywidgets <span class="keyword">import</span> Button, Layout, GridBox</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_button</span>(<span class="params">i</span>):</span></span><br><span class="line">  button = Button(description=<span class="built_in">str</span>(i), layout=Layout(width=<span class="string">&#x27;50px&#x27;</span>, height=<span class="string">&#x27;50px&#x27;</span>))</span><br><span class="line">  button.on_click(<span class="keyword">lambda</span> _: <span class="built_in">print</span>(i))</span><br><span class="line">  <span class="keyword">return</span> button</span><br><span class="line"></span><br><span class="line">GridBox(</span><br><span class="line">    children=[create_button(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>)],</span><br><span class="line">    layout=Layout(</span><br><span class="line">        grid_template_columns=<span class="string">&#x27;repeat(3, 50px)&#x27;</span>,</span><br><span class="line">        grid_template_rows=<span class="string">&#x27;repeat(3, 50px)&#x27;</span>,</span><br><span class="line">        grid_gap=<span class="string">&#x27;4px&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>button.on_click(...)</code> でクリック判定</li>
+</ul>
+<h4 id="UI表示後の処理"><a href="#UI表示後の処理" class="headerlink" title="UI表示後の処理"></a>UI表示後の処理</h4><p>人間の入力を促すためにUIを表示したら、Colabのセルは実行から抜けることになる。
+ボタンがクリックされたら処理を続けるようにするため、 <code>on_click</code> に指定したコールバック内で続きの処理を行えるようにしておく。</p>
+<h3 id="セルの出力クリア"><a href="#セルの出力クリア" class="headerlink" title="セルの出力クリア"></a>セルの出力クリア</h3><p>三目並べ程度なら各手番の盤面の状態を出力したままにして続けて表示でもいいんだけど、かさばるし過去のUIが操作されると気持ち悪いのでクリアしてやる：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> clear_output</span><br><span class="line">clear_output()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://stackoverflow.com/a/52755439">How to Clear Python Output Programatically in Google Colaboratory? - Stack Overflow</a></li>
+<li>実行したセルの出力のみクリアされる</li>
+</ul>
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><script src="https://gist.github.com/tyfkda/7823a7ab0ebbd0ef6eb76f1a116c4911.js"></script>
+
+<h4 id="動かし方"><a href="#動かし方" class="headerlink" title="動かし方"></a>動かし方</h4><ul>
+<li><a href="https://www.borndigital.co.jp/book/14383.html">AlphaZero 深層学習・強化学習・探索 人工知能プログラミング実践入門 | ボーンデジタル</a> からファイルをダウンロード</li>
+<li>zipを展開した <code>6_7_tictactoe/model/best.h5</code> をGoogleDriveにアップロード</li>
+</ul>
+<iframe sandbox="allow-popups allow-scripts allow-modals allow-forms allow-same-origin" style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=tyfkda-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=4862464505&linkId=1ac0128d2a7d2b3b7d554c6e13ac2887"></iframe>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
