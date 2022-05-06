@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-04-18T10:04:08.794Z</updated>
+  <updated>2022-05-06T05:35:59.080Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,21 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Kerasで構築したモデルをTensorFlow.jsで動かす</title>
+    <link href="https://tyfkda.github.io/blog/2022/05/05/keras-model-on-tfjs.html"/>
+    <id>https://tyfkda.github.io/blog/2022/05/05/keras-model-on-tfjs.html</id>
+    <published>2022-05-05T09:00:00.000Z</published>
+    <updated>2022-05-06T05:35:59.080Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;TensorFlow&amp;#x2F;Kerasで構築して学習したモデルを&lt;a href=&quot;https://www.tensorflow.org/js&quot;&gt;TensorFlow.js&lt;/a&gt;で動かしてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>GoogleColabでインタラクティブな処理をする</title>
@@ -167,24 +182,6 @@ TPUを使用する場合にコードの変更が必要だった。&lt;/p&gt;</su
     
     
     <category term="git" scheme="https://tyfkda.github.io/tags/git/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Unity】ボタンのOnClickの引数にenumを使えるようにする（2020対応）</title>
-    <link href="https://tyfkda.github.io/blog/2022/01/08/unity-event-enum.html"/>
-    <id>https://tyfkda.github.io/blog/2022/01/08/unity-event-enum.html</id>
-    <published>2022-01-08T07:15:51.000Z</published>
-    <updated>2022-01-08T08:25:51.829Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;インスペクタでボタンの &lt;code&gt;OnClick&lt;/code&gt; イベントの引数に &lt;code&gt;enum&lt;/code&gt; の値も指定できるように修正した。&lt;/p&gt;
-&lt;p&gt;動作環境： Unity 2021.1.6f1&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="unity" scheme="https://tyfkda.github.io/tags/unity/"/>
     
   </entry>
   

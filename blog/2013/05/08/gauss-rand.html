@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -217,7 +217,7 @@ Z_2 &= \sqrt{−2 \log X} \sin 2\pi Y
 <p>でZ1とZ2に2つの独立した正規分布の乱数が得られるとか。sinとcosを使っているのに独立してるとか、不思議。コードにするとこんな感じか：</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Random</span></span></span><br><span class="line">  <span class="variable">@@gnext</span> = <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line">  def <span class="keyword">self</span>.gauss</span><br><span class="line">    <span class="keyword">if</span> <span class="variable">@@gnext</span></span><br><span class="line">      r = <span class="variable">@@gnext</span></span><br><span class="line">      <span class="variable">@@gnext</span> = <span class="literal">nil</span></span><br><span class="line">      <span class="keyword">return</span> r</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      x = rand</span><br><span class="line">      y = rand</span><br><span class="line">      sqrt_minus_2_logx = Math.sqrt(-<span class="number">2</span> * Math.log(x))</span><br><span class="line">      two_pi_y = <span class="number">2</span> * Math::PI * y</span><br><span class="line">      z1 = sqrt_minus_2_logx * Math.cos(two_pi_y)</span><br><span class="line">      z2 = sqrt_minus_2_logx * Math.sin(two_pi_y)</span><br><span class="line">      <span class="variable">@@gnext</span> = z2</span><br><span class="line">      <span class="keyword">return</span> z1</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
-<p>それとは別に、簡易的な方法として0.0〜1.0の一様乱数を12個足して-6.0してもいいらしい。0〜1の一様乱数の分散は1/12なのでそれを12個足し合わせると分散が1になるとかなんとか。</p>
+<p>それとは別に、簡易的な方法として0.0〜1.0の一様乱数を12個足して-6.0してもいいらしい。0〜1の一様乱数の分散は1&#x2F;12なのでそれを12個足し合わせると分散が1になるとかなんとか。</p>
 <p>この方法の場合、-6以下または6以上の値は絶対に返らないけどいいのかな。正規分布で6.0のときの値は6.08e-09で、-6〜6以外の値が出る確率も10の-7乗くらいあるので、まったくでないというほどでもない気がする。</p>
 
 

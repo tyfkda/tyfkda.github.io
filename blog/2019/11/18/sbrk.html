@@ -93,7 +93,7 @@ libc関数を調">
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -263,10 +263,10 @@ glibc  の関数によるものである。  (その他の多くの実装でも�
 <p>となっているのに、brk(2)の説明は全然カーネルじゃなくてlibcだな…。</p>
 <h3 id="ソースを出せ"><a href="#ソースを出せ" class="headerlink" title="ソースを出せ"></a>ソースを出せ</h3><p>ググってさらった二次ソースと、動かしてみての結果から勝手に推測してばっかいないで、ちゃんとソースに当たらんかい：</p>
 <ul>
-<li>brk: <a href="https://github.com/torvalds/linux/blob/af42d3466bdc8f39806b26f593604fdc54140bcb/arch/x86/entry/syscalls/syscall_64.tbl#L23">arch/x86/entry/syscalls/syscall_64.tbl</a> 64bitでは <code>12</code></li>
-<li>brk libc: <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/x86_64/brk.c;h=70f81036ac2d1b080b5823f6ebabf6b44fd7df12;hb=HEAD">sysdeps/unix/sysv/linux/x86_64/brk.c</a> <code>brk</code> システムコール呼び出し、現在の値を保存している</li>
-<li>sbrk libc: <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=misc/sbrk.c;h=96b48e99d31f807856b8bacd30f3a1abcd9bf383;hb=HEAD">misc/sbrk.c</a> <code>brk</code> を使用して実装</li>
-<li>brk syscall: <a href="https://github.com/torvalds/linux/blob/af42d3466bdc8f39806b26f593604fdc54140bcb/mm/nommu.c#L410-L433">mm/nommu.c</a> <code>mm</code> の範囲を調べて、動かしてよいようだったら動かす</li>
+<li>brk: <a href="https://github.com/torvalds/linux/blob/af42d3466bdc8f39806b26f593604fdc54140bcb/arch/x86/entry/syscalls/syscall_64.tbl#L23">arch&#x2F;x86&#x2F;entry&#x2F;syscalls&#x2F;syscall_64.tbl</a> 64bitでは <code>12</code></li>
+<li>brk libc: <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/x86_64/brk.c;h=70f81036ac2d1b080b5823f6ebabf6b44fd7df12;hb=HEAD">sysdeps&#x2F;unix&#x2F;sysv&#x2F;linux&#x2F;x86_64&#x2F;brk.c</a> <code>brk</code> システムコール呼び出し、現在の値を保存している</li>
+<li>sbrk libc: <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=misc/sbrk.c;h=96b48e99d31f807856b8bacd30f3a1abcd9bf383;hb=HEAD">misc&#x2F;sbrk.c</a> <code>brk</code> を使用して実装</li>
+<li>brk syscall: <a href="https://github.com/torvalds/linux/blob/af42d3466bdc8f39806b26f593604fdc54140bcb/mm/nommu.c#L410-L433">mm&#x2F;nommu.c</a> <code>mm</code> の範囲を調べて、動かしてよいようだったら動かす</li>
 </ul>
 <p>これらの参照先が自分が使っている環境のものなのかどうかの保証はできないが…。</p>
 

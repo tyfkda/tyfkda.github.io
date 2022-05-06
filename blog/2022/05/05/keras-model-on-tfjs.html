@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="TensorFlow&amp;#x2F;Kerasで構築して学習したモデルをTensorFlow.jsで動かしてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Kerasで構築したモデルをTensorFlow.jsで動かす"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Kerasで構築したモデルをTensorFlow.jsで動かす - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/05/05/keras-model-on-tfjs.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Kerasで構築したモデルをTensorFlow.jsで動かす</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-05-05
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>TensorFlow&#x2F;Kerasで構築して学習したモデルを<a href="https://www.tensorflow.org/js">TensorFlow.js</a>で動かしてみた。</p>
+<span id="more"></span>
+
+<h3 id="あらまし"><a href="#あらまし" class="headerlink" title="あらまし"></a>あらまし</h3><p>書籍「AlphaZero 人工知能プログラミング実践入門」に沿って各ゲームの強化学習のモデルをGoogle Colab上で構築・学習させることができる。
+学習した結果を<a href="/blog/2022/04/18/colab-interactive.html" title="Colab上で動かす">Colab上で動かす</a>ことができるが、
+Tensorflow.js（以降TFJS）を使ったらブラウザでも動かせるんじゃないかと思って見てみた。</p>
+<h3 id="モデルデータのコンバート（TensorFlow1-x系）"><a href="#モデルデータのコンバート（TensorFlow1-x系）" class="headerlink" title="モデルデータのコンバート（TensorFlow1.x系）"></a>モデルデータのコンバート（TensorFlow1.x系）</h3><p>本家のTensorFlow&#x2F;Kerasで構築・学習・保存したモデル、.h5ファイルをTFJSで動かすためにはコンバートする必要がある。
+「<a href="https://www.tensorflow.org/js/tutorials/conversion/import_keras?hl=ja">Keras モデルを TensorFlow.js にインポートする</a>」では
+<code>pip</code> で <code>tensorflowjs_converter</code> をインストールしているが、TensorFlow1.x系に対応するバージョンを使用するにはどうすればいいか。</p>
+<p>pipにも <code>tensorflowjs</code> があり、そちらをインストールすることでコンバータも使えるっぽい。
+そうした場合、バージョン２未満指定 <code>pip install &#39;tensorflowjs&lt;2.0</code> でよいっぽい。</p>
+<p>コンバータもローカルじゃなくてColab上で動かした。
+.h5ファイルをGoogle Driveに置いて実行：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># TensorFlow 1.x</span></span><br><span class="line">%tensorflow_version 1.x</span><br><span class="line">!pip uninstall -y tensorflow</span><br><span class="line">!pip install tensorflow==1.15</span><br><span class="line"></span><br><span class="line">import tensorflow as tf</span><br><span class="line"><span class="built_in">print</span>(tf.__version__)</span><br><span class="line"></span><br><span class="line"><span class="comment"># tensorflow_converter</span></span><br><span class="line">!pip install <span class="string">&#x27;tensorflowjs&lt;2.0&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Google Driveをマウント</span></span><br><span class="line">from google.colab import drive</span><br><span class="line">drive.mount(<span class="string">&#x27;./drive&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># モデルファイルのコンバート（パスはよしなに）</span></span><br><span class="line">!tensorflowjs_converter --input_format keras ./drive/MyDrive/AlphaZeroBook/Reversi/best.h5 ./drive/MyDrive/AlphaZeroBook/Reversi/tfjsmodel</span><br></pre></td></tr></table></figure>
+
+<p>コンバート結果がGoogle Driveに出力されるので、それをローカルにダウンロードする。</p>
+<h3 id="TensorFlow-js-で動かす"><a href="#TensorFlow-js-で動かす" class="headerlink" title="TensorFlow.js で動かす"></a>TensorFlow.js で動かす</h3><p>コンバートしたモデルをTFJSで動かす。
+行う計算は、学習済みのモデルを使って推論するだけで、学習はしない。</p>
+<p>TFJSを動かすには <code>npm</code> の <a href="https://www.npmjs.com/package/@tensorflow/tfjs"><code>@tensorflow/tfjs</code></a> モジュールを使う。
+バージョンはこちらも <code>&lt;2.0</code> でよい。</p>
+<p>以下、TFJSで必要ないくつかの操作をメモ：</p>
+<h4 id="モデルの読み込み"><a href="#モデルの読み込み" class="headerlink" title="モデルの読み込み"></a>モデルの読み込み</h4><p><a href="https://tensorflow.google.cn/js/guide/save_load?hl=ja"><code>tf.loadLayersModel</code></a> を使う：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> tf = <span class="built_in">require</span>(<span class="string">&#x27;@tensorflow/tfjs&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// load model</span></span><br><span class="line">  <span class="keyword">const</span> path = <span class="string">&#x27;http://localhost:8080/tfjsmodel/model.json&#x27;</span></span><br><span class="line">  <span class="keyword">const</span> model = <span class="keyword">await</span> tf.loadLayersModel(path)</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>非同期なので <code>await</code> で待つ</li>
+<li>node.js で実行する場合でもローカルファイルからは読み込めず、ローカルサーバ経由する必要がある</li>
+</ul>
+<h4 id="推論"><a href="#推論" class="headerlink" title="推論"></a>推論</h4><p>モデルを使って推論するには、Pythonと同様に <code>model.predict(...)</code> を使う。</p>
+<p><code>predict</code> に与える引数や結果はテンソルなので、TFJS上でのテンソルの扱いを知る必要がある。</p>
+<h4 id="テンソルの操作"><a href="#テンソルの操作" class="headerlink" title="テンソルの操作"></a>テンソルの操作</h4><p>本家のPythonではnumpyのarrayを用いるが、TFJSではテンソルを扱う。</p>
+<table>
+<thead>
+<tr>
+<th align="left">処理内容</th>
+<th align="left">記述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">JS配列からテンソルへの変換</td>
+<td align="left"><code>let x = tf.tensor([[1, 2, 3], [4, 5, 6]])</code></td>
+</tr>
+<tr>
+<td align="left">リシェイプ</td>
+<td align="left"><code>x = x.reshape([3, 2])</code></td>
+</tr>
+<tr>
+<td align="left">推論</td>
+<td align="left"><code>const y = model.predict(x, 1)</code></td>
+</tr>
+<tr>
+<td align="left">値の取り出し（JS配列化）</td>
+<td align="left"><code>const arr = y.arraySync()</code></td>
+</tr>
+</tbody></table>
+<p>テンソルは <code>[]</code> で値を取り出せず、 <code>arraySync()</code> で配列に変換しないといけなくて結構面倒。</p>
+<p>他に、Python・numpyで用意されているさまざまな関数は、TFJSでは大抵<code>tf</code>経由で使えるようになっている：</p>
+<ul>
+<li><code>sum</code>, <code>div</code>, <code>argMax</code>, <code>zeros</code>, …</li>
+</ul>
+<h4 id="ゲーム部分"><a href="#ゲーム部分" class="headerlink" title="ゲーム部分"></a>ゲーム部分</h4><p>Colabでの学習時にPythonで記述していたゲーム部分は、そっくりJavaScriptに持ってくる必要がある。
+この辺、二度手間なのでなんとかしたい感はある…。</p>
+<h3 id="node-js-で動かす"><a href="#node-js-で動かす" class="headerlink" title="node.js で動かす"></a>node.js で動かす</h3><p>ブラウザで動かすのもいいが、node.jsを使ってターミナル上で動かすのも手軽でよい。
+その場合は <a href="https://www.npmjs.com/package/@tensorflow/tfjs-node"><code>@tensorflow/tfjs-node</code></a> か <a href="https://www.npmjs.com/package/@tensorflow/tfjs-node-gpu"><code>tfjs-node-gpu</code></a>
+をインポートに加えるとのこと。
+しかし自分の環境だと、 <code>tfjs-node</code> をインポートすると <code>reshape</code> でエラーが出てしまうため、動かせなかった：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">TypeError: backend.reshape is not a <span class="keyword">function</span></span><br></pre></td></tr></table></figure>
+
+<p>インポートしなければ動くが、ワーニングが出る：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">============================</span><br><span class="line">Hi there 👋. Looks like you are running TensorFlow.js <span class="keyword">in</span> Node.js. To speed</span><br><span class="line">things up dramatically, install our node backend, <span class="built_in">which</span> binds to TensorFlow C++,</span><br><span class="line">by running npm i @tensorflow/tfjs-node, or npm i @tensorflow/tfjs-node-gpu <span class="keyword">if</span></span><br><span class="line">you have CUDA. Then call require(<span class="string">&#x27;@tensorflow/tfjs-node&#x27;</span>); (-gpu suffix <span class="keyword">for</span></span><br><span class="line">CUDA) at the start of your program.</span><br><span class="line">Visit https://github.com/tensorflow/tfjs-node <span class="keyword">for</span> more details.</span><br><span class="line">============================</span><br></pre></td></tr></table></figure>
+
+<p>ワーニングメッセージを抑制するには <a href="https://github.com/tensorflow/tfjs/issues/5349#issuecomment-885170504">環境 <code>IS_NODE</code> を <code>false</code> にしてやる</a>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">tf.env().set(<span class="string">&#x27;IS_NODE&#x27;</span>, <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><script src="https://gist.github.com/tyfkda/11202fab6672d77a436b9a219a81b3e2.js"></script>
+
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://www.tensorflow.org/js/tutorials/conversion/import_keras?hl=ja">Keras モデルを TensorFlow.js にインポートする</a></li>
+<li><a href="https://www.tensorflow.org/js/guide/platform_environment">プラットフォームと環境  |  TensorFlow.js</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

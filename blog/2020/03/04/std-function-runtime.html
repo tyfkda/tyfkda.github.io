@@ -92,7 +92,7 @@ std::function はテンプレートで実装されているとのこ">
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -209,7 +209,7 @@ std::function はテンプレートで実装されているとのこ">
 実のところどのようなコードにコンパイルされるのか、実行時にどのくらいコストがかかるのか知らなかったので、コンパイルした結果を逆アセンブルして調べてみた。</p>
 <p><code>std::function</code> はテンプレートで実装されているとのことなので本来ならちゃんとソースを読むべきなんだろうけど、
 テンプレートライブラリのソース読解能力まるでなしマンなので出力結果から推測するだけ。</p>
-<p>使用したのは 64bit Linux/Clang++</p>
+<p>使用したのは 64bit Linux&#x2F;Clang++</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ clang++ --version</span><br><span class="line">clang version 6.0.0-1ubuntu2 (tags/RELEASE_600/final)</span><br><span class="line">Target: x86_64-pc-linux-gnu</span><br><span class="line">Thread model: posix</span><br><span class="line">InstalledDir: /usr/bin</span><br></pre></td></tr></table></figure>
 
 <p>コンパイルオプションは <code>-O2 -fno-exceptions</code> 。</p>
@@ -331,7 +331,7 @@ C++のラムダ式は <code>[=]</code> でのコピーか、 <code>[&amp;]</code
 <li><a href="https://teramonagi.hatenablog.com/entry/20120301/1330560300">Type Erasure(型消去）を使って何でも格納できる型を作成する - My Life as a Mock Quant</a></li>
 <li><a href="https://mmiyano.blogspot.com/2012/10/blog-post.html">418 I’m a teapot: 猿でも分かった～型消去技法とは</a></li>
 <li><a href="https://faithandbrave.hateblo.jp/entry/20080220/1203498818">Boost.Functionの実装技術(1) - Type Erasure - Faith and Brave - C++で遊ぼう</a></li>
-<li><a href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure">More C++ Idioms/Type Erasure - Wikibooks, open books for an open world</a></li>
+<li><a href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure">More C++ Idioms&#x2F;Type Erasure - Wikibooks, open books for an open world</a></li>
 </ul>
 </li>
 </ul>

@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -239,7 +239,7 @@
 <ul>
 <li>コントローラの名前は複数形</li>
 </ul>
-<p>config/routes.rb に、</p>
+<p>config&#x2F;routes.rb に、</p>
 <figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">resources <span class="symbol">:projects</span></span><br></pre></td></tr></table></figure>
 
 <p>を足す。</p>
@@ -250,17 +250,17 @@
 
 
 <h3 id="コントローラのアクションを追加"><a href="#コントローラのアクションを追加" class="headerlink" title="コントローラのアクションを追加"></a>コントローラのアクションを追加</h3><ul>
-<li>app/controllers/projects_controller.rb に、<code>index</code>メソッドを追加し、 app/views/projects/index.html.erb にビューを記述する</li>
+<li>app&#x2F;controllers&#x2F;projects_controller.rb に、<code>index</code>メソッドを追加し、 app&#x2F;views&#x2F;projects&#x2F;index.html.erb にビューを記述する</li>
 <li>アクションでインスタンス変数(<code>@projects</code>)に格納すれば、ビューの中でそれにアクセスできる</li>
 </ul>
 <h3 id="ホームページの変更"><a href="#ホームページの変更" class="headerlink" title="ホームページの変更"></a>ホームページの変更</h3><p>routes.rbを書き換えることで、変更できる</p>
 <figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">root <span class="string">&#x27;projects#index&#x27;</span></span><br></pre></td></tr></table></figure>
 
 
-<h3 id="全体で共通のhtmlの編集"><a href="#全体で共通のhtmlの編集" class="headerlink" title="全体で共通のhtmlの編集"></a>全体で共通のhtmlの編集</h3><p>app/views/layouts/application.html.erb</p>
+<h3 id="全体で共通のhtmlの編集"><a href="#全体で共通のhtmlの編集" class="headerlink" title="全体で共通のhtmlの編集"></a>全体で共通のhtmlの編集</h3><p>app&#x2F;views&#x2F;layouts&#x2F;application.html.erb</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line">&lt;%= image_tag &#x27;画像ファイル名&#x27; %&gt;</span><br></pre></td></tr></table></figure>
 
-<p>で画像が貼れる。画像のファイルは、app/assets/images/ に入れる。</p>
+<p>で画像が貼れる。画像のファイルは、app&#x2F;assets&#x2F;images&#x2F; に入れる。</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line">&lt;%= link_to &#x27;テキスト&#x27;, &#x27;/&#x27; %&gt;</span><br></pre></td></tr></table></figure>
 
 <p>でリンクを貼れる。</p>

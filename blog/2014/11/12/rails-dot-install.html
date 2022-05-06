@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -232,7 +232,7 @@
 <h3 id="コントローラ作成"><a href="#コントローラ作成" class="headerlink" title="コントローラ作成"></a>コントローラ作成</h3><p><code>$ rails g controller Projects</code></p>
 <ul>
 <li>コントローラの作成は複数形</li>
-<li>app/controllers/projects_controller.rb が生成される</li>
+<li>app&#x2F;controllers&#x2F;projects_controller.rb が生成される</li>
 </ul>
 <h3 id="route-設定"><a href="#route-設定" class="headerlink" title="route 設定"></a>route 設定</h3><p>作成したコントローラにブラウザからアクセスできるように、routeを設定する</p>
 <figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># config/routes.rb</span></span><br><span class="line">Rails.application.routes.draw <span class="keyword">do</span></span><br><span class="line">  <span class="comment"># 追加</span></span><br><span class="line">  resources <span class="symbol">:projects</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
@@ -243,7 +243,7 @@
 
 <h3 id="共通テンプレート"><a href="#共通テンプレート" class="headerlink" title="共通テンプレート"></a>共通テンプレート</h3><figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- app/views/layouts/application.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Taskapp<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> stylesheet_link_tag    <span class="string">&#x27;application&#x27;</span>, <span class="symbol">media:</span> <span class="string">&#x27;all&#x27;</span>, <span class="string">&#x27;data-turbolinks-track&#x27;</span> =&gt; <span class="literal">true</span> </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> javascript_include_tag <span class="string">&#x27;application&#x27;</span>, <span class="string">&#x27;data-turbolinks-track&#x27;</span> =&gt; <span class="literal">true</span> </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml">  &lt;%=</span><span class="ruby"> csrf_meta_tags </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">&lt;%=</span><span class="ruby"> <span class="keyword">yield</span> </span><span class="xml">%&gt;</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
 
-<p><code>&lt;%= image_tag &quot;logo.png&quot; %&gt;</code> でイメージタグを埋め込む。画像ファイルは app/assets/images に置く。</p>
+<p><code>&lt;%= image_tag &quot;logo.png&quot; %&gt;</code> でイメージタグを埋め込む。画像ファイルは app&#x2F;assets&#x2F;images に置く。</p>
 <p><code>&lt;%= link_to &quot;Home&quot;, projects_path %&gt;</code> でリンクの埋め込み。</p>
 <h3 id="モデルの詳細ページを作る"><a href="#モデルの詳細ページを作る" class="headerlink" title="モデルの詳細ページを作る"></a>モデルの詳細ページを作る</h3><p>一覧のビューの中でリンクを指定する：</p>
 <figure class="highlight erb"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="comment">&lt;!-- app/views/projects/index.html.erb --&gt;</span></span></span><br><span class="line"><span class="xml">&lt;%=</span><span class="ruby"> link_to project.title, project_path(project.id) </span><span class="xml">%&gt;</span></span><br></pre></td></tr></table></figure>
@@ -283,7 +283,7 @@
 <h3 id="「タスク」モデルの追加"><a href="#「タスク」モデルの追加" class="headerlink" title="「タスク」モデルの追加"></a>「タスク」モデルの追加</h3><p>タスクという、プロジェクトと１対多となるモデルを作成</p>
 <p><code>$ rails g model Task title done:boolean project:references</code></p>
 <p><code>boolean</code> で真偽値、<code>references</code>で他のモデルへの参照。</p>
-<p><code>done</code>の初期値を<code>false</code>とするために、生成されたマイグレーションファイル(db/migrate/XXXX_create_tasks.rb)に <code>default: false</code> と指定してやる。</p>
+<p><code>done</code>の初期値を<code>false</code>とするために、生成されたマイグレーションファイル(db&#x2F;migrate&#x2F;XXXX_create_tasks.rb)に <code>default: false</code> と指定してやる。</p>
 <p><code>$ rake db:migrate</code> でDBに反映</p>
 <h3 id="ProjectモデルにTaskへの指定を追加する"><a href="#ProjectモデルにTaskへの指定を追加する" class="headerlink" title="ProjectモデルにTaskへの指定を追加する"></a>ProjectモデルにTaskへの指定を追加する</h3><figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app/models/project.rb</span></span><br><span class="line">  has_many <span class="symbol">:tasks</span></span><br></pre></td></tr></table></figure>
 

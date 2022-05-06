@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -225,7 +225,7 @@
 </blockquote>
 <p>と書かれているが、まっさらの状態からのSD Cardの書き込み方がよくわからなかった…。</p>
 <p>フォーマットした状態のSD CardにいったんRaspbianのイメージを書き込んで起動させるとあれこれと<a href="https://github.com/raspberrypi/firmware/tree/master/boot">ファームとなるファイルたち？</a>が作られるので、その状態でから始める。
-MacでSD Cardの口に挿入すると /Volumes/boot/ に見えるので、ビルドした kernel.img をコピーしてやる：</p>
+MacでSD Cardの口に挿入すると &#x2F;Volumes&#x2F;boot&#x2F; に見えるので、ビルドした kernel.img をコピーしてやる：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ cp kernel.img /Volumes/boot/  <span class="comment"># kernel.imgをSD Cardにコピー</span></span><br><span class="line">$ diskutil umount /Volumes/boot/  <span class="comment"># アンマウントしてからSD Cardを取り出す</span></span><br></pre></td></tr></table></figure>
 
 <p>書き込んだらSD CardをRaspberry Pi Zeroに差し替えて起動するとLチカが動いた。</p>
@@ -277,7 +277,7 @@ led_blynkのリポジトリにある別ディレクトリの<a href="https://git
 <p><code>swtch</code>はCレベルでは書けないので、ARM用にアセンブラで書く：</p>
 <figure class="highlight as"><table><tr><td class="code"><pre><span class="line"><span class="comment">// swtch.s</span></span><br><span class="line">.globl swtch</span><br><span class="line"></span><br><span class="line"><span class="comment">// void swtch(Proc* curr, Proc* next);</span></span><br><span class="line">swtch:</span><br><span class="line">        push &#123;r0, r4, r5, r6, r7, r8, r9, r10, r11, lr&#125;  <span class="comment">// Save context and return address to the current stack.</span></span><br><span class="line">        str sp, [r0]  <span class="comment">// Save stack pointer to the current proc.</span></span><br><span class="line">        ldr sp, [r1]  <span class="comment">// Restore stack pointer from the next proc.</span></span><br><span class="line">        pop &#123;r0, r4, r5, r6, r7, r8, r9, r10, r11, pc&#125;  <span class="comment">// Restore context and return to the saved address.</span></span><br></pre></td></tr></table></figure>
 
-<p>今回のコンテキストスイッチはノンプリエンプティブ、関数呼び出して切り替えるので、保存する必要があるレジスタはARMの呼び出し規約によれば<code>r4</code>~`r11<code>。 ARMは関数を呼び出す際に戻りアドレスを保存するのにスタックではなく</code>lr`レジスタを使用するので、それもスタックに対比する。
+<p>今回のコンテキストスイッチはノンプリエンプティブ、関数呼び出して切り替えるので、保存する必要があるレジスタはARMの呼び出し規約によれば<code>r4</code>~&#96;r11<code>。 ARMは関数を呼び出す際に戻りアドレスを保存するのにスタックではなく</code>lr&#96;レジスタを使用するので、それもスタックに対比する。
 その時点のスタックポインタを現在のプロセス情報として保存する。</p>
 <p>そして次のプロセスに切り替える。
 次のプロセスのスタックポインタを取り出して<code>pop</code>でコンテキストを復帰して、また<code>lr</code>を<code>pc</code>に<code>pop</code>することで実行を再開する。</p>

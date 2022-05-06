@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -209,20 +209,20 @@
 <p>モードといっても動作は様々で、JavaScriptモードはスケッチのソースを通常のJavaモードと同じくJavaの文法で書いて、実行した時やエクスポート時にブラウザ上で動くコードを出力するようになっている。どうやってブラウザで動しているかというと、エクスポート時にはProcessingのコードをコンパイルせずにそのままhtmlに埋め込んでいて、ブラウザで読み込んだ時に<a href="http://processingjs.org/">Processing.js</a>を使ってJavaScript上でコンパイル、実行している。</p>
 <p><a href="https://github.com/jdf/processing.py">Pythonモード</a>では、スケッチ上でコードをPythonで書いて、実行するとPythonのコードがそのままJythonに渡されて、JythonからPAppletなどを呼び出して動作している。</p>
 <p>という機能があるので、自分で独自のモードを追加したい。が<a href="http://wiki.processing.org/w/Main_Page">ProcessingのWiki</a>を見てもそういう情報はない。なのでソースを参考にしつつ勝手にやってみる。</p>
-<h3 id="ディレクトリ構成"><a href="#ディレクトリ構成" class="headerlink" title="ディレクトリ構成"></a>ディレクトリ構成</h3><p>まず追加したいモードを、Processingが参照するディレクトリのmodes（Macの場合、~/Documents/Processing/modes）以下にディレクトリを作り、その中に必要なファイルを入れる。例えば新たに追加するモードをFoobarModeとした場合、</p>
+<h3 id="ディレクトリ構成"><a href="#ディレクトリ構成" class="headerlink" title="ディレクトリ構成"></a>ディレクトリ構成</h3><p>まず追加したいモードを、Processingが参照するディレクトリのmodes（Macの場合、~&#x2F;Documents&#x2F;Processing&#x2F;modes）以下にディレクトリを作り、その中に必要なファイルを入れる。例えば新たに追加するモードをFoobarModeとした場合、</p>
 <ul>
-<li>FoobarMode/<ul>
-<li>mode/<ul>
+<li>FoobarMode&#x2F;<ul>
+<li>mode&#x2F;<ul>
 <li>FoobarMode.jar</li>
 </ul>
 </li>
-<li>theme/</li>
+<li>theme&#x2F;</li>
 <li>mode.properties</li>
 <li>keywords.txt</li>
 </ul>
 </li>
 </ul>
-<p>他にexamples/やformatter/というディレクトリが使われるが、なくても動くみたい。</p>
+<p>他にexamples&#x2F;やformatter&#x2F;というディレクトリが使われるが、なくても動くみたい。</p>
 <h3 id="クラスの実装"><a href="#クラスの実装" class="headerlink" title="クラスの実装"></a>クラスの実装</h3><p>FoobarMode.jar には、<code>FoobarMode</code> という、<a href="https://github.com/processing/processing/blob/master/app%2Fsrc%2Fprocessing%2Fapp%2FMode.java">Mode</a>クラスを継承したクラスを作り、抽象メソッドを実装する。実装する必要があるメソッドは、</p>
 <ul>
 <li><code>getTitle</code></li>
@@ -244,7 +244,7 @@
 <li><code>deactivateRun</code></li>
 </ul>
 <p><code>createFormatter</code>では、Javaモードの<a href="https://github.com/processing/processing/blob/master/app%2Fsrc%2Fprocessing%2Fmode%2Fjava%2FAutoFormat.java">AutoFormat</a>をとりあえずそのまま使える。</p>
-<h3 id="Javaのコンパイル時にjarファイルを指定する"><a href="#Javaのコンパイル時にjarファイルを指定する" class="headerlink" title="Javaのコンパイル時にjarファイルを指定する"></a>Javaのコンパイル時にjarファイルを指定する</h3><p>上記のクラスをコンパイルするためには、Processingのクラスを参照する必要がある。Processingが実行時に使用しているjarファイルがどこかにあると思うので（Macの場合、/Applications/Processing.app/Contents/Java/pde.jar）、それを<code>javac -cp</code>で指定してやる：</p>
+<h3 id="Javaのコンパイル時にjarファイルを指定する"><a href="#Javaのコンパイル時にjarファイルを指定する" class="headerlink" title="Javaのコンパイル時にjarファイルを指定する"></a>Javaのコンパイル時にjarファイルを指定する</h3><p>上記のクラスをコンパイルするためには、Processingのクラスを参照する必要がある。Processingが実行時に使用しているjarファイルがどこかにあると思うので（Macの場合、&#x2F;Applications&#x2F;Processing.app&#x2F;Contents&#x2F;Java&#x2F;pde.jar）、それを<code>javac -cp</code>で指定してやる：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ javac -cp .../pde.jar ソースファイル</span><br></pre></td></tr></table></figure>
 
 <p>以上でProcessingを再起動すると、モードのプルダウンメニューに新しいモードが追加される。実際に切り替えてみると、一応は動くが、エディタでなぜか改行が効かないけど…。また当然のことながら、実行はまだできない。</p>

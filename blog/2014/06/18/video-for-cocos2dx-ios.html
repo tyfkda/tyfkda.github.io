@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -206,7 +206,7 @@
                 <p>iOSでCocos2dxを使ったアプリで動画を再生したい場合のことが<a href="http://befool.co.jp/blog/8823-scholar/cocos2d-x-study-006-movie/">cocos2d-x 勉強第6回「ムービーを再生してみる」 - 株式会社BEFOOL</a>に書いてある（そのサイトが参照しているのが<a href="http://www.gethugames.in/blog/2013/09/cocos2d-x-cross-platform-video-player-ios.html">Cocos2d-x Cross Platform Video Player – Part 1 iOS | Gethu Games – Blog</a>）。</p>
 <span id="more"></span>
 
-<p>やり方としては、cocos2dxのライブラリ内であるcocos2dx/platform/ios/CCEAGLView に手を加えて、<code>UIView</code>を継承した<code>CCEAGLView</code>に、簡単に動画を再生できるMediaPlayer.frameworkの<a href="https://developer.apple.com/library/ios/documentation/MediaPlayer/Reference/MPMoviePlayerController_Class/Reference/Reference.html">MPMoviePlayerController</a>を<a href="https://developer.apple.com/library/ios/documentation/uikit/reference/uiview_class/uiview/uiview.html#//apple_ref/occ/instm/UIView/addSubview:">addSubview</a>している。</p>
+<p>やり方としては、cocos2dxのライブラリ内であるcocos2dx&#x2F;platform&#x2F;ios&#x2F;CCEAGLView に手を加えて、<code>UIView</code>を継承した<code>CCEAGLView</code>に、簡単に動画を再生できるMediaPlayer.frameworkの<a href="https://developer.apple.com/library/ios/documentation/MediaPlayer/Reference/MPMoviePlayerController_Class/Reference/Reference.html">MPMoviePlayerController</a>を<a href="https://developer.apple.com/library/ios/documentation/uikit/reference/uiview_class/uiview/uiview.html#//apple_ref/occ/instm/UIView/addSubview:">addSubview</a>している。</p>
 <p>その通りで再生できるんだけど、これだと動画が一番上に表示されてしまって、その上にメニューとかをCocos2dxのスプライトで出そうとしても動画に隠されてしまう。それは困るということで、動画を一番下に持って行きたい。<code>addSubview</code>の代わりに、<a href="https://developer.apple.com/library/ios/documentation/uikit/reference/uiview_class/uiview/uiview.html#//apple_ref/occ/instm/UIView/insertSubview:atIndex:">insertSubview:atIndex:0</a> としてみたが、動画が変なふうに再生されてしまうようになった。詳しくは、アプリをランドスケープモード専用にしているのに、動画はポートレイトの画面レイアウトのまま再生しようとする。</p>
 <p>なんかiOSアプリの動作がよくわかってないので、どうしてそうなるのか、また解決方法もよくわからなかった。Orientationが変更された時に<code>UIWindow</code>の<code>RootViewController</code>へのコールバックが呼ばれて<code>UIView</code>の<code>CALayer</code>とかを辿るんじゃないかと勝手に想像してあれこれやってみたが、うまくいかない…。問題は<code>eaglView</code>の<code>bounds</code>がポートレイトの縦長比率になっているのが問題だと思うんだけど、どこで<code>orientation</code>をハンドリングしてるのかわからなかった。</p>
 <p>しかたがないので無理やりやってみた。まず<code>CCEAGLView</code>に動画の再生を突っ込むのはやめて、cocos2dxのプロジェクトを作成した時にiOSの機種固有ソースとして生成される<code>AppController</code>をいじる。まずヘッダにいろいろ追加する。動画の現在の再生位置とかを取得したいので、<code>MPMoviePlayerController</code>じゃなくAVFoundation.frameworkの<code>AVPlayer</code>に変更した：</p>
@@ -237,7 +237,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/10/19/cocos2d-x-js.html" title="Cocos2d-x(JS)を使ってみる" rel="bookmark">Cocos2d-x(JS)を使ってみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/14/cocos2dx-bmfont.html" title="cocos2dxで固定ピッチフォント画像を使った文字列表示" rel="bookmark">cocos2dxで固定ピッチフォント画像を使った文字列表示</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/17/cocos2dx-proguard.html" title="Cocos2dxを使ったAndroidアプリにProguardを適用する" rel="bookmark">Cocos2dxを使ったAndroidアプリにProguardを適用する</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/10/19/cocos2d-x-js.html" title="Cocos2d-x(JS)を使ってみる" rel="bookmark">Cocos2d-x(JS)を使ってみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/14/cocos2dx-bmfont.html" title="cocos2dxで固定ピッチフォント画像を使った文字列表示" rel="bookmark">cocos2dxで固定ピッチフォント画像を使った文字列表示</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

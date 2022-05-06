@@ -92,7 +92,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -214,7 +214,7 @@
 この場合処理系の管理を逃れてしまうことはないのか。
 またCの関数でmrubyのオブジェクトを作成した瞬間にGCが走った場合に、まだmrubyで管理している変数からの参照がなくて、解放されてしまったりしないのか。</p>
 <p>大昔の事しか知らないけど、Rubyの場合はC側のスタック全部を調べていた（<a href="http://loveruby.net/ja/rhg/book/gc.html">Rubyソースコード完全解説 - 第5章 ガ－ベージコレクション</a>）ので、Cの拡張モジュールではその辺のことは何も考えずにすんでいたと思うが（グローバル変数やヒープはどうしてるんだろう？）、mrubyではどうやってGCしているのかを知りたい。</p>
-<p>そのため、<a href="https://github.com/mruby/mruby/blob/master/src/gc.c">src/gc.c</a>を読んでみた。</p>
+<p>そのため、<a href="https://github.com/mruby/mruby/blob/master/src/gc.c">src&#x2F;gc.c</a>を読んでみた。</p>
 <h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><p>まず基本的な知識として、mrubyで実際のメモリ確保をする<code>allocf</code>関数によって確保したメモリには、GC対象となるものとならないものの２種類がある。
 mrubyの（単純じゃない）オブジェクトとして扱われるものだけがGC対象（マーク＆スイープされる）で、それ以外の単純なオブジェクトや内部で使うメモリなどは対象外で、手動で管理している。</p>
 <p>実際にGC対象となるのは、<code>Object</code>, <code>Class</code>, <code>String</code>, <code>Array</code>, <code>Hash</code>, <code>Range</code>, <code>Data</code>, <code>Proc</code>などで、これらのオブジェクトを確保するには<code>mrb_obj_alloc()</code>関数が使われる。
@@ -253,9 +253,9 @@ mrubyの（単純じゃない）オブジェクトとして扱われるものだ
 （生きている＋前回のGCから生成された）オブジェクトの数が<code>gc_threshold</code>を超えたらインクリメンタルGCが進められる。</p>
 <p><strong>参考：</strong></p>
 <ul>
-<li><a href="http://www.dzeta.jp/~junjis/code_reading/index.php?mruby/GC%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%C9%A4%EF%BF%BD">mruby/GC処理を読む - Code Reading Wiki</a></li>
+<li><a href="http://www.dzeta.jp/~junjis/code_reading/index.php?mruby/GC%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%C9%A4%EF%BF%BD">mruby&#x2F;GC処理を読む - Code Reading Wiki</a></li>
 <li><a href="http://d.hatena.ne.jp/authorNari/20121225/1356439305">mrubyのGC解説まとめ - GC Advent Calendar - I am Cruby!</a></li>
-<li><a href="http://wiki.livedoor.jp/author_nari/d/GC/extend/IncrementalGC">GC/extend/IncrementalGC - GCアルゴリズム詳細解説 - livedoor Wiki（ウィキ）</a></li>
+<li><a href="http://wiki.livedoor.jp/author_nari/d/GC/extend/IncrementalGC">GC&#x2F;extend&#x2F;IncrementalGC - GCアルゴリズム詳細解説 - livedoor Wiki（ウィキ）</a></li>
 </ul>
 <h3 id="作成中のオブジェクトが削除されない仕組み"><a href="#作成中のオブジェクトが削除されない仕組み" class="headerlink" title="作成中のオブジェクトが削除されない仕組み"></a>作成中のオブジェクトが削除されない仕組み</h3><p>知りたかった、C側で作成中のオブジェクトが不用意に解放されないか、という点だけど、これは<code>mrb_obj_alloc()</code>でオブジェクトを作成した段階で<code>mrb_gc_protect()</code>関数で<code>arena</code>という領域に自動的に追加されて、<code>arena</code>にあるオブジェクトは<code>root_scan_phase()</code>によってマークされるので大丈夫、ということになっていた。</p>
 <p><code>arena</code>はスタック構造(LIFO)になっていて、<code>mrb_gc_protect()</code>では<code>arena_idx</code>を増やしていくだけ、<code>arena_idx</code>が戻るのは<code>mrb_gc_arena_save()</code>で取得した<code>arena</code>の位置を<code>mrb_gc_arena_restore()</code>で復元するとき、となっている。</p>
@@ -264,7 +264,7 @@ mrubyの（単純じゃない）オブジェクトとして扱われるものだ
 <p><strong>参考：</strong></p>
 <ul>
 <li><a href="http://blog.64p.org/entry/2012/09/12/065743">“arena overflow error” で mruby がとまるときの対策 - tokuhirom’s blog.</a></li>
-<li><a href="https://github.com/mruby/mruby/issues/887">How to use mrb_gc_arena_save and mrb_gc_arena_restore? Improve API? · Issue #887 · mruby/mruby</a></li>
+<li><a href="https://github.com/mruby/mruby/issues/887">How to use mrb_gc_arena_save and mrb_gc_arena_restore? Improve API? · Issue #887 · mruby&#x2F;mruby</a></li>
 </ul>
 <p>ということで、<code>arena</code>に自動的に追加されるのでGCが適切に行われる、という仕組みだった。
 Cから<code>mrb_value</code>は取得できるけど、それを保存しておいてずっと使う、といったことはできない。
@@ -288,7 +288,7 @@ Cから<code>mrb_value</code>は取得できるけど、それを保存してお
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby-api.html" title="mrubyのAPIテスト" rel="bookmark">mrubyのAPIテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-backtrace.html" title="mrubyでエラー発生時にバックトレースを表示する" rel="bookmark">mrubyでエラー発生時にバックトレースを表示する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-voidp.html" title="mrubyでvoidpの値を扱うと死ぬ" rel="bookmark">mrubyでvoidpの値を扱うと死ぬ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby.html" title="mrubyテスト" rel="bookmark">mrubyテスト</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/12/mruby-custom-allocator.html" title="mrubyでカスタムアロケータを指定" rel="bookmark">mrubyでカスタムアロケータを指定</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-backtrace.html" title="mrubyでエラー発生時にバックトレースを表示する" rel="bookmark">mrubyでエラー発生時にバックトレースを表示する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby-api.html" title="mrubyのAPIテスト" rel="bookmark">mrubyのAPIテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-voidp.html" title="mrubyでvoidpの値を扱うと死ぬ" rel="bookmark">mrubyでvoidpの値を扱うと死ぬ</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

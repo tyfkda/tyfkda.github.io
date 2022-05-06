@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -214,7 +214,7 @@
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// HogeClass.cs</span></span><br><span class="line"><span class="keyword">using</span> System.Runtime.InteropServices;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">HogeClass</span> &#123;</span><br><span class="line">  [<span class="meta">DllImport(<span class="meta-string">&quot;__Internal&quot;</span>)</span>]</span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">hogeNative</span>(<span class="params"></span>)</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Hoge</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    hogeNative();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>Unityプロジェクト内のAssets/Plugins/iOS以下にObjective-Cのソース(.m または .mm)を配置し、Cリンケージで関数を定義する</li>
+<li>Unityプロジェクト内のAssets&#x2F;Plugins&#x2F;iOS以下にObjective-Cのソース(.m または .mm)を配置し、Cリンケージで関数を定義する</li>
 </ul>
 <figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">// hoge.mm</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="keyword">void</span> hogeNative() &#123;</span><br><span class="line">  <span class="comment">// Do something.</span></span><br><span class="line">  <span class="built_in">NSLog</span>(<span class="string">@&quot;hogeNative called&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -224,7 +224,7 @@
 <li>スタティックライブラリ(.a)を作って組み込んでもよい</li>
 <li>受け渡せる引数や戻り値の型は、intやstringなど<ul>
 <li>文字列の配列 <code>string[]</code> も <code>char**</code> として受け取れるぜ！</li>
-<li>ネイティブ側から文字列(<code>char*</code>)を返す場合には、mallocした領域を返すこと（<a href="http://d.hatena.ne.jp/nakamura001/20110714/1310669988">iPhone/iPadのプラグインを作成する方法 - 強火で進め</a>）</li>
+<li>ネイティブ側から文字列(<code>char*</code>)を返す場合には、mallocした領域を返すこと（<a href="http://d.hatena.ne.jp/nakamura001/20110714/1310669988">iPhone&#x2F;iPadのプラグインを作成する方法 - 強火で進め</a>）</li>
 </ul>
 </li>
 </ul>

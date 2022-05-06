@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -222,7 +222,7 @@ RISCV版を動かすための開発・動作環境をどう用意するのか難
 <p><code>/usr/local/bin/</code> 内にシンボリックリンクが貼られる。</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ ls /usr/<span class="built_in">local</span>/bin/riscv64-*</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-addr2line   /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gdb</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-ar	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gdb-add-index</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-as	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gprof</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-c++	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-ld</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-c++filt     /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-ld.bfd</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-cpp	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-lto-dump</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-elfedit     /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-nm</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-g++	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-objcopy</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc	       /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-objdump</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc-10.1.0  /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-ranlib</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc-ar      /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-readelf</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc-nm      /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-run</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcc-ranlib  /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-size</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcov        /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-strings</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcov-dump   /usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-strip</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/riscv64-unknown-elf-gcov-tool</span><br></pre></td></tr></table></figure>
 
-<h4 id="自分でビルドする場合"><a href="#自分でビルドする場合" class="headerlink" title="自分でビルドする場合"></a>自分でビルドする場合</h4><p><a href="https://github.com/riscv/riscv-gnu-toolchain">riscv/riscv-gnu-toolchain</a> をビルドするとのこと。
+<h4 id="自分でビルドする場合"><a href="#自分でビルドする場合" class="headerlink" title="自分でビルドする場合"></a>自分でビルドする場合</h4><p><a href="https://github.com/riscv/riscv-gnu-toolchain">riscv&#x2F;riscv-gnu-toolchain</a> をビルドするとのこと。
 <code>./configure --prefix=</code> でインストール先を指定するが、 <code>/opt/riscv</code> だと管理者権限を要求する？かよくわからなかったので、自分のホーム以下にした。</p>
 <p>で <code>make</code> すると途中エラーで失敗してしまう。
 Issueに上がっているのと同じで、 <code>free</code> 関数が定義されてないとかでコンパイルエラーが出る
@@ -248,7 +248,7 @@ RISCVのCPUをエミュレーションしている？はずなのに普通の速
 ユーザ側としてみればあまり違いはないかもしれない（そもそもそれがOSの目的だしね…）。</p>
 <p>今後触ってみてx86版との違いや、RISCV版が想定しているハードウェア構成がどうなっているのかなどを見ていきたい。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><a href="https://pdos.csail.mit.edu/6.828/2020/xv6.html">6.S081 / Fall 2020</a> MITのページ</li>
+<li><a href="https://pdos.csail.mit.edu/6.828/2020/xv6.html">6.S081 &#x2F; Fall 2020</a> MITのページ</li>
 <li><a href="https://github.com/mit-pdos/xv6-riscv">https://github.com/mit-pdos/xv6-riscv</a> XV6-RISCVのリポジトリ</li>
 <li><a href="https://pdos.csail.mit.edu/6.828/2020/xv6/book-riscv-rev1.pdf">xv6: a simple, Unix-like teaching operating system</a> ドキュメント<ul>
 <li><a href="https://www.sugawara-lab.jp/fig/xv6-riscv-jpn.pdf">xv6: シンプルで Unix 風な教育用オペレーティングシステム</a> 日本語ドキュメント</li>

@@ -91,7 +91,7 @@ Ubuntuのisoイメージ(ubuntu-ja-12.10-desktop-i386.iso)をダウンロード�
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -214,7 +214,7 @@ Ubuntuのisoイメージ(ubuntu-ja-12.10-desktop-i386.iso)をダウンロード�
 <p>を<a href="http://www.nasm.us/">nasm</a>でアセンブルし、そしてフロッピーディスクのイメージとしてサイズが合うように、後ろを0x00で埋める：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">nasm -o helloos.img helloos.asm &amp;&amp; ruby -e <span class="string">&#x27;print &quot;\0&quot; * (0x168000-0x200)&#x27;</span> &gt;&gt; helloos.img </span><br></pre></td></tr></table></figure>
 
-<p>できたファイルをVirtualBoxに食わせてやる。VirtualBoxでゲストOSを新規に追加、そのときタイプを”Other”、バージョンを”Other/Unknown”にする</p>
+<p>できたファイルをVirtualBoxに食わせてやる。VirtualBoxでゲストOSを新規に追加、そのときタイプを”Other”、バージョンを”Other&#x2F;Unknown”にする</p>
 <p>「設定」＞「ストレージ」で、「フロッピーコントローラ」を追加して、ディスクイメージとして先ほど作ったhelloos.imgを指定する</p>
 <p>そして「起動」を選ぶと、めでたく実行された</p>
 <p>Mac上で動く<a href="http://www.kju-app.org/">Q</a>というqemuがあって、そちらでも動かすことができた</p>

@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -208,24 +208,24 @@
 
 <p>RubyMotionはすげーことに、LLVMを使っているのでRubyのコードがネイティブで動くバイナリにコンパイルされるらしい。ただし約$200（20,482円）かかる。30日間は返金可能らしいが、試してない。</p>
 <p>MobiRubyはmrubyを組み込んでいるとのこと。オープンソースとのことで<a href="https://github.com/mobiruby/mobiruby-ios">github</a>から落としてGetting startedの通りrakeしたものの失敗する。<a href="https://github.com/mobiruby/mobiruby-ios/issues/35">あれ</a> <a href="https://github.com/mobiruby/mobiruby-ios/issues/31">これ</a>やってみたけど動かないので断念。</p>
-<p>ちょっと試したいだけなのでお金も出せないし、環境設定とか難しくてわからないし…ということで、自分でmrubyを組み込んでみることにした。スマホ対応のゲームエンジンであるCocos2dxはゲームのロジック部をC/C++で書く以外に、スクリプト言語でも書けるようになっていて、LuaやJavaScriptが用意されている。これに加えてmrubyを使えるようにした。</p>
+<p>ちょっと試したいだけなのでお金も出せないし、環境設定とか難しくてわからないし…ということで、自分でmrubyを組み込んでみることにした。スマホ対応のゲームエンジンであるCocos2dxはゲームのロジック部をC&#x2F;C++で書く以外に、スクリプト言語でも書けるようになっていて、LuaやJavaScriptが用意されている。これに加えてmrubyを使えるようにした。</p>
 <h3 id="mrubyのソースを取り出して組み込む"><a href="#mrubyのソースを取り出して組み込む" class="headerlink" title="mrubyのソースを取り出して組み込む"></a>mrubyのソースを取り出して組み込む</h3><p>本家の<a href="https://github.com/mruby/mruby">mrubyリポジトリ</a>のビルドはコマンドライン上からmakeとやると、minirakeが走ってなんかいろいろやるようになってる。けど自分はどういう手順で最終的なソースが生成されているのか知らないしXcodeやEclipseからそういうものを動かす方法も知らないので、コマンドライン版をビルドした生成物を使ってXcodeやEclipseにソースを組み込むことにする。</p>
 <p>必要となるソースファイルを取り出すには、</p>
 <ul>
 <li>mrubyをコマンドラインからmakeしてコンパイル、リンクしてソースをすべて生成する</li>
-<li>中間生成されたものは mruby/build/host/ 以下に出力されている</li>
-<li>生成された mruby/build/host/mrblib/mrblib.c, mruby/build/host/src/y.tab.c を取り出す</li>
-<li>リポジトリに含まれる、mruby/src/<em>.c, mruby/src/</em>.h, mruby/src/lex.def, mruby/include/* も取り出す<ul>
-<li>lex.defってリポジトリに含まれてるけど、src/mruby_core.rakeのターゲットとして書かれてるし自動生成されるものじゃないのかな？</li>
+<li>中間生成されたものは mruby&#x2F;build&#x2F;host&#x2F; 以下に出力されている</li>
+<li>生成された mruby&#x2F;build&#x2F;host&#x2F;mrblib&#x2F;mrblib.c, mruby&#x2F;build&#x2F;host&#x2F;src&#x2F;y.tab.c を取り出す</li>
+<li>リポジトリに含まれる、mruby&#x2F;src&#x2F;<em>.c, mruby&#x2F;src&#x2F;</em>.h, mruby&#x2F;src&#x2F;lex.def, mruby&#x2F;include&#x2F;* も取り出す<ul>
+<li>lex.defってリポジトリに含まれてるけど、src&#x2F;mruby_core.rakeのターゲットとして書かれてるし自動生成されるものじゃないのかな？</li>
 </ul>
 </li>
 <li>今のところmrbgemsは使わない</li>
 </ul>
 <p>これをXcodeのプロジェクトに組み込んでiOS上で動かすには、</p>
 <ul>
-<li>例えばlibs/mruby_bindigというディレクトリを作って取り出したソースを入れる</li>
+<li>例えばlibs&#x2F;mruby_bindigというディレクトリを作って取り出したソースを入れる</li>
 <li>Xcodeで、Bulid Settings &gt; Search Paths &gt; User Header Search Paths に <code>&quot;$(PROJECT_NAME)/libs/mruby_binding/include&quot;</code> を追加</li>
-<li>Build Settings &gt; Search Paths &gt; Always Search User Paths を No にする（non-recursiveにしてるのに、libs/cocos2dx/support/zip_support/unzip.cpp あたりから mruby/include/mruby/string.h が読まれてしまうっぽい）</li>
+<li>Build Settings &gt; Search Paths &gt; Always Search User Paths を No にする（non-recursiveにしてるのに、libs&#x2F;cocos2dx&#x2F;support&#x2F;zip_support&#x2F;unzip.cpp あたりから mruby&#x2F;include&#x2F;mruby&#x2F;string.h が読まれてしまうっぽい）</li>
 <li>今回gemのものは使わないので、Build Settings &gt; Apple LLVM compiler 4.2 - Preprocessing &gt; Preprocessor Macros で、DebugとRelease両方に <code>DISABLE_GEMS</code>マクロを定義する</li>
 <li><code>ENABLE_STDIO</code>は、<code>DISABLE_STDIO</code>を定義しなければ mrbconf.h で有効にされる</li>
 <li>浮動小数点数に<code>double</code>じゃなくて<code>float</code>を使うようにする <code>MRB_USE_FLOAT</code> も定義してやる</li>
@@ -233,7 +233,7 @@
 <h3 id="Cocos2dx用のmrubyスクリプトインタフェースの実装"><a href="#Cocos2dx用のmrubyスクリプトインタフェースの実装" class="headerlink" title="Cocos2dx用のmrubyスクリプトインタフェースの実装"></a>Cocos2dx用のmrubyスクリプトインタフェースの実装</h3><p>Cocos2dxのスクリプト言語のインタフェースは <code>CCScriptEngineProtocol</code> というクラスを継承し、抽象メソッドをすべて実装してやれば使えるようになる。抽象メソッドには、ファイルからスクリプトを実行する <code>executeScriptFile()</code>やレイヤーへのタッチイベントを扱う<code>executeLayerTouchesEvent()</code>などなど、多数ある。それらのメソッドを適切にmrubyに渡して処理すればよい。</p>
 <p>スクリプト側の関数をコールバックとして登録しておいてCocos2dx側から呼び出す仕組みは、Cocos2dx側にはスクリプトの関数のハンドラ（<code>int</code>の値）を登録して、コールバック時にはそのハンドラに対応する関数を呼び出す、という仕組みになっている。</p>
 <h3 id="Cocos2dxのクラスやそのメソッドのバインディング"><a href="#Cocos2dxのクラスやそのメソッドのバインディング" class="headerlink" title="Cocos2dxのクラスやそのメソッドのバインディング"></a>Cocos2dxのクラスやそのメソッドのバインディング</h3><p>Cocos2dxには大量にクラスがあり、それぞれメソッドを持っているので、ちゃんとやるのであればすべてmrubyから呼び出せるようにバインドしてやる必要がある。</p>
-<p>面倒なのは、<code>CCPoint</code>や<code>CCSize</code>などといった小さな、C/C++では実体として持つような構造体もいちいちmrubyのデータポインタとしてつつんでやって受け渡しをしないといけない。またC++側でシングルトンオブジェクトとなっているものも毎回作り直しになってしまう。</p>
+<p>面倒なのは、<code>CCPoint</code>や<code>CCSize</code>などといった小さな、C&#x2F;C++では実体として持つような構造体もいちいちmrubyのデータポインタとしてつつんでやって受け渡しをしないといけない。またC++側でシングルトンオブジェクトとなっているものも毎回作り直しになってしまう。</p>
 <p>mrubybindというある程度自動で関数やメンバ関数をバインドしてくれるライブラリは、<code>int</code>や<code>float</code>や<code>string</code>などの単純な値の引数や戻り値のものにしか使えないので、結局かなりの項目を手書きしないといけない。辛い。</p>
 <p>Luaのバインディングは<a href="http://www.codenix.com/~tolua/">tolua++</a>というのを使っている。tolua++はCのヘッダファイルのような定義ファイルを書いてツールに食わせると、スクリプトとCの関数をつなぐグルーコードを生成してくれて、それを組み込んで使うという方式。今は手で書いてるけど、将来的にはこういうものが欲しいね。</p>
 <h3 id="成果"><a href="#成果" class="headerlink" title="成果"></a>成果</h3><p>サンプルを動かすのに必要な最低限のバインダだけ用意して、Cocos2dxのLuaテンプレートと同様のものが動くようになったところで、githubに上げた。</p>
@@ -251,7 +251,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/10/19/cocos2d-x-js.html" title="Cocos2d-x(JS)を使ってみる" rel="bookmark">Cocos2d-x(JS)を使ってみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/14/cocos2dx-bmfont.html" title="cocos2dxで固定ピッチフォント画像を使った文字列表示" rel="bookmark">cocos2dxで固定ピッチフォント画像を使った文字列表示</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/17/cocos2dx-proguard.html" title="Cocos2dxを使ったAndroidアプリにProguardを適用する" rel="bookmark">Cocos2dxを使ったAndroidアプリにProguardを適用する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/10/05/cocos-notificationcenter.html" title="Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う" rel="bookmark">Cocos2dxでアプリがバックグラウンドから復帰した時の処理を簡単に行う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/10/19/cocos2d-x-js.html" title="Cocos2d-x(JS)を使ってみる" rel="bookmark">Cocos2d-x(JS)を使ってみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/14/cocos2dx-bmfont.html" title="cocos2dxで固定ピッチフォント画像を使った文字列表示" rel="bookmark">cocos2dxで固定ピッチフォント画像を使った文字列表示</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/17/cocos2dx-proguard.html" title="Cocos2dxを使ったAndroidアプリにProguardを適用する" rel="bookmark">Cocos2dxを使ったAndroidアプリにProguardを適用する</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

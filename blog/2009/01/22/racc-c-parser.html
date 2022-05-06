@@ -20,7 +20,7 @@ state 2   7) declaration : declaration_specifiers _ init_declarator_list_opt &am
 なかなか解消できなくて辛かったんだけど、 function_definition の declaration_specifiers から opt をはずすとコンフリクトが解消された。
 これだと関数の戻り値の型宣言を省略できなくなるけど、別にいいよね。
 で構文木生成のアクションを記入。
-Ruby/RaccだとC/Yaccと比べてメモリの解放に悩まなくていいし型の異なる値も入れ放題なので全然楽だわ～。
+Ruby&amp;#x2F;RaccだとC&amp;#x2F;Yaccと比べてメモリの解放に悩まなくていいし型の異なる値も入れ放題なので全然楽だわ～。
 Raccでアクションを省略すると自動的に１番目の値が返ることになってるけど、右辺がひとつだけだったら val[0] を、複数だったら val 全体を返すようにすれば自動的に構文木が生成できて楽かなーと思ったのでRaccを改造しようとしたんだけどうまくいかず…。
 BNFとか見て初めてわかったんだけど、 TYPEDEF が storage_class_specifier になってるので extern とかを書けるところすべてに typedef が書けちゃうんだね。
 なんか不思議な…。
@@ -109,7 +109,7 @@ void test[] &amp;#123; &amp;#125;
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -232,7 +232,7 @@ Rubyで<a href="http://www.loveruby.net/ja/projects/racc/">Racc</a>を使って�
 <p>なかなか解消できなくて辛かったんだけど、 <code>function_definition</code> の <code>declaration_specifiers</code> から <code>opt</code> をはずすとコンフリクトが解消された。
 これだと関数の戻り値の型宣言を省略できなくなるけど、別にいいよね。</p>
 <p>で構文木生成のアクションを記入。
-Ruby/RaccだとC/Yaccと比べてメモリの解放に悩まなくていいし型の異なる値も入れ放題なので全然楽だわ～。</p>
+Ruby&#x2F;RaccだとC&#x2F;Yaccと比べてメモリの解放に悩まなくていいし型の異なる値も入れ放題なので全然楽だわ～。</p>
 <p>Raccでアクションを省略すると自動的に１番目の値が返ることになってるけど、右辺がひとつだけだったら <code>val[0]</code> を、複数だったら <code>val</code> 全体を返すようにすれば自動的に構文木が生成できて楽かなーと思ったのでRaccを改造しようとしたんだけどうまくいかず…。</p>
 <p>BNFとか見て初めてわかったんだけど、 <code>TYPEDEF</code> が <code>storage_class_specifier</code> になってるので <code>extern</code> とかを書けるところすべてに <code>typedef</code> が書けちゃうんだね。
 なんか不思議な…。

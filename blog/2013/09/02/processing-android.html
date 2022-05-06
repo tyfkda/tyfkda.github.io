@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -206,11 +206,11 @@
                 <p>ProcessingでJBox2Dを動かすテストのプログラムをAndroidで動かしたらどうなるのかやってみた。</p>
 <span id="more"></span>
 
-<p>Processingには通常のデスクトップ上で動くモードの他に、Android上で動かすモードやJavaScriptに変換してブラウザ上で動かすモードがある。（Androidの開発環境はインストール済みの前提で）AndroidモードにしてAndroidの端末をUSBで接続して普通に実行するとAndroid用のプロジェクトが作られてビルド、インストールされて動いた。すげー。Box2Dのタイムステップ1/60秒、velocityIterations=6、positionIterations=2で吊り橋でも60FPS出てるよ。</p>
+<p>Processingには通常のデスクトップ上で動くモードの他に、Android上で動かすモードやJavaScriptに変換してブラウザ上で動かすモードがある。（Androidの開発環境はインストール済みの前提で）AndroidモードにしてAndroidの端末をUSBで接続して普通に実行するとAndroid用のプロジェクトが作られてビルド、インストールされて動いた。すげー。Box2Dのタイムステップ1&#x2F;60秒、velocityIterations&#x3D;6、positionIterations&#x3D;2で吊り橋でも60FPS出てるよ。</p>
 <p><img src="/assets/device-2013-09-02-093728.png" alt="device-2013-09-02-093728.png"></p>
 <p>どうやって動いているのかというのに興味がある。</p>
-<p>Android用のプロジェクトはテンポラリ(/var/folders/??/????/T/android??/)に作られる。エクスポートは「まだ実装してない」というエラーメッセージが出る。単にプロジェクトをどこか指定のディレクトリに吐き出してくれるだけでいいんだけど。</p>
-<p>Processingで書いたプログラムはコンパイルされて<a href="https://github.com/processing/processing/blob/master/core/src/processing/core/PApplet.java">PApplet</a>クラスを継承した１つのクラスにまとめられて、src/processing/test/プロジェクト名/プロジェクト名.javaとして作られる。
+<p>Android用のプロジェクトはテンポラリ(&#x2F;var&#x2F;folders&#x2F;??&#x2F;????&#x2F;T&#x2F;android??&#x2F;)に作られる。エクスポートは「まだ実装してない」というエラーメッセージが出る。単にプロジェクトをどこか指定のディレクトリに吐き出してくれるだけでいいんだけど。</p>
+<p>Processingで書いたプログラムはコンパイルされて<a href="https://github.com/processing/processing/blob/master/core/src/processing/core/PApplet.java">PApplet</a>クラスを継承した１つのクラスにまとめられて、src&#x2F;processing&#x2F;test&#x2F;プロジェクト名&#x2F;プロジェクト名.javaとして作られる。
 含まれるjarライブラリは processing-core.jar と今回使った jbox2d.jar のみ。よくできてるなー。</p>
 <p>起動するActivityとかはどうなってるんだろうか？AndroidManifest.xmlに書かれているのは生成されたプロジェクトのクラスで、それは単に<code>PApplet</code>を継承しているだけ。ということは<code>PApplet</code>が<code>Activity</code>を継承しているはず。</p>
 <p>Processingがgoogle code上で開発されていた頃は<a href="https://code.google.com/p/processing/source/browse/trunk/processing/android/core/src/processing/core/PApplet.java">Android用のPAppletクラス</a>が用意されていたっぽいけど、<a href="https://github.com/processing/processing">githubに移った</a>今は<a href="https://github.com/processing/processing-android">Androidモードのプロジェクト</a>が分離されているので、デスクトップで使っている<code>PApplet</code>と同じものを使っていると推測するのだが。<a href="https://github.com/processing/processing/issues/251">関連のチケット</a>もクローズになっているけどどうなっているのかよくわからなかった。</p>
@@ -224,7 +224,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/29/android-timer.html" title="Androidで定期アニメーションさせる方法" rel="bookmark">Androidで定期アニメーションさせる方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/28/android-context.html" title="AndroidのContextについて" rel="bookmark">AndroidのContextについて</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/01/19/android-studio-jar.html" title="Android Studioで.jarを作る" rel="bookmark">Android Studioで.jarを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/03/android-gawa-native.html" title="Androidでガワネイティブ" rel="bookmark">Androidでガワネイティブ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/06/22/android-zip-movie.html" title="Androidの拡張ファイルから動画を再生する" rel="bookmark">Androidの拡張ファイルから動画を再生する</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/28/android-context.html" title="AndroidのContextについて" rel="bookmark">AndroidのContextについて</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/03/android-gawa-native.html" title="Androidでガワネイティブ" rel="bookmark">Androidでガワネイティブ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/29/android-timer.html" title="Androidで定期アニメーションさせる方法" rel="bookmark">Androidで定期アニメーションさせる方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/06/22/android-zip-movie.html" title="Androidの拡張ファイルから動画を再生する" rel="bookmark">Androidの拡張ファイルから動画を再生する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/01/19/android-studio-jar.html" title="Android Studioで.jarを作る" rel="bookmark">Android Studioで.jarを作る</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

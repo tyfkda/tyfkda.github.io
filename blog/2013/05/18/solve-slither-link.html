@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -217,8 +217,8 @@
 <li>(¬A and B and ¬C and D) or</li>
 <li>(¬A and ¬B and C and D)</li>
 </ul>
-<p>となるが、SATには乗法標準形で渡す必要があって、この加法標準形を単純に乗法標準形に変換すると4の6乗=4,096節に展開される。</p>
-<p>同様に線分がループを作るという条件から、線が枝分かれしたり途中で切れたりしない、という制約を表す、各格子点に接続する4つの線分のうち2つ、または0個線が引かれるという条件になる。これも単純に展開すると、4の7乗=16,384節に展開される。</p>
+<p>となるが、SATには乗法標準形で渡す必要があって、この加法標準形を単純に乗法標準形に変換すると4の6乗&#x3D;4,096節に展開される。</p>
+<p>同様に線分がループを作るという条件から、線が枝分かれしたり途中で切れたりしない、という制約を表す、各格子点に接続する4つの線分のうち2つ、または0個線が引かれるという条件になる。これも単純に展開すると、4の7乗&#x3D;16,384節に展開される。</p>
 <p>ちょっとこれだと制約の節が多くなりすぎてしまう。幸い展開した形は、(A or ¬A)などという形が多く含まれ、そういう場合には必ず真になるので、その節は省略できる。こういう節を取り除くと、各格子点で13個、数字のマスの制約は0の場合4個、1と3の場合34個、2の場合18個に大幅に削減できる。</p>
 <p>このように節を減らした結果、8x8の問題で7.6秒ほどで解くことができた。ただ、もっと大きな問題で試したところ、36x20程度でも、ものすごく時間がかかって終わらない。このサイズの盤面で、変数が1496個、節が14,559個となるが、MiniSatで解を求めると一瞬で求まるので、HaskellのSATソルバの性能によるものだと思う。</p>
 <p>ソース長い…</p>
@@ -237,7 +237,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

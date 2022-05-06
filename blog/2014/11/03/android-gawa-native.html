@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -208,7 +208,7 @@
 
 <p><a href="https://github.com/tyfkda/GawaNativeAndroid">コード</a></p>
 <ul>
-<li>‘16/12/01: 環境をAndroidStudio、使用言語をKotlinに変更しました</li>
+<li>‘16&#x2F;12&#x2F;01: 環境をAndroidStudio、使用言語をKotlinに変更しました</li>
 </ul>
 <h2 id="WebViewを全画面の大きさで配置する"><a href="#WebViewを全画面の大きさで配置する" class="headerlink" title="WebViewを全画面の大きさで配置する"></a>WebViewを全画面の大きさで配置する</h2><p>レイアウトのxmlで指定する</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">RelativeLayout</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:tools</span>=<span class="string">&quot;http://schemas.android.com/tools&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">tools:context</span>=<span class="string">&quot;com.tyfkda.gawanativeandroid.MainActivity&quot;</span> &gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">WebView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">&quot;@+id/webView&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">&quot;match_parent&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -221,9 +221,9 @@
 
 <ul>
 <li><code>findViewById</code>でWebViewを取得して、<a href="http://developer.android.com/intl/ja/reference/android/webkit/WebView.html#loadUrl(java.lang.String)"><code>WebView#loadUrl</code></a>
-でページの読み込みを指定できる</li>
+  でページの読み込みを指定できる</li>
 <li>インターネットからウェブページを読み込むためにはAndroidManifest.xmlで<code>&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;/&gt;</code>
-を指定して、アプリでのインターネット利用を有効にする必要がある</li>
+  を指定して、アプリでのインターネット利用を有効にする必要がある</li>
 </ul>
 <h2 id="アセット内のhtmlの表示"><a href="#アセット内のhtmlの表示" class="headerlink" title="アセット内のhtmlの表示"></a>アセット内のhtmlの表示</h2><p>外部のurlではなく、アセットに含めたhtmlファイルを読み込むにはURLに<code>file:///android_asset/〜</code>と指定する</p>
 <figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Kotlin</span></span><br><span class="line">    webView.loadUrl(<span class="string">&quot;file:///android_asset/index.html&quot;</span>)</span><br></pre></td></tr></table></figure>
@@ -245,7 +245,7 @@
 
 <ul>
 <li><a href="http://developer.android.com/intl/ja/reference/android/webkit/WebView.html#addJavascriptInterface%28java.lang.Object,%20java.lang.String%29"><code>WebView#addJavascriptInterface</code></a>
-でインタフェースの登録</li>
+  でインタフェースの登録</li>
 <li>登録したインタフェースのpublicメソッドをJavaScriptから呼び出せる<ul>
 <li>型を自動的に変換してくれる、便利</li>
 <li>セキュリティ的に、Jelly Bean以降は<a href="http://developer.android.com/intl/ja/reference/android/webkit/JavascriptInterface.html">JavascriptInterfaceアノテーション</a>がついたpublicメソッドだけが呼び出せる。（<a href="http://developer.android.com/intl/ja/reference/android/webkit/JavascriptInterface.html">リファレンス</a>を参照すること）</li>
@@ -268,8 +268,8 @@
 
 <ul>
 <li>WebViewに対して <a href="http://developer.android.com/intl/ja/reference/android/webkit/WebView.html#setWebViewClient(android.webkit.WebViewClient)"><code>setWebViewClient</code></a>
-で<a href="http://developer.android.com/intl/ja/reference/android/webkit/WebViewClient.html"><code>WebViewClient</code></a>
-を登録できて、その<a href="http://developer.android.com/intl/ja/reference/android/webkit/WebViewClient.html#shouldOverrideUrlLoading%28android.webkit.WebView,%20java.lang.String%29"><code>shouldOverrideUrlLoading</code></a>でURLに対する処理を扱える<ul>
+  で<a href="http://developer.android.com/intl/ja/reference/android/webkit/WebViewClient.html"><code>WebViewClient</code></a>
+  を登録できて、その<a href="http://developer.android.com/intl/ja/reference/android/webkit/WebViewClient.html#shouldOverrideUrlLoading%28android.webkit.WebView,%20java.lang.String%29"><code>shouldOverrideUrlLoading</code></a>でURLに対する処理を扱える<ul>
 <li>横取りしてなにか処理した時には<code>true</code>を返す、そうでなくて通常の読み込みを継続する場合には <code>false</code> を返す</li>
 </ul>
 </li>
@@ -288,7 +288,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/29/android-timer.html" title="Androidで定期アニメーションさせる方法" rel="bookmark">Androidで定期アニメーションさせる方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/28/android-context.html" title="AndroidのContextについて" rel="bookmark">AndroidのContextについて</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/01/19/android-studio-jar.html" title="Android Studioで.jarを作る" rel="bookmark">Android Studioで.jarを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/06/22/android-zip-movie.html" title="Androidの拡張ファイルから動画を再生する" rel="bookmark">Androidの拡張ファイルから動画を再生する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/17/cocos2dx-proguard.html" title="Cocos2dxを使ったAndroidアプリにProguardを適用する" rel="bookmark">Cocos2dxを使ったAndroidアプリにProguardを適用する</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/28/android-context.html" title="AndroidのContextについて" rel="bookmark">AndroidのContextについて</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/29/android-timer.html" title="Androidで定期アニメーションさせる方法" rel="bookmark">Androidで定期アニメーションさせる方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/06/22/android-zip-movie.html" title="Androidの拡張ファイルから動画を再生する" rel="bookmark">Androidの拡張ファイルから動画を再生する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/01/19/android-studio-jar.html" title="Android Studioで.jarを作る" rel="bookmark">Android Studioで.jarを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/17/cocos2dx-proguard.html" title="Cocos2dxを使ったAndroidアプリにProguardを適用する" rel="bookmark">Cocos2dxを使ったAndroidアプリにProguardを適用する</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

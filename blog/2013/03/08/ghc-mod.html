@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -206,7 +206,7 @@
                 <p><a href="http://d.hatena.ne.jp/kazu-yamamoto/20130308/1362724125">静的型付き言語プログラマから見た動的型付き言語 - あどけない話</a> の「定義から書いて型注釈は自動挿入」というのをどうやるのか知らなかったのでググった。</p>
 <span id="more"></span>
 
-<p><a href="http://www.mew.org/~kazu/proj/ghc-mod/en/">ghc-mod</a>というのがそれらしい（これ自身kaz-yamamoto氏が作ったものだ）。emacs/vim上で型定義を挿入してくれる機能があるらしい。インストールの仕方などは<a href="http://d.hatena.ne.jp/kitokitoki/20111217/p1">Haskell 用の emacs カスタマイズ例 - わからん</a>を参考にした。ghc-modの実行ファイルにパスを通すのをemacs上でやるんじゃなくてシェル上でしたほうがいいかと思ったのでそうした。cabalでインストールした実行ファイルは、自分の環境(Mac, ghc-7.4.2, cabal-install 1.16.0.2)では<code> ~/Library/Haskell/bin/</code> だった。同様に、ghc-modに含まれるemacsスクリプトは <code>~/Library/Haskell/ghc-7.4.2/lib/ghc-mod-1.11.3/share/</code> にあるので、どこかいいところ (<code>~/.emacs.d/elisp/ghc-mod/</code>) にコピーしてmakeを実行。</p>
+<p><a href="http://www.mew.org/~kazu/proj/ghc-mod/en/">ghc-mod</a>というのがそれらしい（これ自身kaz-yamamoto氏が作ったものだ）。emacs&#x2F;vim上で型定義を挿入してくれる機能があるらしい。インストールの仕方などは<a href="http://d.hatena.ne.jp/kitokitoki/20111217/p1">Haskell 用の emacs カスタマイズ例 - わからん</a>を参考にした。ghc-modの実行ファイルにパスを通すのをemacs上でやるんじゃなくてシェル上でしたほうがいいかと思ったのでそうした。cabalでインストールした実行ファイルは、自分の環境(Mac, ghc-7.4.2, cabal-install 1.16.0.2)では<code> ~/Library/Haskell/bin/</code> だった。同様に、ghc-modに含まれるemacsスクリプトは <code>~/Library/Haskell/ghc-7.4.2/lib/ghc-mod-1.11.3/share/</code> にあるので、どこかいいところ (<code>~/.emacs.d/elisp/ghc-mod/</code>) にコピーしてmakeを実行。</p>
 <p>あとは .emacs にいろいろ足して、型注釈を書いてない関数の上で  <code>M-t</code> で自動挿入された。便利やわぁ…。さらにflymakeも便利やわぁ…。</p>
 
 
@@ -218,7 +218,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/15/knapsack.html" title="【Haskell】ナップサック問題を解く" rel="bookmark">【Haskell】ナップサック問題を解く</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/15/knapsack.html" title="【Haskell】ナップサック問題を解く" rel="bookmark">【Haskell】ナップサック問題を解く</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -206,7 +206,7 @@
                 <p><a href="https://jekyllrb.com/">Jekyll</a>はmarkdown形式で書けて、Githubに内容をプッシュするだけで公開できるのでとても便利なんだけど、いちいち日付からファイル名をつけたり先頭部にあれこれ情報を書く必要があって面倒だ。そこでブラウザ上で動くフロントエンドを作ることにした。ただしそれ専用にサーバプロセスを起動するのも面倒なので、ApacheのCGIで動かせるようににした。</p>
 <span id="more"></span>
 
-<p><a href="https://github.com/tyfkda/JekyllEditor">tyfkda/JekyllEditor</a></p>
+<p><a href="https://github.com/tyfkda/JekyllEditor">tyfkda&#x2F;JekyllEditor</a></p>
 <p>フロントエンドはAngularJS1.5。バックエンドは開発時にはRubyのSinatra、リリース時にはApacheのCGIを使う。</p>
 <p>バックエンドにAPIを用意してフロントエンドから叩く。操作をCRUDに対応させてRailsのようなURL規約で扱いたいが、CGIで動かしたいのでAPIのエンドポイントは固定にして、操作対象をクエリ文字列として指定することにした。しかしRuby標準のCGIモジュールがPOSTの場合にクエリ文字列を受け取れないという問題があって、しかたがないので<a href="https://github.com/tyfkda/JekyllEditor/blob/master/server%2Fmycgi.rb">自作</a>した。</p>
 <p><a href="https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0">Github pagesでのJekyllのmarkdownはkramdownとRougeが使われる</a>とのことで、エディタのプレビューでもそれぞれのgemを使って変換してやる：</p>
@@ -224,7 +224,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/21/access-directive-from-transclude.html" title="Transclude内からディレクティブにアクセスする" rel="bookmark">Transclude内からディレクティブにアクセスする</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/14/angular1-component.html" title="AngularJS1.5で親子コンポーネント間のやりとり" rel="bookmark">AngularJS1.5で親子コンポーネント間のやりとり</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/28/angularjs-page-transition-3d.html" title="AngularJSでページ遷移時に3D風アニメーションを入れてみた" rel="bookmark">AngularJSでページ遷移時に3D風アニメーションを入れてみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/24/custom-selector.html" title="AngularJS1で独自の選択ボックスを作る" rel="bookmark">AngularJS1で独自の選択ボックスを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/03/30/ng-sake.html" title="Angular2を触ってみた話@ng-sake" rel="bookmark">Angular2を触ってみた話@ng-sake</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/21/access-directive-from-transclude.html" title="Transclude内からディレクティブにアクセスする" rel="bookmark">Transclude内からディレクティブにアクセスする</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/28/angularjs-page-transition-3d.html" title="AngularJSでページ遷移時に3D風アニメーションを入れてみた" rel="bookmark">AngularJSでページ遷移時に3D風アニメーションを入れてみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/14/angular1-component.html" title="AngularJS1.5で親子コンポーネント間のやりとり" rel="bookmark">AngularJS1.5で親子コンポーネント間のやりとり</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/24/custom-selector.html" title="AngularJS1で独自の選択ボックスを作る" rel="bookmark">AngularJS1で独自の選択ボックスを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/03/30/ng-sake.html" title="Angular2を触ってみた話@ng-sake" rel="bookmark">Angular2を触ってみた話@ng-sake</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

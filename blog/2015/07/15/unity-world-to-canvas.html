@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -208,7 +208,7 @@
 
 <ol>
 <li>使ってるカメラの <a href="http://docs.unity3d.com/ScriptReference/Camera.WorldToViewportPoint.html">WorldToViewportPoint</a> で、ワールド座標系からビューポート座標系に変換</li>
-<li><code>Canvas</code> の <code>RectTransform</code> のサイズの1/2を引く（ビューポートは左下が原点なのに対して、 <code>Canvas</code> は中央が原点のため）</li>
+<li><code>Canvas</code> の <code>RectTransform</code> のサイズの1&#x2F;2を引く（ビューポートは左下が原点なのに対して、 <code>Canvas</code> は中央が原点のため）</li>
 </ol>
 <p><a href="http://answers.unity3d.com/questions/799616/unity-46-beta-19-how-to-convert-from-world-space-t.html">Unity 4.6 Beta 19: How to convert from world space to canvas space - Unity Answers</a></p>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//this is your object that you want to have the UI element hovering over</span></span><br><span class="line">GameObject WorldObject;</span><br><span class="line"></span><br><span class="line"><span class="comment">//this is the ui element</span></span><br><span class="line">RectTransform UI_Element;</span><br><span class="line"></span><br><span class="line"><span class="comment">//first you need the RectTransform component of your canvas</span></span><br><span class="line">RectTransform CanvasRect = Canvas.GetComponent&lt;RectTransform&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">//then you calculate the position of the UI element</span></span><br><span class="line"><span class="comment">//0,0 for the canvas is at the center of the screen, whereas WorldToViewPortPoint treats the lower left corner as 0,0. Because of this, you need to subtract the height / width of the canvas * 0.5 to get the correct position.</span></span><br><span class="line"></span><br><span class="line">Vector2 ViewportPosition = Cam.WorldToViewportPoint(WorldObject.transform.position);</span><br><span class="line">Vector2 WorldObject_ScreenPosition = <span class="keyword">new</span> Vector2(</span><br><span class="line">    ((ViewportPosition.x * CanvasRect.sizeDelta.x) - (CanvasRect.sizeDelta.x * <span class="number">0.5f</span>)),</span><br><span class="line">    ((ViewportPosition.y * CanvasRect.sizeDelta.y) - (CanvasRect.sizeDelta.y * <span class="number">0.5f</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">//now you can set the position of the ui element</span></span><br><span class="line">UI_Element.anchoredPosition = WorldObject_ScreenPosition;</span><br></pre></td></tr></table></figure>

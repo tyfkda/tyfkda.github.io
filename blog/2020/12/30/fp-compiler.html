@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -233,7 +233,7 @@
 <code>float</code> の場合には <code>d</code> の代わりに <code>s</code> となる。</p>
 <p>式の取り扱いで整数型と浮動小数点数型が混在した場合などを考慮すると取り扱いが煩雑になるんじゃないかと懸念していたが、そんなことはなかった。
 パースしてASTを構築した段階で式の各項の型が判明するので、 <code>+</code> 演算子などで左辺と右辺の方が違う場合には大きい方に合わせるよう暗黙的にキャストされて揃った状態に変換されている。</p>
-<p>なので演算自体は整数/浮動小数点数の同じ型同士だけとなり混在した場合を考える必要がなく、生成するためのコードはシンプルで済む。</p>
+<p>なので演算自体は整数&#x2F;浮動小数点数の同じ型同士だけとなり混在した場合を考える必要がなく、生成するためのコードはシンプルで済む。</p>
 <h3 id="関数呼出規約-ABI"><a href="#関数呼出規約-ABI" class="headerlink" title="関数呼出規約(ABI)"></a>関数呼出規約(ABI)</h3><p>x86-64では関数への引数をレジスタ経由で受け渡す。
 浮動小数点数型の場合には整数型で使用する汎用レジスタ6個とは別に、<code>xmm0</code>〜<code>xmm7</code> で受け渡すという規約になっている。
 別々に考慮してやる必要があるので地味に面倒で、場合漏れでバグを仕込みがちだった。</p>
@@ -268,7 +268,7 @@
 %]]></script>
 
 <p>10項程度。</p>
-<h4 id="tan"><a href="#tan" class="headerlink" title="tan"></a>tan</h4><p><code>sin</code> / <code>cos</code>。
+<h4 id="tan"><a href="#tan" class="headerlink" title="tan"></a>tan</h4><p><code>sin</code> &#x2F; <code>cos</code>。
 問題点：専用に用意する。</p>
 <h4 id="atan"><a href="#atan" class="headerlink" title="atan"></a>atan</h4><p>範囲を22.5度以内に絞ってマクローリン展開：</p>
 <script type="math/tex; mode=display">% <![CDATA[

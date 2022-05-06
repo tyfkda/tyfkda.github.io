@@ -92,7 +92,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -214,8 +214,8 @@
 <h3 id="node-sdl2のインストール"><a href="#node-sdl2のインストール" class="headerlink" title="node-sdl2のインストール"></a>node-sdl2のインストール</h3><p><code>npm sdl2</code>で検索して最初に出てくる<a href="https://www.npmjs.com/package/node-sdl2">node-sdl2</a>がインストールで躓くので、ここで相当長いこと放置していた。
 重い腰を上げて調べてわかったのは、</p>
 <ul>
-<li><code>node-sdl2</code>で使われている<code>node-ffi</code>がNodeJS9では動かず、8以下にする必要がある（<a href="https://github.com/node-ffi/node-ffi/issues/451">node-ffi does not build with NodeJS 9.x on Linux · Issue #451 · node-ffi/node-ffi</a>）</li>
-<li>また<code>node-ffi</code>をビルドするための<code>node-gyp</code>がPython3だとエラーが出てしまうので、Python2系を使う必要がある（<a href="https://github.com/nodejs/node-gyp/issues/193">Support for Python 3 · Issue #193 · nodejs/node-gyp</a>）</li>
+<li><code>node-sdl2</code>で使われている<code>node-ffi</code>がNodeJS9では動かず、8以下にする必要がある（<a href="https://github.com/node-ffi/node-ffi/issues/451">node-ffi does not build with NodeJS 9.x on Linux · Issue #451 · node-ffi&#x2F;node-ffi</a>）</li>
+<li>また<code>node-ffi</code>をビルドするための<code>node-gyp</code>がPython3だとエラーが出てしまうので、Python2系を使う必要がある（<a href="https://github.com/nodejs/node-gyp/issues/193">Support for Python 3 · Issue #193 · nodejs&#x2F;node-gyp</a>）</li>
 </ul>
 <p>どちらもポピュラーなモジュールだと思うんだが未だにそんな状態とかありえるのか…。
 ともかく要件を合わせればインストールはできた。</p>
@@ -239,11 +239,11 @@ SDL2上ではそういうものはないが、同じ仕組みで鳴らせると�
 そのように予めグローバルな定義をしたい場合にはTypeScriptの設定ファイルtsconfig.jsonにオプションを設定する必要がある：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="string">&quot;typeRoots&quot;</span>: [</span><br><span class="line">      <span class="string">&quot;./src/@types&quot;</span>  <span class="comment">// &lt;- 自前の定義ファイルのパス</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">&quot;types&quot;</span>: [</span><br><span class="line">      <span class="string">&quot;audio_context&quot;</span>  <span class="comment">// &lt;- 自前の定義ファイル</span></span><br><span class="line">    ],</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>定義ファイルはよしなに、使う機能だけ書いてやる(<a href="https://github.com/tyfkda/nesemu/blob/master/nodejs/src/%40types/audio_context/index.d.ts">src/@types/audio_context/index.d.ts</a>)：</p>
+<p>定義ファイルはよしなに、使う機能だけ書いてやる(<a href="https://github.com/tyfkda/nesemu/blob/master/nodejs/src/%40types/audio_context/index.d.ts">src&#x2F;@types&#x2F;audio_context&#x2F;index.d.ts</a>)：</p>
 <figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> AudioContext &#123;</span><br><span class="line">  <span class="keyword">readonly</span> currentTime: <span class="built_in">number</span></span><br><span class="line">  <span class="keyword">readonly</span> destination: AudioDestinationNode</span><br><span class="line"></span><br><span class="line">  createGain(): GainNode</span><br><span class="line">  createOscillator(): OscillatorNode</span><br><span class="line">  createDelay(): DelayNode</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>定義ファイル内に<code>export</code>を書くとグローバルとして自動的に定義されている状態にはならないので注意（<a href="https://github.com/Microsoft/TypeScript/issues/18237#issuecomment-326952519">How to define a global variable in a typescript module, which could be used in other modules directly without import? · Issue #18237 · Microsoft/TypeScript</a>）</li>
+<li>定義ファイル内に<code>export</code>を書くとグローバルとして自動的に定義されている状態にはならないので注意（<a href="https://github.com/Microsoft/TypeScript/issues/18237#issuecomment-326952519">How to define a global variable in a typescript module, which could be used in other modules directly without import? · Issue #18237 · Microsoft&#x2F;TypeScript</a>）</li>
 </ul>
 <h3 id="ノードベースの波形生成"><a href="#ノードベースの波形生成" class="headerlink" title="ノードベースの波形生成"></a>ノードベースの波形生成</h3><p>WebAudioはノードベースになっていて、発振器で生成した波形をゲインノードで増幅させて音量を調整し、ディレイノードで位相をずらす、などということがノードのつなぎ方次第で自由に組み合わせることができるようになっている。</p>
 <p>自前で実装する場合に、最初はバッファを受け渡して書き込んでもらおうかと考えたが、分岐したり合成させたりできる必要があってその場合に効率のいい方法が思いつかなかったので、

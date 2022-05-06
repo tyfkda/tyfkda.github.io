@@ -13,13 +13,13 @@
         <meta name="description" content="チャーチ数は、関数 f を x に何回適用したか、で数を表すらしい。
 まずは０から、
 
-zero = λf.λx. x
+zero &amp;#x3D; λf.λx. x
 
 １進めた数は succ で得られる
 
-succ = λn.λf.λx. f (n f x)
+succ &amp;#x3D; λn.λf.λx. f (n f x)
 
-２つの数 m、n の足し算は、初期値 m にさらに n 回 f を適用すれば得られる">
+２つの数 m、n の足し算は、初期値 m にさらに n 回 f ">
     
 
     <!--Author-->
@@ -99,7 +99,7 @@ succ = λn.λf.λx. f (n f x)
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -215,23 +215,23 @@ succ = λn.λf.λx. f (n f x)
                 <p><a href="http://ja.wikipedia.org/wiki/%E3%83%A9%E3%83%A0%E3%83%80%E8%A8%88%E7%AE%97">チャーチ数</a>は、関数 f を x に何回適用したか、で数を表すらしい。
 まずは０から、</p>
 <ul>
-<li>zero = λf.λx. x</li>
+<li>zero &#x3D; λf.λx. x</li>
 </ul>
 <p>１進めた数は succ で得られる</p>
 <ul>
-<li>succ = λn.λf.λx. f (n f x)</li>
+<li>succ &#x3D; λn.λf.λx. f (n f x)</li>
 </ul>
 <p>２つの数 m、n の足し算は、初期値 m にさらに n 回 f を適用すれば得られる</p>
 <ul>
-<li>plus = λm.λn.λf.λx. n f (m f x)</li>
+<li>plus &#x3D; λm.λn.λf.λx. n f (m f x)</li>
 </ul>
 <p>掛け算は、m の加算を n 回行う、ってことかな？</p>
 <ul>
-<li>mult = λm.λn.λf.λx. n (m f) x</li>
+<li>mult &#x3D; λm.λn.λf.λx. n (m f) x</li>
 </ul>
 <p>ここまではなんとなくわかったんだけど、指数がどうして次のようになるのかわからない：</p>
 <ul>
-<li>exp  = λm.λn. n m</li>
+<li>exp  &#x3D; λm.λn. n m</li>
 </ul>
 <p>手で展開してみる： exp 3 2</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">2 = λf.λx. f (f x)</span><br><span class="line">3 = λf.λx. f (f (f x))</span><br><span class="line">exp 3 2 = (λm.λn.λf.λx. n m f x) 3 2</span><br><span class="line">        = (λf.λx. (λg.λy. g (g y)) m f x)    -- n = 2 = λg.λy. g (g y) に置き換え</span><br><span class="line">        = (λf.λx. (λy. m (m y)) f x)    -- g を m に置き換え</span><br><span class="line">        = (λf.λx. (m (m f)) x)    -- y を f に置き換え</span><br><span class="line">                                    -- この時点で、(mult m m) の形になってる</span><br><span class="line">        = (λf.λx. ((λh.λz. h (h (h z))) ((λh.λz. h (h (h z))) f)) x)    -- m = 3 = λh.λz. h (h (h z))</span><br><span class="line">        = (λf.λx. ((λh.λz. h (h (h z))) (λz. f (f (f z)))) x)    -- h を f に置き換え</span><br><span class="line">        = (λf.λx. ((λz. (λw. f (f (f w))) ((λw. f (f (f w))) ((λw. f (f (f w))) z)))) x)    -- h を (λw. f (f (f w))) に置き換え</span><br><span class="line">        = (λf.λx. ((λz. (λw. f (f (f w))) ((λw. f (f (f w))) (f (f (f z)))))) x)    -- w を z に置き換え</span><br><span class="line">        = (λf.λx. ((λz. (λw. f (f (f w))) (f (f (f (f (f (f z)))))))) x)    -- w を (f (f (f z))) に置き換え</span><br><span class="line">        = (λf.λx. ((λz. (f (f (f (f (f (f (f (f (f z))))))))))) x)    -- w を (f (f (f (f (f (f z)))))) に置き換え</span><br><span class="line">        = (λf.λx. f (f (f (f (f (f (f (f (f x)))))))))    -- z を x に置き換え</span><br><span class="line">        = 9</span><br></pre></td></tr></table></figure>
@@ -240,11 +240,11 @@ succ = λn.λf.λx. f (n f x)
 n に m を適用するってなんだ？</p>
 <p>succ の逆に、-1 する pred もよくわからない：</p>
 <ul>
-<li>pred = λn.λf.λx. n (λg.λh. h (g f)) (λu. x) (λu. u)</li>
+<li>pred &#x3D; λn.λf.λx. n (λg.λh. h (g f)) (λu. x) (λu. u)</li>
 </ul>
 <p>引き算は、記述はもっともだけど</p>
 <ul>
-<li>minus = λm.λn. n pred m</li>
+<li>minus &#x3D; λm.λn. n pred m</li>
 </ul>
 <p>なんで計算できるのかはわからない
 。なぜかというと、Haskell でテストしようとしてもエラーが出てしまったから：</p>

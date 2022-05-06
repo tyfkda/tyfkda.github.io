@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -236,7 +236,7 @@
 </ul>
 <p>リンクをクリックするとアプリ情報を持ってTwitter側の <code>request_token.authorize_url</code> にリダイレクトされ、おなじみの連携画面が表示される：</p>
 <p><img src="/assets/twitter-oauth.png" alt="認証画面"></p>
-<p>ここで連携を認証またはキャンセルすると、コールバックURL (/accesss_token) に戻ってくる。</p>
+<p>ここで連携を認証またはキャンセルすると、コールバックURL (&#x2F;accesss_token) に戻ってくる。</p>
 <h3 id="認証結果の取得"><a href="#認証結果の取得" class="headerlink" title="認証結果の取得"></a>認証結果の取得</h3><p>Twitterから戻ってきた認証結果を取得する。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">get &#x27;/access_token&#x27; do</span><br><span class="line">  begin</span><br><span class="line">    @access_token = @twitter.authorize(session[:request_token], session[:request_token_secret],</span><br><span class="line">                                       :oauth_verifier =&gt; params[:oauth_verifier])</span><br><span class="line">  rescue OAuth::Unauthorized =&gt; @exception</span><br><span class="line">    return erb :authorize_fail</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  session[:access_token] = @access_token.token</span><br><span class="line">  session[:access_token_secret] = @access_token.secret</span><br><span class="line">  session[:user_id] = @twitter.info[&#x27;user_id&#x27;]</span><br><span class="line">  session[:screen_name] = @twitter.info[&#x27;screen_name&#x27;]</span><br><span class="line">  session[:profile_image] = @twitter.info[&#x27;profile_image_url_https&#x27;]</span><br><span class="line"></span><br><span class="line">  redirect &#x27;/&#x27;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
 

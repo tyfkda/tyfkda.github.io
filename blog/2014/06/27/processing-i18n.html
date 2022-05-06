@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -209,7 +209,7 @@
 <span id="more"></span>
 
 <p><img src="/assets/processing-ja.png" alt="processing-ja"></p>
-<p><a href="https://github.com/processing/processing/pull/2084">Internationalization (i18n) by voidplus · Pull Request #2084 · processing/processing</a> というプルリクエストが出されていたので、手元で試してみたところ動かなかったので探ってみた。</p>
+<p><a href="https://github.com/processing/processing/pull/2084">Internationalization (i18n) by voidplus · Pull Request #2084 · processing&#x2F;processing</a> というプルリクエストが出されていたので、手元で試してみたところ動かなかったので探ってみた。</p>
 <p>Javaでの言語ごとのリソースを<a href="http://docs.oracle.com/javase/jp/6/api/java/util/ResourceBundle.html">ResourceBundle</a>という仕組みで扱っていて、実行時<a href="https://docs.oracle.com/javase/jp/6/api/java/util/ResourceBundle.html#getBundle%28java.lang.String,%20java.util.Locale%29">getBundle</a>したときにリソースが見えるところにある必要があるのだけど、上のプルリクエストではビルド時になにもしていないので実行ファイルに含まれていない。
 なのでビルドに使っているantが参照するbuild.xmlを修正する必要がある。</p>
 <p>最初は<code>filecopy</code>をすればいいのかと思ったんだけど、それだと日本語の文字列を利用しようとした時に文字化けしてしまった。

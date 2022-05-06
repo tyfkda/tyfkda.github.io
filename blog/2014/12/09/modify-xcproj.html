@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -208,7 +208,7 @@
 
 <p>Mac OSXで動作確認しました</p>
 <h2 id="ビルド後に走らせるスクリプトファイルの決まり事"><a href="#ビルド後に走らせるスクリプトファイルの決まり事" class="headerlink" title="ビルド後に走らせるスクリプトファイルの決まり事"></a>ビルド後に走らせるスクリプトファイルの決まり事</h2><ul>
-<li><a href="http://docs-jp.unity3d.com/Documentation/Manual/BuildPlayerPipeline.html">ビルド プレイヤー パイプライン - Unity Manual</a>に書かれているように、Unityのプロジェクトフォルダ以下の Assets/Editor/PostprocessBuildPlayer （拡張子なし）というファイルを作ると、Unityのメニュー File &gt; Build Settings… &gt; Build としたときに、そのファイルが実行される<ul>
+<li><a href="http://docs-jp.unity3d.com/Documentation/Manual/BuildPlayerPipeline.html">ビルド プレイヤー パイプライン - Unity Manual</a>に書かれているように、Unityのプロジェクトフォルダ以下の Assets&#x2F;Editor&#x2F;PostprocessBuildPlayer （拡張子なし）というファイルを作ると、Unityのメニュー File &gt; Build Settings… &gt; Build としたときに、そのファイルが実行される<ul>
 <li>shebangを指定すればRubyでもなんでも書ける</li>
 <li>実行権限は与えなくてもよいようだ</li>
 </ul>
@@ -216,7 +216,7 @@
 </ul>
 <h2 id="Rubyへのxcodeprojのインストール"><a href="#Rubyへのxcodeprojのインストール" class="headerlink" title="Rubyへのxcodeprojのインストール"></a>Rubyへのxcodeprojのインストール</h2><p>PostprocessBuildPlayer はどんな言語でもよいみたいだけど、xcodeのプロジェクトを扱う<a href="https://rubygems.org/gems/xcodeproj">xcodeproj</a>というgemライブラリがあるのでRubyを使う。</p>
 <ul>
-<li><code>sudo gem install xcodeproj</code> でインストールする（2014/12/09現在 バージョン0.20.2）<ul>
+<li><code>sudo gem install xcodeproj</code> でインストールする（2014&#x2F;12&#x2F;09現在 バージョン0.20.2）<ul>
 <li>PostprocessBuildPlayerで呼び出されるRubyはシステムのRubyが使われるので、rbenvでRubyのバージョンを管理している場合には <code>rbenv global system</code> としてシステムのRubyに切り替えてからインストールを実行すること</li>
 </ul>
 </li>
@@ -224,7 +224,7 @@
 <h3 id="xcodeprojを使ってプロジェクトを編集するRubyスクリプトの書き方"><a href="#xcodeprojを使ってプロジェクトを編集するRubyスクリプトの書き方" class="headerlink" title="xcodeprojを使ってプロジェクトを編集するRubyスクリプトの書き方"></a>xcodeprojを使ってプロジェクトを編集するRubyスクリプトの書き方</h3><ul>
 <li>「PostprocessBuildPlayer xcodeproj」でググると出てくる <a href="http://akisute.com/2012/09/unity-postprocessbuildplayer-weak.html">A-Liaison BLOG: Unity の PostprocessBuildPlayer を使って Weak Framework を追加する方法</a> を参考にしようとしましたが、xcodeprojの現在の最新版（0.20.2）を使用したためかスクリプトはそのままでは動きませんでした</li>
 <li><a href="http://starzero.hatenablog.com/entry/2014/02/18/163330">UnityのiOSビルド時にFrameworkを追加する - ほげほげ（仮）</a> でまさに望み通りにフレームワークの追加を自動的に行うことができました</li>
-<li>別にプラットフォームがiOSの時にだけ実行されるわけではないので、他のプラットフォームへの出力時に動かないようにスクリプト内部でチェックする必要があるかも：(ARGV[1] == ‘iPhone’)<ul>
+<li>別にプラットフォームがiOSの時にだけ実行されるわけではないので、他のプラットフォームへの出力時に動かないようにスクリプト内部でチェックする必要があるかも：(ARGV[1] &#x3D;&#x3D; ‘iPhone’)<ul>
 <li>他の引数については上で示したリンク（<a href="http://docs-jp.unity3d.com/Documentation/Manual/BuildPlayerPipeline.html">ビルド プレイヤー パイプライン - Unity Manual</a>）に記述あり（０：インストールパス、１：プレイヤーの種類、２：最適化、３：Name of Company、４：Name of Product、５：スクリーン幅、６：スクリーン高さ）</li>
 </ul>
 </li>

@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -204,7 +204,7 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0010000: 0000 2000 00ff 0010 203c 1087 0507 4e75  .. ..... &lt;....Nu</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>SP=0x002000, PC=0xff0010となる</li>
+<li>SP&#x3D;0x002000, PC&#x3D;0xff0010となる</li>
 </ul>
 <h3 id="IPLプログラムの解析"><a href="#IPLプログラムの解析" class="headerlink" title="IPLプログラムの解析"></a>IPLプログラムの解析</h3><p><code>PC=0xff0010</code>から実行開始ということで、コードをダンプしてみてみる（ファイルでは0x010010から）：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ff0010: 46fc 2700 4ff9 0000 2000 4e70 91c8 203c  F.&#x27;.O... .Np.. &lt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
@@ -225,7 +225,7 @@
 <li><a href="https://gist.githubusercontent.com/tyfkda/5a963edfb3a40cc63f18/raw/mc68000-mnemonic.txt">MC68000 mnemonic</a></li>
 </ul>
 </li>
-<li>IPLROM.DATの内容をPC(=0xff0010)から２バイト読み込み命令を実行する。実装してない命令が出てきたらassertで落とすようにしておいて、順に実装していく。</li>
+<li>IPLROM.DATの内容をPC(&#x3D;0xff0010)から２バイト読み込み命令を実行する。実装してない命令が出てきたらassertで落とすようにしておいて、順に実装していく。</li>
 </ul>
 <h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
 <li><a href="http://www.retropc.net/x68000/software/sharp/x68bios/index.htm">IPL-ROM - 無償公開されたシャープのソフトウェア - ソフトウェアライブラリ - X68000 LIBRARY</a></li>

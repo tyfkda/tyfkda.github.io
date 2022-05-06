@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -208,7 +208,7 @@
 
 <hr>
 <p>HTMLの要素をドラッグできるようにするときに、ウィンドウ外にドラッグされるとマウスイベントが受け取れなくてドラッグしっぱなしになってしまうとか、お絵かきで線を引きっぱなしになってしまうという悲しいことがよくあった。</p>
-<p>たまたまjQueryUIの<a href="https://jqueryui.com/sortable/">sortable</a>を使ってみたところウィンドウ外でもドラッグできているので、どうやっているのか<a href="https://github.com/jquery/jquery-ui/">ソース</a>を見てみた。その名の<a href="https://github.com/jquery/jquery-ui/blob/master/ui/widgets/sortable.js">ui/widgets/sortable.js</a>ではやってなくて、<a href="https://github.com/jquery/jquery-ui/blob/master/ui/widgets/mouse.js#L126-128">mouse.js</a>で、対象の要素や親じゃなくて<code>document</code>に<code>mousemove</code>と<code>mouseup</code>のイベントリスナを登録している。</p>
+<p>たまたまjQueryUIの<a href="https://jqueryui.com/sortable/">sortable</a>を使ってみたところウィンドウ外でもドラッグできているので、どうやっているのか<a href="https://github.com/jquery/jquery-ui/">ソース</a>を見てみた。その名の<a href="https://github.com/jquery/jquery-ui/blob/master/ui/widgets/sortable.js">ui&#x2F;widgets&#x2F;sortable.js</a>ではやってなくて、<a href="https://github.com/jquery/jquery-ui/blob/master/ui/widgets/mouse.js#L126-128">mouse.js</a>で、対象の要素や親じゃなくて<code>document</code>に<code>mousemove</code>と<code>mouseup</code>のイベントリスナを登録している。</p>
 <p>ということなので、jQueryを使わないで素のJSで<code>document.addEventListener()</code>を使ってテストしたところ望み通りに動いた（<a href="http://run.plnkr.co/plunks/zbhZfQ/">デモ</a>と<a href="http://plnkr.co/edit/zbhZfQ?p=info">ソース</a>）。</p>
 <ul>
 <li><code>window</code>にマウスイベントリスナを設定しても同様に受け取れた</li>

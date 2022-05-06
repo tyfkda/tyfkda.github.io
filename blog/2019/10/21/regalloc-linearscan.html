@@ -94,7 +94,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -310,7 +310,7 @@
 物理レジスタを「色」と考えると、グラフのつながるノード同士は別の色で塗り分ける「彩色問題」と考えることができる、というわけ。</p>
 <p>塗り分けるのに必要な色の数が物理レジスタ数を超えると、そのすべてを同時に物理レジスタに割り当てることができない。
 その場合はどれかをスタックフレームに逃がしてやる（これをspillという）。
-spillされたレジスタの値はスタックのpush/popで一時的に退避/復帰、とかじゃなく常にスタックフレームからの取り出し/格納になる。</p>
+spillされたレジスタの値はスタックのpush&#x2F;popで一時的に退避&#x2F;復帰、とかじゃなく常にスタックフレームからの取り出し&#x2F;格納になる。</p>
 <p>グラフ彩色で生成されるコードのクオリティは高いが、コンパイル時の計算量が最悪仮想レジスタ数の2乗に比例するとのことで、計算量が線形でまた比較的簡単に実装できるというリニアスキャンという方法を試してみた。</p>
 <p>リニアスキャンではレジスタの<strong>生存期間</strong>を調べる。
 生存範囲では間が抜けるケースも扱えるけど、生存期間では抜けている間も構わずに使用しているとみなす。
@@ -325,7 +325,7 @@ spillされたレジスタの値はスタックのpush/popで一時的に退避/
 <p>関数の仮引数もひとまずはspill扱いにする（x86-64ではレジスタ渡しで受け取れるのでメモリを介さずにレジスタ上だけでそのまま扱えればベストだが、今後の課題）。</p>
 <h3 id="spillされた値の取り扱い"><a href="#spillされた値の取り扱い" class="headerlink" title="spillされた値の取り扱い"></a>spillされた値の取り扱い</h3><p>spillされた仮想レジスタはスタックフレーム上に配置する。</p>
 <p>中間表現の命令としては仮想レジスタを対象にしているが、それが物理レジスタに割り付けられたか、それともspillされているかによって出力するコードを変えるのはかなり大変になる。
-そこで対処として、使用できる物理レジスタをいくつか減らしてspill用として予約しておいて、spillされたレジスタだったら命令前/命令後にスタックフレームからの読み出し/書き戻しを挿入してやるようにする。
+そこで対処として、使用できる物理レジスタをいくつか減らしてspill用として予約しておいて、spillされたレジスタだったら命令前&#x2F;命令後にスタックフレームからの読み出し&#x2F;書き戻しを挿入してやるようにする。
 そうすることで中間表現からアセンブリを出力する際にspillされているかどうかを気にしなくて済むようになる。
 （x86ではレジスタ間だけじゃなく間接アドレッシングでメモリ上の値との演算もできるので、spillされた値の場合には出力するコードを変えてやれば効率がいいと思うが、今後の課題。）</p>
 <p>spill用に確保するレジスタは、入力が最大2つなので2つ必要になる。
@@ -339,12 +339,12 @@ spillされたレジスタの値はスタックのpush/popで一時的に退避/
 <li>SSA形式化</li>
 </ul>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://github.com/rui314/9cc">rui314/9cc: A Small C Compiler</a></li>
+<li><a href="https://github.com/rui314/9cc">rui314&#x2F;9cc: A Small C Compiler</a></li>
 <li><a href="https://www2.seas.gwu.edu/~hchoi/teaching/cs160d/linearscan.pdf">Linear Scan Register Allocation</a>, MASSIMILIANO POLETTO and VIVEK SARKAR</li>
 </ul>
 <p>追記：</p>
 <ul>
-<li><a href="https://hikalium.hatenablog.jp/entry/2018/12/07/210646">compilium v2 (in progress)の工夫点 - /var/log/hikalium</a> 中間結果のみをレジスタで計算する</li>
+<li><a href="https://hikalium.hatenablog.jp/entry/2018/12/07/210646">compilium v2 (in progress)の工夫点 - &#x2F;var&#x2F;log&#x2F;hikalium</a> 中間結果のみをレジスタで計算する</li>
 </ul>
 
 

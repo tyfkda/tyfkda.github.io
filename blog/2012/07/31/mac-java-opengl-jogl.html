@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -206,7 +206,7 @@
                 <p>Macで、EclipseのJavaでOpenGLを使う方法を調べた。</p>
 <span id="more"></span>
 
-<h3 id="joglのダウンロード"><a href="#joglのダウンロード" class="headerlink" title="joglのダウンロード"></a>joglのダウンロード</h3><p><a href="http://jogamp.org/jogl/www/">joglのページ</a>のBuilds / DownloadsからCurrentやArchiveを見てもどれをダウンロードしていいのかわからない。なので “jogl macosx zip” でググって出てきたページ<a href="http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1a/">http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1a/</a> から jogl-1.1.1a-macosx-universal.zip がダウンロードできた。zipを展開してどこか好きな場所に置く。</p>
+<h3 id="joglのダウンロード"><a href="#joglのダウンロード" class="headerlink" title="joglのダウンロード"></a>joglのダウンロード</h3><p><a href="http://jogamp.org/jogl/www/">joglのページ</a>のBuilds &#x2F; DownloadsからCurrentやArchiveを見てもどれをダウンロードしていいのかわからない。なので “jogl macosx zip” でググって出てきたページ<a href="http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1a/">http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1a/</a> から jogl-1.1.1a-macosx-universal.zip がダウンロードできた。zipを展開してどこか好きな場所に置く。</p>
 <h3 id="EclipseでJavaのプロジェクトを作成"><a href="#EclipseでJavaのプロジェクトを作成" class="headerlink" title="EclipseでJavaのプロジェクトを作成"></a>EclipseでJavaのプロジェクトを作成</h3><p>これは普通に File &gt; New &gt; Java Project で作る。</p>
 <h3 id="joglのjarをプロジェクトに追加"><a href="#joglのjarをプロジェクトに追加" class="headerlink" title="joglのjarをプロジェクトに追加"></a>joglのjarをプロジェクトに追加</h3><p>プロジェクトを選択して、メニューから Project &gt; Properties &gt; Java Build Path &gt; Libraries &gt; Add External JARs… で、上で展開してできた2つのjarファイル、jogl.jarとgluegen-rt.jarを追加する。</p>
 <p>それぞれのjarファイルの設定で、 Native library location というのがあるので、ダブルクリックしてそのjarファイルが置いてあるディレクトリを指定する。これによってダイナミックライブラリがちゃんと読み込まれるようになる。これを指定しないと、実行した時に</p>

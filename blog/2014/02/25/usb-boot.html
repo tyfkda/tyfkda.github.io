@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="でけた。ブートローダーはBIOSのint 0x13をAL=2で呼び出してドライブの読み込みをさせてるんだけど、USBから起動した場合は自動的にUSBから読んでくれるのね、便利。手順をメモっておく。">
+        <meta name="description" content="でけた。ブートローダーはBIOSのint 0x13をAL&amp;#x3D;2で呼び出してドライブの読み込みをさせてるんだけど、USBから起動した場合は自動的にUSBから読んでくれるのね、便利。手順をメモっておく。">
     
 
     <!--Author-->
@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -203,7 +203,7 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>でけた。ブートローダーはBIOSの<a href="http://en.wikipedia.org/wiki/INT_13H#INT_13h_AH.3D02h:_Read_Sectors_From_Drive">int 0x13をAL=2で呼び出してドライブの読み込み</a>をさせてるんだけど、USBから起動した場合は自動的にUSBから読んでくれるのね、便利。手順をメモっておく。</p>
+                <p>でけた。ブートローダーはBIOSの<a href="http://en.wikipedia.org/wiki/INT_13H#INT_13h_AH.3D02h:_Read_Sectors_From_Drive">int 0x13をAL&#x3D;2で呼び出してドライブの読み込み</a>をさせてるんだけど、USBから起動した場合は自動的にUSBから読んでくれるのね、便利。手順をメモっておく。</p>
 <span id="more"></span>
 
 <h3 id="OSイメージの作成"><a href="#OSイメージの作成" class="headerlink" title="OSイメージの作成"></a>OSイメージの作成</h3><p>起動させるOSはOS自作入門のはりぼてOSで、フロッピー起動のものと全く同じ。はりぼてOSは512バイトのブートローダーと、そのブートローダーから読み込まれるOS本体からなっている。ドライブからのデータの読み込みはブートローダーでBIOSを使って行っていて、すべてのデータをメモリ上に読み込んでしまい、OS起動後はメモリへのアクセスだけでドライブへのアクセスは一切していない。</p>

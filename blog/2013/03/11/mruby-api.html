@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="mrubyをCのプログラムに組み込んで使う方法を調べる。今のところ公式のドキュメントはHello Worldくらいしか用意されてない？ヘッダファイルmruby.hやmruby/value.hなどから使えそうな関数を推測して用いることになりそうだ。">
+        <meta name="description" content="mrubyをCのプログラムに組み込んで使う方法を調べる。今のところ公式のドキュメントはHello Worldくらいしか用意されてない？ヘッダファイルmruby.hやmruby&amp;#x2F;value.hなどから使えそうな関数を推測して用いることになりそうだ。">
     
 
     <!--Author-->
@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -203,7 +203,7 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>mrubyをCのプログラムに組み込んで使う方法を調べる。今のところ公式のドキュメントは<a href="https://github.com/mruby/mruby/wiki/Hello-World">Hello World</a>くらいしか用意されてない？ヘッダファイル<a href="https://github.com/mruby/mruby/blob/master/include/mruby.h">mruby.h</a>や<a href="https://github.com/mruby/mruby/blob/master/include/mruby/value.h">mruby/value.h</a>などから使えそうな関数を推測して用いることになりそうだ。</p>
+                <p>mrubyをCのプログラムに組み込んで使う方法を調べる。今のところ公式のドキュメントは<a href="https://github.com/mruby/mruby/wiki/Hello-World">Hello World</a>くらいしか用意されてない？ヘッダファイル<a href="https://github.com/mruby/mruby/blob/master/include/mruby.h">mruby.h</a>や<a href="https://github.com/mruby/mruby/blob/master/include/mruby/value.h">mruby&#x2F;value.h</a>などから使えそうな関数を推測して用いることになりそうだ。</p>
 <span id="more"></span>
 
 <h3 id="文字列を直接実行"><a href="#文字列を直接実行" class="headerlink" title="文字列を直接実行"></a>文字列を直接実行</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mruby.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mruby/compile.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  mrb_state* mrb = mrb_open();</span><br><span class="line">  mrb_load_string(mrb, <span class="string">&quot;puts &#x27;hello world&#x27;&quot;</span>);</span><br><span class="line">  mrb_close(mrb);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 実行結果：</span></span><br><span class="line"><span class="comment">// hello world</span></span><br></pre></td></tr></table></figure>
@@ -231,7 +231,7 @@
 </ul>
 </li>
 <li><code>mrb_get_args(mrb, 引数の型, 受け取る変数のポインタ...)</code>で、引数の受け取り<ul>
-<li><code>i</code>=整数、<code>S</code>=文字列、<code>o</code>=オブジェクト、<code>*</code>=残りすべて、など</li>
+<li><code>i</code>&#x3D;整数、<code>S</code>&#x3D;文字列、<code>o</code>&#x3D;オブジェクト、<code>*</code>&#x3D;残りすべて、など</li>
 </ul>
 </li>
 <li>変数に入っている値の型を調べるには、<code>mrb_fixnum_p()</code>や<code>mrb_string_p()</code>などが使える。</li>
@@ -253,7 +253,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/18/mruby-gc.html" title="mrubyのGCの仕組みを調べた" rel="bookmark">mrubyのGCの仕組みを調べた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-backtrace.html" title="mrubyでエラー発生時にバックトレースを表示する" rel="bookmark">mrubyでエラー発生時にバックトレースを表示する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-voidp.html" title="mrubyでvoidpの値を扱うと死ぬ" rel="bookmark">mrubyでvoidpの値を扱うと死ぬ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby.html" title="mrubyテスト" rel="bookmark">mrubyテスト</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/12/mruby-custom-allocator.html" title="mrubyでカスタムアロケータを指定" rel="bookmark">mrubyでカスタムアロケータを指定</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-backtrace.html" title="mrubyでエラー発生時にバックトレースを表示する" rel="bookmark">mrubyでエラー発生時にバックトレースを表示する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-voidp.html" title="mrubyでvoidpの値を扱うと死ぬ" rel="bookmark">mrubyでvoidpの値を扱うと死ぬ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby.html" title="mrubyテスト" rel="bookmark">mrubyテスト</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

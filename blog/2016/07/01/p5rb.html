@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -206,7 +206,7 @@
                 <p>またRubyでProcessingを書けるようになったらいいんじゃないかと、<a href="https://github.com/tyfkda/processing-ruby-mode">processing-ruby-mode</a>をいじっていて、Processing3で動くように載せ替えた。でやっぱちょっと問題だと思うのは、Rubyで書く場合の変数アクセスだ。</p>
 <span id="more"></span>
 
-<p>Processingのコードは<code>PApplet</code>を継承したクラス内に書かれたこととして扱われる。Processing/Javaで書いた場合には変数アクセスはなんの修飾もせずにできる：</p>
+<p>Processingのコードは<code>PApplet</code>を継承したクラス内に書かれたこととして扱われる。Processing&#x2F;Javaで書いた場合には変数アクセスはなんの修飾もせずにできる：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">float</span> x = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  ++x;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>これはJavaがメンバ変数へのアクセスに<code>this</code>を省略できるから。それ対してRubyの場合には<code>@</code>をつける必要がある：</p>

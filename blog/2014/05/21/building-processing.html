@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="MacでProcessingをビルドしてみた。Githubのリポジトリは https://github.com/processing/processing にあって、ビルドの手順はBuild Instructions · processing/processing Wikiのとおり。なんだけど、いろいろ躓いた。">
+        <meta name="description" content="MacでProcessingをビルドしてみた。Githubのリポジトリは https://github.com/processing/processing にあって、ビルドの手順はBuild Instructions · processing&amp;#x2F;processing Wikiのとおり。なんだけど、いろいろ躓いた。">
     
 
     <!--Author-->
@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -203,20 +203,20 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>Macで<a href="http://www.processing.org/">Processing</a>をビルドしてみた。Githubのリポジトリは <a href="https://github.com/processing/processing">https://github.com/processing/processing</a> にあって、ビルドの手順は<a href="https://github.com/processing/processing/wiki/Build-Instructions">Build Instructions · processing/processing Wiki</a>のとおり。なんだけど、いろいろ躓いた。</p>
+                <p>Macで<a href="http://www.processing.org/">Processing</a>をビルドしてみた。Githubのリポジトリは <a href="https://github.com/processing/processing">https://github.com/processing/processing</a> にあって、ビルドの手順は<a href="https://github.com/processing/processing/wiki/Build-Instructions">Build Instructions · processing&#x2F;processing Wiki</a>のとおり。なんだけど、いろいろ躓いた。</p>
 <span id="more"></span>
 
 <p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracleのサイト</a>からJDK7のjdk-7u55-macosx-x64.dmgをダウンロードしようとしたが、何度やっても途中で失敗する。他に手段がないかとググってると、モロのサイトがあった <a href="https://jdk7.java.net/download.html">https://jdk7.java.net/download.html</a> でインストールは成功。</p>
-<p>でProcessingのリポジトリの build に入り、<code>ant run</code> とすると、まだJavaのバージョンが1.6だと出てしまう。/usr/bin/javaなどがシンボリックリンクで、古いものを指している(/System/Library/Java/JavaVirtualMachines/ 以下を指している)。</p>
-<p>java.netからダウンロードしてインストールしたパッケージのバイナリは  /Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home/bin/ 以下にインストールされるので、javaやjavacなどの実行ファイルに対してそれぞれシンボリックリンクを貼り直す。</p>
+<p>でProcessingのリポジトリの build に入り、<code>ant run</code> とすると、まだJavaのバージョンが1.6だと出てしまう。&#x2F;usr&#x2F;bin&#x2F;javaなどがシンボリックリンクで、古いものを指している(&#x2F;System&#x2F;Library&#x2F;Java&#x2F;JavaVirtualMachines&#x2F; 以下を指している)。</p>
+<p>java.netからダウンロードしてインストールしたパッケージのバイナリは  &#x2F;Library&#x2F;Java&#x2F;JavaVirtualMachines&#x2F;jdk1.7.0_60.jdk&#x2F;Contents&#x2F;Home&#x2F;bin&#x2F; 以下にインストールされるので、javaやjavacなどの実行ファイルに対してそれぞれシンボリックリンクを貼り直す。</p>
 <p>で再び <code>ant run</code> をするが、</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/build/build.xml:160: JDK 7u55 required.</span><br><span class="line">To build on OS X, you must install Oracle&#x27;s JDK 7u55 from</span><br><span class="line">http://www.oracle.com/technetwork/java/javase/downloads</span><br><span class="line">Note that only 7u55 (not a later or earlier version) will work. </span><br><span class="line">And it must be the JDK, not the JRE. And do not try to defy me again.</span><br></pre></td></tr></table></figure>
 
-<p>というエラーが出る。java.netからダウンロードしたものはu60だったので弾かれてしまっている。まあエラーメッセージには従わずに、build/build.xml内の</p>
+<p>というエラーが出る。java.netからダウンロードしたものはu60だったので弾かれてしまっている。まあエラーメッセージには従わずに、build&#x2F;build.xml内の</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdk.update.macosx&quot;</span> <span class="attr">value</span>=<span class="string">&quot;55&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>を60に書き換えてやれば、ビルドが通るようになる。</p>
-<p>成果物は build/macosx/work/Processing.app に出力される。</p>
+<p>成果物は build&#x2F;macosx&#x2F;work&#x2F;Processing.app に出力される。</p>
 <h3 id="追記"><a href="#追記" class="headerlink" title="追記"></a>追記</h3><p>最近のbuild.xmlでは環境変数 <code>JAVA_HOME</code> を参照するようになったようなので、それも適切に指定してやる必要がある。</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home/</span><br></pre></td></tr></table></figure>
 

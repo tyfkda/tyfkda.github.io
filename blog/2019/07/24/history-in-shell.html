@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -222,7 +222,7 @@ ENTERの入力までバッファリングされる機能の有効／無効を制
 <p><code>ioctl</code> を直接使ってもいいんだけど、それをラップする？ライブラリで<a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/termios.3.html">termios</a>というものがあるのでそのライブラリも合わせて用意してやる。
 <a href="https://github.com/tyfkda/xv6/blob/master/ulib/termios.c">実装</a>は<code>tcsetattr</code>と、設定を復帰させるための<code>tcgetattr</code>を簡易的に用意した。
 <code>ioctl</code>経由で受け取ったカーネル側でバッファリングやエコーバックの有無を切り替えるようにする。</p>
-<h3 id="キーボード入力でカーソルキーを扱う"><a href="#キーボード入力でカーソルキーを扱う" class="headerlink" title="キーボード入力でカーソルキーを扱う"></a>キーボード入力でカーソルキーを扱う</h3><p>XV6をqemuでのエミュレーション（や実機）で動かす場合はI/Oから受け取ったキーコードが内部で変換され、カーソルキーは<a href="https://github.com/mit-pdos/xv6-public/blob/0754d21c865e97582968fa5d155eac133e5829b0/kbd.h#L22"><code>0xe2</code>〜<code>0xe5</code></a>に割り当てられてコンソールで扱われている。
+<h3 id="キーボード入力でカーソルキーを扱う"><a href="#キーボード入力でカーソルキーを扱う" class="headerlink" title="キーボード入力でカーソルキーを扱う"></a>キーボード入力でカーソルキーを扱う</h3><p>XV6をqemuでのエミュレーション（や実機）で動かす場合はI&#x2F;Oから受け取ったキーコードが内部で変換され、カーソルキーは<a href="https://github.com/mit-pdos/xv6-public/blob/0754d21c865e97582968fa5d155eac133e5829b0/kbd.h#L22"><code>0xe2</code>〜<code>0xe5</code></a>に割り当てられてコンソールで扱われている。
 それに対してqemuの<code>-nographic</code>オプションで動かす場合はターミナル経由になるので、エスケープシーケンス（カーソル上：<code>\x1b</code>, <code>[</code>, <code>A</code>、カーソル下：…<code>B</code>）で渡される。
 シェル上では統一して扱えるほうが都合がいいので、キーボードからの入力もコンソールに渡す際にエスケープシーケンスに変換してやる。</p>
 <h3 id="ヒストリ機能を実装する"><a href="#ヒストリ機能を実装する" class="headerlink" title="ヒストリ機能を実装する"></a>ヒストリ機能を実装する</h3><p>以上で1文字入力ごとにユーザプログラム側で受け取れるようになったので、後は好きなようにできる。</p>

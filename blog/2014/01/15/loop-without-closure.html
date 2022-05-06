@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -241,7 +241,7 @@ lambda式の内部の直下からだけ呼び出されていて、さらに深�
 
 <p>ボックス化とクロージャ生成が省略され、また末尾再帰が直接のジャンプに変更されている。これにより、単純なループがメモリ確保をせずに実行できるようになった。</p>
 <h3 id="７．その他"><a href="#７．その他" class="headerlink" title="７．その他"></a>７．その他</h3><ul>
-<li>ループに変更した場合、生成されるコードには自己参照が発生するので、コンパイルした結果を出力したり、デバッグで表示させようとする場合、<a href="http://practical-scheme.net/gauche/man/gauche-refj_60.html#index-write_002fss">write/ss</a>のような、無限ループに陥らない対策が必要</li>
+<li>ループに変更した場合、生成されるコードには自己参照が発生するので、コンパイルした結果を出力したり、デバッグで表示させようとする場合、<a href="http://practical-scheme.net/gauche/man/gauche-refj_60.html#index-write_002fss">write&#x2F;ss</a>のような、無限ループに陥らない対策が必要</li>
 <li>またそのコンパイルして出力されたコードを読み込むにはリーダーが自己参照の読み込みに対応する必要がある</li>
 <li>定義している地の文とかlambda式内部の地の文という条件がlet式を挟んだだけで成り立たなくならないように、3imp 4.7.2 Direct Function Invocations の実装が必要</li>
 </ul>

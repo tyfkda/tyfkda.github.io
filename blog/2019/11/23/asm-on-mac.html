@@ -92,7 +92,7 @@ ELFを出力する自作のアセンブラじ">
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -199,7 +199,7 @@ ELFを出力する自作のアセンブラじゃなくgcc(clang)を呼び出す�
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__linux__)</span></span><br><span class="line">  ...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(__APPLE__)</span></span><br><span class="line">  ...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
 
 <h3 id="標準関数が未定義になってしまうのを回避"><a href="#標準関数が未定義になってしまうのを回避" class="headerlink" title="標準関数が未定義になってしまうのを回避"></a>標準関数が未定義になってしまうのを回避</h3><p>Mac上でソースをコンパイルすると <code>snprintf</code> が未定義でコンパイルに失敗してしまう。
-そんなことあるか？と思ってヘッダファイル /usr/include/stdio.h を見てみる：</p>
+そんなことあるか？と思ってヘッダファイル &#x2F;usr&#x2F;include&#x2F;stdio.h を見てみる：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#if __DARWIN_C_LEVEL &gt;= 200112L || defined(_C99_SOURCE) || defined(__cplusplus)</span><br><span class="line">__BEGIN_DECLS</span><br><span class="line">int	 snprintf(char * __restrict __str, size_t __size, const char * __restrict __format, ...) __printflike(3, 4);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>などと <code>#if</code> で定義が囲まれている。
@@ -207,7 +207,7 @@ ELFを出力する自作のアセンブラじゃなくgcc(clang)を呼び出す�
 <p>これなら条件は有効そうだが…と思ったら、 <code>_POSIX_SOURCE</code> を定義していたのが原因だった
 （<code>_POSIX_SOURCE</code> は、Linuxで <code>kill</code> が未定義になるのを解決するためにMakefile内で定義していた）。
 <code>_POSIX_SOURCE</code> を定義していなければ <code>__DARWIN_C_LEVEL</code> は <code>900000L</code>(<code>_DARWIN_C_FULL</code>) だが、定義していると <code>_POSIX_C_SOURCE</code> を参照するようになっていて、
-<code>_POSIX_C_SOURCE</code> は <code>198808L</code> となってしまうようだ（&lt;sys/cdefs.h&gt;）。</p>
+<code>_POSIX_C_SOURCE</code> は <code>198808L</code> となってしまうようだ（&lt;sys&#x2F;cdefs.h&gt;）。</p>
 <p><code>_POSIX_SOURCE</code> をMakefile内で一律に定義するんじゃなく、 <code>kill</code> を使用する箇所でLinux の場合にのみ定義するようにして回避する。</p>
 <h2 id="出力するコードの修正"><a href="#出力するコードの修正" class="headerlink" title="出力するコードの修正"></a>出力するコードの修正</h2><p>Linux上のgccとMac上のclangが受け付けるアセンブリの形式に違いがあって、C言語をコンパイルして出力するコードをそれに合わせるようにする必要がある。</p>
 <h3 id="読み込み専用データセクション"><a href="#読み込み専用データセクション" class="headerlink" title="読み込み専用データセクション"></a>読み込み専用データセクション</h3><p>C言語で <code>const</code> を指定した、読み込み専用で書き込み不可のデータは、Linuxでは <code>.rodata</code> セクションに配置する：</p>

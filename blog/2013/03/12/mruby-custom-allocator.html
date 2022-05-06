@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="mrubyで標準のmalloc/freeじゃなく、アプリ側で用意したメモリアロケータを指定してみる。">
+        <meta name="description" content="mrubyで標準のmalloc&amp;#x2F;freeじゃなく、アプリ側で用意したメモリアロケータを指定してみる。">
     
 
     <!--Author-->
@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -203,7 +203,7 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>mrubyで標準のmalloc/freeじゃなく、アプリ側で用意したメモリアロケータを指定してみる。</p>
+                <p>mrubyで標準のmalloc&#x2F;freeじゃなく、アプリ側で用意したメモリアロケータを指定してみる。</p>
 <span id="more"></span>
 
 <p>mrubyの初期化を<code>mrb_open()</code>じゃなくて<code>mrb_open_allocf()</code>にして、引数にアロケータの関数とその関数に渡すユーザデータを与えて呼び出すことで、アプリ側でメモリ管理ができる。</p>
@@ -211,7 +211,7 @@
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// src/state.c</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>*</span></span><br><span class="line"><span class="function"><span class="title">allocf</span><span class="params">(mrb_state *mrb, <span class="keyword">void</span> *p, <span class="keyword">size_t</span> size, <span class="keyword">void</span> *ud)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="built_in">free</span>(p);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">realloc</span>(p, size);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>注意として、<code>p == NULL</code>かつ<code>size == 0</code>で呼び出されることもあるようだ。この場合はなにもせずに単に<code>NULL</code>を返せばよい、はず。</p>
-<p>テストとしてmalloc/realloc/free/イミフの数を数えるアロケータを指定して、単純に<code>mrb_load_string()</code>に空の文字列を与えたときそれぞれ何回呼ばれるかカウントしてみた。</p>
+<p>テストとしてmalloc&#x2F;realloc&#x2F;free&#x2F;イミフの数を数えるアロケータを指定して、単純に<code>mrb_load_string()</code>に空の文字列を与えたときそれぞれ何回呼ばれるかカウントしてみた。</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ ./custom_allocator_rb</span><br><span class="line">1586/1/1586/316: total=3489</span><br></pre></td></tr></table></figure>
 
 <p>同様のことをLua 5.2.1で試したところ</p>
@@ -229,7 +229,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby-api.html" title="mrubyのAPIテスト" rel="bookmark">mrubyのAPIテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/18/mruby-gc.html" title="mrubyのGCの仕組みを調べた" rel="bookmark">mrubyのGCの仕組みを調べた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-backtrace.html" title="mrubyでエラー発生時にバックトレースを表示する" rel="bookmark">mrubyでエラー発生時にバックトレースを表示する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-voidp.html" title="mrubyでvoidpの値を扱うと死ぬ" rel="bookmark">mrubyでvoidpの値を扱うと死ぬ</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/18/cocos2dx-mruby.html" title="cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る" rel="bookmark">cocos2dxでmrubyを使えるようにして、スマホのゲームをrubyで作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-backtrace.html" title="mrubyでエラー発生時にバックトレースを表示する" rel="bookmark">mrubyでエラー発生時にバックトレースを表示する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby-api.html" title="mrubyのAPIテスト" rel="bookmark">mrubyのAPIテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/21/mruby-voidp.html" title="mrubyでvoidpの値を扱うと死ぬ" rel="bookmark">mrubyでvoidpの値を扱うと死ぬ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/11/mruby.html" title="mrubyテスト" rel="bookmark">mrubyテスト</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -216,8 +216,8 @@
 <p>そこでProcessingのPDE上でRubyを使えるようにしようかと考えた。<a href="https://github.com/arduino/Arduino">Arduino</a>はC言語の文法で開発するようになっていて、その開発環境はProcessingを元にして作られているので、それと同じように自分でProcessingのソースを変更してビルドしてやろうかと思っていた。</p>
 <p>しかし最近のProcessingにはモードというものがあり、その中にPythonモードというのがあって、Javaじゃない文法でもProcessingを動かせるようになっているのを見て、同じようにやることにした。モードの追加の仕方は、ドキュメントなどがないので、手探りで調べた（<a href="/blog/2014/05/30/custom-mode-processing.html" title="Processingに独自のモードを追加する方法">Processingに独自のモードを追加する方法</a>)）。</p>
 <p>コードの実行はruby-processingを参考に。ruby-processingでは<a href="http://jruby.org/">JRuby</a>を使っていて、Rubyコードの実行はJRubyに丸投げしている。このJRubyがすごくて、Java↔JRuby間のバインディング、グルーコードを全く書かなくてもお互いに呼び出せて、値も自動的に変換される。さらにJavaで定義されいるクラスをRuby側で継承して、メソッドをオーバーライドできる。すげぇ！</p>
-<p><del>またruby-processingは凝っていて</del>（追記：ruby-processingじゃなくてこれもJRubyだった）、Processing/JavaのAPIやJavaの推奨のコーディング規約はキャメルケースだけど、Rubyっぽく書けるように、対応するスネークケースのAPIを自動的に定義してくれる。ｶｺ(・∀・)ｲｲ!!</p>
-<p>しかしRubyモードならではの問題もある。Processing/Javaでは<a href="https://github.com/processing/processing/blob/master/core%2Fsrc%2Fprocessing%2Fcore%2FPApplet.java#L420">width</a>や<a href="https://github.com/processing/processing/blob/master/core%2Fsrc%2Fprocessing%2Fcore%2FPApplet.java#L460">mouseX</a>などといった、一見グローバル変数に見えるProcessingのシステム変数は実は<a href="https://github.com/processing/processing/blob/master/core%2Fsrc%2Fprocessing%2Fcore%2FPApplet.java">PApplet</a>クラスのメンバ変数になっている。そしてスケッチに書いたソースは全部<code>PApplet</code>の内部メソッドや内部クラスとして定義されるので、それらがどこからでも参照できる。しかしRubyの場合は、<code>mouse_x</code>という名前が変数の場合はローカル変数にしかならないので、自動的に値は入らない。どうしているかというと<code>PApplet</code>クラスのメソッドとして定義してあって、Rubyの文法ではメソッドの呼び出しの括弧を省略できるので変数っぽく見える、という具合になっている。しかしRubyでは<code>class</code>の内部で定義した<code>class</code>でも外側のインスタンスにはアクセス出来ないので、<code>mouse_x</code>などは見えない。グローバル変数は<code>$</code>から始まらないといけないので、それもできない。じゃあどうするかというと、<code>$app</code>というグローバル変数があるようなので、それ経由でアクセスする方法になるらしい。残念。そのへんPythonモードではどう解決しているのか不明。</p>
+<p><del>またruby-processingは凝っていて</del>（追記：ruby-processingじゃなくてこれもJRubyだった）、Processing&#x2F;JavaのAPIやJavaの推奨のコーディング規約はキャメルケースだけど、Rubyっぽく書けるように、対応するスネークケースのAPIを自動的に定義してくれる。ｶｺ(・∀・)ｲｲ!!</p>
+<p>しかしRubyモードならではの問題もある。Processing&#x2F;Javaでは<a href="https://github.com/processing/processing/blob/master/core%2Fsrc%2Fprocessing%2Fcore%2FPApplet.java#L420">width</a>や<a href="https://github.com/processing/processing/blob/master/core%2Fsrc%2Fprocessing%2Fcore%2FPApplet.java#L460">mouseX</a>などといった、一見グローバル変数に見えるProcessingのシステム変数は実は<a href="https://github.com/processing/processing/blob/master/core%2Fsrc%2Fprocessing%2Fcore%2FPApplet.java">PApplet</a>クラスのメンバ変数になっている。そしてスケッチに書いたソースは全部<code>PApplet</code>の内部メソッドや内部クラスとして定義されるので、それらがどこからでも参照できる。しかしRubyの場合は、<code>mouse_x</code>という名前が変数の場合はローカル変数にしかならないので、自動的に値は入らない。どうしているかというと<code>PApplet</code>クラスのメソッドとして定義してあって、Rubyの文法ではメソッドの呼び出しの括弧を省略できるので変数っぽく見える、という具合になっている。しかしRubyでは<code>class</code>の内部で定義した<code>class</code>でも外側のインスタンスにはアクセス出来ないので、<code>mouse_x</code>などは見えない。グローバル変数は<code>$</code>から始まらないといけないので、それもできない。じゃあどうするかというと、<code>$app</code>というグローバル変数があるようなので、それ経由でアクセスする方法になるらしい。残念。そのへんPythonモードではどう解決しているのか不明。</p>
 <p>今後の展望は、まともに使えるようにして、最終的に本家のProcessingにリンクしてもらえるようにまでしたい。</p>
 
 

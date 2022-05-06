@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
@@ -228,7 +228,7 @@
 <figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Ruby版B</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_cxxr</span><span class="params">(cxxr)</span></span></span><br><span class="line">  methods = cxxr[<span class="number">1</span>..-<span class="number">2</span>].each_char.map&#123;<span class="params">|x|</span> <span class="string">&quot;c<span class="subst">#&#123;x&#125;</span>r&quot;</span>&#125;.reverse</span><br><span class="line">  Array.class_eval <span class="keyword">do</span></span><br><span class="line">    eval <span class="string">&lt;&lt;EOD</span></span><br><span class="line"><span class="string">      def <span class="subst">#&#123;cxxr&#125;</span></span></span><br><span class="line"><span class="string">        self.<span class="subst">#&#123;methods.join(<span class="string">&quot;.&quot;</span>)&#125;</span></span></span><br><span class="line"><span class="string">      end</span></span><br><span class="line"><span class="string">EOD</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
 <p>みたいにすればできる。ただし動作は異なっている。Lispのマクロの場合には関数の生成はコンパイル時に行われて、実行時には通常の関数呼び出しと全く同じになる。</p>
-<p>Ruby版Aは実行時に<code>inject</code>~`send`によるメソッド呼び出しのオーバーヘッドが必要になっている。</p>
+<p>Ruby版Aは実行時に<code>inject</code>~&#96;send&#96;によるメソッド呼び出しのオーバーヘッドが必要になっている。</p>
 <p>Ruby版Bは、Rubyをコンパイルと実行の２段階に分けて考えるとLisp版と同じ動作だけど、明示的な<code>eval</code>が必要になっている。またメソッドの内容は文字列で構築しないといけないので、複雑な操作は難しい。</p>
 <p>…なんか最初の目的とずれてるような気がするが、終わりです。</p>
 <ul>
