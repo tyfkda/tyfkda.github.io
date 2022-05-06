@@ -252,7 +252,7 @@ Tensorflow.js（以降TFJS）を使ったらブラウザでも動かせるんじ
 <h4 id="ゲーム部分"><a href="#ゲーム部分" class="headerlink" title="ゲーム部分"></a>ゲーム部分</h4><p>Colabでの学習時にPythonで記述していたゲーム部分は、そっくりJavaScriptに持ってくる必要がある。
 この辺、二度手間なのでなんとかしたい感はある…。</p>
 <h3 id="node-js-で動かす"><a href="#node-js-で動かす" class="headerlink" title="node.js で動かす"></a>node.js で動かす</h3><p>ブラウザで動かすのもいいが、node.jsを使ってターミナル上で動かすのも手軽でよい。
-その場合は <a href="https://www.npmjs.com/package/@tensorflow/tfjs-node"><code>@tensorflow/tfjs-node</code></a> か <a href="https://www.npmjs.com/package/@tensorflow/tfjs-node-gpu"><code>tfjs-node-gpu</code></a>
+その場合は <a href="https://www.npmjs.com/package/@tensorflow/tfjs-node"><code>@tensorflow/tfjs-node</code></a> か <a href="https://www.npmjs.com/package/@tensorflow/tfjs-node-gpu"><code>-gpu</code>付き版</a>
 をインポートに加えるとのこと。
 しかし自分の環境だと、 <code>tfjs-node</code> をインポートすると <code>reshape</code> でエラーが出てしまうため、動かせなかった：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">TypeError: backend.reshape is not a <span class="keyword">function</span></span><br></pre></td></tr></table></figure>
