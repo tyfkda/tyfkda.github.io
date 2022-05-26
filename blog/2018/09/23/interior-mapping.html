@@ -215,9 +215,9 @@
 <span id="more"></span>
 
 <h3 id="先に結果画面"><a href="#先に結果画面" class="headerlink" title="先に結果画面"></a>先に結果画面</h3><p>リポジトリ：<a href="https://github.com/tyfkda/InteriorMapping">https://github.com/tyfkda/InteriorMapping</a></p>
-<center>
-![interiormapping](/assets/interiormapping.jpg)
-</center>
+<div style="text-align: center">
+<img src="/assets/interiormapping.jpg" alt="interiormapping" />
+</div>
 
 <p>ビルは単なる立方体をスケールした６面の箱で、シェーダーで内部に部屋があるように見せかけているところが面白い。</p>
 <h3 id="準備：Scriptable-Render-Pipelineの導入"><a href="#準備：Scriptable-Render-Pipelineの導入" class="headerlink" title="準備：Scriptable Render Pipelineの導入"></a>準備：Scriptable Render Pipelineの導入</h3><p>Unityでシェーダー使う場合にGUIで簡単に扱えるような環境ないかな…と思ってググってみると、Shader Graphというのがあるらしい。
@@ -270,9 +270,9 @@ Assets &gt; Create &gt; Shaderに「ほにゃらら Graph」という3項目が�
 </tr>
 </tbody></table>
 <p>交点がグリッド内のどこに位置するかの計算に<code>Modulo</code>を使おうとしたが負の場合に結果も負になってしまう？のかうまくいかないので<code>Fraction</code>で対処した。</p>
-<center>
-![interiormapping](/assets/interiormapping_shadergraph.jpg)
-</center>
+<div style="text-align: center">
+<img src="/assets/interiormapping_shadergraph.jpg" alt="shadergraph" />
+</div>
 
 <p>頂点シェーダーとフラグメントシェーダーの差を全然意識しないんだけどどうなってるんだろう？</p>
 <h3 id="Interior-Mapping-その他"><a href="#Interior-Mapping-その他" class="headerlink" title="Interior Mapping: その他"></a>Interior Mapping: その他</h3><p>論文では部屋の描画以外にもいくつか項目が書かれている：</p>

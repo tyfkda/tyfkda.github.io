@@ -174,6 +174,7 @@ class App {
       if (points.length >= 2)
         this.strokes.push(points)
       this.redraw()
+      return true
     }
 
     setMouseDragListener({

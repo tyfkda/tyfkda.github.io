@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-05-06T05:55:52.519Z</updated>
+  <updated>2022-05-26T10:45:05.013Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>転移学習で手書きのひらがな・漢字認識</title>
+    <link href="https://tyfkda.github.io/blog/2022/05/26/hira-kan-recog.html"/>
+    <id>https://tyfkda.github.io/blog/2022/05/26/hira-kan-recog.html</id>
+    <published>2022-05-26T03:00:00.000Z</published>
+    <updated>2022-05-26T10:45:05.013Z</updated>
+    
+    
+    <summary type="html">&lt;a href=&quot;/blog/2016/08/17/tensorflow-cnn.html&quot; title=&quot;だいぶ以前&quot;&gt;だいぶ以前&lt;/a&gt;にディープラーニング（CNN）で文字認識を試したことがあったが、学習のワークフローなどをまとめたいと思っているうちに時が流れて、ソースが失われてしまった。
+&lt;p&gt;そのまま葬り去られてしまうのは惜しいので供養（再挑戦）してみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="machine learning" scheme="https://tyfkda.github.io/tags/machine-learning/"/>
+    
+  </entry>
   
   <entry>
     <title>Kerasで構築したモデルをTensorFlow.jsで動かす</title>
@@ -159,24 +177,6 @@ TPUを使用する場合にコードの変更が必要だった。&lt;/p&gt;</su
     
     <summary type="html">&lt;p&gt;gitでたまによく使う操作、だからどうも覚えられないというものがある。
 そういうものはエイリアスとして登録しておくと便利。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="git" scheme="https://tyfkda.github.io/tags/git/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【git】あとから修正を差し込む（fixupとautosquash）</title>
-    <link href="https://tyfkda.github.io/blog/2022/01/16/git-fixup-autosquash.html"/>
-    <id>https://tyfkda.github.io/blog/2022/01/16/git-fixup-autosquash.html</id>
-    <published>2022-01-16T00:02:46.000Z</published>
-    <updated>2022-04-16T01:36:17.422Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;gitでコミットをいくつか進めているうちに「以前のコミットにこの修正もまとめたい」ということが結構ある。
-そういう場合に &lt;code&gt;fixup&lt;/code&gt; と &lt;code&gt;autosquash&lt;/code&gt; が使える。&lt;/p&gt;</summary>
     
     
     

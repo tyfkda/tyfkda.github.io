@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="だいぶ以前にディープラーニング（CNN）で文字認識を試したことがあったが、学習のワークフローなどをまとめたいと思っているうちに時が流れて、ソースが失われてしまった。
+そのまま葬り去られてしまうのは惜しいので供養（再挑戦）してみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="転移学習で手書きのひらがな・漢字認識"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>転移学習で手書きのひらがな・漢字認識 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/05/26/hira-kan-recog.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>転移学習で手書きのひらがな・漢字認識</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-05-26
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/machine-learning/">#machine learning</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2016/08/17/tensorflow-cnn.html" title="だいぶ以前">だいぶ以前</a>にディープラーニング（CNN）で文字認識を試したことがあったが、学習のワークフローなどをまとめたいと思っているうちに時が流れて、ソースが失われてしまった。
+<p>そのまま葬り去られてしまうのは惜しいので供養（再挑戦）してみた。</p>
+<span id="more"></span>
+
+<p>ただ前やったのと同じことをやるのではつまらないので、<strong>転移学習</strong>でやってみることにした。</p>
+<h3 id="デモ"><a href="#デモ" class="headerlink" title="デモ"></a>デモ</h3><style type="text/css">
+  .applet {
+    transition: box-shadow 0.25s;
+  }
+  .applet:hover {
+    box-shadow:0 0 8px blue;
+  }
+  @media screen and (min-width:768px) {
+    .applet {
+      width: 600px;
+      height: 800px;
+    }
+  }
+  @media screen and (max-width:768px) {
+    .applet {
+      width: 350px;
+      height: 500px;
+    }
+  }
+</style>
+<iframe class="applet" src="//tyfkda.github.io/hira_kan_recog/" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto; border:1px solid black"></iframe>
+
+<ul>
+<li><a href="https://github.com/tyfkda/hira_kan_recog">リポジトリ</a></li>
+</ul>
+<h3 id="転移学習"><a href="#転移学習" class="headerlink" title="転移学習"></a>転移学習</h3><p>転移学習はニューラルネットワークのウェイトをランダムな状態から訓練するのではなく、すでに訓練済みのモデルを利用する。
+すでに実証済みの構成かつウェイトも訓練済みなので効果が保証されて、また自分で行う訓練に必要なデータが少なくて済んだり、かかる時間（エポック数）を減らせたりできる。
+いろいろな学習済みモデルが公開されていて、TensorFlow&#x2F;Kerasからも簡単に使えるようになっている。</p>
+<p>当初は「VGGで転移学習」みたいな聞きかじりがあったのでVGG16を使おうと思ってたが、
+<a href="https://www.tensorflow.org/api_docs/python/tf/keras/applications">Module: tf.keras.applications</a>に他にもいろいろあったので見てみた。
+転移で学習したモデルをウェブ上で動かすことを考えて軽量のモデル、MobileNetを使ってみることにした。</p>
+<p>MobileNetといってもバージョンがいろいろあって、すでにV3というものがあるらしい。
+その中で<a href="https://www.tensorflow.org/api_docs/python/tf/keras/applications/MobileNetV3Small">V3Small</a>を選んでみた。
+（モデルの内容は理解してない。）</p>
+<h4 id="学習済みモデルの構築"><a href="#学習済みモデルの構築" class="headerlink" title="学習済みモデルの構築"></a>学習済みモデルの構築</h4><figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.keras.applications <span class="keyword">import</span> MobileNetV3Small</span><br><span class="line"></span><br><span class="line">IMG_SHAPE = (<span class="number">64</span>, <span class="number">64</span>, <span class="number">1</span>)  <span class="comment"># 入力画像のサイズ</span></span><br><span class="line"></span><br><span class="line">pretrained_model = MobileNetV3Small(</span><br><span class="line">    input_tensor=layers.Input(shape=IMG_SHAPE[:-<span class="number">1</span>] + (<span class="number">3</span>,)),</span><br><span class="line">    weights=<span class="string">&#x27;imagenet&#x27;</span>,</span><br><span class="line">    include_top=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<p>用途は文字認識なので色は必要ないが、転移元のMobileNetは要求するのでRGBの３チャンネルで渡す必要がある</p>
+<p>入力画像サイズを64x64としてみたが「224x224じゃない」というエラーが出る：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">WARNING:tensorflow:`input_shape` is undefined or non-square, or `rows` is not 224. Weights for input shape (224, 224) will be loaded as the default.</span><br></pre></td></tr></table></figure>
+
+<p>がひとまず無視する。</p>
+<p><code>include_top=False</code> として元のネットワークの最上段を取り除き、その上に望みの分類を追加してやれば目的に流用できる。
+独自の出力層を加えるには、生成した <code>pretrained_model</code> を <code>tf.keras.Sequential</code> などに組み込んでやる。</p>
+<h3 id="手書き文字データ"><a href="#手書き文字データ" class="headerlink" title="手書き文字データ"></a>手書き文字データ</h3><p>ひらがなや漢字の手書きデータとして、以前は<a href="http://etlcdb.db.aist.go.jp/specification-of-etl-8?lang=ja">ＥＴＬ８</a>を試したが、
+どうせだったらもっと文字種類の多い<a href="http://etlcdb.db.aist.go.jp/specification-of-etl-9?lang=ja">ＪＩＳ第一水準手書き漢字データベースＥＴＬ９</a>にしてみた。</p>
+<p>ETL9:</p>
+<ul>
+<li>文字数：3,036種類<ul>
+<li>ひらがな：71種類（小文字なし）</li>
+<li>漢字：2,965種類（ＪＩＳ第一水準漢字）</li>
+</ul>
+</li>
+<li>画像サイズ：64x63</li>
+<li>サンプル数：200</li>
+</ul>
+<p>非商用の利用は可能とのこと。</p>
+<h4 id="データの前処理"><a href="#データの前処理" class="headerlink" title="データの前処理"></a>データの前処理</h4><p>ETLの配布データは通常の画像形式ではなく独自のバイナリ形式になっているので、変換してやる必要がある。
+<a href="https://twdlab.hatenablog.com/entry/2018/07/03/205518">etlcdb(ETL文字データベース)のETL9Bから画像を抽出するスクリプトを書いた - ごはんと飲み物は紙一重</a> を参考にさせていただいた。</p>
+<p>Google Colabで扱う際に便利なように、あらかじめ前処理してnumpyで扱う形式に変換しておくとよい。
+.npzの出力は <code>np.savez(ファイル名, x=np.array(データ), ...)</code>  、
+読み込みは <code>np.load(ファイル名)</code> で可能。</p>
+<h3 id="訓練方法"><a href="#訓練方法" class="headerlink" title="訓練方法"></a>訓練方法</h3><p>訓練はGoogleColab上で、ランタイムはGPUを使用
+（TPUだとファイルアクセスにGoogle Cloud Storageが必要とのこと）。</p>
+<ul>
+<li><a href="https://github.com/tyfkda/hira_kan_recog/blob/main/train/RecognizeHandWrittenCharacterUsingMobileNetV3.ipynb">訓練のノートブック</a></li>
+</ul>
+<h4 id="データの水増し"><a href="#データの水増し" class="headerlink" title="データの水増し"></a>データの水増し</h4><p>汎化性能を上げるには既存のデータだけでは心もとない、ということでデータの水増しとして画像の
+回転(<a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/RandomRotation">RandomRotation</a>)・
+拡大縮小(<a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/RandomZoom">RandomZoom</a>)・
+移動(<a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/RandomTranslation">RandomTranslation</a>)
+をしてみた。
+菱形に変形させても字としては読めてよいので、この順番に適用させてみた。</p>
+<div style="text-align: center">
+<img src="/assets/hira-kan-recog/augmentation.png" alt="Augmentation" />
+</div>
+
+<p>水増しレイヤーは訓練時にのみ作用して予測時にはなにもしないようになっているとのことで、予測時にモデルを修正したりパラメータを設定する必要がなくて便利
+（TFJSに持っていってもそのままで動く）。</p>
+<ul>
+<li>学習済みモデルを読み込むとなぜかその後データの水増しの確認で効かなくなってしまい、実際の訓練モデルでの動作確認はできてない</li>
+</ul>
+<h4 id="データ供給"><a href="#データ供給" class="headerlink" title="データ供給"></a>データ供給</h4><p>データをすべてメモリ上に読み込むには大きすぎたので、
+ジェネレータを使うようにした。</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NpzGen</span>(<span class="params">keras.utils.<span class="type">Sequence</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, files</span>):</span></span><br><span class="line">        self.files = files</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.files)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span>(<span class="params">self, idx</span>):</span></span><br><span class="line">        data = np.load(self.files[idx])</span><br><span class="line">        <span class="keyword">return</span> data[<span class="string">&#x27;x&#x27;</span>], data[<span class="string">&#x27;y&#x27;</span>]</span><br><span class="line"></span><br><span class="line">traingen = NpzGen(train_files)</span><br><span class="line">validgen = NpzGen(valid_files)</span><br><span class="line"></span><br><span class="line"><span class="comment"># # Fit the Model</span></span><br><span class="line">history = model.fit(traingen, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=<span class="literal">True</span>, validation_data=validgen)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>model.fit_generator</code> はdeprecatedとなっている</li>
+</ul>
+<h4 id="モデルの保存"><a href="#モデルの保存" class="headerlink" title="モデルの保存"></a>モデルの保存</h4><p>転移学習で学習済みのモデルのウェイトを固定して最終段だけ学習するんだったらその最終段のウェイトだけ保存すれば容量を減らせてお得なんじゃないかと思ったが、そのようなメソッドはないらしい。</p>
+<p>別途最終段だけのモデルを作成して自分でウェイトをコピーして保存・実行環境で再構築すればできなくもないようだが面倒だし、MobileNetV3Smallだと10MB程度なので全体を保存することにした。
+（最終的には学習済み部分も固定じゃなく再学習することにしたので、どのみち全て保存することになった。）</p>
+<h4 id="モデルのコンバート"><a href="#モデルのコンバート" class="headerlink" title="モデルのコンバート"></a>モデルのコンバート</h4><p>学習したモデルをブラウザ・TFJSで動かすためには.h5のままではダメで、コンバートしてやる必要がある。</p>
+<a href="/blog/2022/05/05/keras-model-on-tfjs.html" title="Kerasで構築したモデルをTensorFlow.jsで動かす">Kerasで構築したモデルをTensorFlow.jsで動かす</a> で試したように `tensorflowjs_converter` を使う。
+<p>しかし <code>MobileNet</code> で使われている <code>Rescaling</code> というレイヤーがないといってエラーが出る：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">generic_utils.js:227 Uncaught (in promise) Error: Unknown layer: Rescaling. This may be due to one of the following reasons:</span><br><span class="line">1. The layer is defined in Python, in which case it needs to be ported to TensorFlow.js or your JavaScript code.</span><br><span class="line">2. The custom layer is defined in JavaScript, but is not registered properly with tf.serialization.registerClass().</span><br><span class="line">    at deserializeKerasObject (generic_utils.js:227:1)</span><br><span class="line">    at deserialize (serialization.js:25:34)</span><br><span class="line">    at fromConfig (models.js:861:38)</span><br><span class="line">    at deserializeKerasObject (generic_utils.js:258:1)</span><br><span class="line">    at deserialize (serialization.js:25:34)</span><br><span class="line">    at fromConfig (models.js:861:38)</span><br><span class="line">    at deserializeKerasObject (generic_utils.js:258:1)</span><br><span class="line">    at deserialize (serialization.js:25:34)</span><br><span class="line">    at loadLayersModelFromIOHandler (models.js:222:30)</span><br><span class="line">    at async main.ts:231:17</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/tensorflow/tfjs/issues/3728#issuecomment-904830370">Error: Unknown layer: Rescaling. · Issue #3728 · tensorflow&#x2F;tfjs · GitHub</a>
+に書かれているように <code>--output_format=tfjs_graph_model</code> を指定する。</p>
+<p>するとTFJS側でのモデル読み込みに <code>loadLayersModel</code> だと失敗するので、代わりに <code>loadGraphModel</code> を使用する必要がある。</p>
+<p>コンバートしたモデルのサイズは、最終段のレイヤー構成にもよるが 10.9MB だった。
+この程度なら今どき許容範囲でしょう。</p>
+<h3 id="ブラウザ側の処理"><a href="#ブラウザ側の処理" class="headerlink" title="ブラウザ側の処理"></a>ブラウザ側の処理</h3><h4 id="キャンバス画像の取得"><a href="#キャンバス画像の取得" class="headerlink" title="キャンバス画像の取得"></a>キャンバス画像の取得</h4><p>ブラウザで文字認識を行う際に、キャンバスに描かれた文字をどうやって取得するか。
+キャンバスのコンテキストから <code>ImageData</code> でピクセルデータを取り出せばできるが、 <a href="https://js.tensorflow.org/api/3.16.0/#browser.fromPixels"><code>tf.browser.fromPixels</code></a> という便利なメソッドが用意されている。
+<code>numChannels</code> に <code>1</code> を与えてグレースケールとして取り出せる。</p>
+<h4 id="予測結果の上位数件の取り出し"><a href="#予測結果の上位数件の取り出し" class="headerlink" title="予測結果の上位数件の取り出し"></a>予測結果の上位数件の取り出し</h4><p><code>model.predict</code> での予測結果のベスト１件は <code>argMax</code> で取得できるが、１件だけじゃなく上位の数件を取り出すにはどうするか。
+Python では <code>numpy.argpartition</code> で取り出せたが、 TFJSには用意されてないっぽい。
+なので普通にソートを使う。</p>
+<h3 id="認識精度を上げるための試行錯誤"><a href="#認識精度を上げるための試行錯誤" class="headerlink" title="認識精度を上げるための試行錯誤"></a>認識精度を上げるための試行錯誤</h3><p>別にノルマがあるわけじゃはないけど、せっかくなら精度を99%以上にしたいなどと思っていろいろ試してみた：</p>
+<ul>
+<li>学習済みモデルのウェイトを学習しない純粋な転移学習じゃなくて、学習させてしまう？</li>
+<li>MobileNetV3Smallの最終出力が2x2x576&#x3D;2,304パラメータだが、それを直接3,036文字の分類として全結合するとデータ量が多くなってしまうのでいったん絞るか？</li>
+<li><code>Flatten</code> して絞るんじゃなく、 <code>GlobalAveragePooling2D</code> で576に減らすか？</li>
+<li>入力画像サイズを変えてみる (32, 48, 56, 64)</li>
+<li>オプティマイザを <code>adam</code> 以外にしてみる？</li>
+<li>全結合前にドロップアウトを入れるか？</li>
+<li>バッチ正規化を入れるか？</li>
+</ul>
+<p>試すに従ってドツボにハマってしまった。
+それぞれの項目が独立してるわけじゃなくて、ある設定がこの項目だとこっちは別の設定の方がよい、とかそもそも同じ条件でも結果が揺れるのでなんとも、という具合で難儀だった。</p>
+<ul>
+<li>学習済み部分も学習させる</li>
+<li>入力画像は32x32で十分なように思えるがそれでは精度が出ず、大きい方がよかった</li>
+<li>オプティマイザは <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adamax"><code>adam</code></a> より <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adamax"><code>adamax</code></a> がよかった<ul>
+<li><code>adagrad</code> や <code>adadelta</code> だと全然学習されなかった</li>
+</ul>
+</li>
+<li><code>GlobalAveragePooling2D</code> より <code>Flatten</code> したほうが少ないエポック数ではよさげだが、多く学習させると追いついてくるっぽい？</li>
+<li>バッチ正規化とドロップアウトどちらがいいのか微妙だが、バッチ正規化を選んだ</li>
+<li>学習はすごく速くて、10~20エポック程度で十分なレベルに達していて、あとは微々たる伸びしかしなかった<ul>
+<li>無駄に100エポック回してみたが過学習はしてないっぽい</li>
+<li>学習が早いのは転移学習だから、というわけではないっぽい</li>
+</ul>
+</li>
+</ul>
+<p>結局99%は微妙に達成できず、テストデータに対する最終的な精度は98.90%だった。</p>
+<div style="text-align: center">
+<img src="/assets/hira-kan-recog/acc.png" alt="Accuracy" />
+<img src="/assets/hira-kan-recog/loss.png" alt="Loss" />
+</div>
+
+<ul>
+<li>画像分類と文字認識では入力データ形式も用途も違うので、転移学習はあまり有効ではなかったかもしれない</li>
+<li>MobileNetV3のモデル構造は軽量なので末端で利用しやすいのでよい</li>
+<li>データ水増しして長く訓練しても精度がそれほど上がるわけではない？</li>
+<li>機械学習の手法はいろいろあってもどれがいいともさっぱり、組み合わせもあるし一概に言えん…という気持ちになった</li>
+</ul>
+<h3 id="訓練結果"><a href="#訓練結果" class="headerlink" title="訓練結果"></a>訓練結果</h3><table>
+<thead>
+<tr>
+<th align="left">項目</th>
+<th align="right">値</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">入力</td>
+<td align="right">縦64x横64x1チャンネル</td>
+</tr>
+<tr>
+<td align="left">エポック数</td>
+<td align="right">100</td>
+</tr>
+<tr>
+<td align="left">テスト精度</td>
+<td align="right">98.90%</td>
+</tr>
+<tr>
+<td align="left">データサイズ</td>
+<td align="right">10.9MB</td>
+</tr>
+</tbody></table>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://etlcdb.db.aist.go.jp/?lang=ja">ETL文字データベース</a></li>
+<li><a href="https://keras.io/guides/transfer_learning/">Transfer learning &amp; fine-tuning</a></li>
+<li><a href="https://starpentagon.net/analytics/kamishima_transfer_learning_concept/">転移学習（神嶌 敏広 著）：1. 概念編 | 有意に無意味な話</a></li>
+<li>MobileNet　（理論はまったく理解してません）<ul>
+<li>V3: <a href="https://arxiv.org/abs/1905.02244">[1905.02244] Searching for MobileNetV3</a><ul>
+<li>Squeeze-and-Excite</li>
+<li>h-swish</li>
+</ul>
+</li>
+<li>V2: <a href="https://arxiv.org/abs/1801.04381">[1801.04381] MobileNetV2: Inverted Residuals and Linear Bottlenecks</a><ul>
+<li>Inverted Residual</li>
+</ul>
+</li>
+<li>V1: <a href="https://arxiv.org/abs/1704.04861">[1704.04861] MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications</a><ul>
+<li>普通のCNNじゃなくて「Depthwise Separable Convolution」という方式で、ウェイト削減しているとのこと</li>
+<li><a href="https://www.youtube.com/watch?v=T7o3xvJLuHk">Depthwise Separable Convolution - A FASTER CONVOLUTION! - YouTube</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
