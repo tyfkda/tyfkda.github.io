@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-05-26T10:45:05.013Z</updated>
+  <updated>2022-05-29T02:38:39.829Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【VSCode】Ctrl-mで決定する</title>
+    <link href="https://tyfkda.github.io/blog/2022/05/29/vscode-return2.html"/>
+    <id>https://tyfkda.github.io/blog/2022/05/29/vscode-return2.html</id>
+    <published>2022-05-29T00:00:00.000Z</published>
+    <updated>2022-05-29T02:38:39.829Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2022/01/28/vscode-return.html&quot; title=&quot;VSCodeで改行の入力にCtrl-mを使えるように&quot;&gt;VSCodeで改行の入力にCtrl-mを使えるように&lt;/a&gt;設定したが、クイックオープンなどで効かないのでま</summary>
+      
+    
+    
+    
+    
+    <category term="texteditor" scheme="https://tyfkda.github.io/tags/texteditor/"/>
+    
+  </entry>
   
   <entry>
     <title>転移学習で手書きのひらがな・漢字認識</title>
@@ -164,24 +184,6 @@ TPUを使用する場合にコードの変更が必要だった。&lt;/p&gt;</su
     
     
     <category term="csharp" scheme="https://tyfkda.github.io/tags/csharp/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【git】まれに使用するエイリアス６選</title>
-    <link href="https://tyfkda.github.io/blog/2022/01/23/git-my-alias.html"/>
-    <id>https://tyfkda.github.io/blog/2022/01/23/git-my-alias.html</id>
-    <published>2022-01-23T00:50:00.000Z</published>
-    <updated>2022-01-23T00:57:07.584Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;gitでたまによく使う操作、だからどうも覚えられないというものがある。
-そういうものはエイリアスとして登録しておくと便利。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="git" scheme="https://tyfkda.github.io/tags/git/"/>
     
   </entry>
   
