@@ -11,8 +11,8 @@
     <!--Description-->
     
         <meta name="description" content="以前VSCodeで改行の入力にCtrl-mを使えるように設定したが、クイックオープンなどで効かないのでまだ不便だった。
-クイックオープンCmd-p でプロジェクト内のファイルを選択して開く際の決定を割り付けるには、keybindings.json に以下を追加する：
-&amp;#123;    ...   ">
+なのでショートカットキーの設定を追加する。
+クイックオープンCmd-p でプロジェクト内のファイルを選択して開く際の決定を割り付けるには、keybindings.json に以下を">
     
 
     <!--Author-->
@@ -205,7 +205,8 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>以前<a href="/blog/2022/01/28/vscode-return.html" title="VSCodeで改行の入力にCtrl-mを使えるように">VSCodeで改行の入力にCtrl-mを使えるように</a>設定したが、クイックオープンなどで効かないのでまだ不便だった。</p>
+                <p>以前<a href="/blog/2022/01/28/vscode-return.html" title="VSCodeで改行の入力にCtrl-mを使えるように">VSCodeで改行の入力にCtrl-mを使えるように</a>設定したが、クイックオープンなどで効かないのでまだ不便だった。
+なのでショートカットキーの設定を追加する。</p>
 <h3 id="クイックオープン"><a href="#クイックオープン" class="headerlink" title="クイックオープン"></a>クイックオープン</h3><p><code>Cmd-p</code> でプロジェクト内のファイルを選択して開く際の決定を割り付けるには、keybindings.json に以下を追加する：</p>
 <figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">&quot;key&quot;</span>: <span class="string">&quot;ctrl-m&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;workbench.action.acceptSelectedQuickOpenItem&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;when&quot;</span>: <span class="string">&quot;inQuickOpen&quot;</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 

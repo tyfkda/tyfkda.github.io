@@ -208,10 +208,11 @@ JavaScriptで整数配列を簡単に生成する方法が覚えられなくて�
 JavaScriptで整数配列を簡単に生成する方法が覚えられなくて毎度ウェブ検索のお世話になっていたので調べた。</p>
 <span id="more"></span>
 
-<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>スプレッドしてmap <code>[...Array(N)].map((_, i) =&gt; iを使った計算)</code> が簡潔さと速度の面でよいと思う。</p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>スプレッドしてmap <code>[...Array(N)].map((_, i) =&gt; i)</code> が簡潔さと速度の面でよいと思う。</p>
 <p>完</p>
 <p>.</p>
 <p>.</p>
+<p>（<a href="#bench">末尾</a>にベンチマークの実行あり）</p>
 <h3 id="前書き"><a href="#前書き" class="headerlink" title="前書き"></a>前書き</h3><p>ループを自前で回せば一応できるんだけど、<code>for</code>文を書くのが面倒なのでサクッと<code>map</code>したい。
 Pythonでは<code>range</code>、Rubyでは<code>...</code>で<code>Range</code>オブジェクトなるものが簡単に生成できる。
 JavaScriptではそのようなものは無いようで、自作する必要がある。</p>
@@ -259,7 +260,7 @@ JavaScriptではそのようなものは無いようで、自作する必要が�
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">range_gen</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">    <span class="keyword">yield</span> i</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[...range_gen(N)].map(<span class="function"><span class="params">i</span> =&gt;</span> i * i)</span><br></pre></td></tr></table></figure>
 
 <p>ジェネレータは<code>function*</code>としてしか書けず、アロー・無名関数では書けないとのこと。</p>
-<h3 id="実際に走らせてみる"><a href="#実際に走らせてみる" class="headerlink" title="実際に走らせてみる"></a>実際に走らせてみる</h3><div style="border:1px solid black; border-radius:8px; padding:8px;">
+<h3 id="実際に走らせて負荷を確認"><a href="#実際に走らせて負荷を確認" class="headerlink" title="実際に走らせて負荷を確認 "></a>実際に走らせて負荷を確認<a name="bench"> </a></h3><div style="border:1px solid black; border-radius:8px; padding:8px;">
   <div>
     配列サイズ：<input id="size" type="text" size="6" value="100">
     計測回数：<input id="count" type="text" size="8" value="1000">
@@ -346,8 +347,9 @@ function start() {
   for (let i = 0; i < cases.length; ++i) {
     const [title, proc] = cases[i]
     const time = results[i]
+    const rounded = Math.round(time * 1000000) / 1000000
     const width = Math.round(WIDTH * time / max)
-    resultTable.innerHTML += `<tr><td>${title}</td><td>${time}</td><td><div style="width:${width}px; height:12px; background-color:red"></div></td></tr>`
+    resultTable.innerHTML += `<tr><td>${title}</td><td>${rounded}</td><td><div style="width:${width}px; height:12px; background-color:red"></div></td></tr>`
   }
 }
 </script>
@@ -361,7 +363,7 @@ function start() {
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/js-game-engine.html" title="JSでオレオレゲームエンジン" rel="bookmark">JSでオレオレゲームエンジン</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/js-game-engine.html" title="JSでオレオレゲームエンジン" rel="bookmark">JSでオレオレゲームエンジン</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
