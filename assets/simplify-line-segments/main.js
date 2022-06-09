@@ -248,7 +248,7 @@ class App {
       context.stroke()
     }
 
-    const per = count <= 0 ? '--' : Math.round(simplified_count * 10000 / count) / 100
+    const per = count <= 0 ? '--' : (simplified_count * 100 / count).toFixed(2)
     document.getElementById('info').value = `${per}% (#${simplified_count}/${count})`
   }
 }
