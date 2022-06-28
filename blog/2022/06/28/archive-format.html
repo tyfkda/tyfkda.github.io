@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="仕組みを理解したい。">
+        <meta name="description" content="リンカーを自作した際に入力としてELFのオブジェクトファイル(.o)を受け付けるようにしていたが、それだけだとライブラリの扱いで無駄が生じるのでアーカイブファイル(.a)も入力できるようにした。">
     
 
     <!--Author-->
@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="JITについてお勉強"/>
+        <meta property="og:title" content="アーカイブファイルのフォーマット"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>JITについてお勉強 - Kludge Factory</title>
+    <title>アーカイブファイルのフォーマット - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +67,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/02/05/jit.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/06/28/archive-format.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -161,13 +161,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>JITについてお勉強</h1>
+                    <h1>アーカイブファイルのフォーマット</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2015-02-05
+                            2022-06-28
                         
                     </span>
                 </div>
@@ -183,66 +183,53 @@
 
             <!-- Tags and categories -->
            
-                <div class="col-lg-4 col-md-5 post-tags">
-                    
-                        
-
-
-<a href="/tags/compiler/">#compiler</a> <a href="/tags/jit/">#jit</a>
-
-
-                    
-                </div>
-                <div class="col-lg-4 col-md-5 post-categories">
-                    
-                </div>
-            
 
             <!-- Gallery -->
             
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>仕組みを理解したい。</p>
+                <a href="/blog/2022/03/13/elf-linker.html" title="リンカーを自作した">リンカーを自作した</a>際に入力としてELFのオブジェクトファイル(.o)を受け付けるようにしていたが、それだけだとライブラリの扱いで無駄が生じるのでアーカイブファイル(.a)も入力できるようにした。
+
 <span id="more"></span>
 
+<h3 id="動機"><a href="#動機" class="headerlink" title="動機"></a>動機</h3><p>今までリンク時にライブラリ関数もオブジェクトファイルとしてリンカーに渡していたが、取り扱いが楽なように一つのファイルにまとめていた。
+しかしそうすると使われてないライブラリ関数もリンクされてしまうため、生成される実行ファイルのサイズが大きくなってしまう。
+関数ごとにオブジェクトファイルに分けて参照されるもののみをリンカーに渡せればよいが、扱いが煩雑になってしまう。</p>
+<p>そこでアーカイブファイルを使う。
+アーカイブファイルは複数のオブジェクトファイルをまとめたもので、参照された関数やデータだけがリンクされるのでそのような無駄がなくなる。</p>
+<h3 id="Linuxのアーカイブファイルのフォーマット"><a href="#Linuxのアーカイブファイルのフォーマット" class="headerlink" title="Linuxのアーカイブファイルのフォーマット"></a>Linuxのアーカイブファイルのフォーマット</h3><p>ググって出てくる<a href="https://ja.wikipedia.org/wiki/Ar_(UNIX)">Wikipediaの記事</a>には「arのファイルフォーマットは一度も標準化されたことがない。」と書かれている。
+Linuxではたぶん「BSD・GNU共通形式」というものだろう。ファイル先頭から次のような具合になっている：</p>
 <ul>
-<li><p>“<a href="http://www.cs.columbia.edu/~aho/cs6998/reports/12-12-17_Ramanan_JIT.pdf">JIT through the ages</a> - Evolution of just-in-time compilation from theoretical performance improvements to smartphone runtime and browser optimizations”, Neeraja Ramanan</p>
-</li>
-<li><p><a href="https://hacks.mozilla.org/2009/07/tracemonkey-overview/">an overview of TraceMonkey ✩ Mozilla Hacks – the Web developer blog</a> FireFoxのTraceMonkeyについての概要解説</p>
+<li><code>!&lt;arch&gt;\n</code> （8バイト）</li>
+<li>グローバルヘッダ（<code>struct ar_hdr</code> 、60バイト）</li>
+</ul>
+<p>ヘッダの形式は以下の通り（<a href="https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=include/aout/ar.h;h=471a859fc57c7d8207193718610980f6bf2f83b3;hb=2cb5c79dad39dd438fb0f7372ac04cf5aa2a7db7">ar.h</a>）：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ar_hdr</span> &#123;</span></span><br><span class="line">  <span class="keyword">char</span> ar_name[<span class="number">16</span>];           <span class="comment">// ファイル名</span></span><br><span class="line">  <span class="keyword">char</span> ar_date[<span class="number">12</span>];           <span class="comment">// 編集日時</span></span><br><span class="line">  <span class="keyword">char</span> ar_uid[<span class="number">6</span>], ar_gid[<span class="number">6</span>];  <span class="comment">// UID, GID</span></span><br><span class="line">  <span class="keyword">char</span> ar_mode[<span class="number">8</span>];            <span class="comment">// パーミッション</span></span><br><span class="line">  <span class="keyword">char</span> ar_size[<span class="number">10</span>];           <span class="comment">// サイズ</span></span><br><span class="line">  <span class="keyword">char</span> ar_fmag[<span class="number">2</span>];            <span class="comment">// 固定値 (`\n)</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
 <ul>
-<li>実行時にループ単位で型情報を使ってコンパイル（<a href="http://ja.wikipedia.org/wiki/%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%B3%E3%82%B0%E5%AE%9F%E8%A1%8C%E6%99%82%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%AB">Tracing JIT</a>）</li>
-<li>ホットな部分だけをコンパイルする</li>
+<li>サイズやパーミッション・日時もバイナリではなく、文字列化されている</li>
+<li>ファイル名が17文字以上にする拡張についてはWikipediaに書かれている（未対応）</li>
+<li>（グローバルヘッダはリンクにはあまり重要ではない）</li>
 </ul>
-</li>
-<li><p><a href="https://wiki.mozilla.org/Tamarin:Tracing">Tamarin:Tracing - MozillaWiki</a></p>
-</li>
-<li><p><a href="http://article.gmane.org/gmane.comp.lang.lua.general/44781">LuaJIT roadmap 2008</a></p>
-</li>
-<li><p><a href="http://article.gmane.org/gmane.comp.lang.lua.general/44823">Re: LuaJIT roadmap 2008</a></p>
-</li>
-<li><p><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Internals/Tracing_JIT">Tracing JIT - Mozilla | MDN</a></p>
-</li>
-<li><p><a href="http://wiki.jvmlangsummit.com/Trace-based_JIT">Trace-based JIT - JVMLangSummit</a></p>
-</li>
-<li><p><a href="https://ja.wikipedia.org/wiki/%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%B3%E3%82%B0%E5%AE%9F%E8%A1%8C%E6%99%82%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%AB">トレーシング実行時コンパイル - Wikipedia</a></p>
-<blockquote>
-<p>トレーシングJITは、プログラムの実行時間の大半はプログラムの一部のループ（ホットループ）の実行に費やされており、かつそのループが再び実行される場合はたいてい前回と同様の実行パスを経る、という仮定に基づいている</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/ja/docs/Nanojit">Nanojit | MDN</a></p>
+<p>で各オブジェクトファイルはどのように格納されているかについては書かれてない…ので実際に <code>ar</code> コマンドで作成したものをダンプして調べた。
+見たところオブジェクトファイルの一覧というものはなくて、オブジェクトファイルに含まれる外部公開シンボルの一覧があって、
+各シンボルがどのオブジェクトファイルに対応するか、という情報になっている。
+グローバルヘッダに続いて次の通り：</p>
 <ul>
-<li><a href="https://bluishcoder.co.nz/2009/05/01/simple-nanojit-example.html">Simple Nanojit Example</a></li>
+<li>シンボル数：（4バイト、ビッグエンディアン）</li>
+<li>各シンボルが含まれるオブジェクトファイルへのオフセット：（4バイト × シンボル数、ビッグエンディアン）</li>
+<li>シンボル名の羅列：（<code>\0</code>終端文字列 × シンボル数）</li>
 </ul>
-</li>
-<li><p><a href="https://www.gnu.org/software/libjit/">LibJIT - GNU Project - Free Software Foundation (FSF)</a></p>
+<p>オブジェクトファイルへのオフセットはファイル先頭からのオフセットで、 <code>struct ad_hdr</code> に続いてファイル本体が格納される。</p>
+<h3 id="リンカーでの扱い"><a href="#リンカーでの扱い" class="headerlink" title="リンカーでの扱い"></a>リンカーでの扱い</h3><p>リンカーにアーカイブファイルを渡した場合には含まれる全てのオブジェクトファイルをリンクするのではなく、参照されたシンボルを含むオブジェクトファイルのみをリンク対象にしてやる。
+アーカイブ内のオブジェクトファイルが外部シンボルを参照することもあるので（stdioをunistdのラッパーとして実装するなど）、それも検索対象にする。</p>
+<h4 id="コーナーケース"><a href="#コーナーケース" class="headerlink" title="コーナーケース"></a>コーナーケース</h4><p>難しいケースは未対応だが、単に与えられたオブジェクトファイル全体でリンクするだけじゃなく色々条件があった気がする：</p>
 <ul>
-<li><a href="http://eli.thegreenplace.net/2013/10/17/getting-started-with-libjit-part-1">Getting started with libjit - part 1 - Eli Bendersky’s website</a></li>
+<li>リンカーに与えるファイルとライブラリの順序によって、前のものしか探せなかったりした？ような記憶（要出典）</li>
+<li>ライブラリに含まれるシンボルと重複しているような場合に、アプリ側はアプリ側の、ライブラリ側はライブラリ側の関数を参照できる、とか</li>
 </ul>
-</li>
-<li><p><a href="http://v8project.blogspot.jp/2015/07/digging-into-turbofan-jit.html">V8 JavaScript Engine: Digging into the TurboFan JIT</a></p>
-</li>
-</ul>
+<h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><p><a href="https://github.com/tyfkda/xcc/tree/main/src/ld">xcc&#x2F;src&#x2F;ld</a> archive.c, archive.h あたり。</p>
 
 
                 
@@ -253,7 +240,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+                
             </div>
 
             <!-- Comments -->

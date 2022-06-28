@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-05-31T12:10:05.875Z</updated>
+  <updated>2022-06-28T08:10:29.098Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,21 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>アーカイブファイルのフォーマット</title>
+    <link href="https://tyfkda.github.io/blog/2022/06/28/archive-format.html"/>
+    <id>https://tyfkda.github.io/blog/2022/06/28/archive-format.html</id>
+    <published>2022-06-28T05:00:00.000Z</published>
+    <updated>2022-06-28T08:10:29.098Z</updated>
+    
+    
+    <summary type="html">&lt;a href=&quot;/blog/2022/03/13/elf-linker.html&quot; title=&quot;リンカーを自作した&quot;&gt;リンカーを自作した&lt;/a&gt;際に入力としてELFのオブジェクトファイル(.o)を受け付けるようにしていたが、それだけだとライブラリの扱いで無駄が生じるのでアーカイブファイル(.a)も入力できるようにした。</summary>
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>【VSCode】Ctrl-mで決定する</title>
@@ -167,23 +182,6 @@ TPUを使用する場合にコードの変更が必要だった。&lt;/p&gt;</su
     
     
     <category term="texteditor" scheme="https://tyfkda.github.io/tags/texteditor/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【C#】インデックスオペレータ</title>
-    <link href="https://tyfkda.github.io/blog/2022/01/27/cs-index-operator.html"/>
-    <id>https://tyfkda.github.io/blog/2022/01/27/cs-index-operator.html</id>
-    <published>2022-01-27T08:00:00.000Z</published>
-    <updated>2022-01-27T08:19:57.555Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;VSCodeでC#のコードを書いていて、配列の最後の要素を取得したところ「Use index operator」というサジェストが出てきた：&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="csharp" scheme="https://tyfkda.github.io/tags/csharp/"/>
     
   </entry>
   
