@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -245,7 +245,7 @@
 </ul>
 <p><code>createFormatter</code>では、Javaモードの<a href="https://github.com/processing/processing/blob/master/app%2Fsrc%2Fprocessing%2Fmode%2Fjava%2FAutoFormat.java">AutoFormat</a>をとりあえずそのまま使える。</p>
 <h3 id="Javaのコンパイル時にjarファイルを指定する"><a href="#Javaのコンパイル時にjarファイルを指定する" class="headerlink" title="Javaのコンパイル時にjarファイルを指定する"></a>Javaのコンパイル時にjarファイルを指定する</h3><p>上記のクラスをコンパイルするためには、Processingのクラスを参照する必要がある。Processingが実行時に使用しているjarファイルがどこかにあると思うので（Macの場合、&#x2F;Applications&#x2F;Processing.app&#x2F;Contents&#x2F;Java&#x2F;pde.jar）、それを<code>javac -cp</code>で指定してやる：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ javac -cp .../pde.jar ソースファイル</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ javac -<span class="built_in">cp</span> .../pde.jar ソースファイル</span><br></pre></td></tr></table></figure>
 
 <p>以上でProcessingを再起動すると、モードのプルダウンメニューに新しいモードが追加される。実際に切り替えてみると、一応は動くが、エディタでなぜか改行が効かないけど…。また当然のことながら、実行はまだできない。</p>
 

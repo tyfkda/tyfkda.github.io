@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -209,19 +209,19 @@
 <span id="more"></span>
 
 <p>自作の構造体に対して、特に意識せずに <a href="https://doc.rust-lang.org/std/marker/trait.Copy.html"><code>#derive(Copy)</code></a> でコピートレイトを指定：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="meta">#[derive (Clone, Copy, Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Foo</span></span> &#123;</span><br><span class="line">    x: <span class="built_in">i32</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="meta">#[derive (Clone, Copy, Debug)]</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Foo</span> &#123;</span><br><span class="line">    x: <span class="type">i32</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>していた。
 その複数個を配列で、 <code>Option</code> での有無ありで管理：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> foos: [<span class="built_in">Option</span>&lt;Foo&gt;; <span class="number">3</span>] = [</span><br><span class="line">    <span class="literal">Some</span>(Foo&#123;x: <span class="number">1</span>&#125;),</span><br><span class="line">    <span class="literal">None</span>,</span><br><span class="line">    <span class="literal">Some</span>(Foo&#123;x: <span class="number">3</span>&#125;),</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">foos</span>: [<span class="type">Option</span>&lt;Foo&gt;; <span class="number">3</span>] = [</span><br><span class="line">    <span class="title function_ invoke__">Some</span>(Foo&#123;x: <span class="number">1</span>&#125;),</span><br><span class="line">    <span class="literal">None</span>,</span><br><span class="line">    <span class="title function_ invoke__">Some</span>(Foo&#123;x: <span class="number">3</span>&#125;),</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
 
 <p>していて、ループで更新処理を行っていた：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> foos.iter_mut() &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(foo) = p &#123;</span><br><span class="line">        foo.x += <span class="number">1</span>;  <span class="comment">// なにか更新処理を行う</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="variable">p</span> <span class="keyword">in</span> foos.<span class="title function_ invoke__">iter_mut</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Some</span>(foo) = p &#123;</span><br><span class="line">        foo.x += <span class="number">1</span>;  <span class="comment">// なにか更新処理を行う</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>ここでちょっと色気を出して、 <a href="https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.filter"><code>filter()</code></a>
 で <code>None</code> をはじいておいて <a href="https://doc.rust-lang.org/std/option/enum.Option.html#method.unwrap"><code>unwrap()</code></a>
 を使って <code>if let Some(foo) = ...</code> のインデントを減らそうかとしてみた：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> foos.iter_mut().filter(|x| x.is_some()) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> foo = p.unwrap();  <span class="comment">// -- (1)</span></span><br><span class="line">    foo.x += <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="variable">p</span> <span class="keyword">in</span> foos.<span class="title function_ invoke__">iter_mut</span>().<span class="title function_ invoke__">filter</span>(|x| x.<span class="title function_ invoke__">is_some</span>()) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">foo</span> = p.<span class="title function_ invoke__">unwrap</span>();  <span class="comment">// -- (1)</span></span><br><span class="line">    foo.x += <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>（ <a href="https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.flat_map"><code>flat_map</code></a>
 を使わないのは、更新した結果によっては <code>None</code> にクリアするケースがあったため。）</p>
@@ -234,7 +234,7 @@
 <p>が出て、 <code>as_ref()</code> を使ってみろと教えてくれるので時間を無駄にせずに済んだ…。
 実際には書き換えをしたいので <a href="https://doc.rust-lang.org/std/option/enum.Option.html#method.as_mut"><code>as_mut()</code></a>
 を使ってやる：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> foo = p.as_mut().unwrap();  <span class="comment">// -- (1の修正)、 let foo = ...でもよい、がmutあってもワーニングは出ない</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">foo</span> = p.<span class="title function_ invoke__">as_mut</span>().<span class="title function_ invoke__">unwrap</span>();  <span class="comment">// -- (1の修正)、 let foo = ...でもよい、がmutあってもワーニングは出ない</span></span><br></pre></td></tr></table></figure>
 
 <p><code>as_mut()</code> で <code>&amp;mut Option&lt;Foo&gt;</code> から <code>Option&lt;&amp;mut Foo&gt;</code> に変換できて、移動（またはコピー）じゃなく <code>mut</code> の借用になり、元の値の更新ができる。</p>
 <h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><ul>

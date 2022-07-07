@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -206,7 +206,7 @@
                 <p>文字列の全体ではなく指定の長さだけ出力したい場合どうするか。</p>
 <span id="more"></span>
 <p><code>%.*s</code> と指定して、パラメータに<code>長さ</code>(<code>int</code>)、<code>文字列</code>の順に与える：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> len = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* str = <span class="string">&quot;abcdefg&quot;</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;[%.*s]\n&quot;</span>, len, str);  <span class="comment">// =&gt; [abcd]</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> len = <span class="number">4</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">char</span>* str = <span class="string">&quot;abcdefg&quot;</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;[%.*s]\n&quot;</span>, len, str);  <span class="comment">// =&gt; [abcd]</span></span><br></pre></td></tr></table></figure>
 
 <p>文字列の長さが指定より短い場合には、文字列全体が出力される。</p>
 <h3 id="解説"><a href="#解説" class="headerlink" title="解説"></a>解説</h3><h4 id="で精度の引数指定"><a href="#で精度の引数指定" class="headerlink" title="* で精度の引数指定"></a><code>*</code> で精度の引数指定</h4><p>なぜ上記で指定できるのかというと <code>%</code> 以降に記述する指定子に <code>*</code> というものがあり、 <code>int</code> 型を受け取り精度を指定できる。</p>

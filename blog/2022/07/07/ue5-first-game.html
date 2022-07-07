@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="今までもUnreal Engineを使えるようになりたいと思っていたけど、Matrix Awakensのデモ動画 を見てちょっとこれは凄すぎて次元が違う、使えるようにならないと取り残されると危機感を持った。
+使用バージョン： Unreal Engine 5.0.2">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Unreal Engineの入門"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Unreal Engineの入門 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/07/07/ue5-first-game.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-51713598-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Unreal Engineの入門</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-07-07
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unreal-engine/">#unreal engine</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>今までもUnreal Engineを使えるようになりたいと思っていたけど、<a href="https://www.youtube.com/watch?v=WU0gvPcc3jQ">Matrix Awakensのデモ動画</a> を見てちょっとこれは凄すぎて次元が違う、使えるようにならないと取り残されると危機感を持った。</p>
+<p>使用バージョン： Unreal Engine 5.0.2</p>
+<span id="more"></span>
+
+<h3 id="参考にした動画"><a href="#参考にした動画" class="headerlink" title="参考にした動画"></a>参考にした動画</h3><p><a href="https://www.youtube.com/watch?v=Itd677YZi50">Your First Game in UE5 | Tech Talk | State of Unreal 2022 - YouTube</a> を参考にした。</p>
+<div style="text-align: center"><iframe width="560" height="315" src="https://www.youtube.com/embed/Itd677YZi50" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+
+<p>今まで、プロジェクトを「Blank」で作成しても「実行」でFPSカメラ操作ができるのはなぜか？
+まっさらな状態にしたい！と思ってたところを解説してくれていたのがよかった
+（要はデフォルトのGameModeがそうなってるから）。</p>
+<p>注意点としては、素材が入ったZipファイルをダウンロード方法がわからず、動作するプロジェクトしか落とせなかった。
+仕方がないので動作するプロジェクトを起動しておいて、コンテンツブラウザ（コンテンツドロワー）から対象のファイルを選択して右クリック＞アセットアクション＞エクスポートしたものをインポートで対処した。</p>
+<p>以下、内容メモ。</p>
+<h4 id="プロジェクト作成"><a href="#プロジェクト作成" class="headerlink" title="プロジェクト作成"></a>プロジェクト作成</h4><p>UE5を起動してプロジェクトの作成。</p>
+<ul>
+<li>ゲーム＞Blankを選択。</li>
+<li>ブループリント（C++ではなく）</li>
+<li>スターターコンテンツはオフ</li>
+<li>レイトレーシングもオフ</li>
+</ul>
+<p>しかし起動すると地面や空・雲が表示されているので、メニューのファイル＞新規レベル…＞空のレベルでまっさらな状態から始める。</p>
+<ul>
+<li>シーンとかワールドとかマップのようなことをUnreal Engineでは「レベル」という</li>
+</ul>
+<h4 id="ライティング"><a href="#ライティング" class="headerlink" title="ライティング"></a>ライティング</h4><ul>
+<li>メニュー＞ウィンドウ＞環境ライトミキサーでウィンドウを開き（メニューが日本語だと並び順が違うので注意）以下を作成<ul>
+<li>大気ライト0（ディレクショナルライト）</li>
+<li>スカイライト</li>
+<li>Sky Atmosphere</li>
+<li>ボリュメトリッククラウド</li>
+<li>ハイトフォグ</li>
+</ul>
+</li>
+<li>メニュー＞編集＞プロジェクト設定…＞エンジン＞レンダリングの、<ul>
+<li>Global Illumination＞ダイナミックグローバルイルミネーションメソッド：Lumen</li>
+<li>反射＞反射メソッド：Lumen</li>
+<li>となっていることを確認</li>
+</ul>
+</li>
+<li>アウトライナーに追加されるDirectionalLight0を選択して、Ctrl+Lを押してCtrlを残したままにすると、マウスで方向をいじれる</li>
+<li>SkyLightを選択して、詳細パネルの「Real Time Capture」をオンにすると完全にリアルタイムになる、とか</li>
+</ul>
+<h4 id="最初のアセット"><a href="#最初のアセット" class="headerlink" title="最初のアセット"></a>最初のアセット</h4><ul>
+<li>スタティックメッシュ(.fbx形式)をインポート、するとマテリアルも生成される</li>
+<li>マテリアルの編集：ノードベース<ul>
+<li>テクスチャ（放線マップ、ラフネス）</li>
+<li>UV、頂点カラー</li>
+</ul>
+</li>
+<li>コンテンツブラウザからスタティックメッシュをドラッグしてレベル上に配置</li>
+</ul>
+<h4 id="ブループリント"><a href="#ブループリント" class="headerlink" title="ブループリント"></a>ブループリント</h4><ul>
+<li>スタティックメッシュを直接配置した場合、プロパティを個別に設定する必要がある。その設定をまとめたい場合にブループリントが使える</li>
+<li>コンテンツブラウザの「＋追加」ボタン、または右クリックで新規アセットを作成＞ブループリントクラスを選ぶと「親クラスを選択」ウィンドウが表示されるので、Actorを選んで命名する<ul>
+<li>Actorが「レベルに配置できるオブジェクト」という意味っぽ</li>
+<li>ブループリントに対しては <code>BP_〜</code> という命名が一般的っぽ</li>
+<li>ロジックも書ける</li>
+</ul>
+</li>
+</ul>
+<h4 id="ランドスケープ"><a href="#ランドスケープ" class="headerlink" title="ランドスケープ"></a>ランドスケープ</h4><ul>
+<li>丘のような高低のある地面を、ランドスコープで作成できる</li>
+<li>レイヤーを追加して、塗り分けられる（砂と草）</li>
+</ul>
+<h4 id="草"><a href="#草" class="headerlink" title="草"></a>草</h4><ul>
+<li>Foliage の Landscape Grass Typeを作成し、スタティックメッシュや密度を設定</li>
+<li>マテリアルの <code>LandscapeGrassOutput</code> ノードに設定する</li>
+<li><code>LandscapeLayerSample</code> で結ぶ</li>
+</ul>
+<h4 id="岩"><a href="#岩" class="headerlink" title="岩"></a>岩</h4><ul>
+<li>ハイポリゴンだけどNaniteなら大丈夫！</li>
+<li>頂点のUVじゃなくワールド座標でマッピング、法線を見て水平方向と垂直方向でブレンド</li>
+<li>オブジェクトを直接配置するのではなく、Static Mesh Foliage でペイントして大量に配置<ul>
+<li>コリジョンもあり</li>
+</ul>
+</li>
+</ul>
+<p>この贅沢さで普通に動くのが驚きだ…。</p>
+<h4 id="フォリッジ（草木）"><a href="#フォリッジ（草木）" class="headerlink" title="フォリッジ（草木）"></a>フォリッジ（草木）</h4><ul>
+<li>草や木も、岩と同様にFoliageでペイント</li>
+</ul>
+<h4 id="ゲームプレイフレームワーク"><a href="#ゲームプレイフレームワーク" class="headerlink" title="ゲームプレイフレームワーク"></a>ゲームプレイフレームワーク</h4><ul>
+<li>実行するとFPS操作できるのはデフォルトで設定されているから<ul>
+<li>メニュー＞編集＞プロジェクト設定…＞プロジェクト＞マップ&amp;モード＞Default Modes に GameModeBase が設定されている</li>
+</ul>
+</li>
+<li>ブループリントクラスの作成で「Game Mode Base」「Character」「Player Controller」を作成<ul>
+<li>Unreal Engineでは、<ul>
+<li>Actor がレベルに配置できるベースクラス</li>
+<li>Pawn がActorを継承して、入力を処理できるクラス</li>
+<li>Character がPawnを継承して、歩き回れる処理が実装されているクラス</li>
+</ul>
+</li>
+<li>Pawn にはスケルトンメッシュなどを追加して、「見た目」を扱う（体）</li>
+<li>Player Controller で入力に応じでどう行動させるかを制御する（脳）</li>
+<li>Game Mode Base の Classes＞Player Controller Class, Default Pawn Class に設定する</li>
+<li>レベルに「Player Start」を配置して開始位置を設定する<ul>
+<li>Endキーで地面に接地できる</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="カメラ"><a href="#カメラ" class="headerlink" title="カメラ"></a>カメラ</h4><ul>
+<li>Pawnに追加</li>
+<li>SpringArmを挟んで、少し俯瞰した位置から映すことができる</li>
+</ul>
+<h4 id="動作"><a href="#動作" class="headerlink" title="動作"></a>動作</h4><ul>
+<li>プレイヤーコントローラ</li>
+<li>ブループリントの <code>Print String</code> で実行されているか確認できる</li>
+</ul>
+<h4 id="入力"><a href="#入力" class="headerlink" title="入力"></a>入力</h4><ul>
+<li>メニュー＞編集＞プロジェクト設定＞エンジン＞インプット＞バインディング＞アクションマッピングに名前と入力ボタンを追加で設定する</li>
+<li>その名前で <code>XXXXInput</code> としてブループリントから参照できる</li>
+<li>変数に入れて押されている間の処理を実行できる</li>
+</ul>
+<h4 id="キャラクタセットアップ"><a href="#キャラクタセットアップ" class="headerlink" title="キャラクタセットアップ"></a>キャラクタセットアップ</h4><ul>
+<li>スケルタルメッシュ</li>
+<li>マテリアルの顔テクスチャUV切替に <code>FlipBook</code> ノードが使える</li>
+</ul>
+<h4 id="キャラクタ動作"><a href="#キャラクタ動作" class="headerlink" title="キャラクタ動作"></a>キャラクタ動作</h4><ul>
+<li>Character Movementコンポーネントの「Orient Rotation To Movement」で移動方向に向くようになる</li>
+<li>カメラは回らないで欲しい場合には、SpringArmコンポーネントのトランスフォームの回転タイプを相対から絶対回転に変更する</li>
+<li>登れる角度、最高速度、地面の摩擦、減速度</li>
+</ul>
+<h4 id="アニメーション"><a href="#アニメーション" class="headerlink" title="アニメーション"></a>アニメーション</h4><ul>
+<li>アニメーションの.fbxインポートでスケルトンを指定し、Import Meshのチェックは外す</li>
+<li>アニメーションBPを作成し、BP_Bot(Character)のMeshのAnim Classに設定<ul>
+<li>ステートマシンでアイドルと歩き／走りの状態遷移</li>
+<li>BlendSpeed1D を作成し、歩きと走りをブレンド<ul>
+<li>ブレンドしても足が滑らないように、水平軸解析をLocomotion、Analysis Propertiesに足のボーンを設定する</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="AIコントローラ"><a href="#AIコントローラ" class="headerlink" title="AIコントローラ"></a>AIコントローラ</h4><ul>
+<li>ブループリントクラスの <code>AIController</code> で作成</li>
+<li>NavMeshで動ける範囲を定義して移動先を設定して動く</li>
+</ul>
+<h4 id="オーブのスポーンと収集"><a href="#オーブのスポーンと収集" class="headerlink" title="オーブのスポーンと収集"></a>オーブのスポーンと収集</h4><ul>
+<li>スペースバーでオーブをスポーンし、AIが向かうようにする</li>
+</ul>
+<h4 id="相互作用するコンポーネント"><a href="#相互作用するコンポーネント" class="headerlink" title="相互作用するコンポーネント"></a>相互作用するコンポーネント</h4><ul>
+<li>踏めるスイッチと開く扉を作成</li>
+<li>アニメーションのリバース再生可能</li>
+<li>ブループリントクラスのActor Componentを作成してスイッチに追加、カスタムイベントで状態をセット</li>
+<li>扉側で変数からGet Component by Classで取得、イベントをバインドして開閉</li>
+<li>レベル上の扉の変数にスイッチを関連付ける</li>
+</ul>
+<h4 id="エフェクト、サウンド、カメラシェイク"><a href="#エフェクト、サウンド、カメラシェイク" class="headerlink" title="エフェクト、サウンド、カメラシェイク"></a>エフェクト、サウンド、カメラシェイク</h4><ul>
+<li>Niagara：パーティクルエフェクト</li>
+<li>MetaSound（プラグインを追加する）：ホワイトノイズなどから音を生成できる<ul>
+<li>歩き／走りアニメーションに合わせて発生させる</li>
+</ul>
+</li>
+<li>CameraShakeBase：カメラを揺らす</li>
+</ul>
+<h3 id="動画を見終えて"><a href="#動画を見終えて" class="headerlink" title="動画を見終えて"></a>動画を見終えて</h3><ul>
+<li>写実的なシーンなら比較的簡単に作れそうでよい</li>
+<li>知らないと実現するのに苦労しそうな機能がたくさんあるので慣れが必要そうだけど、まあおいおい</li>
+<li>ビジュアルスクリプティングという意味でのブループリント？と、「ブループリントクラス」というものが混乱させられる
+（<a href="https://docs.unrealengine.com/4.27/ja/ProgrammingAndScripting/Blueprints/GettingStarted/">ブループリント入門 | Unreal Engine ドキュメント</a>を見てもまだよくわからない…）</li>
+<li>座標系はZ+が上方向、X+が前方向の左手系（Y+は右になる）</li>
+<li>1.0 &#x3D; 1cmというスケールが基準</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

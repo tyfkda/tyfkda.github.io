@@ -92,7 +92,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -240,7 +240,7 @@ SDL2上ではそういうものはないが、同じ仕組みで鳴らせると�
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="string">&quot;typeRoots&quot;</span>: [</span><br><span class="line">      <span class="string">&quot;./src/@types&quot;</span>  <span class="comment">// &lt;- 自前の定義ファイルのパス</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">&quot;types&quot;</span>: [</span><br><span class="line">      <span class="string">&quot;audio_context&quot;</span>  <span class="comment">// &lt;- 自前の定義ファイル</span></span><br><span class="line">    ],</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>定義ファイルはよしなに、使う機能だけ書いてやる(<a href="https://github.com/tyfkda/nesemu/blob/master/nodejs/src/%40types/audio_context/index.d.ts">src&#x2F;@types&#x2F;audio_context&#x2F;index.d.ts</a>)：</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> AudioContext &#123;</span><br><span class="line">  <span class="keyword">readonly</span> currentTime: <span class="built_in">number</span></span><br><span class="line">  <span class="keyword">readonly</span> destination: AudioDestinationNode</span><br><span class="line"></span><br><span class="line">  createGain(): GainNode</span><br><span class="line">  createOscillator(): OscillatorNode</span><br><span class="line">  createDelay(): DelayNode</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">AudioContext</span> &#123;</span><br><span class="line">  <span class="keyword">readonly</span> <span class="attr">currentTime</span>: <span class="built_in">number</span></span><br><span class="line">  <span class="keyword">readonly</span> <span class="attr">destination</span>: <span class="title class_">AudioDestinationNode</span></span><br><span class="line"></span><br><span class="line">  <span class="title function_">createGain</span>(): <span class="title class_">GainNode</span></span><br><span class="line">  <span class="title function_">createOscillator</span>(): <span class="title class_">OscillatorNode</span></span><br><span class="line">  <span class="title function_">createDelay</span>(): <span class="title class_">DelayNode</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>定義ファイル内に<code>export</code>を書くとグローバルとして自動的に定義されている状態にはならないので注意（<a href="https://github.com/Microsoft/TypeScript/issues/18237#issuecomment-326952519">How to define a global variable in a typescript module, which could be used in other modules directly without import? · Issue #18237 · Microsoft&#x2F;TypeScript</a>）</li>

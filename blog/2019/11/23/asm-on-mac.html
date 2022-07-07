@@ -92,7 +92,7 @@ ELFを出力する自作のアセンブラじ">
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -196,7 +196,7 @@ ELFを出力する自作のアセンブラじ">
 ELFを出力する自作のアセンブラじゃなくgcc(clang)を呼び出すようにすればMac上でも動かせるんじゃないか、とやってみた。</p>
 <h2 id="ソースの修正"><a href="#ソースの修正" class="headerlink" title="ソースの修正"></a>ソースの修正</h2><h3 id="環境の判別"><a href="#環境の判別" class="headerlink" title="環境の判別"></a>環境の判別</h3><p>環境依存で動作を変更したい場合、C言語では定義済みマクロで判定する。
 動かしているのがMac上の場合には <code>__APPLE__</code> が定義されているので、それを使用する：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__linux__)</span></span><br><span class="line">  ...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(__APPLE__)</span></span><br><span class="line">  ...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> defined(__linux__)</span></span><br><span class="line">  ...</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(__APPLE__)</span></span><br><span class="line">  ...</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
 
 <h3 id="標準関数が未定義になってしまうのを回避"><a href="#標準関数が未定義になってしまうのを回避" class="headerlink" title="標準関数が未定義になってしまうのを回避"></a>標準関数が未定義になってしまうのを回避</h3><p>Mac上でソースをコンパイルすると <code>snprintf</code> が未定義でコンパイルに失敗してしまう。
 そんなことあるか？と思ってヘッダファイル &#x2F;usr&#x2F;include&#x2F;stdio.h を見てみる：</p>

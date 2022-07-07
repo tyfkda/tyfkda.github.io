@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -216,13 +216,13 @@
 <p><code>Factory.get()</code> の中であれこれやっていて、渡されたクラスに（静的メソッドの） <code>create()</code> というメソッドがあればそれを、なければコンストラクタを呼び出す。<code>PrimaryExprはcreate()</code>を定義していて、インスタンスを作るか省略するかを選択している。</p>
 <p>複雑な部分はパーサコンビネータのソース Parser.java に押し込んでいて、自分が定義するパーサ BasicParser.java はシンプルになってるけど、あまりよく動作は飲み込めていない。</p>
 <p>Javaのリフレクションを知らなかったのでテストした。例えば</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">123</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x + y;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">123</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> x + y;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>とかいうクラスがあったときに、</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Method m = Test.class.getMethod(<span class="string">&quot;test&quot;</span>, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Method</span> <span class="variable">m</span> <span class="operator">=</span> Test.class.getMethod(<span class="string">&quot;test&quot;</span>, <span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
 
 <p>で <code>test</code> メソッドが取り出せる。引数のあるメソッドは</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Method m2 = Test.class.getMethod(</span><br><span class="line">    <span class="string">&quot;add&quot;</span>, <span class="keyword">new</span> Class&lt;?&gt;[] &#123;<span class="keyword">int</span>.class, <span class="keyword">int</span>.class&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Method</span> <span class="variable">m2</span> <span class="operator">=</span> Test.class.getMethod(</span><br><span class="line">    <span class="string">&quot;add&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>&lt;?&gt;[] &#123;<span class="type">int</span>.class, <span class="type">int</span>.class&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>と引数の型の配列を渡す。</p>
 <p>指定のメソッドがない場合には <code>NoSuchMethodException</code> 例外が発生する。

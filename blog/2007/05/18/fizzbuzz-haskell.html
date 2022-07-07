@@ -92,7 +92,7 @@ fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F"
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -207,7 +207,7 @@ fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F"
             <div class="col-lg-9 col-md-9">
                 <p>「Fizz-Buzz問題」というのが話題になってるとのこと（<a href="http://www.aoky.net/articles/jeff_atwood/why_cant_programmers_program.htm">どうしてプログラマに・・・プログラムが書けないのか?</a>）。
 練習がてらHaskellで書いてみた：</p>
-<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">fizzbuzz</span> :: <span class="type">Int</span> -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">fizzbuzz</span> x</span><br><span class="line">    | x `mod` <span class="number">15</span> == <span class="number">0</span>   = <span class="string">&quot;FizzBuzz&quot;</span></span><br><span class="line">    | x `mod` <span class="number">3</span> == <span class="number">0</span>    = <span class="string">&quot;Fizz&quot;</span></span><br><span class="line">    | x `mod` <span class="number">5</span> == <span class="number">0</span>    = <span class="string">&quot;Buzz&quot;</span></span><br><span class="line">    | otherwise         = show x</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    putStr $ unlines $ map fizzbuzz [<span class="number">1.</span><span class="number">.100</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">fizzbuzz</span> :: <span class="type">Int</span> -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">fizzbuzz</span> x</span><br><span class="line">    | x `mod` <span class="number">15</span> == <span class="number">0</span>   = <span class="string">&quot;FizzBuzz&quot;</span></span><br><span class="line">    | x `mod` <span class="number">3</span> == <span class="number">0</span>    = <span class="string">&quot;Fizz&quot;</span></span><br><span class="line">    | x `mod` <span class="number">5</span> == <span class="number">0</span>    = <span class="string">&quot;Buzz&quot;</span></span><br><span class="line">    | otherwise         = show x</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    putStr $ unlines $ map fizzbuzz [<span class="number">1</span>..<span class="number">100</span>]</span><br></pre></td></tr></table></figure>
 
 <p>結構悩んだ。
 <a href="http://karetta.jp/book-node/gauche-hacks/023107">関数言語脳的</a>にいけてるかな？</p>

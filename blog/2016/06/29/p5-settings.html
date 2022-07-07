@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -208,13 +208,13 @@
 
 <p>PDE上で動かす分にはビルドで自動的に変換してくれるので今までどおり<a href="https://processing.org/reference/setup_.html">setup()</a>の中に書いてもいいんだけど、外部から動かす場合にはエラーになってしまう。</p>
 <p>Javaから直接PAppletを使う場合には、例えばHello.java：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> processing.core.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hello</span> <span class="keyword">extends</span> <span class="title">PApplet</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    size(<span class="number">300</span>, <span class="number">240</span>);</span><br><span class="line">    noStroke();</span><br><span class="line">    fill(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    rect(<span class="number">50</span>, <span class="number">50</span>, <span class="number">200</span>, <span class="number">140</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> processing.core.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Hello</span> <span class="keyword">extends</span> <span class="title class_">PApplet</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setup</span><span class="params">()</span> &#123;</span><br><span class="line">    size(<span class="number">300</span>, <span class="number">240</span>);</span><br><span class="line">    noStroke();</span><br><span class="line">    fill(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    rect(<span class="number">50</span>, <span class="number">50</span>, <span class="number">200</span>, <span class="number">140</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>などと書いて、コンパイル：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ javac -cp /Applications/Processing.app/Contents/Java/core.jar Hello.java</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ javac -<span class="built_in">cp</span> /Applications/Processing.app/Contents/Java/core.jar Hello.java</span><br></pre></td></tr></table></figure>
 
 <p>して、実行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ java -cp .:/Applications/Processing.app/Contents/Java/core.jar Hello Hello</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ java -<span class="built_in">cp</span> .:/Applications/Processing.app/Contents/Java/core.jar Hello Hello</span><br></pre></td></tr></table></figure>
 
 <p>するとエラーが出る：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">When not using the PDE, size() can only be used inside settings().</span><br><span class="line">Remove the size() method from setup(), and add the following:</span><br><span class="line">public void settings() &#123;</span><br><span class="line">  size(300, 240);</span><br><span class="line">&#125;</span><br><span class="line">Exception in thread &quot;Animation Thread&quot; java.lang.IllegalStateException: size() cannot be used here, see https://processing.org/reference/size_.html</span><br><span class="line">        at processing.core.PApplet.insideSettings(PApplet.java:933)</span><br><span class="line">        at processing.core.PApplet.size(PApplet.java:1969)</span><br><span class="line">        at Hello.setup(Hello.java:5)</span><br><span class="line">        at processing.core.PApplet.handleDraw(PApplet.java:2378)</span><br><span class="line">        at processing.awt.PSurfaceAWT$12.callDraw(PSurfaceAWT.java:1527)</span><br><span class="line">        at processing.core.PSurfaceNone$AnimationThread.run(PSurfaceNone.java:316)</span><br></pre></td></tr></table></figure>

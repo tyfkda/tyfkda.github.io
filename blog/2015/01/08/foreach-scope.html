@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -206,7 +206,7 @@
                 <p>コールバックなど、なんらかのクロージャを使用する処理があったとして：</p>
 <span id="more"></span>
 
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">List</span>&lt;<span class="title">Action</span>&gt; callbacks</span> = <span class="keyword">new</span> List&lt;Action&gt;();</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">AddCallback</span>(<span class="params">Action callback</span>)</span> &#123;</span><br><span class="line">    callbacks.Add(callback);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">RunCallbacks</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    callbacks.ForEach((callback) =&gt; callback());</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">  <span class="keyword">private</span> List&lt;Action&gt; callbacks = <span class="keyword">new</span> List&lt;Action&gt;();</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">AddCallback</span>(<span class="params">Action callback</span>)</span> &#123;</span><br><span class="line">    callbacks.Add(callback);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">RunCallbacks</span>()</span> &#123;</span><br><span class="line">    callbacks.ForEach((callback) =&gt; callback());</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 
 <p>C#で<code>foreach</code>ループで用いる要素の変数を束縛すると、値はすべてループが終わったときの値になってしまう：</p>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">int</span>[] table = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"><span class="comment">// Bad</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> x <span class="keyword">in</span> table) &#123;</span><br><span class="line">  AddCallback(() =&gt; &#123; Debug.Log(x); &#125;);</span><br><span class="line">&#125;</span><br><span class="line">RunCallbacks();  <span class="comment">//=&gt; 3, 3, 3</span></span><br></pre></td></tr></table></figure>

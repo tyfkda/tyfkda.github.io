@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -195,7 +195,7 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">- ipa build -s Unity-iPhone -c Release</span><br><span class="line">     xcodebuild  Unity-iPhone.xcodeproj</span><br><span class="line">2015-10-08 16:53:23.381 xcodebuild[66872:648312] [MT] PluginLoading: Required plug-in compatibility UUID 0420B86A-AA43-4792-9ED0-6FE0F2B16A13 for plug-in at path &#x27;~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Unity4XC.xcplugin&#x27; not present in DVTPlugInCompatibilityUUIDs</span><br></pre></td></tr></table></figure>
 
 <p><a href="http://qiita.com/roothybrid7/items/85bacb992a22aaad04cd">Xcode 5.1にupdateした後に、使えなくなったxcode plug-inを再び使えるようにする方法 - Qiita</a> で挙げられている<a href="http://stackoverflow.com/questions/22324303/the-plugin-didnt-work-on-xcode-5-1">StackOverflowの回答</a>を見たが、シンボリックリンクだからなのかわからないけど<code>find</code>でなにも列挙されなくてうまくいかない。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ls -l ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins</span><br><span class="line">total 8</span><br><span class="line">lrwxr-xr-x  1 hoge  staff  93 10  8 17:56 Unity4XC.xcplugin -&gt; /Applications/Unity/Unity.app/Contents/PlaybackEngines/iossupport/Tools/OSX/Unity4XC.xcplugin  <span class="comment"># symlink</span></span><br><span class="line">$ ls ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/Unity4XC.xcplugin/Contents/</span><br><span class="line">Info.plist	MacOS  <span class="comment"># サブディレクトリにInfo.plistはある</span></span><br><span class="line">$ find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist</span><br><span class="line"><span class="comment"># findでは見つからない</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -l ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins</span><br><span class="line">total 8</span><br><span class="line">lrwxr-xr-x  1 hoge  staff  93 10  8 17:56 Unity4XC.xcplugin -&gt; /Applications/Unity/Unity.app/Contents/PlaybackEngines/iossupport/Tools/OSX/Unity4XC.xcplugin  <span class="comment"># symlink</span></span><br><span class="line">$ <span class="built_in">ls</span> ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/Unity4XC.xcplugin/Contents/</span><br><span class="line">Info.plist	MacOS  <span class="comment"># サブディレクトリにInfo.plistはある</span></span><br><span class="line">$ find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist</span><br><span class="line"><span class="comment"># findでは見つからない</span></span><br></pre></td></tr></table></figure>
 
 <p>しょうがないので手動で修正を当てることにする。</p>
 <p>追加すべきUUIDは</p>

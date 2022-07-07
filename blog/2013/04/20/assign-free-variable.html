@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -212,7 +212,7 @@
 <p>変数を参照する箇所でもその変数がボックス化されているかどうかがコンパイル時にわかっているので、そうであればボックスから取り出す命令を入れるようにする。</p>
 <p>ひとつ注意する必要があるのは、Schemeだとローカル変数というのは関数のパラメータだけだけど、一般のスクリプト言語などではスコープにローカル変数が定義できる。そしてそういうローカル変数は必ず代入文がある（そうじゃないと未定義の初期値が使われることになってしまう）。そのような、スコープで宣言されたローカル変数への代入は、別にボックス化する必要はない。</p>
 <p>しかし注意しなければいけないのは、下のスコープでは参照だけで代入していなくても、クロージャを作ったあとにその変数への代入がある場合にはやっぱりボックス化する必要がある。例えば</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> i = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">var</span> f = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">window</span>.console.log(i);</span><br><span class="line">  &#125;;</span><br><span class="line">  i = <span class="number">1234</span>;</span><br><span class="line">  f();  <span class="comment">//=&gt; 1234</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> i = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">var</span> f = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">window</span>.<span class="property">console</span>.<span class="title function_">log</span>(i);</span><br><span class="line">  &#125;;</span><br><span class="line">  i = <span class="number">1234</span>;</span><br><span class="line">  <span class="title function_">f</span>();  <span class="comment">//=&gt; 1234</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>クロージャ<code>f</code>では自由変数iへの参照しかしてないけど、クロージャが作られたあとで<code>i</code>への代入があるので、ボックス化する必要がある。</p>
 <p>論文の4.5節の改善案はまさにこういうことで、変数に対する代入があるけど、継続がない言語でクロージャに閉じ込められない変数はボックス化する必要がなくて省ける、ということが書いてある。</p>
@@ -228,7 +228,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/01/03/clox-closure.html" title="1パスコンパイラでのクロージャの実装方法(Upvalue)" rel="bookmark">1パスコンパイラでのクロージャの実装方法(Upvalue)</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/01/03/clox-closure.html" title="1パスコンパイラでのクロージャの実装方法(Upvalue)" rel="bookmark">1パスコンパイラでのクロージャの実装方法(Upvalue)</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

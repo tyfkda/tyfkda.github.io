@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -210,7 +210,7 @@
 <span id="more"></span>
 
 <p>それには呼び出されたJavaScript内で次のようにできる：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// get_current_script.js</span></span><br><span class="line"><span class="comment">// 現在実行中のスクリプトタグを取得</span></span><br><span class="line"><span class="keyword">var</span> currentScript = <span class="built_in">document</span>.currentScript || (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> nodeList = <span class="built_in">document</span>.getElementsByTagName(<span class="string">&#x27;script&#x27;</span>)</span><br><span class="line">  <span class="keyword">return</span> nodeList.item(nodeList.length - <span class="number">1</span>)</span><br><span class="line">&#125;())</span><br><span class="line"><span class="keyword">var</span> text = currentScript.text  <span class="comment">// text で内部テキストが取得できる。</span></span><br><span class="line"><span class="comment">//=&gt; &quot;\n    ここのテキストを取得したい\n  &quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// get_current_script.js</span></span><br><span class="line"><span class="comment">// 現在実行中のスクリプトタグを取得</span></span><br><span class="line"><span class="keyword">var</span> currentScript = <span class="variable language_">document</span>.<span class="property">currentScript</span> || (<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> nodeList = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;script&#x27;</span>)</span><br><span class="line">  <span class="keyword">return</span> nodeList.<span class="title function_">item</span>(nodeList.<span class="property">length</span> - <span class="number">1</span>)</span><br><span class="line">&#125;())</span><br><span class="line"><span class="keyword">var</span> text = currentScript.<span class="property">text</span>  <span class="comment">// text で内部テキストが取得できる。</span></span><br><span class="line"><span class="comment">//=&gt; &quot;\n    ここのテキストを取得したい\n  &quot;</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><a href="https://developer.mozilla.org/ja/docs/Web/API/Document/currentScript">document.currentScript</a> が使えればそれで、使えなかったらドキュメント中のタグ名で一番最後のものが自分自身なはずなのでそこから引っぱる。</li>

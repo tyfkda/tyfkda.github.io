@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -211,7 +211,7 @@ Tensorflow.js（以降TFJS）を使ったらブラウザでも動かせるんじ
 バージョンはこちらも <code>&lt;2.0</code> でよい。</p>
 <p>以下、TFJSで必要ないくつかの操作をメモ：</p>
 <h4 id="モデルの読み込み"><a href="#モデルの読み込み" class="headerlink" title="モデルの読み込み"></a>モデルの読み込み</h4><p><a href="https://tensorflow.google.cn/js/guide/save_load?hl=ja"><code>tf.loadLayersModel</code></a> を使う：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> tf = <span class="built_in">require</span>(<span class="string">&#x27;@tensorflow/tfjs&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// load model</span></span><br><span class="line">  <span class="keyword">const</span> path = <span class="string">&#x27;http://localhost:8080/tfjsmodel/model.json&#x27;</span></span><br><span class="line">  <span class="keyword">const</span> model = <span class="keyword">await</span> tf.loadLayersModel(path)</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> tf = <span class="built_in">require</span>(<span class="string">&#x27;@tensorflow/tfjs&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// load model</span></span><br><span class="line">  <span class="keyword">const</span> path = <span class="string">&#x27;http://localhost:8080/tfjsmodel/model.json&#x27;</span></span><br><span class="line">  <span class="keyword">const</span> model = <span class="keyword">await</span> tf.<span class="title function_">loadLayersModel</span>(path)</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>非同期なので <code>await</code> で待つ</li>
@@ -261,7 +261,7 @@ Tensorflow.js（以降TFJS）を使ったらブラウザでも動かせるんじ
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">============================</span><br><span class="line">Hi there 👋. Looks like you are running TensorFlow.js <span class="keyword">in</span> Node.js. To speed</span><br><span class="line">things up dramatically, install our node backend, <span class="built_in">which</span> binds to TensorFlow C++,</span><br><span class="line">by running npm i @tensorflow/tfjs-node, or npm i @tensorflow/tfjs-node-gpu <span class="keyword">if</span></span><br><span class="line">you have CUDA. Then call require(<span class="string">&#x27;@tensorflow/tfjs-node&#x27;</span>); (-gpu suffix <span class="keyword">for</span></span><br><span class="line">CUDA) at the start of your program.</span><br><span class="line">Visit https://github.com/tensorflow/tfjs-node <span class="keyword">for</span> more details.</span><br><span class="line">============================</span><br></pre></td></tr></table></figure>
 
 <p>ワーニングメッセージを抑制するには <a href="https://github.com/tensorflow/tfjs/issues/5349#issuecomment-885170504">環境 <code>IS_NODE</code> を <code>false</code> にしてやる</a>：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">tf.env().set(<span class="string">&#x27;IS_NODE&#x27;</span>, <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">tf.<span class="title function_">env</span>().<span class="title function_">set</span>(<span class="string">&#x27;IS_NODE&#x27;</span>, <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h3><script src="https://gist.github.com/tyfkda/9bdd79004661fe5561c326c01cdd8c44.js"></script>

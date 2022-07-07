@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -204,7 +204,7 @@
 
 <p>動画は連番の静止画ファイルを吐き出して、ffmpegで作った。本当は劣化のない高画質な動画を作りたいんだけど、最適なコマンドラインオプションがわからなくてこの程度になってしまっている。もっとドットがくっきり見える動画が作りたいんだけど…。</p>
 <p>ffmpegをMacで使うには、<code>brew install ffmpeg</code> でインストールして、変換時のオプションは</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ /usr/<span class="built_in">local</span>/Cellar/ffmpeg/1.1.3/bin/ffmpeg -r 30 -i %05d.png -q:v 1 -vcodec mjpeg -y out.avi</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ /usr/local/Cellar/ffmpeg/1.1.3/bin/ffmpeg -r 30 -i %05d.png -q:v 1 -vcodec mjpeg -y out.avi</span><br></pre></td></tr></table></figure>
 
 <p>とした。</p>
 

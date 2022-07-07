@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -201,45 +201,45 @@
 
 <p>最新のNodejs、というわけではないらしく、アロー関数とかは使えなかった。</p>
 <h3 id="初期化"><a href="#初期化" class="headerlink" title="初期化"></a>初期化</h3><p>以下JSのコード。<code>require</code>した<code>casper</code>を<code>create</code>してやる：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> casper = <span class="built_in">require</span>(<span class="string">&#x27;casper&#x27;</span>).create(&#123;</span><br><span class="line">  <span class="attr">viewportSize</span>: &#123;</span><br><span class="line">    <span class="attr">width</span>: <span class="number">1280</span>,</span><br><span class="line">    <span class="attr">height</span>: <span class="number">768</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> casper = <span class="built_in">require</span>(<span class="string">&#x27;casper&#x27;</span>).<span class="title function_">create</span>(&#123;</span><br><span class="line">  <span class="attr">viewportSize</span>: &#123;</span><br><span class="line">    <span class="attr">width</span>: <span class="number">1280</span>,</span><br><span class="line">    <span class="attr">height</span>: <span class="number">768</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <p><code>viewportSize</code>の指定は必須じゃないけど、スクリーンショットを撮るときなどに。</p>
 <p>メソッドは<a href="https://en.wikipedia.org/wiki/Fluent_interface#JavaScript">Fluent Interface</a>になっている。</p>
 <h3 id="XPathを使う"><a href="#XPathを使う" class="headerlink" title="XPathを使う"></a>XPathを使う</h3><p>要素を指定する時に、XPathを使うことができる(<a href="http://docs.casperjs.org/en/latest/selectors.html#index-2">Selectors</a>)：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="built_in">require</span>(<span class="string">&#x27;casper&#x27;</span>).selectXPath</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="built_in">require</span>(<span class="string">&#x27;casper&#x27;</span>).<span class="property">selectXPath</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="ユーザエージェントの指定"><a href="#ユーザエージェントの指定" class="headerlink" title="ユーザエージェントの指定"></a>ユーザエージェントの指定</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">casper.userAgent(<span class="string">&#x27;CustomUA&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="ユーザエージェントの指定"><a href="#ユーザエージェントの指定" class="headerlink" title="ユーザエージェントの指定"></a>ユーザエージェントの指定</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">casper.<span class="title function_">userAgent</span>(<span class="string">&#x27;CustomUA&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="読み込みURL指定"><a href="#読み込みURL指定" class="headerlink" title="読み込みURL指定"></a>読み込みURL指定</h3><p><a href="http://docs.casperjs.org/en/latest/modules/casper.html#start">start</a>メソッドを使う：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">casper.start(<span class="string">&#x27;http://www.example.com/&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">casper.<span class="title function_">start</span>(<span class="string">&#x27;http://www.example.com/&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>第2引数の関数内にそのページが開かれたらやりたいことを書く。</li>
 <li><code>function</code>内部での<code>this</code>は<code>casper</code>自身。</li>
 </ul>
 <h3 id="成功したら次の処理を行う"><a href="#成功したら次の処理を行う" class="headerlink" title="成功したら次の処理を行う"></a>成功したら次の処理を行う</h3><p><a href="http://docs.casperjs.org/en/latest/modules/casper.html#then">then</a>でつなぐ：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">casper.start(...)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">casper.<span class="title function_">start</span>(...)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
 
-<h3 id="DOM要素を探す"><a href="#DOM要素を探す" class="headerlink" title="DOM要素を探す"></a>DOM要素を探す</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.waitForSelector(<span class="string">&#x27;form[name=&quot;login&quot;]&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="DOM要素を探す"><a href="#DOM要素を探す" class="headerlink" title="DOM要素を探す"></a>DOM要素を探す</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="title function_">waitForSelector</span>(<span class="string">&#x27;form[name=&quot;login&quot;]&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>読み込みが遅延したときなど、自動的に待ってくれる。</p>
 <h3 id="フォームに入力、Submit"><a href="#フォームに入力、Submit" class="headerlink" title="フォームに入力、Submit"></a>フォームに入力、Submit</h3><p><a href="http://docs.casperjs.org/en/latest/modules/casper.html#fill">fill</a>メソッドを使う：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.fill(<span class="string">&#x27;form[name=&quot;login&quot;]&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">email</span>: <span class="string">&#x27;foo@example.com&#x27;</span>,</span><br><span class="line">  <span class="attr">password</span>: <span class="string">&#x27;blahblahblah&#x27;</span>,</span><br><span class="line">&#125;, <span class="literal">true</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="title function_">fill</span>(<span class="string">&#x27;form[name=&quot;login&quot;]&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">email</span>: <span class="string">&#x27;foo@example.com&#x27;</span>,</span><br><span class="line">  <span class="attr">password</span>: <span class="string">&#x27;blahblahblah&#x27;</span>,</span><br><span class="line">&#125;, <span class="literal">true</span>)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>第3引数でSubmit</li>
 </ul>
 <h3 id="時間待ち"><a href="#時間待ち" class="headerlink" title="時間待ち"></a>時間待ち</h3><p><a href="http://docs.casperjs.org/en/latest/modules/casper.html#wait">wait</a>でミリ秒待つ：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.wait(<span class="number">1000</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="title function_">wait</span>(<span class="number">1000</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="要素をクリック"><a href="#要素をクリック" class="headerlink" title="要素をクリック"></a>要素をクリック</h3><p><a href="http://docs.casperjs.org/en/latest/modules/casper.html#click">click</a>：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.click(x(<span class="string">&#x27;//*[text()=&quot;FooBar&quot;]&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="title function_">click</span>(<span class="title function_">x</span>(<span class="string">&#x27;//*[text()=&quot;FooBar&quot;]&#x27;</span>))</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>リンクやボタンだけじゃなく、XPathで「これこれのテキストの要素」に対してクリック、ということもできる</li>
 </ul>
 <h3 id="ページ側でJavaScriptを実行する"><a href="#ページ側でJavaScriptを実行する" class="headerlink" title="ページ側でJavaScriptを実行する"></a>ページ側でJavaScriptを実行する</h3><p>DOM操作をしたい場合などに<a href="http://docs.casperjs.org/en/latest/modules/casper.html#evaluate">evaluate</a>で呼び出せる。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.evaluate(<span class="function"><span class="keyword">function</span>(<span class="params">message</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">&#x27;textarea&#x27;</span>).value = message</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">message</span>: MESSAGE,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">this</span>.evaluate(<span class="keyword">function</span>(<span class="params">message</span>) &#123;</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;textarea&#x27;</span>).<span class="property">value</span> = message</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">message</span>: <span class="variable constant_">MESSAGE</span>,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>テキストエリアに文章を設定したかったけどAPIでのやり方がわからなかったので、<code>evaluate</code>を使った</li>
@@ -247,10 +247,10 @@
 <li>簡単な結果なら返せる、とのこと（DOMとかじゃなく文字列とかならということだと思う、未確認）</li>
 </ul>
 <h3 id="スクリーンショットを撮る"><a href="#スクリーンショットを撮る" class="headerlink" title="スクリーンショットを撮る"></a>スクリーンショットを撮る</h3><p><a href="http://docs.casperjs.org/en/latest/modules/casper.html#capture">capture</a>：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.capture(<span class="string">&#x27;ss.png&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="title function_">capture</span>(<span class="string">&#x27;ss.png&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="処理開始"><a href="#処理開始" class="headerlink" title="処理開始"></a>処理開始</h3><p><a href="http://docs.casperjs.org/en/latest/modules/casper.html#run">run</a>で実際に動作開始：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.run(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.echo(<span class="string">&#x27;Done!&#x27;</span>).exit()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.<span class="title function_">run</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">echo</span>(<span class="string">&#x27;Done!&#x27;</span>).<span class="title function_">exit</span>()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>関数を与えた場合には、<a href="http://docs.casperjs.org/en/latest/modules/casper.html#exit">exit</a>してやる必要がある。</li>

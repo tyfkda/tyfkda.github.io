@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -210,12 +210,12 @@
 
 <h3 id="リテラル"><a href="#リテラル" class="headerlink" title="リテラル"></a>リテラル</h3><p>Rustで配列を記述するには、型を <code>[要素の型; 要素数]</code> という具合に指定する。
 で初期化の要素をブラケット内 <code>[ ]</code> に記述する：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array: [<span class="built_in">i32</span>; <span class="number">3</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];  <span class="comment">// 1, 2, 3 のi32型3要素の配列</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">array</span>: [<span class="type">i32</span>; <span class="number">3</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];  <span class="comment">// 1, 2, 3 のi32型3要素の配列</span></span><br></pre></td></tr></table></figure>
 
 <p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=fn%20main()%20%7B%0A%20%20%20%20let%20array:%20%5Bi32;%203%5D%20=%20%5B1,%202,%203%5D;%0A%20%20%20%20println!(%22%7B:?%7D%22,%20array);%0A%7D%0A">Rust Playgroundで実行</a></p>
 <h3 id="デフォルト値で埋める"><a href="#デフォルト値で埋める" class="headerlink" title="デフォルト値で埋める"></a>デフォルト値で埋める</h3><p>要素数が多い場合、初期化時にすべての要素の初期値を列挙するのが大変。
 デフォルト値で初期化したい場合、要素数がそこまで多くなければ <a href="https://doc.rust-lang.org/std/default/trait.Default.html"><code>Default::default()</code></a> というのが使える：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array2: [<span class="built_in">i32</span>; <span class="number">32</span>] = <span class="built_in">Default</span>::default();  <span class="comment">// 0が32個</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">array2</span>: [<span class="type">i32</span>; <span class="number">32</span>] = <span class="built_in">Default</span>::<span class="title function_ invoke__">default</span>();  <span class="comment">// 0が32個</span></span><br></pre></td></tr></table></figure>
 
 <p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=fn%20main()%20%7B%0A%20%20%20%20let%20array2:%20%5Bi32;%2032%5D%20=%20Default::default();%0A%20%20%20%20println!(%22%7B:?%7D%22,%20array2);%0A%7D%0A">Rust Playgroundで実行</a></p>
 <p>使用できる個数に制限があって、 <strong>32個以下</strong> でしか使えない。
@@ -224,7 +224,7 @@
 <li><a href="https://blog.rust-lang.org/2020/10/08/Rust-1.47.html#traits-on-larger-arrays">Rust 1.47 のconst generics</a> で32以上も可能になるとのこと</li>
 </ul>
 <h3 id="一定の値で埋める"><a href="#一定の値で埋める" class="headerlink" title="一定の値で埋める"></a>一定の値で埋める</h3><p>要素の型が <a href="https://doc.rust-lang.org/std/marker/trait.Copy.html"><code>Copy</code></a> トレイトを実装している場合、全要素を同じ値で初期化するなら <code>[要素; 要素数]</code> と書ける：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> array3: [<span class="built_in">i32</span>; <span class="number">33</span>] = [<span class="number">1</span>; <span class="number">33</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">array3</span>: [<span class="type">i32</span>; <span class="number">33</span>] = [<span class="number">1</span>; <span class="number">33</span>];</span><br></pre></td></tr></table></figure>
 
 <p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=fn%20main()%20%7B%0A%20%20%20%20let%20array3:%20%5Bi32;%2033%5D%20=%20%5B1;%2033%5D;%0A%20%20%20%20println!(%22%7B:?%7D%22,%20array3.len());%0A%7D%0A">Rust Playgroundで実行</a></p>
 <p>この場合には32個以上も可能。</p>
@@ -232,7 +232,7 @@
 Rustは安全性が最優先の言語で、変数が未初期化の状態を許さないので、でかい配列といえど確保のみということはできず、要素もすべて宣言時に初期化済みの状態になっていないといけない。</p>
 <p>ではどうするか。
 実のところ、 <code>unsafe</code> を使うことになる：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::mem::MaybeUninit;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">func</span></span>() &#123;</span><br><span class="line">    <span class="keyword">const</span> LEN: <span class="built_in">usize</span> = <span class="number">16</span>;  <span class="comment">// 確保したい要素数</span></span><br><span class="line">    <span class="comment">// 未初期化の領域を確保</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> array4: [MaybeUninit&lt;<span class="built_in">i32</span>&gt;; LEN] = <span class="keyword">unsafe</span> &#123; MaybeUninit::uninit().assume_init() &#125;;</span><br><span class="line">    <span class="keyword">for</span> (i, slot) <span class="keyword">in</span> array4.iter_mut().enumerate() &#123;</span><br><span class="line">        <span class="comment">// [i]の要素を初期化する</span></span><br><span class="line">        *slot = MaybeUninit::new((i * i) <span class="keyword">as</span> <span class="built_in">i32</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// MaybeUninit を外した安全な配列型に変換</span></span><br><span class="line">    <span class="keyword">let</span> array4: [<span class="built_in">i32</span>; LEN] = <span class="keyword">unsafe</span> &#123; std::mem::transmute::&lt;_, [<span class="built_in">i32</span>; LEN]&gt;(array4) &#125;;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::mem::MaybeUninit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">func</span>() &#123;</span><br><span class="line">    <span class="keyword">const</span> LEN: <span class="type">usize</span> = <span class="number">16</span>;  <span class="comment">// 確保したい要素数</span></span><br><span class="line">    <span class="comment">// 未初期化の領域を確保</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">array4</span>: [MaybeUninit&lt;<span class="type">i32</span>&gt;; LEN] = <span class="keyword">unsafe</span> &#123; MaybeUninit::<span class="title function_ invoke__">uninit</span>().<span class="title function_ invoke__">assume_init</span>() &#125;;</span><br><span class="line">    <span class="title function_ invoke__">for</span> (i, slot) <span class="keyword">in</span> array4.<span class="title function_ invoke__">iter_mut</span>().<span class="title function_ invoke__">enumerate</span>() &#123;</span><br><span class="line">        <span class="comment">// [i]の要素を初期化する</span></span><br><span class="line">        *slot = MaybeUninit::<span class="title function_ invoke__">new</span>((i * i) <span class="keyword">as</span> <span class="type">i32</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// MaybeUninit を外した安全な配列型に変換</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">array4</span>: [<span class="type">i32</span>; LEN] = <span class="keyword">unsafe</span> &#123; std::mem::transmute::&lt;_, [<span class="type">i32</span>; LEN]&gt;(array4) &#125;;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 
 <p><a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std::mem::MaybeUninit;%0A%0Afn%20func()%20-%3E%20%5Bi32;%2016%5D%20%7B%0A%20%20%20%20const%20LEN:%20usize%20=%2016;%0A%20%20%20%20let%20mut%20array4:%20%5BMaybeUninit%3Ci32%3E;%20LEN%5D%20=%20unsafe%20%7B%20MaybeUninit::uninit().assume_init()%20%7D;%0A%20%20%20%20for%20(i,%20slot)%20in%20array4.iter_mut().enumerate()%20%7B%0A%20%20%20%20%20%20%20%20*slot%20=%20MaybeUninit::new((i%20*%20i)%20as%20i32);%0A%20%20%20%20%7D%0A%20%20%20%20let%20array4:%20%5Bi32;%20LEN%5D%20=%20unsafe%20%7B%20std::mem::transmute::%3C_,%20%5Bi32;%20LEN%5D%3E(array4)%20%7D;%0A%20%20%20%20array4%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20array4%20=%20func();%0A%20%20%20%20println!(%22%7B:?%7D%22,%20array4);%0A%7D%0A">Rust Playgroundで実行</a></p>
 <p><a href="https://doc.rust-lang.org/std/mem/union.MaybeUninit.html"><code>MaybeUninit</code></a> で要素が未初期化の状態の配列を確保し、
@@ -245,18 +245,18 @@ Rustは安全性が最優先の言語で、変数が未初期化の状態を許�
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[dependencies]</span><br><span class="line">array-macro = &quot;1.0.4&quot;</span><br></pre></td></tr></table></figure>
 
 <p>して、利用</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> array_macro::*;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> array5: [<span class="built_in">i32</span>; LEN] = array![|i| i * i; LEN];</span><br><span class="line">    <span class="keyword">let</span> array6: [<span class="built_in">i32</span>; LEN] = array![<span class="number">1</span>; LEN];</span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> array_macro::*;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">array5</span>: [<span class="type">i32</span>; LEN] = array![|i| i * i; LEN];</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">array6</span>: [<span class="type">i32</span>; LEN] = array![<span class="number">1</span>; LEN];</span><br></pre></td></tr></table></figure>
 
 <p>できる。
 クロージャを渡す方法以外にも通常の固定値での初期化と同じようにも書けるが、こちらは <code>Copy</code> トレイトじゃない型でも使用できるという違いがある。</p>
 <h3 id="静的な配列の個数指定"><a href="#静的な配列の個数指定" class="headerlink" title="静的な配列の個数指定"></a>静的な配列の個数指定</h3><p>静的な配列も定義できる。
 ローカル変数の場合は型宣言を省略できるが、静的な場合には明示する必要がある：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">const</span> ARRAY: [<span class="built_in">i32</span>; <span class="number">3</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">const</span> ARRAY: [<span class="type">i32</span>; <span class="number">3</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br></pre></td></tr></table></figure>
 
 <p>開発時にコードの修正で要素数を増減させる場合に、個数宣言（<code>; 3</code>の箇所）も合わせないといけなくて要素数に応じて修正する必要があるのが地味に面倒だ。</p>
 <p>でcrateがないか調べたらあった：<a href="https://crates.io/crates/counted-array">counted-array</a> (from <a href="https://github.com/rust-lang/rust/issues/40269#issuecomment-284250535">Array length inference?</a>)。
 これを使えば個数に <code>_</code> を指定できて、自動的にサイズを埋めてくれる：</p>
-<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line">counted_array!(<span class="keyword">pub</span> <span class="keyword">const</span> ARRAY2: [<span class="built_in">i32</span>; _] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br></pre></td></tr></table></figure>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line">counted_array!(<span class="keyword">pub</span> <span class="keyword">const</span> ARRAY2: [<span class="type">i32</span>; _] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><p>コアな言語仕様だけ用意してマクロでなんとかするというのも理にかなっているといえばそうなんだけど、

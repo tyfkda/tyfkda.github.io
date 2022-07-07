@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -210,10 +210,10 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> csvString = <span class="string">&#x27;a,b,c&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>文字列の <code>split</code> メソッドでで分割できて、個数もわかる：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> elems = csvString.split(<span class="string">&#x27;,&#x27;</span>)  <span class="comment">// =&gt; [ &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27; ]</span></span><br><span class="line">elems.length  <span class="comment">// =&gt; 3</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> elems = csvString.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)  <span class="comment">// =&gt; [ &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27; ]</span></span><br><span class="line">elems.<span class="property">length</span>  <span class="comment">// =&gt; 3</span></span><br></pre></td></tr></table></figure>
 
 <p>これを空文字列に対して行うと空文字列が１つの配列が返ってしまい、個数は１となり、想定と異なってしまう：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> emptyString = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">const</span> elems2 = emptyString.split(<span class="string">&#x27;,&#x27;</span>)  <span class="comment">// =&gt; [ &#x27;&#x27; ]</span></span><br><span class="line">elems2.length  <span class="comment">// =&gt; 1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> emptyString = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">const</span> elems2 = emptyString.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)  <span class="comment">// =&gt; [ &#x27;&#x27; ]</span></span><br><span class="line">elems2.<span class="property">length</span>  <span class="comment">// =&gt; 1</span></span><br></pre></td></tr></table></figure>
 
 <p>自分の感覚では空配列が返るものだと思いこんでいたので、思いっきりバグを仕込んでしまっていた。</p>
 <h4 id="リファレンス"><a href="#リファレンス" class="headerlink" title="リファレンス"></a>リファレンス</h4><p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/String/split">String.prototype.split() - JavaScript | MDN</a></p>
@@ -244,7 +244,7 @@
 空要素の場合は空文字列じゃなく <code>null</code> で表現するとしてみる。
 扱いは面倒になるが、それはそれで理にかなっている気がする。</p>
 <h4 id="joinの逆演算として考える"><a href="#joinの逆演算として考える" class="headerlink" title="joinの逆演算として考える"></a>joinの逆演算として考える</h4><p><code>split</code> を <code>join</code> の演算として考えるとどうか。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; [<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>,<span class="string">&#x27;3&#x27;</span>].join(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;1,2,3&#x27;</span></span><br><span class="line">&gt; [<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>].join(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;1,2&#x27;</span></span><br><span class="line">&gt; [<span class="string">&#x27;1&#x27;</span>].join(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;1&#x27;</span></span><br><span class="line">&gt; [].join(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; [<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>,<span class="string">&#x27;3&#x27;</span>].<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;1,2,3&#x27;</span></span><br><span class="line">&gt; [<span class="string">&#x27;1&#x27;</span>,<span class="string">&#x27;2&#x27;</span>].<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;1,2&#x27;</span></span><br><span class="line">&gt; [<span class="string">&#x27;1&#x27;</span>].<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;1&#x27;</span></span><br><span class="line">&gt; [].<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>別に一貫してるよね！？</p>
 <p>ただこれも空文字列を許すとなると <code>[&#39;&#39;].join(&#39;,&#39;)</code> も <code>&#39;&#39;</code> なので 、デザインの違いになってしまうのか…？</p>
@@ -258,7 +258,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/js-game-engine.html" title="JSでオレオレゲームエンジン" rel="bookmark">JSでオレオレゲームエンジン</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/js-game-engine.html" title="JSでオレオレゲームエンジン" rel="bookmark">JSでオレオレゲームエンジン</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

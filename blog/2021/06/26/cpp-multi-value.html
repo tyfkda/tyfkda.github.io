@@ -92,7 +92,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -207,7 +207,7 @@
             <div class="col-lg-9 col-md-9">
                 <p>C++で関数から複数の値を返したい場合にどうするか。</p>
 <p>結論：<code>std::tuple</code> を使うとよい。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;tuple&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">std::tuple&lt;<span class="keyword">int</span>, <span class="keyword">double</span>&gt; <span class="title">func1</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;x, y&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;tuple&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">std::tuple&lt;<span class="type">int</span>, <span class="type">double</span>&gt; <span class="title">func1</span><span class="params">(<span class="type">int</span> x, <span class="type">double</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;x, y&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
@@ -216,7 +216,7 @@
 <p>C++でも1つしか指定できないけど、
 <a href="https://cpprefjp.github.io/reference/tuple/tuple.html"><code>std::tuple</code></a> でまとめて返すことができる。</p>
 <h3 id="呼び出し側"><a href="#呼び出し側" class="headerlink" title="呼び出し側"></a>呼び出し側</h3><p>呼び出し側では <a href="https://cpprefjp.github.io/reference/tuple/tuple/get.html"><code>std::get</code></a> で取り出せる：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> res = <span class="built_in">func1</span>(<span class="number">1</span>, <span class="number">2.3</span>);</span><br><span class="line">  <span class="keyword">int</span> x = std::get&lt;<span class="number">0</span>&gt;(res);</span><br><span class="line">  <span class="keyword">double</span> y = std::get&lt;<span class="number">1</span>&gt;(res);</span><br><span class="line">  std::cout &lt;&lt; x &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; y &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> res = <span class="built_in">func1</span>(<span class="number">1</span>, <span class="number">2.3</span>);</span><br><span class="line">  <span class="type">int</span> x = std::<span class="built_in">get</span>&lt;<span class="number">0</span>&gt;(res);</span><br><span class="line">  <span class="type">double</span> y = std::<span class="built_in">get</span>&lt;<span class="number">1</span>&gt;(res);</span><br><span class="line">  std::cout &lt;&lt; x &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; y &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>C++14では <code>std::get&lt;型&gt;(tuple)</code> と取り出す型で指定することもできる。</p>
 <p>タプル以外にも <code>std::pair</code> や戻り値用の構造体を定義しても実現できる。
@@ -229,7 +229,7 @@
 
 <p>なので安心して使える。</p>
 <h3 id="構造化束縛による取り出し"><a href="#構造化束縛による取り出し" class="headerlink" title="構造化束縛による取り出し"></a>構造化束縛による取り出し</h3><p>C++17では呼び出し側で<a href="https://cpprefjp.github.io/lang/cpp17/structured_bindings.html">構造化束縛</a>(structured bindings)というものが使える：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> [x, y] = <span class="built_in">func1</span>(<span class="number">1</span>, <span class="number">2.3</span>);</span><br><span class="line">  std::cout &lt;&lt; x &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; y &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">test3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> [x, y] = <span class="built_in">func1</span>(<span class="number">1</span>, <span class="number">2.3</span>);</span><br><span class="line">  std::cout &lt;&lt; x &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; y &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>コンパイルオプションに <code>-std=c++17</code> を指定してやる。</p>
 <p>構造化束縛を使用しても、さらに余分なムーブが発生するわけではないようなので、安心して使える。</p>

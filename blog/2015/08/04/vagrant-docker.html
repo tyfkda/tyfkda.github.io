@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -233,7 +233,7 @@
 <li>Vagrantで立ち上げた仮想環境上でDockerを動かすことにする</li>
 <li>Dockerを使えるように <code>Vagrantfile</code> に設定を追加する</li>
 </ul>
-<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">Vagrant.configure(<span class="number">2</span>) <span class="keyword">do</span> <span class="params">|config|</span></span><br><span class="line">  ...</span><br><span class="line">  config.vm.provision <span class="symbol">:docker</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">Vagrant.configure(<span class="number">2</span>) <span class="keyword">do</span> |<span class="params">config</span>|</span><br><span class="line">  ...</span><br><span class="line">  config.vm.provision <span class="symbol">:docker</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="Dockerイメージのダウンロード"><a href="#Dockerイメージのダウンロード" class="headerlink" title="Dockerイメージのダウンロード"></a>Dockerイメージのダウンロード</h2><ul>
 <li><code>docker pull イメージ名</code><ul>

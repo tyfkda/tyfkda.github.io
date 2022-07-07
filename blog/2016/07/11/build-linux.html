@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -222,7 +222,7 @@
 
 <h3 id="作業用ディレクトリ作成"><a href="#作業用ディレクトリ作成" class="headerlink" title="作業用ディレクトリ作成"></a>作業用ディレクトリ作成</h3><p>以降は開発環境で、rootユーザに移って行う。</p>
 <p>作業用のディレクトリ<code>/usr/local/source</code>と、生成先ディレクトリ<code>/usr/local/mylinux</code>を作成する：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/source</span><br><span class="line"># mkdir -p /usr/local/mylinux</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/source</span><br><span class="line"># mkdir -p /usr/local/mylinux</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="ソースのダウンロード"><a href="#ソースのダウンロード" class="headerlink" title="ソースのダウンロード"></a>ソースのダウンロード</h3><p>カーネルのソースとして、glibc（Cライブラリ）、BusyBox（コマンド集）、kmod（モジュールローダーツール）、Kernelをビルドする。それぞれのtarをダウンロードするんだけど、本に書いてあるURLから変わってhttpsに置くようになったみたい：</p>
@@ -234,49 +234,49 @@
 </ul>
 <p>wgetで取得するなりブラウザ上で取得してVagrantにぶち込むなり、好きなように。</p>
 <p><code>/usr/local/source</code> にtar.bz2を配置する。</p>
-<h3 id="ソースファイルの展開"><a href="#ソースファイルの展開" class="headerlink" title="ソースファイルの展開"></a>ソースファイルの展開</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/source</span><br><span class="line"># tar xjvf glibc-2.16.0.tar.bz2</span><br><span class="line"># tar xjvf busybox-1.21.0.tar.bz2</span><br><span class="line"># tar xjvf kmod-12.tar.bz2</span><br><span class="line"># tar xjvf linux-3.8.5.tar.bz2</span><br><span class="line"># cd linux-3.8.5</span><br><span class="line"># make mrproper</span><br><span class="line"># make headers_check</span><br><span class="line"># make INSTALL_HDR_PATH=header headers_install  # カーネルにヘッダーファイルを作成</span><br></pre></td></tr></table></figure>
+<h3 id="ソースファイルの展開"><a href="#ソースファイルの展開" class="headerlink" title="ソースファイルの展開"></a>ソースファイルの展開</h3><figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/source</span><br><span class="line"># tar xjvf glibc-2.16.0.tar.bz2</span><br><span class="line"># tar xjvf busybox-1.21.0.tar.bz2</span><br><span class="line"># tar xjvf kmod-12.tar.bz2</span><br><span class="line"># tar xjvf linux-3.8.5.tar.bz2</span><br><span class="line"># cd linux-3.8.5</span><br><span class="line"># make mrproper</span><br><span class="line"># make headers_check</span><br><span class="line"># make INSTALL_HDR_PATH=header headers_install  # カーネルにヘッダーファイルを作成</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="glibcのコンパイル"><a href="#glibcのコンパイル" class="headerlink" title="glibcのコンパイル"></a>glibcのコンパイル</h3><p>本によると、「展開したソースをそのままコンパイルすると途中でエラーが発生する」とのことでパッチを当てる必要があるらしいんだけど、ウェブで公開していたというパッチファイルが消えていたのでそのままビルドさせる。</p>
 <p>ソースを展開したディレクトリとは別に作業用のディレクトリを作成し、その中でビルドする：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/source/glibc-work</span><br><span class="line"># cd /usr/local/source/glibc-work</span><br><span class="line"># ../glibc-2.16.0/configure --prefix=/usr --without-selinux --disable-profile \</span><br><span class="line">    --enable-add-ons --enable-kernel=3.6.10 \</span><br><span class="line">    --with-headers=/usr/local/source/linux-3.8.5/header/include \</span><br><span class="line">    libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes</span><br><span class="line"># make</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/source/glibc-work</span><br><span class="line"># cd /usr/local/source/glibc-work</span><br><span class="line"># ../glibc-2.16.0/configure --prefix=/usr --without-selinux --disable-profile \</span><br><span class="line">    --enable-add-ons --enable-kernel=3.6.10 \</span><br><span class="line">    --with-headers=/usr/local/source/linux-3.8.5/header/include \</span><br><span class="line">    libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes</span><br><span class="line"># make</span><br></pre></td></tr></table></figure>
 
 <p>特に何もエラーは出ずに、コンパイルが成功した。</p>
 <p>コンパイルできたら<code>/usr/local/mylinux</code>にインストール：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/mylinux/etc</span><br><span class="line"># touch /usr/local/mylinux/etc/ld.so.conf</span><br><span class="line"># make install_root=/usr/local/mylinux install</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/mylinux/etc</span><br><span class="line"># touch /usr/local/mylinux/etc/ld.so.conf</span><br><span class="line"># make install_root=/usr/local/mylinux install</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="BusyBoxのコンパイル"><a href="#BusyBoxのコンパイル" class="headerlink" title="BusyBoxのコンパイル"></a>BusyBoxのコンパイル</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/source/busybox-1.21.0</span><br><span class="line"># make defconfig</span><br><span class="line"># make</span><br></pre></td></tr></table></figure>
+<h3 id="BusyBoxのコンパイル"><a href="#BusyBoxのコンパイル" class="headerlink" title="BusyBoxのコンパイル"></a>BusyBoxのコンパイル</h3><figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/source/busybox-1.21.0</span><br><span class="line"># make defconfig</span><br><span class="line"># make</span><br></pre></td></tr></table></figure>
 
 <p>インストール：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># make CONFIG_PREFIX=/usr/local/mylinux install</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># make CONFIG_PREFIX=/usr/local/mylinux install</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="kmodのコンパイル"><a href="#kmodのコンパイル" class="headerlink" title="kmodのコンパイル"></a>kmodのコンパイル</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/source/kmod-work</span><br><span class="line"># cd /usr/local/source/kmod-work</span><br><span class="line"># ../kmod-12/configure --prefix=/usr --exec-prefix=/usr/local/mylinux \</span><br><span class="line">    --sysconfdir=/usr/local/mylinux/etc</span><br><span class="line"># make</span><br></pre></td></tr></table></figure>
+<h3 id="kmodのコンパイル"><a href="#kmodのコンパイル" class="headerlink" title="kmodのコンパイル"></a>kmodのコンパイル</h3><figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/source/kmod-work</span><br><span class="line"># cd /usr/local/source/kmod-work</span><br><span class="line"># ../kmod-12/configure --prefix=/usr --exec-prefix=/usr/local/mylinux \</span><br><span class="line">    --sysconfdir=/usr/local/mylinux/etc</span><br><span class="line"># make</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># make install</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># make install</span><br></pre></td></tr></table></figure>
 
 <p>kmod内のコマンドがBusyBoxにリンクされているので、リンクを修正する必要がある：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/mylinux/sbin</span><br><span class="line"># ln -sf ../bin/kmod depmod</span><br><span class="line"># ln -sf ../bin/kmod insmod</span><br><span class="line"># ln -sf ../bin/kmod lsmod</span><br><span class="line"># ln -sf ../bin/kmod modinfo</span><br><span class="line"># ln -sf ../bin/kmod modprobe</span><br><span class="line"># ln -sf ../bin/kmod rmmod</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/mylinux/sbin</span><br><span class="line"># ln -sf ../bin/kmod depmod</span><br><span class="line"># ln -sf ../bin/kmod insmod</span><br><span class="line"># ln -sf ../bin/kmod lsmod</span><br><span class="line"># ln -sf ../bin/kmod modinfo</span><br><span class="line"># ln -sf ../bin/kmod modprobe</span><br><span class="line"># ln -sf ../bin/kmod rmmod</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="Kernelのコンパイル"><a href="#Kernelのコンパイル" class="headerlink" title="Kernelのコンパイル"></a>Kernelのコンパイル</h3><p>いよいよLinuxカーネルのコンパイルを行う。
 その前にビルドの設定をする必要があって、それを現在動かしている開発環境から持ってきてやる：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/source/linux-3.8.5</span><br><span class="line"># cp -p /boot/config-3.8.4-202-1.fc18.i686.PAE .config</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/source/linux-3.8.5</span><br><span class="line"># cp -p /boot/config-3.8.4-202-1.fc18.i686.PAE .config</span><br></pre></td></tr></table></figure>
 
 <p>カーネルのバージョンに、自分でビルドしたという目印を入れる：<code>Makefile</code>の<code>EXTRAVERSION =</code> の行を書き換えて、<code>EXTRAVERSION = -mylinux</code>などとする。</p>
 <p>設定を反映させ、メニューで設定する：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># make oldconfig  # 問い合わせには「Enter」</span><br><span class="line"># make menuconfig</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># make oldconfig  # 問い合わせには「Enter」</span><br><span class="line"># make menuconfig</span><br></pre></td></tr></table></figure>
 
 <p>メニューでは、Device Drivers &gt; USB support &gt; USB Mass Storage Supportを<code>*</code>にする。</p>
 <p>makeとインストール：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># make</span><br><span class="line"># make INSTALL_MOD_PATH=/usr/local/mylinux modules_install</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># make</span><br><span class="line"># make INSTALL_MOD_PATH=/usr/local/mylinux modules_install</span><br></pre></td></tr></table></figure>
 
 <p>デバッグシンボルの削除：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/mylinux/lib/modules/3.8.5-mylinux/kernel</span><br><span class="line"># du -sh</span><br><span class="line">502M</span><br><span class="line"># find . -name &quot;*.ko&quot; -exec strip -S &#123;&#125; \;</span><br><span class="line"># du -sh</span><br><span class="line">31M</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># cd /usr/local/mylinux/lib/modules/3.8.5-mylinux/kernel</span><br><span class="line"># du -sh</span><br><span class="line">502M</span><br><span class="line"># find . -name &quot;*.ko&quot; -exec strip -S &#123;&#125; \;</span><br><span class="line"># du -sh</span><br><span class="line">31M</span><br></pre></td></tr></table></figure>
 
 <p>作成したカーネルファイル（<code>bzImage</code>）と<code>System.map</code>ファイルをコピー：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/mylinux/boot</span><br><span class="line"># cd /usr/local/source/linux-3.8.5</span><br><span class="line"># cp -p System.map /usr/local/mylinux/boot/</span><br><span class="line"># cp -p arch/x86/boot/bzImage /usr/local/mylinux/boot/3.8.5-mylinux</span><br><span class="line"># chmod 755 /usr/local/mylinux/boot/3.8.5-mylinux</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># mkdir -p /usr/local/mylinux/boot</span><br><span class="line"># cd /usr/local/source/linux-3.8.5</span><br><span class="line"># cp -p System.map /usr/local/mylinux/boot/</span><br><span class="line"># cp -p arch/x86/boot/bzImage /usr/local/mylinux/boot/3.8.5-mylinux</span><br><span class="line"># chmod 755 /usr/local/mylinux/boot/3.8.5-mylinux</span><br></pre></td></tr></table></figure>
 
 <p>以上でテキストベースのLinuxのコンパイルが終了。本ではこの後USBに焼いて起動、Xウィンドウの導入、と続くんだけど、それらはまた後ほど…。</p>
 <h3 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h3><ul>

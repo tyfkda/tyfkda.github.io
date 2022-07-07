@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -205,7 +205,7 @@ Linuxではたぶん「BSD・GNU共通形式」というものだろう。ファ
 <li>グローバルヘッダ（<code>struct ar_hdr</code> 、60バイト）</li>
 </ul>
 <p>ヘッダの形式は以下の通り（<a href="https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=include/aout/ar.h;h=471a859fc57c7d8207193718610980f6bf2f83b3;hb=2cb5c79dad39dd438fb0f7372ac04cf5aa2a7db7">ar.h</a>）：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ar_hdr</span> &#123;</span></span><br><span class="line">  <span class="keyword">char</span> ar_name[<span class="number">16</span>];           <span class="comment">// ファイル名</span></span><br><span class="line">  <span class="keyword">char</span> ar_date[<span class="number">12</span>];           <span class="comment">// 編集日時</span></span><br><span class="line">  <span class="keyword">char</span> ar_uid[<span class="number">6</span>], ar_gid[<span class="number">6</span>];  <span class="comment">// UID, GID</span></span><br><span class="line">  <span class="keyword">char</span> ar_mode[<span class="number">8</span>];            <span class="comment">// パーミッション</span></span><br><span class="line">  <span class="keyword">char</span> ar_size[<span class="number">10</span>];           <span class="comment">// サイズ</span></span><br><span class="line">  <span class="keyword">char</span> ar_fmag[<span class="number">2</span>];            <span class="comment">// 固定値 (`\n)</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ar_hdr</span> &#123;</span></span><br><span class="line">  <span class="type">char</span> ar_name[<span class="number">16</span>];           <span class="comment">// ファイル名</span></span><br><span class="line">  <span class="type">char</span> ar_date[<span class="number">12</span>];           <span class="comment">// 編集日時</span></span><br><span class="line">  <span class="type">char</span> ar_uid[<span class="number">6</span>], ar_gid[<span class="number">6</span>];  <span class="comment">// UID, GID</span></span><br><span class="line">  <span class="type">char</span> ar_mode[<span class="number">8</span>];            <span class="comment">// パーミッション</span></span><br><span class="line">  <span class="type">char</span> ar_size[<span class="number">10</span>];           <span class="comment">// サイズ</span></span><br><span class="line">  <span class="type">char</span> ar_fmag[<span class="number">2</span>];            <span class="comment">// 固定値 (`\n)</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>サイズやパーミッション・日時もバイナリではなく、文字列化されている</li>

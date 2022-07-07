@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -217,7 +217,7 @@
 <figure class="highlight md"><figcaption><span>source/tags/index.md</span></figcaption><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: All tags</span><br><span class="line"><span class="section">type: &quot;tags&quot;</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="メニューに追加"><a href="#メニューに追加" class="headerlink" title="メニューに追加"></a>メニューに追加</h3><p>テーマの_config.yml の <code>menu</code> に追加する：</p>
-<figure class="highlight json"><figcaption><span>themes/clean-blog/_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"># Header</span><br><span class="line">menu:</span><br><span class="line">  Home: /</span><br><span class="line">  Archives: /archives</span><br><span class="line">  Tags: /tags</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><figcaption><span>themes/clean-blog/_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"># Header</span><br><span class="line">menu<span class="punctuation">:</span></span><br><span class="line">  Home<span class="punctuation">:</span> /</span><br><span class="line">  Archives<span class="punctuation">:</span> /archives</span><br><span class="line">  Tags<span class="punctuation">:</span> /tags</span><br></pre></td></tr></table></figure>
 
 <h3 id="タグ名でソート"><a href="#タグ名でソート" class="headerlink" title="タグ名でソート"></a>タグ名でソート</h3><p>そのままだと順不同だったので、ソートしてやる：</p>
 <figure class="highlight diff"><figcaption><span>themes/clean-blog/layout/page.ejs</span><a href="https://github.com/klugjo/hexo-theme-clean-blog/blob/master/layout/page.ejs#L32">page.ejs</a></figcaption><table><tr><td class="code"><pre><span class="line"><span class="deletion">-                &lt;% items.forEach(function(item)&#123; %&gt;</span></span><br><span class="line"><span class="addition">+                &lt;% items.sort(&#x27;name&#x27;).forEach(function(item)&#123; %&gt;</span></span><br></pre></td></tr></table></figure>

@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -209,7 +209,7 @@
 <h3 id="OSイメージの作成"><a href="#OSイメージの作成" class="headerlink" title="OSイメージの作成"></a>OSイメージの作成</h3><p>起動させるOSはOS自作入門のはりぼてOSで、フロッピー起動のものと全く同じ。はりぼてOSは512バイトのブートローダーと、そのブートローダーから読み込まれるOS本体からなっている。ドライブからのデータの読み込みはブートローダーでBIOSを使って行っていて、すべてのデータをメモリ上に読み込んでしまい、OS起動後はメモリへのアクセスだけでドライブへのアクセスは一切していない。</p>
 <h3 id="起動用USBの作成"><a href="#起動用USBの作成" class="headerlink" title="起動用USBの作成"></a>起動用USBの作成</h3><p>Macでのやりかたの説明。まずアプリケーション＞ユーティリティ＞ディスクユーティリティを開いて、消去タブからUSBメモリをフォーマットする。
 次に、ddコマンドでディスクイメージを書き込む。んだけど、メモリスティックを挿した段階でマウントされてしまっているので、アンマウントする必要がある（<a href="http://nahareport.blogspot.jp/2013/03/mac-osxdd.html">参考</a>）：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ ls -l /dev/disk*  <span class="comment"># ドライブ情報の確認</span></span><br><span class="line">  ...</span><br><span class="line">$ df  <span class="comment"># ドライブ情報の確認</span></span><br><span class="line">  ...</span><br><span class="line">$ sudo umount -fv /Volumes/UNTITLED  <span class="comment"># アンマウント</span></span><br><span class="line">$ sudo dd <span class="keyword">if</span>=ディスクイメージのパス of=/dev/disk1  <span class="comment"># イメージの書き込み</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -l /dev/disk*  <span class="comment"># ドライブ情報の確認</span></span><br><span class="line">  ...</span><br><span class="line">$ <span class="built_in">df</span>  <span class="comment"># ドライブ情報の確認</span></span><br><span class="line">  ...</span><br><span class="line">$ sudo umount -fv /Volumes/UNTITLED  <span class="comment"># アンマウント</span></span><br><span class="line">$ sudo <span class="built_in">dd</span> <span class="keyword">if</span>=ディスクイメージのパス of=/dev/disk1  <span class="comment"># イメージの書き込み</span></span><br></pre></td></tr></table></figure>
 
 <p>最後のddコマンドでディスクイメージをUSBメモリの0クラスタから書き込む。
 （出力先を間違ったらハードディスクがぶっ壊れる可能性があるので、怖いなぁ…）</p>

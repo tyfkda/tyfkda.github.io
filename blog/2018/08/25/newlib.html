@@ -92,7 +92,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -216,7 +216,7 @@
 手順通りでできないとMakefileの中見るのも辛いしだいたい諦めちゃうんだけど、ググったら方法が見つかった:
 <a href="http://uchan.hateblo.jp/entry/2017/07/24/234030">Newlibビルドメモ - uchan note</a> の「ネイティブビルド」部。
 それによるとビルド用の別フォルダを作成して、リポジトリ直下じゃなく<code>newlib</code>以下の<code>configure</code>を実行する：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ tar xvf newlib-3.0.0.20180802.tar.gz</span><br><span class="line">$ mkdir build-newlib &amp;&amp; <span class="built_in">cd</span> build-newlib</span><br><span class="line">$ CC=gcc ../newlib-3.0.0.20180802/newlib/configure --disable-multilib</span><br><span class="line">$ make</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ tar xvf newlib-3.0.0.20180802.tar.gz</span><br><span class="line">$ <span class="built_in">mkdir</span> build-newlib &amp;&amp; <span class="built_in">cd</span> build-newlib</span><br><span class="line">$ CC=gcc ../newlib-3.0.0.20180802/newlib/configure --disable-multilib</span><br><span class="line">$ make</span><br></pre></td></tr></table></figure>
 
 <p>ビルドが始まる、しかし途中でエラーが出る：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">make[3]: Entering directory &#x27;/vagrant/tmp/build-newlib/libc/stdio&#x27;</span><br><span class="line">gcc -I/vagrant/tmp/build-newlib/targ-include -I/vagrant/tmp/newlib-3.0.0.20180802/newlib/libc/include -DPACKAGE_NAME=\&quot;newlib\&quot; -DPACKAGE_TARNAME=\&quot;newlib\&quot; -DPACKAGE_VERSION=\&quot;3.0.0\&quot; -DPACKAGE_STRING=\&quot;newlib\ 3.0.0\&quot; -DPACKAGE_BUGREPORT=\&quot;\&quot; -DPACKAGE_URL=\&quot;\&quot; -I. -I../../../newlib-3.0.0.20180802/newlib/libc/stdio -DMISSING_SYSCALL_NAMES -DHAVE_INIT_FINI -fno-builtin      -O2 -c -o lib_a-gets.o `test -f &#x27;gets.c&#x27; || echo &#x27;../../../newlib-3.0.0.20180802/newlib/libc/stdio/&#x27;`gets.c</span><br><span class="line">In file included from /vagrant/tmp/newlib-3.0.0.20180802/newlib/libc/include/ssp/stdio.h:34:0,</span><br><span class="line">from /vagrant/tmp/newlib-3.0.0.20180802/newlib/libc/include/stdio.h:800,</span><br><span class="line">from ../../../newlib-3.0.0.20180802/newlib/libc/stdio/gets.c:62:</span><br><span class="line">/vagrant/tmp/newlib-3.0.0.20180802/newlib/libc/include/ssp/ssp.h:46:24: error: expected declaration specifiers or ‘...’ before ‘__builtin_object_size’</span><br><span class="line">#define __ssp_bos(ptr) __builtin_object_size(ptr, __SSP_FORTIFY_LEVEL &gt; 1)</span><br><span class="line">^</span><br><span class="line">/vagrant/tmp/newlib-3.0.0.20180802/newlib/libc/include/ssp/stdio.h:67:21: note: in expansion of macro ‘__ssp_bos’</span><br><span class="line">__gets_chk(str, __ssp_bos(str))</span><br><span class="line">^~~~~~~~~</span><br><span class="line">../../../newlib-3.0.0.20180802/newlib/libc/stdio/gets.c:96:1: note: in expansion of macro ‘gets’</span><br><span class="line">gets (char *buf)</span><br><span class="line">^~~~</span><br><span class="line">Makefile:1096: recipe for target &#x27;lib_a-gets.o&#x27; failed</span><br></pre></td></tr></table></figure>

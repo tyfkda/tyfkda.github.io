@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -209,18 +209,18 @@
 <p>これは、Schemeだとループ構文がないので関数内で自分自身への末尾再帰を使うことになるけど、この関数が他で使われなければ再帰呼び出しをジャンプにすることができる、というもの（さらに、自分自身の呼び出しで引数の数のチェックとかをコンパイル次に済ませることができる）（あと<code>recur</code>のように直接呼び出される場合にはクロージャの生成もしないようにできるとのことだけど、ここでは無視）。</p>
 <p>まあSchemeじゃない、普通のスクリプト言語の場合ループ構文あるし、あまりそういうスタイルで書かないから意味ないかな？と思ったんだけど、この最適化って末尾じゃなくてもできるね。そうした場合、自己再帰でフィボナッチ関数とか階乗とかがあてはまる。</p>
 <p>例えば</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fib</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (n &lt; <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fib(n - <span class="number">1</span>) + fib(n - <span class="number">2</span>);  <span class="comment">// 自己再帰</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">fib</span>(<span class="params">n</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (n &lt; <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">fib</span>(n - <span class="number">1</span>) + <span class="title function_">fib</span>(n - <span class="number">2</span>);  <span class="comment">// 自己再帰</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>とかいったばあい、<code>fib</code>関数の本体をコンパイル時に、自分自身への再帰があった場合には戻り先アドレスなどをスタックに積んでおいて、自分自身の関数本体のVMコードにジャンプする命令を出力するようにする。実装方法としては、関数のコンパイルに入るときにスコープを作成して、そのスコープに関数の名前をつけておき、関数呼び出しが現在のスコープ名だった場合には自己再帰と判断できる。その場合、グローバル変数のルックアップが省けるので、ちょっとお得、かもしれない。</p>
 <p>グローバル変数が書き換えられる場合でも、大抵の場合には問題ない。例えば後から</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fib = <span class="function"><span class="keyword">function</span>(<span class="params">n</span>) </span>&#123; ... &#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fib = <span class="keyword">function</span>(<span class="params">n</span>) &#123; ... &#125;;</span><br></pre></td></tr></table></figure>
 
 <p>などと上書きしてしまった場合には、古いコードへのアクセスがなくなるので問題ない。問題が起きるのは別の変数に代入した場合、</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">old_fib = fib;</span><br><span class="line">fib = <span class="function"><span class="keyword">function</span>(<span class="params">n</span>) </span>&#123; ... &#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">old_fib = fib;</span><br><span class="line">fib = <span class="keyword">function</span>(<span class="params">n</span>) &#123; ... &#125;;</span><br></pre></td></tr></table></figure>
 
 <p>この場合、<code>old_fib</code>を呼び出した場合に、更新された<code>fib</code>の呼び出しが行われず、<code>old_fib</code>が使われることになる。まあそれでも、そういうもんだと決めてしまえば、動作的にはそれほど問題なさそう。</p>
 <p>ので、ベンチマーク的には効果あるかも、と思って実装してみた。元の論文でのVM形式だとそういう変更は結構難しい。それはVMコードがリスト形式で、コンパイル時の処理がリスト生成によって行われているので、後に実行されるものから先にコンパイルされてしまい、前に戻るためのコードがまだ生成されてないから。例えば大雑把にはlambda式のコンパイルは</p>
-<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">list</span></span> <span class="symbol">&#x27;close</span>  <span class="comment">;; &#x27;クロージャ生成 VMオペコード</span></span><br><span class="line">      (<span class="name">compile</span> body))  <span class="comment">;; [1] クロージャ本体のコンパイル</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="built_in">list</span></span> <span class="symbol">&#x27;close</span>  <span class="comment">;; &#x27;クロージャ生成 VMオペコード</span></span><br><span class="line">      (<span class="name">compile</span> body))  <span class="comment">;; [1] クロージャ本体のコンパイル</span></span><br></pre></td></tr></table></figure>
 
 <p>という具合になっていて、自己再帰をジャンプにしたいときには[1]で作られるリストに続くようなリストを作りたいわけだけど、本体のコンパイル時にはまだそのリストは作られてないので、こういうふうに綺麗には書けないことになる。いったんダミーのリストを作っておいて、あとで破壊的操作でリストに代入することになり、ソースは汚くなる。</p>
 <p>VMコードがリストじゃなくて配列形式の場合にはそこまで面倒ではなくて、単に関数のコード生成時にラベルを作成してスコープに設定しておき、本体のコンパイルで事故再帰があった場合にはそれを参照すればいい、だけだった。また、末尾自己再帰でジャンプになる形じゃなくて、自己呼び出しの場合には、VMが現在実行中のクロージャを保持しているので、ラベルも使わずに現在実行中のクロージャの本体に飛べばよいだけだった。</p>
@@ -235,7 +235,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

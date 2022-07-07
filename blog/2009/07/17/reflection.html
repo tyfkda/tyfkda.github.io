@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -215,7 +215,7 @@
 %]]></script>
 
 <p>求めた反射ベクトルと交差点で光線追跡を継続する：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 反射ベクトルを求める</span></span><br><span class="line"><span class="function">vec <span class="title">reflection</span><span class="params">(vec v, vec normal)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> v.add(normal.scale(-<span class="number">2</span> * v.dot(normal)));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function">vec <span class="title">calc_reflection</span><span class="params">(vec pos, vec normal, vec raydir)</span> </span>&#123;</span><br><span class="line">    vec refvec = reflection(raydir, normal);</span><br><span class="line">    <span class="keyword">return</span> raytrace(pos, refvec);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 反射ベクトルを求める</span></span><br><span class="line">vec <span class="title function_">reflection</span><span class="params">(vec v, vec normal)</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> v.add(normal.scale(-<span class="number">2</span> * v.dot(normal)));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  vec <span class="title function_">calc_reflection</span><span class="params">(vec pos, vec normal, vec raydir)</span> &#123;</span><br><span class="line">    <span class="type">vec</span> <span class="variable">refvec</span> <span class="operator">=</span> reflection(raydir, normal);</span><br><span class="line">    <span class="keyword">return</span> raytrace(pos, refvec);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 
                 
 

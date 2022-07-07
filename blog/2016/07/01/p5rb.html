@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -207,10 +207,10 @@
 <span id="more"></span>
 
 <p>Processingのコードは<code>PApplet</code>を継承したクラス内に書かれたこととして扱われる。Processing&#x2F;Javaで書いた場合には変数アクセスはなんの修飾もせずにできる：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">float</span> x = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  ++x;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">float</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">void</span> <span class="title function_">draw</span><span class="params">()</span> &#123;</span><br><span class="line">  ++x;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>これはJavaがメンバ変数へのアクセスに<code>this</code>を省略できるから。それ対してRubyの場合には<code>@</code>をつける必要がある：</p>
-<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setup</span></span></span><br><span class="line">  <span class="variable">@x</span> = <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">draw</span></span></span><br><span class="line">  <span class="variable">@x</span> += <span class="number">1</span></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">setup</span></span><br><span class="line">  <span class="variable">@x</span> = <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">draw</span></span><br><span class="line">  <span class="variable">@x</span> += <span class="number">1</span></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
 <p>どうしてこう書かなきゃいけないのか？<code>@</code>ってなによ？という疑問が湧いて、裏側を説明しないといけなくなり、はてはスコープがどうのとかいう話も出す必要が出てでくるのでこれはあまりよくないと思う。</p>
 <p>そこで<code>setup</code>や<code>draw</code>というグローバルな関数を用意して、ブロックを渡すようにしたらどうだろうか：</p>

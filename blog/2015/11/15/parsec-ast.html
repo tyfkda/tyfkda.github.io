@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -214,7 +214,7 @@
 <p>項をパースするパーサ <code>term</code> では括弧で囲んだ式（<code>parens expr</code>）、または整数リテラル（<code>natural</code>）を受け付ける、という単純なもの。</p>
 <p>文をパースする <code>stmt</code> は、パースに成功した後ろになんか変なものが残ってないか調べるだけ（<code>eof</code>）で、これが最上位のパーサとなる。</p>
 <p>これを使って<code>ghci</code>上でテストしてやると：</p>
-<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line">$ ghci</span><br><span class="line"><span class="type">GHCi</span>, version <span class="number">7.10</span><span class="number">.2</span>: http://www.haskell.org/ghc/  :? for help</span><br><span class="line"><span class="type">Prelude</span>&gt; :l <span class="type">Parser1</span>.hs</span><br><span class="line">[<span class="number">1</span> <span class="keyword">of</span> <span class="number">1</span>] <span class="type">Compiling</span> <span class="type">Main</span>             ( <span class="type">Parser1</span>.hs, interpreted )</span><br><span class="line"><span class="type">Ok</span>, modules loaded: <span class="type">Main</span>.</span><br><span class="line">*<span class="type">Main</span>&gt; parse stmt <span class="string">&quot;&quot;</span> <span class="string">&quot;-1 + 2 * 3&quot;</span></span><br><span class="line"><span class="type">Right</span> <span class="number">5</span></span><br><span class="line">*<span class="type">Main</span>&gt; parse stmt <span class="string">&quot;&quot;</span> <span class="string">&quot;(-1 + 2) * 3&quot;</span></span><br><span class="line"><span class="type">Right</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line">$ ghci</span><br><span class="line"><span class="type">GHCi</span>, version <span class="number">7.10</span>.<span class="number">2</span>: http://www.haskell.org/ghc/  :? for help</span><br><span class="line"><span class="type">Prelude</span>&gt; :l <span class="type">Parser1</span>.hs</span><br><span class="line">[<span class="number">1</span> <span class="keyword">of</span> <span class="number">1</span>] <span class="type">Compiling</span> <span class="type">Main</span>             ( <span class="type">Parser1</span>.hs, interpreted )</span><br><span class="line"><span class="type">Ok</span>, modules loaded: <span class="type">Main</span>.</span><br><span class="line">*<span class="type">Main</span>&gt; parse stmt <span class="string">&quot;&quot;</span> <span class="string">&quot;-1 + 2 * 3&quot;</span></span><br><span class="line"><span class="type">Right</span> <span class="number">5</span></span><br><span class="line">*<span class="type">Main</span>&gt; parse stmt <span class="string">&quot;&quot;</span> <span class="string">&quot;(-1 + 2) * 3&quot;</span></span><br><span class="line"><span class="type">Right</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
 
 <p>と、パースに成功して <code>Right</code> に包まれて計算結果が返ってくる</p>
 <h3 id="2-構文木を構築する"><a href="#2-構文木を構築する" class="headerlink" title="2. 構文木を構築する"></a>2. 構文木を構築する</h3><p>構文解析して結果を直接計算するんじゃなくて構文木を構築してやる。</p>

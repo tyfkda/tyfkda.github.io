@@ -96,7 +96,7 @@ gccだと ##__VA_ARGS_">
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -211,13 +211,13 @@ gccだと ##__VA_ARGS_">
             <div class="col-lg-9 col-md-9">
                 <span id="more"></span>
 <p>Cで可変長マクロ</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOG(fmt, ...)  printf(fmt, __VA_ARGS__)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)  printf(fmt, __VA_ARGS__)</span></span><br></pre></td></tr></table></figure>
 
 <p>を作ると、可変部分は１個以上値を渡さないといけない：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">LOG(<span class="string">&quot;FOOBAR\n&quot;</span>);  <span class="comment">// &lt;= コンパイルエラー</span></span><br></pre></td></tr></table></figure>
 
 <p>gccだと <code>##__VA_ARGS__</code> というのを使えば、０個の場合でも受け取れる：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOG(fmt, ...)  printf(fmt, ##__VA_ARGS__)</span></span><br><span class="line">LOG(<span class="string">&quot;FOOBAR\n&quot;</span>);  <span class="comment">// printf(&quot;FOOBAR\n&quot;); に展開される</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)  printf(fmt, ##__VA_ARGS__)</span></span><br><span class="line">LOG(<span class="string">&quot;FOOBAR\n&quot;</span>);  <span class="comment">// printf(&quot;FOOBAR\n&quot;); に展開される</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><a href="https://ja.wikipedia.org/wiki/%E5%8F%AF%E5%A4%89%E9%95%B7%E5%BC%95%E6%95%B0#C%E3%83%97%E3%83%AA%E3%83%97%E3%83%AD%E3%82%BB%E3%83%83%E3%82%B5%E3%83%BB%E3%83%9E%E3%82%AF%E3%83%AD">可変長引数 - Wikipedia</a></li>

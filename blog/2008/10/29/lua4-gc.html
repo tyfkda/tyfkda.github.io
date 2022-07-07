@@ -93,7 +93,7 @@ void luaC_colle">
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -209,7 +209,7 @@ void luaC_colle">
                 <p>GCのサンプルとしてなんかのソースを見てみようということで、Lua を見てみる。
 <a href="http://www.lua.org/versions.html">5.1 からはインクリメンタルGC</a>だということなのでもっとシンプルな、4.0の古きよきマーク＆スイープ版を見てみる。</p>
 <p>GCの関するヘッダの lgc.h に定義されてるのは２つの関数のみ：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">luaC_collect</span> <span class="params">(lua_State *L, <span class="keyword">int</span> all)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">luaC_checkGC</span> <span class="params">(lua_State *L)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">luaC_collect</span> <span class="params">(lua_State *L, <span class="type">int</span> all)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">luaC_checkGC</span> <span class="params">(lua_State *L)</span>;</span><br></pre></td></tr></table></figure>
 
 <p>男らしい。
 GCのメインルーチン <code>luaC_collectgarbage()</code> でやってることは：</p>
@@ -221,7 +221,7 @@ GCのメインルーチン <code>luaC_collectgarbage()</code> でやってるこ
 <li>しきい値を現在のブロック確保数の２倍に</li>
 <li><code>gcTM</code> 呼び出し（？）</li>
 </ul>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">luaC_collectgarbage</span> <span class="params">(lua_State *L)</span> </span>&#123;</span><br><span class="line">  markall(L);</span><br><span class="line">  invalidaterefs(L);  <span class="comment">/* check unlocked references */</span></span><br><span class="line">  luaC_collect(L, <span class="number">0</span>);</span><br><span class="line">  checkMbuffer(L);</span><br><span class="line">  L-&gt;GCthreshold = <span class="number">2</span>*L-&gt;nblocks;  <span class="comment">/* set new threshold */</span></span><br><span class="line">  callgcTM(L, &amp;luaO_nilobject);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">luaC_collectgarbage</span> <span class="params">(lua_State *L)</span> &#123;</span><br><span class="line">  markall(L);</span><br><span class="line">  invalidaterefs(L);  <span class="comment">/* check unlocked references */</span></span><br><span class="line">  luaC_collect(L, <span class="number">0</span>);</span><br><span class="line">  checkMbuffer(L);</span><br><span class="line">  L-&gt;GCthreshold = <span class="number">2</span>*L-&gt;nblocks;  <span class="comment">/* set new threshold */</span></span><br><span class="line">  callgcTM(L, &amp;luaO_nilobject);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>細かいことは置いといて、中でやってるのはまさにマーク＆スイープ。
 Lua で楽ちんなところは、C との値のやり取りをする API がすべてLua側が管理してるスタックのインデクスを使って行われるので、C の変数やレジスタが参照してるけど Lua 側から辿れないのでマークされずに回収されてしまう、ということが起きなくて漏れなく簡単にマークできる。</p>
@@ -233,7 +233,7 @@ Lua のオブジェクトでメモリ確保が必要なものは</p>
 </ul>
 <p>のみ、というのも簡単でよい。</p>
 <p>4.0 では Lua のメモリ管理はヒープ領域を自分で管理してるわけではなく単に標準関数の <code>realloc()</code> を呼び出している：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> luaM_free(L, b)		luaM_realloc(L, (b), 0)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> luaM_malloc(L, t)	luaM_realloc(L, NULL, (t))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> luaM_new(L, t)          ((t *)luaM_malloc(L, sizeof(t)))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> luaM_newvector(L, n,t)  ((t *)luaM_malloc(L, (n)*(lint32)sizeof(t)))</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> luaM_free(L, b)		luaM_realloc(L, (b), 0)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> luaM_malloc(L, t)	luaM_realloc(L, NULL, (t))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> luaM_new(L, t)          ((t *)luaM_malloc(L, sizeof(t)))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> luaM_newvector(L, n,t)  ((t *)luaM_malloc(L, (n)*(lint32)sizeof(t)))</span></span><br></pre></td></tr></table></figure>
 
 <p>で <code>luaM_new</code> で確保したメモリは種類によって <code>lua_State</code> 構造体の中に保持して、GC時にたどってマークがされてるかどうか確認できるようにしてある。</p>
 <p>しかしこのように作るのって結構しんどいと感じる。

@@ -96,7 +96,7 @@ uniform mat4 uMMatrix[2];  // モデル行列配列
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.2.0"></head>
 
 
 <body>
@@ -220,22 +220,22 @@ uniform mat4 uMMatrix[2];  // モデル行列配列
 
 
 <p>とボーン用の行列の配列を用意して、js側でシェーダーの初期化時に</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">shaderProgram.uMMatrix = [</span><br><span class="line">  gl.getUniformLocation(shaderProgram, <span class="string">&#x27;uMMatrix[0]&#x27;</span>),</span><br><span class="line">  gl.getUniformLocation(shaderProgram, <span class="string">&#x27;uMMatrix[1]&#x27;</span>)</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">shaderProgram.<span class="property">uMMatrix</span> = [</span><br><span class="line">  gl.<span class="title function_">getUniformLocation</span>(shaderProgram, <span class="string">&#x27;uMMatrix[0]&#x27;</span>),</span><br><span class="line">  gl.<span class="title function_">getUniformLocation</span>(shaderProgram, <span class="string">&#x27;uMMatrix[1]&#x27;</span>)</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
 
 <p>と取得しておく。</p>
 <p>頂点ごとのアトリビュートとして行列インデクスを定義</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">attribute float aBlendIndices;</span><br></pre></td></tr></table></figure>
 
 <p>する。js側からは</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">shaderProgram.aBlendIndices = gl.getAttribLocation(shaderProgram, <span class="string">&#x27;aBlendIndices&#x27;</span>);</span><br><span class="line">gl.enableVertexAttribArray(shaderProgram.aBlendIndices);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">shaderProgram.<span class="property">aBlendIndices</span> = gl.<span class="title function_">getAttribLocation</span>(shaderProgram, <span class="string">&#x27;aBlendIndices&#x27;</span>);</span><br><span class="line">gl.<span class="title function_">enableVertexAttribArray</span>(shaderProgram.<span class="property">aBlendIndices</span>);</span><br></pre></td></tr></table></figure>
 
 <p>としてアトリビュートを取得しておく。
 モデルの頂点バッファとして行列インデクスを</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> blendIndicesBuffer = gl.createBuffer();</span><br><span class="line">gl.bindBuffer(gl.ARRAY_BUFFER, blendIndicesBuffer);</span><br><span class="line"><span class="keyword">var</span> blendIndices = [</span><br><span class="line">  ...</span><br><span class="line">];</span><br><span class="line">gl.bufferData(gl.ARRAY_BUFFER, <span class="keyword">new</span> <span class="built_in">Float32Array</span>(blendIndices), gl.STATIC_DRAW);</span><br><span class="line">blendIndicesBuffer.itemSize = <span class="number">1</span>;</span><br><span class="line">blendIndicesBuffer.numItems = blendIndices.length / blendIndicesBuffer.itemSize;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> blendIndicesBuffer = gl.<span class="title function_">createBuffer</span>();</span><br><span class="line">gl.<span class="title function_">bindBuffer</span>(gl.<span class="property">ARRAY_BUFFER</span>, blendIndicesBuffer);</span><br><span class="line"><span class="keyword">var</span> blendIndices = [</span><br><span class="line">  ...</span><br><span class="line">];</span><br><span class="line">gl.<span class="title function_">bufferData</span>(gl.<span class="property">ARRAY_BUFFER</span>, <span class="keyword">new</span> <span class="title class_">Float32Array</span>(blendIndices), gl.<span class="property">STATIC_DRAW</span>);</span><br><span class="line">blendIndicesBuffer.<span class="property">itemSize</span> = <span class="number">1</span>;</span><br><span class="line">blendIndicesBuffer.<span class="property">numItems</span> = blendIndices.<span class="property">length</span> / blendIndicesBuffer.<span class="property">itemSize</span>;</span><br></pre></td></tr></table></figure>
 
 <p>などとして作成する。</p>
 <p>描画時は行列を計算して</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</span><br><span class="line">  mat4.multiply(modelMatrices[i], model.basePose[i]);</span><br><span class="line">  gl.uniformMatrix4fv(shaderProgram.uMMatrix[i], <span class="literal">false</span>, modelMatrices[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</span><br><span class="line">  mat4.<span class="title function_">multiply</span>(modelMatrices[i], model.<span class="property">basePose</span>[i]);</span><br><span class="line">  gl.<span class="title function_">uniformMatrix4fv</span>(shaderProgram.<span class="property">uMMatrix</span>[i], <span class="literal">false</span>, modelMatrices[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>としてシェーダーに渡す。</p>
 <p>頂点シェーダーでブレンドインデクスと行列パレットから頂点座標を計算：</p>
