@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-09-09T03:43:34.870Z</updated>
+  <updated>2022-09-15T12:12:17.370Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,28 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Unreal EngineのC++プロジェクトを試してみる</title>
+    <link href="https://tyfkda.github.io/blog/2022/07/29/ue5-cpp.html"/>
+    <id>https://tyfkda.github.io/blog/2022/07/29/ue5-cpp.html</id>
+    <published>2022-07-29T07:31:11.000Z</published>
+    <updated>2022-09-15T12:12:17.370Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Unreal Engineのブループリントを使った簡単なサンプルの作り方はわかったので、C++も使えるようになろうと試してみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="unreal" scheme="https://tyfkda.github.io/tags/unreal/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Unreal Engineの入門</title>
     <link href="https://tyfkda.github.io/blog/2022/07/07/ue5-first-game.html"/>
     <id>https://tyfkda.github.io/blog/2022/07/07/ue5-first-game.html</id>
     <published>2022-07-07T03:00:00.000Z</published>
-    <updated>2022-09-09T03:43:34.870Z</updated>
+    <updated>2022-09-15T11:29:54.527Z</updated>
     
     
     <summary type="html">&lt;p&gt;今までもUnreal Engineを使えるようになりたいと思っていたけど、&lt;a href=&quot;https://www.youtube.com/watch?v=WU0gvPcc3jQ&quot;&gt;Matrix Awakensのデモ動画&lt;/a&gt; を見てちょっとこれは凄すぎて次元が違う、使えるようにならないと取り残されると危機感を持った。&lt;/p&gt;
@@ -30,7 +47,7 @@
     
     
     
-    <category term="unreal engine" scheme="https://tyfkda.github.io/tags/unreal-engine/"/>
+    <category term="unreal" scheme="https://tyfkda.github.io/tags/unreal/"/>
     
   </entry>
   
@@ -167,21 +184,6 @@ TPUを使用する場合にコードの変更が必要だった。&lt;/p&gt;</su
     
     
     <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MacBookで画面を高解像度にする</title>
-    <link href="https://tyfkda.github.io/blog/2022/02/05/macbook-highres.html"/>
-    <id>https://tyfkda.github.io/blog/2022/02/05/macbook-highres.html</id>
-    <published>2022-02-05T06:13:26.000Z</published>
-    <updated>2022-02-05T09:50:27.310Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;MacBookで、画面を広くしてとにかくたくさんの情報を表示させたい主義の人向け。&lt;/p&gt;</summary>
-    
-    
-    
     
   </entry>
   

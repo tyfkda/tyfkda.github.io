@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Unreal Engineのブループリントを使った簡単なサンプルの作り方はわかったので、C++も使えるようになろうと試してみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Unreal EngineのC++プロジェクトを試してみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Unreal EngineのC++プロジェクトを試してみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/07/29/ue5-cpp.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Unreal EngineのC++プロジェクトを試してみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-07-29
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unreal/">#unreal</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Unreal Engineのブループリントを使った簡単なサンプルの作り方はわかったので、C++も使えるようになろうと試してみた。</p>
+<span id="more"></span>
+
+<p>UEはプロジェクト作成時にブループリントとC++のどちらかを選択する必要がある。
+ブループリントはビジュアルプログラミングができて、変更の反映も早いので使い勝手はいいんだけど、ちょっと大きいものを作ろうとした場合に備えてC++も使えるようになっておきたい。</p>
+<h3 id="環境編"><a href="#環境編" class="headerlink" title="環境編"></a>環境編</h3><h4 id="プロジェクト作成"><a href="#プロジェクト作成" class="headerlink" title="プロジェクト作成"></a>プロジェクト作成</h4><p>C++用のプロジェクトを作成すると、いきなりプロジェクトが動かない状態だった。
+.NET Core 3.1をインストールする必要があるとのこと。
+Visual Studio Community 2019から、「個別のコンポーネント」の「.NET Core 3.1ランタイム (LTS)」をチェックしてインストールする。</p>
+<p>参考：<a href="https://ken17yama.github.io/next-blog/posts/unreal_20200909">Unreal Engine 4の.NET Framework SDKのエラーの解消方法 | やまだのログ</a></p>
+<h4 id="ホットリロードを無効にする"><a href="#ホットリロードを無効にする" class="headerlink" title="ホットリロードを無効にする"></a>ホットリロードを無効にする</h4><p>マシンのスペックによるのかわからないけど、C++のコードを変更してビルドするとものすごく時間がかかる。
+まだテンプレートからプロジェクトを生成して、2・3個のソースしかないのにビルドに３分〜それ以上かかる。
+デフォルトでホットリロードが有効になっていて、速くなりそうな機能だが自分の環境では逆に遅くなってしまうっぽい。</p>
+<p>ホットリロードを無効にするには、</p>
+<ul>
+<li>エディタの環境設定＞一般＞ライブコーディング＞ライブコーディングの有効化」、または「コンパイルオプションメニュー（３つの点々アイコン）＞ライブコーディングの有効化」のチェックを外す</li>
+<li>体感で、分単位でかかっていたものが、オフにすると10秒程度になる<ul>
+<li>でも遅いことも多い…</li>
+</ul>
+</li>
+<li>エディタ起動一発目は変わらず遅い…</li>
+<li>試しに再度有効にしてみるとビルドができなくなった：Unable to delete hot-reload file</li>
+</ul>
+<h3 id="プログラミング編"><a href="#プログラミング編" class="headerlink" title="プログラミング編"></a>プログラミング編</h3><h4 id="チュートリアル"><a href="#チュートリアル" class="headerlink" title="チュートリアル"></a>チュートリアル</h4><p>右も左もわからないので、まずはチュートリアルを見るとよい：</p>
+<ul>
+<li><a href="https://docs.unrealengine.com/5.0/ja/unreal-engine-cpp-quick-start/">Unreal Engine CPP Quick Start | Unreal Engine ドキュメント</a></li>
+<li><a href="https://docs.unrealengine.com/4.27/ja/ProgrammingAndScripting/ProgrammingWithCPP/">プログラミング ガイド | Unreal Engine ドキュメント</a></li>
+<li><a href="https://docs.unrealengine.com/4.27/ja/ProgrammingAndScripting/GameplayArchitecture/Classes/">ゲームプレイ クラス | Unreal Engine ドキュメント</a></li>
+</ul>
+<h4 id="クラスにつけるアトリビュート"><a href="#クラスにつけるアトリビュート" class="headerlink" title="クラスにつけるアトリビュート"></a>クラスにつけるアトリビュート</h4><p><code>UCLASS</code></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">UCLASS</span>(config=Game)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AFooBar</span>: <span class="keyword">public</span> ACharacter &#123;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<h4 id="お約束"><a href="#お約束" class="headerlink" title="お約束"></a>お約束</h4><p>エディタからC++クラスを生成した場合には自動的に挿入されたコードになっているので問題ないが、念の為お約束。</p>
+<p>作成したActorを継承するクラスは、ヘッダでgenerated.hをインクルードする：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;FooBar.generated.h&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>そして、クラス定義では <code>GENERATED_BODY()</code> を先頭に記述する：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AFooBar</span>: <span class="keyword">public</span> ACharacter &#123;</span><br><span class="line">    <span class="built_in">GENERATED_BODY</span>();</span><br></pre></td></tr></table></figure>
+
+<h4 id="クラスのメンバにつけるアトリビュート"><a href="#クラスのメンバにつけるアトリビュート" class="headerlink" title="クラスのメンバにつけるアトリビュート"></a>クラスのメンバにつけるアトリビュート</h4><p>エディタのプロパティから設定できるようにしたいメンバにアトリビュートを指定する。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AFooBar</span> : Public ACharacter &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="built_in">UPROPERTY</span>(VisibleAnywhere, BlueprintReadOnly, ...)</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">USpringArmComponent</span>* CameraBoom;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<h4 id="Tickを実装"><a href="#Tickを実装" class="headerlink" title="Tickを実装"></a>Tickを実装</h4><p><a href="https://forums.unrealengine.com/t/how-can-i-properly-override-c-tick-event-in-blueprint/298200">How can I properly override C++ Tick event in blueprint? - Unreal Engine &#x2F; Programming &amp; Scripting - Unreal Engine Forums</a></p>
+<p><code>AActor</code> クラスで定義されている <code>Tick</code> メソッドを自分のクラス内でオーバーライドし、実装する：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AFooBar</span> : Public ACharacter &#123;</span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Tick</span><span class="params">(<span class="type">float</span> DeltaSeconds)</span> <span class="keyword">override</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>メソッド内では先頭で親クラスの <code>Tick</code> を呼び出してやる。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">AFooBar::Tick</span><span class="params">(<span class="type">float</span> DeltaSeconds)</span> </span>&#123;</span><br><span class="line">    Super::<span class="built_in">Tick</span>(DeltaSeconds);</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>関係しそうなこと：</p>
+<ul>
+<li><a href="https://docs.unrealengine.com/latest/INT/API/Runtime/Engine/Engine/FTickFunction/"><code>PrimaryActorTick</code></a>.<a href="https://docs.unrealengine.com/latest/INT/API/Runtime/Engine/Engine/FTickFunction/bCanEverTick/"><code>bCanEverTick</code></a><code> = true;</code></li>
+<li><code>PrimaryActorTick</code>.<a href="https://docs.unrealengine.com/latest/INT/API/Runtime/Core/HAL/uint8/"><code>bStartWithTickEnabled</code></a><code> = true;</code></li>
+<li><code>AActor::</code><a href="https://docs.unrealengine.com/latest/INT/API/Runtime/Engine/GameFramework/AActor/SetActorTickEnabled/"><code>SetActorTickEnabled</code></a><code>(true)</code></li>
+</ul>
+<h4 id="ログ出力"><a href="#ログ出力" class="headerlink" title="ログ出力"></a>ログ出力</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">UE_LOG</span>(LogTemp, Log, <span class="built_in">TEXT</span>(<span class="string">&quot;Hello&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>カテゴリ名： <code>LogTemp</code>, …</li>
+<li>Verbosity： <code>ELogVerbosity::Type</code>: <code>Log</code>, <code>Warning</code>, <code>Error</code>, <code>Fatal</code>, <code>Verbose</code></li>
+</ul>
+<h4 id="画面にテスト文字列出力（Blueprintのprint-string相当）"><a href="#画面にテスト文字列出力（Blueprintのprint-string相当）" class="headerlink" title="画面にテスト文字列出力（Blueprintのprint string相当）"></a>画面にテスト文字列出力（Blueprintのprint string相当）</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">GEngine-&gt;<span class="built_in">AddOnScreenDebugMessage</span>(<span class="number">-1</span>, <span class="number">0.5f</span>, FColor::Cyan, FString::<span class="built_in">Printf</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;Tick: %.3f&quot;</span>), DeltaSeconds));</span><br></pre></td></tr></table></figure>
+
+<h4 id="クラスの削除"><a href="#クラスの削除" class="headerlink" title="クラスの削除"></a>クラスの削除</h4><ul>
+<li>コンテンツブラウザからは削除できない</li>
+<li>VisualStudioなどから削除（ファイル自体も）</li>
+<li>UnrealEngineを再起動<ul>
+<li>残ってたらクリーン、リビルドが必要…</li>
+</ul>
+</li>
+</ul>
+<h4 id="アクターのスポーン（生成）"><a href="#アクターのスポーン（生成）" class="headerlink" title="アクターのスポーン（生成）"></a>アクターのスポーン（生成）</h4><ul>
+<li><a href="http://kagring.blog.fc2.com/blog-entry-672.html">UE5&#x2F;UE4 C++でアクター（Actor）をスポーン（Spawn）する（LoadSynchronous、FSoftObjectPath、SpawnActor）</a></li>
+</ul>
+<p>試してみたがどうもうまくいかなかった…。</p>
+<h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><ul>
+<li>ちょっと重すぎて開発にはキツい</li>
+<li>なんかの拍子にプロジェクトを開こうとするとエラーが出てしまい、回復できなくなってしまうことがあった、ツラい</li>
+<li>様々な機能を使いこなすには、まだどの資料を見たらいいのかよくわかってない</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/07/07/ue5-first-game.html" title="Unreal Engineの入門" rel="bookmark">Unreal Engineの入門</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
