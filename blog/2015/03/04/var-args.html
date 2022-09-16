@@ -10,13 +10,10 @@
 
     <!--Description-->
     
-        <meta name="description" content="Cで可変長マクロ
+        <meta name="description" content="C言語のマクロの引数の最後に ... を指定することで、 __VA_ARGS__ に任意個の引数を取ることができる：
 #define LOG(fmt, ...)  printf(fmt, __VA_ARGS__)
 
-を作ると、可変部分は１個以上値を渡さないといけない：
-LOG(&amp;quot;FOOBAR\n&amp;quot;);  // &amp;lt;= コンパイルエラー
-
-gccだと ##__VA_ARGS_">
+が、上記のように他の関数に渡す場合、可変部分は１個以上値を渡さないとエラーが出てしま">
     
 
     <!--Author-->
@@ -209,14 +206,20 @@ gccだと ##__VA_ARGS_">
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
                 <span id="more"></span>
-<p>Cで可変長マクロ</p>
+<p>C言語のマクロの引数の最後に <code>...</code> を指定することで、 <code>__VA_ARGS__</code> に任意個の引数を取ることができる：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)  printf(fmt, __VA_ARGS__)</span></span><br></pre></td></tr></table></figure>
 
-<p>を作ると、可変部分は１個以上値を渡さないといけない：</p>
+<p>が、上記のように他の関数に渡す場合、可変部分は１個以上値を渡さないとエラーが出てしまう：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">LOG(<span class="string">&quot;FOOBAR\n&quot;</span>);  <span class="comment">// &lt;= コンパイルエラー</span></span><br></pre></td></tr></table></figure>
 
-<p>gccだと <code>##__VA_ARGS__</code> というのを使えば、０個の場合でも受け取れる：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)  printf(fmt, ##__VA_ARGS__)</span></span><br><span class="line">LOG(<span class="string">&quot;FOOBAR\n&quot;</span>);  <span class="comment">// printf(&quot;FOOBAR\n&quot;); に展開される</span></span><br></pre></td></tr></table></figure>
+<p>これはマクロが単純に <code>printf(&quot;FOOBAR\n&quot;, );</code> と置換されてしまい、カンマの後が空白になってしまうためである。</p>
+<h3 id="回避方法"><a href="#回避方法" class="headerlink" title="回避方法"></a>回避方法</h3><p>gccだと <code>##__VA_ARGS__</code> というのを使えば、０個の場合でも受け取れる：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)  printf(fmt, ##__VA_ARGS__)</span></span><br></pre></td></tr></table></figure>
+
+<p>追記：またはC++20でサポートされた？ <code>__VA_OPT__</code> で可変引数が０の場合に無視するトークンを指定できるとのこと：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)  printf(fmt __VA_OPT__(,) __VA_ARGS__)</span></span><br></pre></td></tr></table></figure>
+
+
 
 <ul>
 <li><a href="https://ja.wikipedia.org/wiki/%E5%8F%AF%E5%A4%89%E9%95%B7%E5%BC%95%E6%95%B0#C%E3%83%97%E3%83%AA%E3%83%97%E3%83%AD%E3%82%BB%E3%83%83%E3%82%B5%E3%83%BB%E3%83%9E%E3%82%AF%E3%83%AD">可変長引数 - Wikipedia</a></li>

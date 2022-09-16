@@ -10,7 +10,9 @@
 
     <!--Description-->
     
-        <meta name="description" content="WASMで負の数を得る命令ってどうやるんだろうか？とC言語からコンパイルしてみたら、条件分岐のないイカしたビット操作のコードを出力してきた。">
+        <meta name="description" content="アスペクト比を保持したままキャンバスをブラウザ一杯に、長辺が収まるようにスケールさせたかったので調べた。
+答え： CSSの object-fit: contain を使う
+デモ(JSFiddle)">
     
 
     <!--Author-->
@@ -20,7 +22,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="整数の絶対値を得るビットトリック"/>
+        <meta property="og:title" content="【CSS】アスペクト比を保持したまま長辺をフィットさせる"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>整数の絶対値を得るビットトリック - Kludge Factory</title>
+    <title>【CSS】アスペクト比を保持したまま長辺をフィットさせる - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +69,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2020/12/19/abs-bit-trick.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/09/16/css-object-fit.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -160,13 +162,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>整数の絶対値を得るビットトリック</h1>
+                    <h1>【CSS】アスペクト比を保持したまま長辺をフィットさせる</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2020-12-19
+                            2022-09-16
                         
                     </span>
                 </div>
@@ -187,7 +189,7 @@
                         
 
 
-<a href="/tags/compiler/">#compiler</a> <a href="/tags/optimization/">#optimization</a>
+<a href="/tags/html/">#html</a>
 
 
                     
@@ -202,39 +204,25 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>WASMで負の数を得る命令ってどうやるんだろうか？とC言語からコンパイルしてみたら、条件分岐のないイカしたビット操作のコードを出力してきた。</p>
+                <p>アスペクト比を保持したままキャンバスをブラウザ一杯に、長辺が収まるようにスケールさせたかったので調べた。</p>
+<p>答え： CSSの <code>object-fit: contain</code> を使う</p>
+<p><a href="https://jsfiddle.net/qoj28ytu/25/">デモ(JSFiddle)</a></p>
 <span id="more"></span>
 
-<p>C言語で絶対値を得るコード：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;emscripten/emscripten.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> EMSCRIPTEN_KEEPALIVE <span class="title function_">abs</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (x &gt;= <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> -x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p>を書いて、EmscriptenでWASMにコンパイルして出力結果を見てみると：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ emcc -s WASM=1 -s NO_EXIT_RUNTIME=1 -O1 neg.c &amp;&amp; wasm2wat a.out.wasm</span><br><span class="line">(module</span><br><span class="line">  ...</span><br><span class="line">  (func (;1;) (<span class="built_in">type</span> 1) (param i32) (result i32)</span><br><span class="line">    (<span class="built_in">local</span> i32)</span><br><span class="line">    local.get 0</span><br><span class="line">    local.get 0</span><br><span class="line">    i32.const 31</span><br><span class="line">    i32.shr_s</span><br><span class="line">    local.tee 1</span><br><span class="line">    i32.add</span><br><span class="line">    local.get 1</span><br><span class="line">    i32.xor)</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
-
-<p>条件分岐がないコードを出力してくる。
-一見何しているのかわからなかったので読み解いてみた。</p>
+<p>キャンバス以外にも画像などにも使える。</p>
+<h3 id="やり方"><a href="#やり方" class="headerlink" title="やり方"></a>やり方</h3><ol>
+<li>親要素には特に設定必要なし（<code>height</code>が子要素からじゃなく決まる必要はある）</li>
+<li>子要素に <code>object-fit: cotain</code>、加えてサイズを親いっぱい <code>width:100%; height:100%</code> 指定する（アスペクトは自動的に保持される）</li>
+</ol>
+<p>縦横どちらか長い方が親要素のサイズに合うようにスケールされ、短辺側には余白ができて自動的にセンタリングされる。</p>
+<p><code>object-fit</code> の値は <code>contain</code> の他にもいくつか指定できる：</p>
 <ul>
-<li>引数が負の場合（例： <code>-5=1011b</code>）：<ul>
-<li><code>shr_s -5, 31 (= 1111b = -1)</code>: 符号ビットで埋めた値 <code>-1</code> が得られる</li>
-<li><code>tee</code> でスタックトップをローカルに格納、しかし取り除かない</li>
-<li><code>add -5, -1 (= 1010b = -6)</code>: <code>引数-1</code></li>
-<li><code>xor -6, -1 (= 0101b = 5)</code>: 全ビット反転</li>
-<li><strong>要するに２の補数を取っている</strong></li>
+<li><code>cover</code>: 短辺をフィットさせる、長辺ははみ出す</li>
+<li><code>fill</code>: 親全体を覆う、アスペクト比は無視される</li>
+<li><code>scale-down</code>: 小さくなる場合には <code>contain</code> でスケールダウン、大きくはならずにそのまま</li>
 </ul>
-</li>
-<li>正か0の場合（例： <code>5</code>）：<ul>
-<li><code>shr_s 5, 31 (= 0)</code>: <code>0</code></li>
-<li><code>add 5, 0 (= 5)</code>: 変化なし</li>
-<li><code>xor 5, 0 (= 5)</code>: 変化なし</li>
-<li>引数の値がそのまま得られる</li>
-</ul>
-</li>
-</ul>
-<p>出力されるコードが多少長くなっても条件分岐をさせないほうがパフォーマンスがいいということなんですかね。</p>
-<h4 id="x86の場合"><a href="#x86の場合" class="headerlink" title="x86の場合"></a>x86の場合</h4><p>試しにMacOS&#x2F;x86のgcc(Clang)でコンパイルしてみたらまたちょっと違って、<code>negl</code> で符号反転した値を作って <code>cmovl</code> という条件付きムーブ命令で選択するコードが出力された：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ gcc -S -O1 -fno-asynchronous-unwind-tables neg.c &amp;&amp; <span class="built_in">cat</span> neg.s</span><br><span class="line">_abs:</span><br><span class="line">	pushq	%rbp</span><br><span class="line">	movq	%rsp, %rbp</span><br><span class="line">	movl	%edi, %eax  <span class="comment"># %ediが引数、それを%eaxにコピー</span></span><br><span class="line">	negl	%eax        <span class="comment"># 符号反転してみて</span></span><br><span class="line">	cmovll	%edi, %eax  <span class="comment"># CMOVL(Move if less): 負だったら元の値を選択</span></span><br><span class="line">	popq	%rbp</span><br><span class="line">	retq</span><br><span class="line">$ gcc -v</span><br><span class="line">Apple clang version 12.0.0 (clang-1200.0.32.27)</span><br><span class="line">Target: x86_64-apple-darwin19.6.0</span><br></pre></td></tr></table></figure>
-
-<p>gcc&#x2F;UbuntuではWASM版と同じような方法だった（<code>xor</code> を先に行って、<code>add</code> の代わりに <code>sub</code>）。</p>
+<h3 id="過去記事"><a href="#過去記事" class="headerlink" title="過去記事"></a>過去記事</h3><a href="/blog/2016/05/19/fix-resolution.html" title="固定解像度の要素をスケーリングでウィンドウにフィットさせる">固定解像度の要素をスケーリングでウィンドウにフィットさせる</a>：以前も同じようなことしてた。
+<p>あちらはJavaScriptで <code>onresize</code> リスナーでCSSトランスフォームをしていたが、CSSで解決できるならこちらの方が楽でしょう。</p>
 
 
                 
@@ -245,7 +233,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/10/21/regalloc-linearscan.html" title="自作Cコンパイラでレジスタ割り付け" rel="bookmark">自作Cコンパイラでレジスタ割り付け</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/26/canvas-pixel.html" title="HTML5でキャンバスをピクセル単位で操作する" rel="bookmark">HTML5でキャンバスをピクセル単位で操作する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/05/19/fix-resolution.html" title="固定解像度の要素をスケーリングでウィンドウにフィットさせる" rel="bookmark">固定解像度の要素をスケーリングでウィンドウにフィットさせる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/01/full-canvas.html" title="ブラウザいっぱいのCanvasを作る" rel="bookmark">ブラウザいっぱいのCanvasを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/07/self-script-tag.html" title="htmlから読み込まれたJavaScriptで、自分自身のscriptタグを取得する" rel="bookmark">htmlから読み込まれたJavaScriptで、自分自身のscriptタグを取得する</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

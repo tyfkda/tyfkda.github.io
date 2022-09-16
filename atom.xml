@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-09-15T12:12:17.370Z</updated>
+  <updated>2022-09-16T08:12:04.193Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【CSS】アスペクト比を保持したまま長辺をフィットさせる</title>
+    <link href="https://tyfkda.github.io/blog/2022/09/16/css-object-fit.html"/>
+    <id>https://tyfkda.github.io/blog/2022/09/16/css-object-fit.html</id>
+    <published>2022-09-16T07:00:00.000Z</published>
+    <updated>2022-09-16T08:12:04.193Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;アスペクト比を保持したままキャンバスをブラウザ一杯に、長辺が収まるようにスケールさせたかったので調べた。&lt;/p&gt;
+&lt;p&gt;答え： CSSの &lt;code&gt;object-fit: contain&lt;/code&gt; を使う&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://jsfiddle.net/qoj28ytu/25/&quot;&gt;デモ(JSFiddle)&lt;/a&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="html" scheme="https://tyfkda.github.io/tags/html/"/>
+    
+  </entry>
   
   <entry>
     <title>Unreal EngineのC++プロジェクトを試してみる</title>
@@ -166,24 +185,6 @@ TPUを使用する場合にコードの変更が必要だった。&lt;/p&gt;</su
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
     
     <category term="elf" scheme="https://tyfkda.github.io/tags/elf/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【C++】多重継承の仮想関数呼び出しはどう実現されるか？</title>
-    <link href="https://tyfkda.github.io/blog/2022/02/26/multiple-inheritance-vtable.html"/>
-    <id>https://tyfkda.github.io/blog/2022/02/26/multiple-inheritance-vtable.html</id>
-    <published>2022-02-26T03:00:00.000Z</published>
-    <updated>2022-02-26T03:28:03.465Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;C++でクラスを多重継承した場合にどのようなコードが生成されて、 &lt;code&gt;virtual&lt;/code&gt; 関数の呼び出しがどのようになるのかを調べた。
-多重継承できるのはC++くらいだけど、JavaやC#などでインタフェースを使用する場合にも同じような動作が求められるので、どういう処理になるか推測できると思う。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   
