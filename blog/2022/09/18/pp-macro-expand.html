@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="C言語のプリプロセッサを自作して簡単なマクロは扱えていたが、
+いろいろなソースを食わせてみたところうまく展開できないケースがあったので修正した。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【C】プリプロセッサのマクロ展開アルゴリズム"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【C】プリプロセッサのマクロ展開アルゴリズム - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/09/18/pp-macro-expand.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【C】プリプロセッサのマクロ展開アルゴリズム</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-09-18
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/c/">#c</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>C言語のプリプロセッサを自作して簡単なマクロは扱えていたが、
+いろいろなソースを食わせてみたところうまく展開できないケースがあったので修正した。</p>
+<span id="more"></span>
+
+<h3 id="前置き"><a href="#前置き" class="headerlink" title="前置き"></a>前置き</h3><p>マクロ定義で自分を含む再帰的な定義をしてしまうと、展開が無限に続いてしまう可能性がある：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> RECUR(x)  RECUR(x-1)</span></span><br></pre></td></tr></table></figure>
+
+<p>マクロ展開は単純な文字列置換で行われるので、終了条件で回避することができない。
+なのでそういうことが起こらないように、一段階しか展開されないようになっている：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">RECUR(<span class="number">123</span>)  <span class="comment">// =&gt; RECUR(123-1)</span></span><br></pre></td></tr></table></figure>
+
+<p>という程度の理解だったので、「ふむふむ展開中はそのマクロ名は無効にしてやればよいのね」という具合で実装していた。</p>
+<h3 id="うまく展開できなかったケース"><a href="#うまく展開できなかったケース" class="headerlink" title="うまく展開できなかったケース"></a>うまく展開できなかったケース</h3><p>なんかのソースでうまく展開できないのを掘っていったところ、次のようなケースに問題があった：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> F(x) CHECK(G(x))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> G(x) CHECK(H(x))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CHECK(x) x</span></span><br><span class="line">F(<span class="number">987</span>)</span><br></pre></td></tr></table></figure>
+
+<p>関数風マクロで実装されたAPIがチェックをかましつつ他の関数風マクロAPIを呼び出してて、そちらでもチェックが入る、というような構成。</p>
+<p>マクロ展開を関数呼び出しと同じように考えると、
+<code>F</code>の展開で<code>CHECK</code>の展開が呼び出され、さらに<code>G</code>の展開が呼び出され<code>CHECK(H(x))</code>となるが、<code>CHECK</code>は展開中だからここでストップ、
+で結果は<code>CHECK(H(987))</code>となっていた。</p>
+<p>が実際にはどちらも展開されて<code>H(987)</code>となるのが期待される動作のようだった。</p>
+<h3 id="アルゴリズム"><a href="#アルゴリズム" class="headerlink" title="アルゴリズム"></a>アルゴリズム</h3><p>うまく展開するアルゴリズムは自分で考えてもわからなかったのでググったところ、
+<a href="https://www.slideshare.net/kinukox/cc-55863339/17">C++でCプリプロセッサを作ったり速くしたりしたお話</a>
+のスライドに示されていたサイト、
+<a href="https://www.spinellis.gr/blog/20060626/">blog dds: 2006-06-26 — Dave Prosser’s C Preprocessing Algorithm</a>
+から辿れるpdfに書かれていた。</p>
+<p>主に <code>expand</code> と <code>subst</code> の２関数：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">expand(TS) /* recur, substitute, pushback, rescan */</span><br><span class="line">&#123;</span><br><span class="line">    if TS is &#123;&#125; then</span><br><span class="line">        return &#123;&#125;;</span><br><span class="line">    else if TS is T^HS • TS’ and T is in HS then</span><br><span class="line">        return T^HS • expand(TS’);</span><br><span class="line">    else if TS is T^HS • TS’ and T is a &quot;()-less macro&quot; then</span><br><span class="line">        return expand(subst(ts(T), &#123;&#125;, &#123;&#125;, HS ∪ &#123;T&#125;, &#123;&#125;) • TS’);</span><br><span class="line">    else if TS is T^HS • ( • TS’ and T is a &quot;()’d macro&quot; then</span><br><span class="line">        check TS’ is actuals • )^HS’ • TS’’ and actuals are &quot;correct for T&quot;</span><br><span class="line">          return expand(subst(ts(T), fp(T), actuals, (HS∩HS’)∪&#123;T&#125;, &#123;&#125;)•TS’’);</span><br><span class="line"></span><br><span class="line">    note TS must be T^HS • TS’</span><br><span class="line">    return THS • expand(TS’ );</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">subst(IS,FP,AP,HS,OS) <span class="comment">/* substitute args, handle stringize and paste */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> IS is &#123;&#125; then</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_">hsadd</span><span class="params">(HS, OS)</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> IS is # • T • IS’ and T is FP[i] then</span><br><span class="line">        <span class="keyword">return</span> subst(IS’, FP, AP, HS, OS • stringize(select(i, AP)));</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> IS is ## • T • IS’ and T is FP[i] then</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> select(i, AP) is &#123;&#125; then <span class="comment">/* only if actuals can be empty */</span></span><br><span class="line">            <span class="keyword">return</span> subst(IS’, FP, AP, HS, OS);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> subst(IS’, FP, AP, HS, glue(OS, select(i, AP)));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> IS is ## • T^HS’ • IS’ then</span><br><span class="line">        <span class="keyword">return</span> subst(IS’, FP, AP, HS, glue(OS, T^HS’));</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> IS is T • ##^HS’ • IS’ and T is FP[i] then</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> select(i, AP) is &#123;&#125; then <span class="comment">/* only if actuals can be empty */</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> IS’ is T’ • IS’’ and T’ is FP[j] then</span><br><span class="line">                <span class="keyword">return</span> subst(IS’’, FP, AP, HS, OS • select(j, AP));</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="keyword">return</span> subst(IS’, FP, AP, HS, OS);</span><br><span class="line">        &#125; <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> subst(##^HS’ • IS’, FP, AP, HS, OS • select(i, AP));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> IS is T • IS’ and T is FP[i] then</span><br><span class="line">        <span class="keyword">return</span> subst(IS’, FP, AP, HS, OS • expand(select(i, AP)));</span><br><span class="line"></span><br><span class="line">    note IS must be T^HS’ • IS’</span><br><span class="line">    <span class="keyword">return</span> subst(IS’, FP, AP, HS, OS • T^HS’);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>TSがトークン列、Tがトークンを表し、マクロ展開はトークン単位で行われる</li>
+<li>HSがhidesetを表し、展開しない語彙セットを<strong>トークンごと</strong>に持つ</li>
+<li><code>subst</code> はマクロ引数の置換を行う<ul>
+<li><code>IS</code>: 入力列</li>
+<li><code>FP</code>: マクロのパラメータ (Formal Parameter)</li>
+<li><code>AP</code>: マクロに与えられた実引数 (Actual Parameter)</li>
+<li><code>HS</code>: HideSet</li>
+<li><code>OS</code>: 出力列</li>
+</ul>
+</li>
+<li><code>hsadd</code> で出力列の各トークンにhidesetを追加する</li>
+</ul>
+<p>再帰による実装なので追いづらいんだけど、<code>expand</code> でトークン列を順に見ていき、
+マッチしたマクロ名に対しての <code>subst</code> 呼び出しで
+<code>IS</code> をマクロボディ、 <code>OS</code> を空で与えるので、
+マクロで一段展開されたトークン列にそのマクロ名自体がhidesetとして追加されるという動作っぽい。</p>
+<p><code>subst</code> 内での引数置き換え時に、hidesetを指定しない状態で引数だけを先に <code>expand</code> で展開するので、
+引数自体はそのマクロを含んでいても展開される、ということっぽい。</p>
+<p>引数付きマクロの場合に、閉じ括弧のhidesetと積をとっているのはなんだろう…よく理解してない、
+これがないと無限ループが発生してしまうのかもしれない。</p>
+<p>資料では他に <code>##</code> の連結や <code>#</code> の文字列化などについても書かれている。</p>
+<h3 id="実装、ループ化"><a href="#実装、ループ化" class="headerlink" title="実装、ループ化"></a>実装、ループ化</h3><p>上記のアルゴリズムは再帰呼び出しで副作用なしなので簡潔ではあるけど、そのまま実装すると再起呼び出しとシーケンス連結のコストがかかってしまう。
+ループ・副作用あり（配列要素書き換え）にできるにこしたことはない、と思っていじくったところ問題なく動くっぽい。</p>
+<ul>
+<li>hidesetはすべてのトークンには必要なく、マクロ名である可能性がある識別子と、閉じ括弧のみでよい</li>
+<li>マクロボディや引数のトークンは、展開や置換で複数回使用されることになるので、それぞれでhidesetが別になるよう複製する必要がある？</li>
+</ul>
+<p>JavaScriptで実装してみた：
+<a href="https://github.com/tyfkda/xcc/blob/main/tests/algo/pp.js">https://github.com/tyfkda/xcc/blob/main/tests/algo/pp.js</a></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://www.slideshare.net/kinukox/cc-55863339/17">C++でCプリプロセッサを作ったり速くしたりしたお話</a></li>
+<li><a href="https://www.spinellis.gr/blog/20060626/">blog dds: 2006-06-26 — Dave Prosser’s C Preprocessing Algorithm</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/20/parsing-func-returning-func.html" title="関数ポインタを返す関数のパースと型の構築" rel="bookmark">関数ポインタを返す関数のパースと型の構築</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-09-16T08:12:04.193Z</updated>
+  <updated>2022-09-17T23:03:02.118Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【C】プリプロセッサのマクロ展開アルゴリズム</title>
+    <link href="https://tyfkda.github.io/blog/2022/09/18/pp-macro-expand.html"/>
+    <id>https://tyfkda.github.io/blog/2022/09/18/pp-macro-expand.html</id>
+    <published>2022-09-17T23:00:00.000Z</published>
+    <updated>2022-09-17T23:03:02.118Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;C言語のプリプロセッサを自作して簡単なマクロは扱えていたが、
+いろいろなソースを食わせてみたところうまく展開できないケースがあったので修正した。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+    <category term="c" scheme="https://tyfkda.github.io/tags/c/"/>
+    
+  </entry>
   
   <entry>
     <title>【CSS】アスペクト比を保持したまま長辺をフィットさせる</title>
@@ -166,25 +186,6 @@ TPUを使用する場合にコードの変更が必要だった。&lt;/p&gt;</su
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>リンカーを自作した</title>
-    <link href="https://tyfkda.github.io/blog/2022/03/13/elf-linker.html"/>
-    <id>https://tyfkda.github.io/blog/2022/03/13/elf-linker.html</id>
-    <published>2022-03-13T00:00:00.000Z</published>
-    <updated>2022-03-13T00:52:15.537Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc/&quot;&gt;自作Cコンパイラ&lt;/a&gt;ではすべて自分で実装してみるというつもりでCコンパイラ、プリプロセッサ、アセンブラを作ってきたが、ついに欠けている最後の要素だったリンカーを作った。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-    <category term="elf" scheme="https://tyfkda.github.io/tags/elf/"/>
     
   </entry>
   

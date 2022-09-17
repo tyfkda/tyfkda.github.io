@@ -10,8 +10,6 @@
 
     <!--Description-->
     
-        <meta name="description" content="自分が一日何をしたのか、gitのログから調べたい。">
-    
 
     <!--Author-->
     
@@ -20,7 +18,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="自分が今日一日何をしたのか調べる(gitのlogから)"/>
+        <meta property="og:title" content="Kludge Factory"/>
     
 
     <!--Open Graph Description-->
@@ -31,7 +29,7 @@
 
     <!--Type page-->
     
-        <meta property="og:type" content="article" />
+        <meta property="og:type" content="website" />
     
 
     <!--Page Cover-->
@@ -42,7 +40,7 @@
 
     <!-- Title -->
     
-    <title>自分が今日一日何をしたのか調べる(gitのlogから) - Kludge Factory</title>
+    <title>page - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +65,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/07/17/git-log.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/page/19/"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -153,106 +151,55 @@
 
     <!-- Main Content -->
     <!-- Page Header -->
-<!-- Set your background image for this header in your post front-matter: cover -->
-
+<!-- Set your background image for this header in the theme's configuration: index_cover -->
 <header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <h1>自分が今日一日何をしたのか調べる(gitのlogから)</h1>
-                    
-                    <span class="meta">
-                        <!-- Date and Author -->
-                        
-                        
-                            2014-07-17
-                        
-                    </span>
+                <div class="site-heading">
+                    <h1>Kludge Factory</h1>
+                    <hr class="small">
+                    <span class="subheading">tyfkda's blog</span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+                <div class="post-preview">
+    <a href="/blog/2006/01/13/72-div.html">
+        <h2 class="post-title">
+            72割の法則を考える
+        </h2>
+        
+    </a>
+    <p class="post-meta">
+        <!-- Date and Author -->
+        
+        2006-01-13
 
-            <!-- Tags and categories -->
-           
-                <div class="col-lg-4 col-md-5 post-tags">
-                    
-                        
-
-
-<a href="/tags/git/">#git</a>
-
-
-                    
-                </div>
-                <div class="col-lg-4 col-md-5 post-categories">
-                    
-                </div>
+        
+    </p>
+</div>
+<hr>
             
 
-            <!-- Gallery -->
-            
-
-            <!-- Post Main Content -->
-            <div class="col-lg-9 col-md-9">
-                <p>自分が一日何をしたのか、gitのログから調べたい。</p>
-<span id="more"></span>
-
-<p>git-logはいろいろオプションがあって、あとで処理しやすいような形式として</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git -C path/to/repos <span class="built_in">log</span> --branches --author=<span class="string">&quot;Your name&quot;</span> --since=1.days --pretty=format:<span class="string">&quot;%ad,%s&quot;</span> | <span class="built_in">cat</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>-C path</code> で、リポジトリのパスを指定</li>
-<li><code>--pretty=format:&quot;〜&quot;</code>で、自分好みのフォーマットが指定できる</li>
-<li><code>--branches</code> で（ローカルの）すべてのブランチ</li>
-<li><code>--author=</code> で自分がオーサーのコミットのみ</li>
-<li><code>%ad</code> : オーサーの日付</li>
-<li><code>%s</code> : コミットのサマリ</li>
+            <ul class="pager">
+    
+        <li class="previous"><a href="/page/18/">&larr;  新しい記事</a></li>
+    
+    
 </ul>
-<p>これを実行すると</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Thu Jul 17 15:59:52 2014 +0900,hogehoge</span><br><span class="line">Thu Jul 17 15:22:53 2014 +0900,fugafuga</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p>みたいな形で出力される。あとはパイプ先でカンマでぶった切ってゴニョゴニョすればよい。</p>
-<p>日時のフォーマットが煩雑で嫌な場合には（デフォルトは何フォーマット？） <code>--date=iso(YYYY-mm-dd HH:MM:SS +0900)</code> とか <code>--date=raw(エポック秒 +0900)</code> とかすればよい（<code>strftime</code>できないのが残念）。</p>
-<p>何行変更したかを調べるには <code>--shortstat</code> を使うと</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">log</span> --branches --author=<span class="string">&quot;Your name&quot;</span> --since=1.days --shortstat --oneline</span><br><span class="line">b42f934 hogehoge</span><br><span class="line">1 file changed, 3 insertions(+), 24 deletions(-)</span><br><span class="line">c450d58 fugafuga</span><br><span class="line">9 files changed, 35 insertions(+), 86 deletions(-)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p>などと出力されるので正規表現で取り出して合計を取るには</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">log</span> --branches --author=<span class="string">&quot;Your name&quot;</span> --since=1.days --shortstat --oneline | ruby -ne <span class="string">&#x27;BEGIN&#123;tf=ti=td=0&#125;; if $_ =~ /(\d+) files? changed/ then tf += $1.to_i; ti += $1.to_i if $_ =~ /(\d+) insertion/; td += $1.to_i if $_ =~ /(\d+) deletion/; end; END&#123;puts &quot;#&#123;tf&#125;,#&#123;ti&#125;,#&#123;td&#125;&quot;&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>などとすれば一日に編集したトータルのファイル数、追加行数、削除行数が出せる。</p>
-<p>これをgithubのCode frequencyみたいに日々の量をプロットしてやるとなかなか面白いのではないか。</p>
-
-
-                
-
-            </div>
-
-            <!-- Related posts -->
-            <div class="related-posts col-lg-3 col-md-3">
-                <hr>
-                <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/18/git-flow.html" title="git-flowコマンドラインツールをgithub-flowとして使う" rel="bookmark">git-flowコマンドラインツールをgithub-flowとして使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/16/git-fixup-autosquash.html" title="【git】あとから修正を差し込む（fixupとautosquash）" rel="bookmark">【git】あとから修正を差し込む（fixupとautosquash）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/07/git-worktree.html" title="gh-pagesをサブディレクトリ内で管理" rel="bookmark">gh-pagesをサブディレクトリ内で管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/23/git-my-alias.html" title="【git】まれに使用するエイリアス６選" rel="bookmark">【git】まれに使用するエイリアス６選</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/10/22/pull-request.html" title="GitHubでプルリクエストを送るときの操作手順" rel="bookmark">GitHubでプルリクエストを送るときの操作手順</a></h3></div></li></ul>
-            </div>
-
-            <!-- Comments -->
-            
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    
-
-
-                </div>
-            
         </div>
     </div>
-</article>
+</div>
+
+
 
     <!-- Footer -->
     <hr />
