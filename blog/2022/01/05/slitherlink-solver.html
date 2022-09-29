@@ -93,7 +93,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -206,11 +206,11 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <a href="/blog/2022/01/03/kakuro-solver.html" title="おととい">おととい</a>、<a href="/blog/2022/01/04/numberlink-solver.html" title="昨日">昨日</a>に引き続き、今度はスリザーリンクのソルバーを作ってみた。
+                <a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く">おととい</a>、<a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクをSATソルバーで解く">昨日</a>に引き続き、今度はスリザーリンクのソルバーを作ってみた。
 
 <h3 id="スリザーリンクとは？"><a href="#スリザーリンクとは？" class="headerlink" title="スリザーリンクとは？"></a>スリザーリンクとは？</h3><p><a href="https://www.nikoli.co.jp/ja/puzzles/slitherlink/">スリザーリンク</a>もまたニコリの定番ペンシルパズルで、格子状の盤面に線を引いて１つのループを作るというルール。
 数字（０〜３）のあるマスは、接する線４本のうちの何本に線が引かれるかを示している。</p>
-<h3 id="スリザーリンクソルバー"><a href="#スリザーリンクソルバー" class="headerlink" title="スリザーリンクソルバー"></a>スリザーリンクソルバー</h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクソルバー">ナンバーリンクソルバー</a>と同様に、格子を結ぶ線を引くか引かないかの真偽値を変数にする。
+<h3 id="スリザーリンクソルバー"><a href="#スリザーリンクソルバー" class="headerlink" title="スリザーリンクソルバー"></a>スリザーリンクソルバー</h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクをSATソルバーで解く">ナンバーリンクソルバー</a>と同様に、格子を結ぶ線を引くか引かないかの真偽値を変数にする。
 <p>そして線は途切れないので、それぞれの頂点につながる線の４本中２本に線が引かれる、または１本も引かれない、という条件になる。</p>
 <p>全体でループがひとつながりになっているかどうかの判定は、SATソルバー内で判定する方法が思いつかなかった。
 なので <a href="https://github.com/meteor/logic-solver#logicsolversolve"><code>solve</code></a> で得られた解を判定して、２つ以上だったらその解は無効にして再度調べることにした。</p>

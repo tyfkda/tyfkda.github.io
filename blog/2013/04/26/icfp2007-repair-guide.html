@@ -89,7 +89,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -190,7 +190,7 @@
             <div class="col-lg-9 col-md-9">
                 <span id="more"></span>
 
-<a href="/blog/2012/12/31/save-endo.html" title="年末年始に挑戦していた">年末年始に挑戦していた</a>ICFP2007は、7Mとかある文字列の切り貼りを大量にする必要があって、最初C++で`std::string`を使って書いたんだけど1枚の絵を出すのに9時間ほどかかっていた。部分文字列を取り出したり文字列の連結を高速に行うデータ形式として[Rope](http://www.kmonos.net/wlog/39.php#_1841040529)というものがあるらしいんだけど、導入方法がよくわからなくて、じゃあっつって自前で実装しようとしたがうまい実装方法がわからなくてそれほど速くならなかった。[HaskellでData.Sequence](http://d.hatena.ne.jp/katona/20070802/p3)というのを使えば速いというのを見たので、Haskellに書き換えてたんだけどどこかにバグがあるのかうまく動かず放置していた。テストコードも書いて試した限りではうまく動いているふうなんだけど…。ふと気が向いて久しぶりにソースを見てみると、DNAからテンプレートの取り出しの部分でDNAを消費してない箇所があってバグっていた。ので修正するとようやく動くようになった。Haskellで[Data.Sequence](http://www.haskell.org/ghc/docs/latest/html/libraries/containers/Data-Sequence.html)を使った版だと、DNAからRNAへの変換が2分ほどで終わるようになった。
+<a href="/blog/2012/12/31/save-endo.html" title="ICFPC2007挑戦中">年末年始に挑戦していた</a>ICFP2007は、7Mとかある文字列の切り貼りを大量にする必要があって、最初C++で`std::string`を使って書いたんだけど1枚の絵を出すのに9時間ほどかかっていた。部分文字列を取り出したり文字列の連結を高速に行うデータ形式として[Rope](http://www.kmonos.net/wlog/39.php#_1841040529)というものがあるらしいんだけど、導入方法がよくわからなくて、じゃあっつって自前で実装しようとしたがうまい実装方法がわからなくてそれほど速くならなかった。[HaskellでData.Sequence](http://d.hatena.ne.jp/katona/20070802/p3)というのを使えば速いというのを見たので、Haskellに書き換えてたんだけどどこかにバグがあるのかうまく動かず放置していた。テストコードも書いて試した限りではうまく動いているふうなんだけど…。ふと気が向いて久しぶりにソースを見てみると、DNAからテンプレートの取り出しの部分でDNAを消費してない箇所があってバグっていた。ので修正するとようやく動くようになった。Haskellで[Data.Sequence](http://www.haskell.org/ghc/docs/latest/html/libraries/containers/Data-Sequence.html)を使った版だと、DNAからRNAへの変換が2分ほどで終わるようになった。
 
 <p>prefixを与えずに描画させた時に、rnaの最初の部分で<code>IIPIFFCPICFPPICIICCIICIPPPFIIC</code>というヒントみたいな基が表示されるので、それをprefixとして与えてみると、FUUN FIELD REPAIR GUIDEというのが表示された：</p>
 <p><img src="/assets/save_endo/fuun_field_repair_guide.png" alt="fuun_field_repair_guild"></p>

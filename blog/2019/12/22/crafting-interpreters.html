@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -270,7 +270,7 @@ Prattパーシングも実装言語上で再帰はするんだけど演算子の
 メモリの動的確保がいらないので効率がよい。</p>
 <h4 id="クロージャ：Upvalue"><a href="#クロージャ：Upvalue" class="headerlink" title="クロージャ：Upvalue"></a>クロージャ：Upvalue</h4><p>環境をスタックフレームとしてスタック上に割り付ける方式の場合に、クロージャで束縛される変数をどうするか。
 スコープを抜けてスタックフレームが解放された後にも束縛された変数にアクセスされる可能性があるので保持される必要がある。</p>
-<a href="/blog/2013/04/11/implement-closure.html" title="スタックベースのScheme実装">スタックベースのScheme実装</a>で読んだときのように束縛される変数で代入されるものはBoxingでヒープに確保してなんやかんやするのかなぁ、と想像していたがPrattパーサで1パスでコード出力という制限があるので、そうはできない。
+<a href="/blog/2013/04/11/implement-closure.html" title="スクリプト言語でのクロージャの実装方法">スタックベースのScheme実装</a>で読んだときのように束縛される変数で代入されるものはBoxingでヒープに確保してなんやかんやするのかなぁ、と想像していたがPrattパーサで1パスでコード出力という制限があるので、そうはできない。
 
 <p>結論はUpvalueという方式でクロージャを実装する（これはどうやらLuaのクロージャの実装方法を参考にしているようだ）。
 無名関数内で上位のスコープで宣言されている変数が参照されたら、ヒープ上にUpvalueを作成する。
@@ -278,7 +278,7 @@ Prattパーシングも実装言語上で再帰はするんだけど演算子の
 <p>クロージャで束縛された変数に対してだけヒープ操作が必要で、それ以外のローカル変数はスタック上だけで済むのでペナルティがない、というのがよいところ。
 （ただしScheme実装では代入されるものだけBoxingして、参照だけの変数はコピーを渡していたので、その分は不利だと思う。）</p>
 <p>あまりよく動作を理解していないので、また後で読み返したい。</p>
-<p>追記：<a href="/blog/2020/01/03/clox-closure.html" title="クロージャの実装方法">クロージャの実装方法</a></p>
+<p>追記：<a href="/blog/2020/01/03/clox-closure.html" title="1パスコンパイラでのクロージャの実装方法(Upvalue)">クロージャの実装方法</a></p>
 <h4 id="ガベージコレクション：マーク＆スイープ"><a href="#ガベージコレクション：マーク＆スイープ" class="headerlink" title="ガベージコレクション：マーク＆スイープ"></a>ガベージコレクション：マーク＆スイープ</h4><p>GCは地道に実装。</p>
 <p>オブジェクトをCのローカル変数に保持している状態でGCが走っても回収されないようにするために、一時的にスタックに積んでおく操作が必要になる。</p>
 <h4 id="クラス-1"><a href="#クラス-1" class="headerlink" title="クラス"></a>クラス</h4><p>本がまだ書き途中で、C言語VM版はまだ書かれていない。</p>
@@ -340,7 +340,7 @@ mrubyのようにアリーナで管理とかできないものか。</li>
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

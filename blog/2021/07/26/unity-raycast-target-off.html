@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -217,7 +217,7 @@
 <a href="https://baba-s.hatenablog.com/entry/2020/03/04/230000">【Unity】uGUI のオブジェクト作成時に Raycast Target をデフォルトでオフにする方法 - コガネブログ</a></p>
 <p>これを使って<code>Raycast Target</code>を外した状態をプリセットとして保存してデフォルトに指定すると、外れた状態で生成されるようになる。</p>
 <p>（余談：TextのColorが反映されない。
-FontSizeは反映されるが作成されるRecTransformの縦横サイズはデフォルトなのでWrapとTruncateに引っかかり表示されなくて焦る）</p>
+FontSizeは反映されるが作成されるRectTransformの縦横サイズはデフォルトなのでWrapとTruncateに引っかかり表示されなくて焦る）</p>
 <h3 id="プリセットを使う方法の問題点"><a href="#プリセットを使う方法の問題点" class="headerlink" title="プリセットを使う方法の問題点"></a>プリセットを使う方法の問題点</h3><p><code>Image</code>オブジェクトの場合は外れて欲しいんだけど、プリセットはコンポーネントに対して効くようで、<code>Scroll View</code>や<code>Input Field</code>を生成した場合にも反映されてしまう。
 <code>Raycast Target</code>のチェックが外れているとタップしてもフォーカスされずに操作できなくなってしまうので困る。</p>
 <p><a href="https://docs.unity3d.com/ja/2019.4/Manual/class-PresetManager.html">プリセットマネージャ</a> の”Adding filters”で対処できるのか？、と思ったが

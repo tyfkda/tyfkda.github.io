@@ -91,7 +91,7 @@ x86-64上で実行できるコードを出力できれば自宅のパソコン�
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -213,7 +213,7 @@ x86-64上で実行できるコードを出力できれば自宅のパソコン�
 ポインタでメモリ操作みたいな低レベルのことができる言語で書いたコードをブラウザで動かせるなんてどうなっているの？と結構驚いた。</p>
 <p>てなことでいっちょCコンパイラからwasmを出力できるようにしてみようと考えた。</p>
 <p><a href="https://tyfkda.github.io/xcc/">オンラインデモ</a></p>
-<h3 id="WASMのアーキテクチャ"><a href="#WASMのアーキテクチャ" class="headerlink" title="WASMのアーキテクチャ"></a>WASMのアーキテクチャ</h3><p>WASMのアーキテクチャは<a href="/blog/2020/11/22/wasm-bin-format.html" title="ちょっと前に調べて">ちょっと前に調べて</a>、特徴的なこととしては：</p>
+<h3 id="WASMのアーキテクチャ"><a href="#WASMのアーキテクチャ" class="headerlink" title="WASMのアーキテクチャ"></a>WASMのアーキテクチャ</h3><p>WASMのアーキテクチャは<a href="/blog/2020/11/22/wasm-bin-format.html" title="【WASM】WASMのバイナリフォーマット">ちょっと前に調べて</a>、特徴的なこととしては：</p>
 <ul>
 <li>スタックマシンの命令セット（レジスタがない）</li>
 <li>ローカル変数が使える</li>
@@ -256,7 +256,7 @@ WASMでも <code>return</code> という命令で関数から抜けてスタッ�
 （<code>l = r</code> を <code>((void)(tmp = r), (void)(l = tmp), tmp)</code> と変換する）。</p>
 <h4 id="switch文"><a href="#switch文" class="headerlink" title="switch文"></a>switch文</h4><p>WASMでは構造化したジャンプしかできないが、 <code>switch</code> 文をどう実装したものか？
 と悩んだがなんのことはない、 <code>case</code> の数だけ <code>block</code> をネストして、それぞれに <code>br</code> してやればよかった。</p>
-<p><code>br_table</code> という命令もあって、順に <code>br_if</code> する代わりにテーブルジャンプができる（やってない）。</p>
+<p><code>br_table</code> という命令もあって、順に <code>br_if</code> する代わりにテーブルジャンプができる（<del>やってない</del> 追記：<a href="https://github.com/tyfkda/xcc/commit/318fc91c72dca3bed6eceaa5ce3ffc7f2fe3dc56">やった</a>）。</p>
 <h4 id="可変長引数"><a href="#可変長引数" class="headerlink" title="可変長引数"></a>可変長引数</h4><p>WASMの関数の引数は数が固定で型もそれぞれ決まっている必要がある。
 可変長引数をどうやって扱うかというと、やはり線形メモリで受け渡すことにする。
 内部的に関数の引数を <code>...</code> より前の引数+可変長引数格納先ポインタに変換してやる。</p>
@@ -313,7 +313,7 @@ wasmからは <code>import</code> した関数の呼び出すとして実行で�
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/01/03/clox-closure.html" title="1パスコンパイラでのクロージャの実装方法(Upvalue)" rel="bookmark">1パスコンパイラでのクロージャの実装方法(Upvalue)</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/29/cc-aarch64.html" title="M1Mac向けにコンパイルする" rel="bookmark">M1Mac向けにコンパイルする</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -203,11 +203,11 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <a href="/blog/2020/09/17/galangua.html" title="オブジェクト指向的な組み方でRustでゲームを作り">オブジェクト指向的な組み方でRustでゲームを作り</a>、それを<a href="/blog/2020/09/27/composition-over-inheritance.html" title="継承より合成">継承より合成</a>を使用するようにして、
+                <a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた">オブジェクト指向的な組み方でRustでゲームを作り</a>、それを<a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（移譲）」について">継承より合成</a>を使用するようにして、
 <p>敵の種類によって処理を分割することができた。</p>
 <span id="more"></span>
 
-<p>しかし個々のオブジェクトの更新処理でゲームの各情報を参照する際に借用が被るのを回避するために<a href="/blog/2020/03/31/peep-ref.html" title="unsafeに手を染めていた">unsafeに手を染めていた</a>。
+<p>しかし個々のオブジェクトの更新処理でゲームの各情報を参照する際に借用が被るのを回避するために<a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか">unsafeに手を染めていた</a>。
 もっといい方法がないかと調べていたところ、 <strong>ECS</strong> という方法があることを知った。</p>
 <h3 id="ECS-とは？"><a href="#ECS-とは？" class="headerlink" title="ECS とは？"></a>ECS とは？</h3><p>ECSは <strong>Entity Component System</strong> の略で、プログラムを<a href="https://ja.wikipedia.org/wiki/%E3%82%A8%E3%83%B3%E3%83%86%E3%82%A3%E3%83%86%E3%82%A3%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88%E3%83%BB%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0">エンティティ、コンポーネント、システム</a>として構築する：</p>
 <ul>

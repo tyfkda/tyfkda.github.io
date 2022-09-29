@@ -91,7 +91,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -204,7 +204,7 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>以前<a href="/blog/2022/01/28/vscode-return.html" title="VSCodeで改行の入力にCtrl-mを使えるように">VSCodeで改行の入力にCtrl-mを使えるように</a>設定したが、クイックオープンなどで効かないのでまだ不便だった。
+                <p>以前<a href="/blog/2022/01/28/vscode-return.html" title="【VSCode】Ctrl-mで改行入力">VSCodeで改行の入力にCtrl-mを使えるように</a>設定したが、クイックオープンなどで効かないのでまだ不便だった。
 なのでショートカットキーの設定を追加する。</p>
 <h3 id="クイックオープン"><a href="#クイックオープン" class="headerlink" title="クイックオープン"></a>クイックオープン</h3><p><code>Cmd-p</code> でプロジェクト内のファイルを選択して開く際の決定を割り付けるには、keybindings.json に以下を追加する：</p>
 <figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ctrl-m&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;workbench.action.acceptSelectedQuickOpenItem&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;when&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inQuickOpen&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>

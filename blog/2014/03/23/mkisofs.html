@@ -89,7 +89,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -211,7 +211,7 @@
 <p>ここで、<code>fdimage.img</code>はフロッピーディスク起動のバイナリファイルで、<code>isoimage.iso</code>に.isoイメージファイルが生成される。</p>
 <p>mkisofsはLinuxやMacで動かすことができた（Windowsは未確認）。実際のところmkisofsがどういうファイルを生成してるのか、isoフォーマットはどういう形式なのかまったくわかってない。</p>
 <p>mkisofsにはたくさんのコマンドラインオプションがあるが、<code>-b</code>の”El Torito” ブータブル CDの指定だけでよいみたい。</p>
-<p>生成された.isoイメージをVirtualBoxなどのエミュレータに食わせたとろこ、無事に起動した。ブート時のディスク読み込みにBIOSのルーチンを使ってるんだけど、フロッピーディスクでも<a href="/blog/2014/02/25/usb-boot.html" title="USBメモリでも">USBメモリでも</a>CDでも同じBIOSコールで読み込めるのは便利だ。後で余裕ができたら実際にCDに焼いてみて、実機で起動できるかどうか試してみたい。</p>
+<p>生成された.isoイメージをVirtualBoxなどのエミュレータに食わせたとろこ、無事に起動した。ブート時のディスク読み込みにBIOSのルーチンを使ってるんだけど、フロッピーディスクでも<a href="/blog/2014/02/25/usb-boot.html" title="実機でUSBから自作OSをブート">USBメモリでも</a>CDでも同じBIOSコールで読み込めるのは便利だ。後で余裕ができたら実際にCDに焼いてみて、実機で起動できるかどうか試してみたい。</p>
 <p>まあただ、このフロッピーディスクのイメージから変換する方法だと、OSのファイルサイズが2HDの1.44MB以上になっても可能なのかどうかが不明だ。</p>
 <ul>
 <li><a href="http://ja.wikipedia.org/wiki/ISO_9660">ISO 9660 - Wikipedia</a></li>

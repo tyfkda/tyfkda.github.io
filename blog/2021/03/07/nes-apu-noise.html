@@ -92,7 +92,7 @@ createPeriodicWave()
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -252,7 +252,7 @@ In other words, the divider’s period is P + 1.</p>
 </blockquote>
 <p>P値は<code>$400e</code>の下位4ビットの値を元に<a href="https://wiki.nesdev.com/w/index.php/APU_Noise">テーブル</a>参照：
 <code>[4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068]</code></p>
-<h3 id="WebAudioで波形を鳴らす-AudioWorklet"><a href="#WebAudioで波形を鳴らす-AudioWorklet" class="headerlink" title="WebAudioで波形を鳴らす(AudioWorklet)"></a>WebAudioで波形を鳴らす(AudioWorklet)</h3><p>WebAudioで任意の波形を鳴らすには<a href="/blog/2018/09/15/white-noise.html" title="ScriptProcessorNode">ScriptProcessorNode</a>でできる…と思ってたんだけど
+<h3 id="WebAudioで波形を鳴らす-AudioWorklet"><a href="#WebAudioで波形を鳴らす-AudioWorklet" class="headerlink" title="WebAudioで波形を鳴らす(AudioWorklet)"></a>WebAudioで波形を鳴らす(AudioWorklet)</h3><p>WebAudioで任意の波形を鳴らすには<a href="/blog/2018/09/15/white-noise.html" title="周波数指定のホワイトノイズ">ScriptProcessorNode</a>でできる…と思ってたんだけど
 すでに<a href="https://www.w3.org/TR/webaudio/#scriptprocessornode">deprecated</a>にされていた：</p>
 <blockquote>
 <p>@deprecated — As of the August 29 2014 Web Audio API spec publication, this feature has been marked as deprecated, and was replaced by AudioWorklet (see AudioWorkletNode).</p>

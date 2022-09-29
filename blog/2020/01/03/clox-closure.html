@@ -89,7 +89,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -202,7 +202,7 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <a href="/blog/2019/12/22/crafting-interpreters.html" title="Crafting Interpretersを読んで">Crafting Interpretersを読んで</a>ある程度全体の構成はわかったんだけど、クロージャの実装方法はあまりよく理解せずに飛ばしてしまったのでもう一度ちゃんと理解したいと思う。
+                <a href="/blog/2019/12/22/crafting-interpreters.html" title="Crafting Interpretersを読んだ">Crafting Interpretersを読んで</a>ある程度全体の構成はわかったんだけど、クロージャの実装方法はあまりよく理解せずに飛ばしてしまったのでもう一度ちゃんと理解したいと思う。
 
 <span id="more"></span>
 
@@ -236,7 +236,7 @@
 <p>スコープから抜けて<code>Upvalue</code>に値を逃がすには、リンクリストをたどって解放しようとするスロットに対するUpvalueがあったら、VMスタックから<code>Upvalue</code>に値をコピーしてやる。</p>
 <h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><p><code>Upvalue</code>を使った自由変数のキャプチャによって、1パスコンパイラでありながらレキシカルスコープを達成できている。
 しかも実装が巧妙に作られている。</p>
-<a href="/blog/2013/04/20/assign-free-variable.html" title="構文木を調べることができる場合には">構文木を調べることができる場合には</a>キャプチャする自由変数に対する参照だけで代入が行われない場合にはヒープにBoxを作成せずに値のコピーだけで済ませられたが、1パスUpvalueの場合にはそこまで判定できないので必ずヒープ上に作成してしまう、といった違いがある。
+<a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法">構文木を調べることができる場合には</a>キャプチャする自由変数に対する参照だけで代入が行われない場合にはヒープにBoxを作成せずに値のコピーだけで済ませられたが、1パスUpvalueの場合にはそこまで判定できないので必ずヒープ上に作成してしまう、といった違いがある。
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><a href="https://www.craftinginterpreters.com/closures.html">Closures · Crafting Interpreters</a></li>
@@ -257,7 +257,7 @@ LuaのVMはレジスタマシンとのことだけど、Upvalueの方法は非�
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

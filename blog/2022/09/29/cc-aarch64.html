@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="自作しているCコンパイラではx86-64のアセンブリを出力していたが、
+ノートパソコンを近年のMacBookAirにしたところCPUアーキテクチャが違うためコンパイル結果を動かせなくなってしまった。
+そこでバックエンドとしてaarch64を追加した。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="M1Mac向けにコンパイルする"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>M1Mac向けにコンパイルする - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/09/29/cc-aarch64.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>M1Mac向けにコンパイルする</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-09-29
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://github.com/tyfkda/xcc">自作しているCコンパイラ</a>ではx86-64のアセンブリを出力していたが、
+ノートパソコンを近年のMacBookAirにしたところCPUアーキテクチャが違うためコンパイル結果を動かせなくなってしまった。
+そこでバックエンドとしてaarch64を追加した。</p>
+<span id="more"></span>
+
+<h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>M1MacはCPUがAppleシリコン・Armアーキテクチャとのことで、x86-64向けにコンパイルしたバイナリを動かすことができない
+（<a href="https://www.infoq.com/jp/news/2021/01/rosetta-2-translation/">Rosetta2</a>という謎技術があるが…）。
+そこでCコンパイラから出力するアセンブリにaarch64(Arm64)を追加することにした。</p>
+<a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす">WASM</a>のときはフロントエンド（パーサ）の共有だけにとどまったが、
+<p>aarch64向けには中間表現まで共有して、バックエンドを差し替える形にする。</p>
+<h3 id="アーキテクチャ判別"><a href="#アーキテクチャ判別" class="headerlink" title="アーキテクチャ判別"></a>アーキテクチャ判別</h3><p>aarch64かどうかでコンパイル対象とするソースを切り替えるために、Makefile内で判定する。
+configureとかautoconfなどはまったくわからないので、Makefileでゴリ押しする。</p>
+<p>シェルの <code>arch</code> コマンドでプロセッサのアーキテクチャが取得できるので、Makefileからシェル呼び出しの結果を判定：</p>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">ARCH:=<span class="variable">$(<span class="built_in">shell</span> arch)</span></span><br><span class="line"><span class="keyword">ifeq</span> (<span class="string">&quot;<span class="variable">$(ARCH)</span>&quot;</span>, <span class="string">&quot;arm64&quot;</span>)</span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
+
+<p>してコンパイル対象にするバックエンドのソースファイルを切り替える。</p>
+<p>ファイル単位ではなく部分的に判別したい場合には、コンパイラの定義済みマクロ <code>__aarch64__</code> や <code>__x86_64__</code> で判定する。</p>
+<h3 id="aarch64の命令セット"><a href="#aarch64の命令セット" class="headerlink" title="aarch64の命令セット"></a>aarch64の命令セット</h3><p>x86との違い：</p>
+<ul>
+<li>RISCアーキテクチャ（固定長で簡易な命令セット）</li>
+<li>汎用レジスタ：31個 <code>x0</code>〜<code>x30</code><ul>
+<li><code>x31</code>: スタックポインタ<code>sp</code><ul>
+<li>通常命令の場合、ゼロレジスタ<code>zr</code>として使える</li>
+</ul>
+</li>
+<li><code>x30</code>: リンクレジスタ<code>lr</code></li>
+<li><code>x29</code>: フレームポインタ<code>fp</code></li>
+</ul>
+</li>
+<li>レジスタは32bit(<code>wn</code>)または64bit(<code>xn</code>)で、それ未満はメモリ操作時に1バイトや2バイトでアクセスできる</li>
+<li>演算命令でオペランドが3つ与えられる (a &#x3D; b + c)</li>
+<li>レジスタのプッシュ・ポップという直接の命令はなく、アドレッシングモードのプリ・ポストを使う<ul>
+<li>しかしスタックポインタは16バイト単位を維持する必要がある</li>
+</ul>
+</li>
+<li>コールに対するリターンアドレスはスタックではなくリンクレジスタに保持される</li>
+<li>剰余命令がない（のでいったん除算して再度乗算して求めるとか）</li>
+<li>演算命令に直値を与えられない（加減算と<code>cmp</code>以外）：空きレジスタを使用する必要がある<ul>
+<li>加減算に使用できる定数値は0~4095まで</li>
+<li>ビット演算でも直値を使えるが、<a href="https://stackoverflow.com/a/30905104">使える値のビットパターンに制限がある</a></li>
+</ul>
+</li>
+<li>大きな（16bitを超える）値の代入には命令が2~4つ必要(<code>movk</code>)</li>
+<li>浮動小数点レジスタ：<code>d0</code>〜<code>d31</code>（<code>s</code>単精度）</li>
+</ul>
+<p>他に色々利用できそうな命令があるが、局所最適化をしてないので単純な命令しか使用してない。</p>
+<h4 id="アドレッシングモード"><a href="#アドレッシングモード" class="headerlink" title="アドレッシングモード"></a>アドレッシングモード</h4><p>オペランドとしてレジスタ以外に与えられる形式：</p>
+<ul>
+<li>直値： <code>#nnn</code><ul>
+<li><code>mov</code>, <code>movk</code>: 16bitまで</li>
+<li>加減算、比較：0〜4095、また12ビットまでシフト可能</li>
+<li>ビット積、和、排他的論理和：ビットパターンに制限あり</li>
+</ul>
+</li>
+<li>間接： <code>[reg]</code></li>
+<li>間接＋オフセット： <code>[reg, #ofs]</code></li>
+<li>プレインデックス： <code>[reg, #add]!</code> （命令実行前に<code>reg</code>に<code>add</code>が加算される）</li>
+<li>ポストインデックス： <code>[reg], #add</code> （命令実行後に<code>reg</code>に<code>add</code>が加算される）</li>
+<li>レジスタオフセット： <code>[reg1, reg2 (, shift)]</code> （<code>reg2</code>は<code>shift</code>で×2, ×4, ×8, ×16が可能）</li>
+</ul>
+<h3 id="呼出規約-ABI"><a href="#呼出規約-ABI" class="headerlink" title="呼出規約(ABI)"></a>呼出規約(ABI)</h3><p>関数呼出におけるレジスタ利用の取り決め（<a href="https://en.wikipedia.org/wiki/Calling_convention#ARM_(A64)">呼出規約</a>）は、</p>
+<table>
+<thead>
+<tr>
+<th align="left">レジスタ</th>
+<th align="left">用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>x0</code>〜<code>x7</code></td>
+<td align="left">関数へのパラメータ</td>
+</tr>
+<tr>
+<td align="left"><code>x9</code>〜<code>x15</code></td>
+<td align="left">ローカル変数（呼び出し元保存）</td>
+</tr>
+<tr>
+<td align="left"><code>x19</code>〜<code>x29</code></td>
+<td align="left">呼び出され側保存</td>
+</tr>
+<tr>
+<td align="left"><code>x0</code></td>
+<td align="left">戻り値（浮動小数点の場合<code>d0</code>）</td>
+</tr>
+</tbody></table>
+<p>他に <code>x16</code>と<code>x17</code>がプロシジャ間呼出のスクラッチレジスタ、<code>x18</code>がプラットフォームレジスタ、とのことだけどよくわかってないので未使用。</p>
+<ul>
+<li>aarch64では<a href="https://developer.arm.com/documentation/102374/0100/Procedure-Call-Standard">プロシジャ呼出標準</a>というらしい<ul>
+<li>戻り値が構造体の場合は <code>x8</code> に書き込み先アドレスが渡される。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Apple特有"><a href="#Apple特有" class="headerlink" title="Apple特有"></a>Apple特有</h4><ul>
+<li>任意長引数は常にスタック経由で渡される<ul>
+<li><a href="https://developer.apple.com/documentation/apple-silicon/addressing-architectural-differences-in-your-macos-code">Addressing Architectural Differences in Your macOS Code | Apple Developer Documentation</a><blockquote>
+<p><strong>Don’t Redeclare a Function to Have Variable Parameters</strong></p>
+<p>… On arm64, the compiler always places variadic parameters on the stack, regardless of whether registers are available.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="レジスタ割り付け"><a href="#レジスタ割り付け" class="headerlink" title="レジスタ割り付け"></a>レジスタ割り付け</h3><p>中間表現の段階では個数が無制限の仮想レジスタを使用していて、それを<a href="/blog/2019/10/21/regalloc-linearscan.html" title="自作Cコンパイラでレジスタ割り付け">物理レジスタに割り付ける</a>という処理をしている。</p>
+<p>aarch64はx86-64とアーキテクチャが違うので多少変更する必要があるが、制約が緩くなる
+（レジスタ数が多い、乗算が<code>%eax</code>に固定されてるということもない）ので基本的には問題は出ないであろう。</p>
+<h3 id="アセンブラ、リンカ"><a href="#アセンブラ、リンカ" class="headerlink" title="アセンブラ、リンカ"></a>アセンブラ、リンカ</h3><p>Macではバイナリ形式がELFではないので、アセンブラとリンカは自作版ではなくシステムのものを利用している
+（TODO!）。</p>
+<h3 id="締め"><a href="#締め" class="headerlink" title="締め"></a>締め</h3><ul>
+<li>という具合でAppleシリコンでも自作Cコンパイラを動かせるようになった<ul>
+<li>Mac以外に、RaspberryPiの64bitなどでも動かしてみたいが未着手…</li>
+</ul>
+</li>
+<li>なんか実際には長いこと苦労してた気がするんだが、書き出してみると内容あっさりしてるな…。<ul>
+<li>関数呼び出し時の引数の処理でスタック操作のオフセット計算で苦労していた気がする。</li>
+</ul>
+</li>
+<li>該当ソースは <a href="https://github.com/tyfkda/xcc/tree/main/src/cc/arch/aarch64">cc&#x2F;arch&#x2F;aarch64</a> 以下</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://developer.arm.com/documentation/102374/0100/Overview">Learn the architecture - AArch64 Instruction Set Architecture</a></li>
+<li>リファレンスマニュアル：<a href="https://developer.arm.com/documentation/ddi0487/ia/?lang=en">Arm Architecture Reference Manual for A-profile architecture</a> 分量多すぎて読めん…</li>
+<li><a href="https://www.mztn.org/dragon/arm6400idx.html">Arm64(ARMv8) Assembly Programming (00)</a> ほとんどこちらを参考にしました</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

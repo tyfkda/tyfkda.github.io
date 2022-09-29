@@ -89,7 +89,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -221,7 +221,7 @@
 </li>
 </ul>
 <h2 id="Haskellで実装してみる"><a href="#Haskellで実装してみる" class="headerlink" title="Haskellで実装してみる"></a>Haskellで実装してみる</h2><p>上記のリンクたちを参考にして、Haskellで構文木を渡すとその型を推論する関数を作ってみる。言語として使えるようになるまでにするには敷居が高いので、ひとまず型の推論だけで、型検査などは行わない。</p>
-<p>評価したい式の構文木は構築されていて与えられるものとして、パーサなどの実装も行わない（パーサ編は<a href="/blog/2015/11/15/parsec-ast.html" title="こちら">こちら</a>）</p>
+<p>評価したい式の構文木は構築されていて与えられるものとして、パーサなどの実装も行わない（パーサ編は<a href="/blog/2015/11/15/parsec-ast.html" title="【Haskell】Parsecで構文解析して構文木を作る">こちら</a>）</p>
 <p>（内容はほとんど上記の参照したサイトで解説されている内容そのままで、主にHaskellでどうやって型変数を扱うのか、どうやってSTモナドを扱うかと格闘していた気がする。）</p>
 <h3 id="構文木のノードの定義"><a href="#構文木のノードの定義" class="headerlink" title="構文木のノードの定義"></a>構文木のノードの定義</h3><p>ひとまず扱える基本的な型は整数のみで、構文は１引数の関数とその呼び出し、また変数の参照のみ、とする：</p>
 <figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- Node.hs</span></span><br><span class="line"><span class="keyword">module</span> Node (<span class="type">Expr(..)</span>) <span class="keyword">where</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Expr</span> = <span class="type">Natural</span> <span class="type">Integer</span>  <span class="comment">-- 整数：値</span></span></span><br><span class="line">          | <span class="type">Var</span> <span class="type">String</span>       <span class="comment">-- 変数：名前</span></span><br><span class="line">          | <span class="type">Fun</span> <span class="type">String</span> <span class="type">Expr</span>  <span class="comment">-- 関数：パラメータ名、結果の式</span></span><br><span class="line">          | <span class="type">App</span> <span class="type">Expr</span> <span class="type">Expr</span>    <span class="comment">-- 適用：関数、引数</span></span><br><span class="line">  <span class="keyword">deriving</span> (<span class="type">Show</span>)</span><br></pre></td></tr></table></figure>
@@ -279,7 +279,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
