@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="自作Cコンパイラから出力するWASMのバイナリコードをWASIに準拠させたいが、WASIのAPIに関する情報が探せずに困ってる、というはなし。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="WASI上でのファイルオープンに悪戦苦闘した話"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>WASI上でのファイルオープンに悪戦苦闘した話 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/10/12/wasi-lack-info.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>WASI上でのファイルオープンに悪戦苦闘した話</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-10-12
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/wasm/">#wasm</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://github.com/tyfkda/xcc">自作Cコンパイラ</a>から出力するWASMのバイナリコードをWASIに準拠させたいが、WASIのAPIに関する情報が探せずに困ってる、というはなし。</p>
+<span id="more"></span>
+
+<p>WASIの不満な点は：</p>
+<ul>
+<li>情報がどこにあるかわからない</li>
+<li>APIの仕様がWASMのバイナリ用ではなく、Rustの関数の形式で書かれている</li>
+<li>引数に与える値がわからない</li>
+<li>戻り値がわからない</li>
+</ul>
+<h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>WASMはバイナリフォーマットが決められているがそれだけだと単なる演算しかできなくて、入出力などの外部とのやり取りはインポートした関数の呼び出し経由て行うことになる。
+どのような関数を用意してやるかはまったく自由なので、現状はPOSIX風なオレオレ定義でやっている。
+しかしそれだと生成した.wasmバイナリの可搬性が悪いので困ることになる。</p>
+<p>そのような経緯でWASI(WebAssembly System Interface)というものが出てきた（たぶん）。
+WASIはAPI（インポートされる関数の仕様）の規定で、それに従えばバイナリをWASI準拠の別の環境に持っていっても動かすことができる。</p>
+<p>自作Cコンパイラからの出力もそれに準拠したほうが可搬性が上がるのでよいだろう、と思ってるんだが情報が不足していて苦労している。</p>
+<h3 id="やったこと"><a href="#やったこと" class="headerlink" title="やったこと"></a>やったこと</h3><h4 id="ハローWASIワールド"><a href="#ハローWASIワールド" class="headerlink" title="ハローWASIワールド"></a>ハローWASIワールド</h4><p>ひとまずハローワールド、ということで文字列出力から探る。
+インポートの名前空間は <code>wasi_snapshot_preview1</code> （これもどうかと思うが…）、
+エントリポイントは <code>_start</code> （<code>_start</code> はWASIのシステム予約で、ユーザ側は <code>main</code> からってんじゃないんだ）、
+ファイル出力は <code>fd_write</code> （<code>Iov</code> ってなによ？複数渡したいケースってあるんか？）
+などいろいろ戸惑いながら。
+コンパイルで出力した.wasmを<a href="https://wasmer.io/">Wasmer</a>や<a href="https://wasmtime.dev/">Wasmtime</a>で動かすことでWASI相当かどうかを確認できる。</p>
+<p>さてじゃあファイルオープンをやってみるか、ではたと困った。
+該当するAPIはつらつら見ていったところ <code>path_open</code> だと思うが、これを動かせるようになるまでにかなり苦労した。</p>
+<h4 id="ファイルオープン"><a href="#ファイルオープン" class="headerlink" title="ファイルオープン"></a>ファイルオープン</h4><p><a href="https://github.com/WebAssembly/WASI/blob/main/phases/snapshot/docs.md#-path_openfd-fd-dirflags-lookupflags-path-string-oflags-oflags-fs_rights_base-rights-fs_rights_inheriting-rights-fdflags-fdflags---resultfd-errno">path_openの定義</a>を見てもわからないことだらけ。
+<code>path</code> 以外の引数がどれもなにを与えるのかわからない。</p>
+<ul>
+<li>渡す <code>fd</code> が不明、「POSIXの <code>openat</code> と似せている」と書かれているのでググって、カレントディレクトリからの相対にしたい場合には <code>AT_FDCWD</code> （Linuxだと<code>-100</code>）を渡す？</li>
+<li>フラグは不明なので適当に0を渡してみる</li>
+<li>Rustの形式で書かれても、WASMには<code>string</code>も<code>Result&lt;&gt;</code>もないからどうすんのよ？</li>
+</ul>
+<p>結局<code>string</code>は文字列へのポインタと長さ、戻り値の<code>Result&lt;&gt;</code>は<code>fd</code>の格納先アドレスを渡して、WASM側からは戻り値がAPIの成功&#x2F;失敗が取得できることはわかった。
+しかしあれこれ引数をいじっても成功しなかった。</p>
+<h4 id="サンプルを解析"><a href="#サンプルを解析" class="headerlink" title="サンプルを解析"></a>サンプルを解析</h4><p>推測で動かしても埒があかなかったので、RustからWASI用にコンパイルして動くバイナリを作成して、それを解析することにした。</p>
+<p><a href="https://fits.hatenablog.com/entry/2020/04/29/210734">Rust で WASI 対応の WebAssembly を作成して実行 - なんとなくな Developer のメモ</a> を参考に、Rustからwasmを出力できるようにする。
+まずは環境セットアップ：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ rustup target add wasm32-wasi  <span class="comment"># Rustのコンパイルターゲットにwasm32-wasiを追加</span></span><br></pre></td></tr></table></figure>
+
+<p>ファイル操作のRustのコードは<a href="https://doc.rust-jp.rs/rust-by-example-ja/std_misc/file/open.html">Rust By Example &gt; 標準ライブラリのその他 &gt; ファイルI&#x2F;O &gt; open</a> を参考に：</p>
+<figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::prelude::*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">file</span> = <span class="keyword">match</span> File::<span class="title function_ invoke__">open</span>(<span class="string">&quot;README.md&quot;</span>) &#123;</span><br><span class="line">        <span class="title function_ invoke__">Err</span>(why) =&gt; <span class="built_in">panic!</span>(<span class="string">&quot;couldn&#x27;t open: &#123;&#125;&quot;</span>, why),</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(file) =&gt; file,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Read the file contents into a string, returns `io::Result&lt;usize&gt;`</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">s</span> = String::<span class="title function_ invoke__">new</span>();</span><br><span class="line">    <span class="keyword">match</span> file.<span class="title function_ invoke__">read_to_string</span>(&amp;<span class="keyword">mut</span> s) &#123;</span><br><span class="line">        <span class="title function_ invoke__">Err</span>(why) =&gt; <span class="built_in">panic!</span>(<span class="string">&quot;couldn&#x27;t read: &#123;&#125;&quot;</span>, why),</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(size) =&gt; (),  <span class="comment">//print!(&quot;size=&#123;&#125;, content=\n&#123;&#125;&quot;, size, s),</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上記をコンパイル：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ rustc --target wasm32-wasi sample1.rs  <span class="comment"># 対象ソースをコンパイル</span></span><br></pre></td></tr></table></figure>
+
+<p>して実行すると、WasmerやWasmtimeでもファイルは開けず実行時エラーが出る。
+ググってくとWASIでは開けるファイルが制限されていて、コマンドラインオプションの <code>--dirs=</code> や <code>--mapdir=</code>
+で<strong>プリオープン</strong>として許可する必要があるとのこと。
+そんなことすら分かってなかったぜ。</p>
+<p>でひとまず動くようになった。
+このバイナリを解析しようとWabtの <code>wasm-objdump</code> の <code>-d</code> オプションで逆アセンブルしてみたが、読むのはまあ辛い。
+<code>--section import --details</code> でインポートしている関数が見れるが、字面で追えるのはその程度：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ wasm-objdump -d sample1.wasm</span><br><span class="line"><span class="comment">#...（3万行ほどのwat形式）</span></span><br><span class="line"></span><br><span class="line">$ wasm-objdump --section import --details sample1.wasm</span><br><span class="line"></span><br><span class="line">sample1.wasm:	file format wasm 0x1</span><br><span class="line"></span><br><span class="line">Section Details:</span><br><span class="line"></span><br><span class="line">Import[11]:</span><br><span class="line"> - func[0] sig=5 &lt;_ZN4wasi13lib_generated22wasi_snapshot_preview115fd_filestat_get17hec7d68c8947be618E&gt; &lt;- wasi_snapshot_preview1.fd_filestat_get</span><br><span class="line"> - func[1] sig=8 &lt;_ZN4wasi13lib_generated22wasi_snapshot_preview17fd_read17hea1016e83fd563b4E&gt; &lt;- wasi_snapshot_preview1.fd_read</span><br><span class="line"> - func[2] sig=9 &lt;_ZN4wasi13lib_generated22wasi_snapshot_preview17fd_seek17hcce9e3a4c7fb667eE&gt; &lt;- wasi_snapshot_preview1.fd_seek</span><br><span class="line"> - func[3] sig=8 &lt;_ZN4wasi13lib_generated22wasi_snapshot_preview18fd_write17haadc9440e6dddc5cE&gt; &lt;- wasi_snapshot_preview1.fd_write</span><br><span class="line"> - func[4] sig=10 &lt;_ZN4wasi13lib_generated22wasi_snapshot_preview19path_open17hbf8e6e2761772feeE&gt; &lt;- wasi_snapshot_preview1.path_open</span><br><span class="line"> - func[5] sig=5 &lt;__imported_wasi_snapshot_preview1_environ_get&gt; &lt;- wasi_snapshot_preview1.environ_get</span><br><span class="line"> - func[6] sig=5 &lt;__imported_wasi_snapshot_preview1_environ_sizes_get&gt; &lt;- wasi_snapshot_preview1.environ_sizes_get</span><br><span class="line"> - func[7] sig=4 &lt;__imported_wasi_snapshot_preview1_fd_close&gt; &lt;- wasi_snapshot_preview1.fd_close</span><br><span class="line"> - func[8] sig=5 &lt;__imported_wasi_snapshot_preview1_fd_prestat_get&gt; &lt;- wasi_snapshot_preview1.fd_prestat_get</span><br><span class="line"> - func[9] sig=7 &lt;__imported_wasi_snapshot_preview1_fd_prestat_dir_name&gt; &lt;- wasi_snapshot_preview1.fd_prestat_dir_name</span><br><span class="line"> - func[10] sig=1 &lt;__imported_wasi_snapshot_preview1_proc_exit&gt; &lt;- wasi_snapshot_preview1.proc_exit</span><br></pre></td></tr></table></figure>
+
+<h4 id="APIログからAPIの使い方を推測"><a href="#APIログからAPIの使い方を推測" class="headerlink" title="APIログからAPIの使い方を推測"></a>APIログからAPIの使い方を推測</h4><p>どうしようかと思ってると、Wasmtimeだと <code>RUST_LOG=wasi_common=trace</code> でWASIの呼び出しに関するログ？が見れることがわかった：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ RUST_LOG=wasi_common=trace wasmtime --<span class="built_in">dir</span>=. sample1.wasm</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;environ_sizes_get&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Ok((0, 0))</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;fd_prestat_get&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; fd=Fd(3)</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Ok(Dir(PrestatDir &#123; pr_name_len: 1 &#125;))</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;fd_prestat_dir_name&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; fd=Fd(3) path=*guest 0x102fe0 path_len=1</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Ok(())</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;fd_prestat_get&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; fd=Fd(4)</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Err(Badf: Bad file descriptor)</span><br><span class="line"> DEBUG wasi_common::snapshots::preview_1                         &gt; Error: Badf: Bad file descriptor</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;path_open&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; fd=Fd(3) dirflags=SYMLINK_FOLLOW path=*guest 0x103290/9 oflags=(empty) fs_rights_base=FD_READ | FD_SEEK | FD_FDSTAT_SET_FLAGS | FD_SYNC | FD_TELL | FD_ADVISE | PATH_CREATE_DIRECTORY | PATH_CREATE_FILE | PATH_LINK_SOURCE | PATH_LINK_TARGET | PATH_OPEN | FD_READDIR | PATH_READLINK | PATH_RENAME_SOURCE | PATH_RENAME_TARGET | PATH_FILESTAT_GET | FD_FILESTAT_GET | FD_FILESTAT_SET_TIMES | PATH_SYMLINK | PATH_REMOVE_DIRECTORY | PATH_UNLINK_FILE | POLL_FD_READWRITE fs_rights_inheriting=FD_READ | FD_SEEK | FD_FDSTAT_SET_FLAGS | FD_SYNC | FD_TELL | FD_ADVISE | PATH_CREATE_DIRECTORY | PATH_CREATE_FILE | PATH_LINK_SOURCE | PATH_LINK_TARGET | PATH_OPEN | FD_READDIR | PATH_READLINK | PATH_RENAME_SOURCE | PATH_RENAME_TARGET | PATH_FILESTAT_GET | FD_FILESTAT_GET | FD_FILESTAT_SET_TIMES | PATH_SYMLINK | PATH_REMOVE_DIRECTORY | PATH_UNLINK_FILE | POLL_FD_READWRITE fdflags=(empty)</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Ok(Fd(4))</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;fd_filestat_get&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; fd=Fd(4)</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Ok(Filestat &#123; dev: 16777234, ino: 27948073, filetype: RegularFile, nlink: 1, size: 668, atim: 1665472872893286124, mtim: 1665470700671229914, ctim: 1665470493204932262 &#125;)</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;fd_seek&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; fd=Fd(4) offset=0 <span class="built_in">whence</span>=Cur</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Ok(0)</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;fd_read&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; fd=Fd(4) iovs=*guest 0xffe60/1</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Ok(668)</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;fd_read&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; fd=Fd(4) iovs=*guest 0xffe58/1</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Ok(0)</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; wiggle abi; module=<span class="string">&quot;wasi_snapshot_preview1&quot;</span> <span class="keyword">function</span>=<span class="string">&quot;fd_close&quot;</span></span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; fd=Fd(4)</span><br><span class="line"> TRACE wasi_common::snapshots::preview_1::wasi_snapshot_preview1 &gt; result=Ok(())</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>fd_prestat_get</code> を使ってプリセットとして与えられたファイルデスクリプタを調べてる？<ul>
+<li><code>3</code> で成功、 <code>4</code> で失敗</li>
+</ul>
+</li>
+<li><code>path_open</code> の <code>fd</code> にプリセットであろう<code>3</code>を渡している</li>
+<li><code>dirflags</code>や<code>fs_rights</code>はちゃんとフラグを渡す</li>
+</ul>
+<p>てな具合で動作するっぽい。</p>
+<h3 id="POSIXとの繋ぎ込み"><a href="#POSIXとの繋ぎ込み" class="headerlink" title="POSIXとの繋ぎ込み"></a>POSIXとの繋ぎ込み</h3><p>上記によって解読した、POSIXの<code>open</code>からWASIの<code>path_open</code>への繋ぎ込みは以下の感じ（ひとまず読み込みオープンのみ）：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;fcntl.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stdint.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;unistd.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> <span class="title function_">path_open</span><span class="params">(<span class="type">int</span> fd, <span class="type">int</span> dirflags, <span class="type">const</span> <span class="type">char</span> *path, <span class="type">int</span> path_len, <span class="type">int</span> oflags,</span></span><br><span class="line"><span class="params">  <span class="type">uint64_t</span> fs_rights_base, <span class="type">uint64_t</span> fs_rights_inherting, <span class="type">uint16_t</span> fdflags, <span class="type">uint32_t</span> *opend_fd)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> max_preopen_fd = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">open</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *fn, <span class="type">int</span> flag, ...)</span> &#123;</span><br><span class="line">  <span class="type">const</span> <span class="type">int</span> LOOKUPFLAGS_SYMLINK_FOLLOW = <span class="number">0x01</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">int</span> FDFLAGS_RSYNC = <span class="number">0x08</span>;</span><br><span class="line">  <span class="comment">// Rights</span></span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_DATASYNC = <span class="number">0x01</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_READ = <span class="number">0x02</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_SEEK = <span class="number">0x04</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_FDSTAT_SET_FLAGS = <span class="number">0x08</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_SYNC = <span class="number">0x10</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_TELL = <span class="number">0x20</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_ADVISE = <span class="number">0x80</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_CREATE_DIRECTORY = <span class="number">0x200</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_CREATE_FILE = <span class="number">0x400</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_LINK_SOURCE = <span class="number">0x800</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_LINK_TARGET = <span class="number">0x1000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_OPEN = <span class="number">0x2000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_READDIR = <span class="number">0x4000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_READLINK = <span class="number">0x8000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_RENAME_SOURCE = <span class="number">0x10000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_RENAME_TARGET = <span class="number">0x20000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_FILESTAT_GET = <span class="number">0x40000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_FILESTAT_GET = <span class="number">0x200000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> FD_FILESTAT_SET_TIMES = <span class="number">0x800000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_SYMLINK = <span class="number">0x1000000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_REMOVE_DIRECTORY = <span class="number">0x2000000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> PATH_UNLINK_FILE = <span class="number">0x4000000</span>;</span><br><span class="line">  <span class="type">const</span> <span class="type">uint64_t</span> POLL_FD_READWRITE = <span class="number">0x8000000</span>;</span><br><span class="line"></span><br><span class="line">  <span class="type">int</span> dirflags = LOOKUPFLAGS_SYMLINK_FOLLOW;</span><br><span class="line">  <span class="type">int</span> oflags = <span class="number">0</span>;</span><br><span class="line">  <span class="type">uint64_t</span> fs_rights_base = FD_READ | FD_SEEK | FD_FDSTAT_SET_FLAGS | FD_SYNC | FD_TELL | FD_ADVISE | PATH_CREATE_DIRECTORY | PATH_CREATE_FILE | PATH_LINK_SOURCE | PATH_LINK_TARGET | PATH_OPEN | FD_READDIR | PATH_READLINK | PATH_RENAME_SOURCE | PATH_RENAME_TARGET | PATH_FILESTAT_GET | FD_FILESTAT_GET | FD_FILESTAT_SET_TIMES | PATH_SYMLINK | PATH_REMOVE_DIRECTORY | PATH_UNLINK_FILE | POLL_FD_READWRITE;</span><br><span class="line">  <span class="type">uint64_t</span> fs_rights_inheriting = fs_rights_base;</span><br><span class="line">  <span class="type">uint32_t</span> fdflags = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// preopen から探す</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> base_fd = max_preopen_fd - <span class="number">1</span>; ;) &#123;</span><br><span class="line">    <span class="type">uint32_t</span> opened = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">uint32_t</span> result = path_open(base_fd, dirflags, fn, <span class="built_in">strlen</span>(fn), oflags, fs_rights_base, fs_rights_inheriting, fdflags, &amp;opened);</span><br><span class="line">    <span class="keyword">if</span> (result == <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> opened;</span><br><span class="line">    <span class="keyword">if</span> (--base_fd &lt; <span class="number">3</span>)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>プリオープンからの相対で探すために、自前のスタートアップルーチン内で <code>max_preopen_fd</code> は探しておく：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">uint8_t</span> Preopentype;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="comment">/// The length of the directory name for use with `fd_prestat_dir_name`.</span></span><br><span class="line">  <span class="type">size_t</span> pr_name_len;</span><br><span class="line">&#125; PrestatDir;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  PrestatDir dir;</span><br><span class="line">&#125; PrestatU;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="comment">/// The type of the pre-opened capability.</span></span><br><span class="line">  Preopentype pr_type;</span><br><span class="line">  <span class="comment">/// The contents of the information.</span></span><br><span class="line">  PrestatU u;</span><br><span class="line">&#125; Prestat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> <span class="title function_">fd_prestat_get</span><span class="params">(<span class="type">int</span> fd, Prestat *prestat)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">find_preopens</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> fd = <span class="number">3</span>; ; ++fd) &#123;</span><br><span class="line">    Prestat prestat;</span><br><span class="line">    <span class="type">int</span> result = fd_prestat_get(fd, &amp;prestat);</span><br><span class="line">    <span class="keyword">if</span> (result != <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> fd;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> _start() &#123;</span><br><span class="line">  <span class="comment">// コマンドライン引数の処理など、あれこれ</span></span><br><span class="line"></span><br><span class="line">  max_preopen_fd = find_preopens();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// main呼び出しなど</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>でようやくファイルオープンが成功した。</p>
+<h3 id="node-js上で動かす（Wasmer-JS）（未完）"><a href="#node-js上で動かす（Wasmer-JS）（未完）" class="headerlink" title="node.js上で動かす（Wasmer JS）（未完）"></a>node.js上で動かす（Wasmer JS）（未完）</h3><p>コンパイルした.wasmバイナリをブラウザ上やnode.jsで動かすためにインポートするWASI関数を自分で書くという手段もあり得るが、手っ取り早く<a href="https://www.npmjs.com/package/@wasmer/wasi">Wasmer JS</a>を使うという手もある：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// runwasi.js</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">&#x27;use strict&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; init, <span class="variable constant_">WASI</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;@wasmer/wasi&#x27;</span>)</span><br><span class="line"><span class="comment">// const nodeBindings = require(&#x27;@wasmer/wasi/lib/bindings/node&#x27;)</span></span><br><span class="line"></span><br><span class="line">;(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">init</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (process.<span class="property">argv</span>.<span class="property">length</span> &lt; <span class="number">3</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&#x27;argv &lt; 3&#x27;</span>)</span><br><span class="line">    process.<span class="title function_">exit</span>(<span class="number">1</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> wasmFileName = process.<span class="property">argv</span>[<span class="number">2</span>]</span><br><span class="line">  <span class="keyword">const</span> wasi = <span class="keyword">new</span> <span class="title function_">WASI</span>(&#123;</span><br><span class="line">    <span class="attr">args</span>: process.<span class="property">argv</span>.<span class="title function_">slice</span>(<span class="number">2</span>),</span><br><span class="line">    <span class="attr">env</span>: process.<span class="property">env</span>,</span><br><span class="line">    <span class="comment">// bindings: &#123;</span></span><br><span class="line">    <span class="comment">//   // ...(nodeBindings.default || nodeBindings),</span></span><br><span class="line">    <span class="comment">//   fs: fs,</span></span><br><span class="line">    <span class="comment">// &#125;,</span></span><br><span class="line">    <span class="comment">// preopens: &#123;</span></span><br><span class="line">    <span class="comment">//   &#x27;.&#x27;: &#x27;.&#x27;,</span></span><br><span class="line">    <span class="comment">// &#125;,</span></span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> wasmBin = fs.<span class="title function_">readFileSync</span>(wasmFileName)</span><br><span class="line">    <span class="keyword">const</span> <span class="variable language_">module</span> = <span class="keyword">await</span> <span class="title class_">WebAssembly</span>.<span class="title function_">compile</span>(wasmBin)</span><br><span class="line">    <span class="keyword">await</span> wasi.<span class="title function_">instantiate</span>(<span class="variable language_">module</span>, &#123;&#125;)</span><br><span class="line">    <span class="keyword">const</span> exitCode = wasi.<span class="title function_">start</span>()</span><br><span class="line">    process.<span class="property">stdout</span>.<span class="title function_">write</span>(wasi.<span class="title function_">getStdoutString</span>())</span><br><span class="line">    process.<span class="title function_">exit</span>(exitCode)</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">error</span>(e)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+
+<p>たぶん同様にプリオープンとして読み込めるディレクトリを設定する必要があると思うが与え方がわからず…
+<code>new WASI()</code>に与えるオプションに<code>preopens</code>を指定するとエラーが出る：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error: Failed to create the WasiState: wasi filesystem creation error: `Could not get metadata for file &quot;.&quot;: fd not a directory``</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://docs.wasmer.io/integrations/js/wasi/server/examples/hello-world">Hello World - Wasmer Docs</a> を見ると、
+<code>bindings</code> 内の <code>fs</code> にnode.jsの<code>fs</code>を与えるっぽいんだけど、<code>require(&#39;@wasmer/wasi/lib/bindings/node&#39;)</code>できなくて確認できず…。</p>
+<h3 id="いいたいこと"><a href="#いいたいこと" class="headerlink" title="いいたいこと"></a>いいたいこと</h3><ul>
+<li>WASIは仕様ということならちゃんとバイナリレベルでドキュメント化して欲しい</li>
+<li>ソースを見たり推測しないで済むようにして欲しい</li>
+</ul>
+<h3 id="ドキュメント"><a href="#ドキュメント" class="headerlink" title="ドキュメント"></a>ドキュメント</h3><ul>
+<li><a href="https://wasi.dev/">https://wasi.dev/</a> 本家<ul>
+<li><a href="https://github.com/bytecodealliance/wasmtime/blob/main/docs/WASI-documents.md">WASI Document Guide</a><ul>
+<li><a href="https://github.com/WebAssembly/WASI/blob/main/phases/snapshot/docs.md">API documentation</a><ul>
+<li><a href="https://github.com/WebAssembly/WASI/blob/main/phases/snapshot/docs.md#path_open">path_open</a> これを見て使い方を理解できる人はいるんだろうか…</li>
+<li><a href="https://github.com/WebAssembly/WASI/blob/main/phases/snapshot/docs.md#-errno-variant">errno</a> 値が知りたい</li>
+</ul>
+</li>
+<li><a href="https://github.com/bytecodealliance/wasmtime/blob/main/docs/WASI-tutorial.md#from-c">WASI tutorial</a> 読み進めるとプリオープンのこととかちゃんと書いてあった</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://github.com/bytecodealliance/wasi/blob/main/src/lib_generated.rs">wasi&#x2F;lib_generated.rs at main · bytecodealliance&#x2F;wasi</a> generatedってことだから何かから生成されてると思うが、わからず…</li>
+<li><a href="https://github.com/bytecodealliance/wasmtime/blob/bad71cde4ad4c8d3d35eedc5aa3e9bd759a547e4/crates/wasi-common/src/snapshots/preview_1.rs#L871">wasmtime&#x2F;preview_1.rs at main · bytecodealliance&#x2F;wasmtime</a>
+これが <code>path_open</code> のホントの実体？</li>
+<li><a href="https://github.com/WebAssembly/wasi-filesystem/issues/23">How does <code>fs_rights_inheriting</code> work in <code>path_open</code>? · Issue #23 · WebAssembly&#x2F;wasi-filesystem</a> Rightsの説明</li>
+<li><a href="https://docs.rs/wasi/0.11.0+wasi-snapshot-preview1/wasi/fn.path_open.html">path_open in wasi - Rust</a></li>
+<li><a href="https://github.com/WebAssembly/WASI/blob/main/phases/snapshot/docs.md#-path_openfd-fd-dirflags-lookupflags-path-string-oflags-oflags-fs_rights_base-rights-fs_rights_inheriting-rights-fdflags-fdflags---resultfd-errno">WASI&#x2F;docs.md at main · WebAssembly&#x2F;WASI</a> path_open API仕様</li>
+<li><a href="https://github.com/WebAssembly/wasi-libc">WebAssembly&#x2F;wasi-libc</a> 参考になるか？<ul>
+<li><a href="https://github.com/WebAssembly/wasi-libc/blob/659ff414560721b1660a19685110e484a081c3d4/libc-top-half/musl/src/fcntl/open.c#L16">open</a> から呼び出してるのがWASIとは違うようだが…</li>
+</ul>
+</li>
+<li><a href="https://fits.hatenablog.com/entry/2020/04/29/210734">Rust で WASI 対応の WebAssembly を作成して実行 - なんとなくな Developer のメモ</a></li>
+<li><a href="https://zenn.dev/mshaka/articles/5e2e9a0e02c93bc3d38b">Brainfuckのwasmターゲットコンパイラを書いてwasmとWASIに入門</a></li>
+<li>詳細、定義リンク<ul>
+<li><a href="https://docs.rs/wasi/0.11.0+wasi-snapshot-preview1/src/wasi/lib_generated.rs.html#69-223">WASI APIからの戻り値</a> 0で成功、それ以外でエラー</li>
+<li><a href="https://docs.rs/wasi/0.11.0+wasi-snapshot-preview1/src/wasi/lib_generated.rs.html#414-486">Rights</a> (<a href="https://github.com/WebAssembly/WASI/blob/main/phases/snapshot/docs.md#-rights-record">doc</a>)</li>
+<li><a href="https://docs.rs/wasi/0.11.0+wasi-snapshot-preview1/src/wasi/lib_generated.rs.html#702-710">Oflags</a></li>
+<li><a href="https://docs.rs/wasi/0.11.0+wasi-snapshot-preview1/src/wasi/lib_generated.rs.html#698-700">Lookupflags</a></li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/07/12/rust-wasm-pack.html" title="【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…" rel="bookmark">【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/11/22/wasm-bin-format.html" title="【WASM】WASMのバイナリフォーマット" rel="bookmark">【WASM】WASMのバイナリフォーマット</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

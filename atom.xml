@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-10-05T03:26:13.111Z</updated>
+  <updated>2022-10-12T09:26:54.946Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,28 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>WASI上でのファイルオープンに悪戦苦闘した話</title>
+    <link href="https://tyfkda.github.io/blog/2022/10/12/wasi-lack-info.html"/>
+    <id>https://tyfkda.github.io/blog/2022/10/12/wasi-lack-info.html</id>
+    <published>2022-10-12T09:00:00.000Z</published>
+    <updated>2022-10-12T09:26:54.946Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作Cコンパイラ&lt;/a&gt;から出力するWASMのバイナリコードをWASIに準拠させたいが、WASIのAPIに関する情報が探せずに困ってる、というはなし。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="wasm" scheme="https://tyfkda.github.io/tags/wasm/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【C++】static_castとreinterpret_cast、またdynamic_castの違い</title>
     <link href="https://tyfkda.github.io/blog/2022/10/05/cpp-cast.html"/>
     <id>https://tyfkda.github.io/blog/2022/10/05/cpp-cast.html</id>
     <published>2022-10-05T03:00:00.000Z</published>
-    <updated>2022-10-05T03:26:13.111Z</updated>
+    <updated>2022-10-05T06:22:47.601Z</updated>
     
     
     <summary type="html">&lt;p&gt;C++のキャストについてあまりよく知らなかったので調べた。&lt;/p&gt;</summary>
@@ -38,7 +55,7 @@
     <link href="https://tyfkda.github.io/blog/2022/09/29/cc-aarch64.html"/>
     <id>https://tyfkda.github.io/blog/2022/09/29/cc-aarch64.html</id>
     <published>2022-09-29T06:00:00.000Z</published>
-    <updated>2022-09-29T06:53:36.886Z</updated>
+    <updated>2022-10-11T01:14:03.545Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作しているCコンパイラ&lt;/a&gt;ではx86-64のアセンブリを出力していたが、
@@ -176,21 +193,6 @@
     
     
     <category term="machine learning" scheme="https://tyfkda.github.io/tags/machine-learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kerasで構築したモデルをTensorFlow.jsで動かす</title>
-    <link href="https://tyfkda.github.io/blog/2022/05/05/keras-model-on-tfjs.html"/>
-    <id>https://tyfkda.github.io/blog/2022/05/05/keras-model-on-tfjs.html</id>
-    <published>2022-05-05T09:00:00.000Z</published>
-    <updated>2022-05-06T05:55:52.519Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;TensorFlow&amp;#x2F;Kerasで構築して学習したモデルを&lt;a href=&quot;https://www.tensorflow.org/js&quot;&gt;TensorFlow.js&lt;/a&gt;で動かしてみた。&lt;/p&gt;</summary>
-    
-    
-    
     
   </entry>
   
