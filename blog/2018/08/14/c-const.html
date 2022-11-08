@@ -227,17 +227,17 @@
 </ul>
 <h3 id="二重ポインタの場合"><a href="#二重ポインタの場合" class="headerlink" title="二重ポインタの場合"></a>二重ポインタの場合</h3><p>例えばC言語では文字列が <code>char</code> へのポインタなので、文字列の配列は二重ポインタ <code>char**</code> になる。
 それに対する <code>const</code> を置ける位置は3ヶ所なので、組み合わせは2の3乗で8通り：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">func1</span><span class="params">(<span class="type">const</span> <span class="type">char</span>** buf)</span> &#123;</span><br><span class="line">  <span class="comment">//*buf[0] = &#x27;\0&#x27;;  // エラー：文字列の内容の書き換え不可</span></span><br><span class="line">  buf[<span class="number">0</span>] = <span class="literal">NULL</span>;     <span class="comment">// 成功：配列の内容の書き換え可能</span></span><br><span class="line">  buf = <span class="literal">NULL</span>;        <span class="comment">// 成功：ポインタの指す先を変更可能</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func2</span><span class="params">(<span class="type">char</span>* <span class="type">const</span>* buf)</span> &#123;</span><br><span class="line">  *buf[<span class="number">0</span>] = <span class="string">&#x27;\0&#x27;</span>;    <span class="comment">// 成功：文字列の内容の書き換え可能</span></span><br><span class="line">  <span class="comment">//buf[0] = NULL;   // エラー：配列の内容の書き換え不可</span></span><br><span class="line">  buf = <span class="literal">NULL</span>;        <span class="comment">// 成功：ポインタの指す先を変更可能</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func3</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* <span class="type">const</span>* buf)</span> &#123;</span><br><span class="line">  <span class="comment">//*buf[0] = &#x27;\0&#x27;;  // エラー：文字列の内容の書き換え不可</span></span><br><span class="line">  <span class="comment">//buf[0] = NULL;   // エラー：配列の内容の書き換え不可</span></span><br><span class="line">  buf = <span class="literal">NULL</span>;        <span class="comment">// 成功：ポインタの指す先を変更可能</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func4</span><span class="params">(<span class="type">char</span>** <span class="type">const</span> buf)</span> &#123;</span><br><span class="line">  *buf[<span class="number">0</span>] = <span class="string">&#x27;\0&#x27;</span>;    <span class="comment">// 成功：文字列の内容の書き換え可能</span></span><br><span class="line">  buf[<span class="number">0</span>] = <span class="literal">NULL</span>;     <span class="comment">// 成功：配列の内容の書き換え可能</span></span><br><span class="line">  <span class="comment">//buf = NULL;      // エラー：ポインタの指す先を変更不可</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">func1</span><span class="params">(<span class="type">const</span> <span class="type">char</span>** buf1)</span> &#123;</span><br><span class="line">  <span class="comment">//*buf1[0] = &#x27;\0&#x27;;  // エラー：文字列中の文字の書き換え不可</span></span><br><span class="line">  buf1[<span class="number">0</span>] = <span class="literal">NULL</span>;     <span class="comment">// 成功：配列の内容の書き換え可能</span></span><br><span class="line">  buf1 = <span class="literal">NULL</span>;        <span class="comment">// 成功：ポインタの指す先を変更可能</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func2</span><span class="params">(<span class="type">char</span>* <span class="type">const</span>* buf2)</span> &#123;</span><br><span class="line">  *buf2[<span class="number">0</span>] = <span class="string">&#x27;\0&#x27;</span>;    <span class="comment">// 成功：文字列中の文字の書き換え可能</span></span><br><span class="line">  <span class="comment">//buf2[0] = NULL;   // エラー：配列の内容の書き換え不可</span></span><br><span class="line">  buf2 = <span class="literal">NULL</span>;        <span class="comment">// 成功：ポインタの指す先を変更可能</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func3</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* <span class="type">const</span>* buf3)</span> &#123;</span><br><span class="line">  <span class="comment">//*buf3[0] = &#x27;\0&#x27;;  // エラー：文字列中の文字の書き換え不可</span></span><br><span class="line">  <span class="comment">//buf3[0] = NULL;   // エラー：配列の内容の書き換え不可</span></span><br><span class="line">  buf3 = <span class="literal">NULL</span>;        <span class="comment">// 成功：ポインタの指す先を変更可能</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func4</span><span class="params">(<span class="type">char</span>** <span class="type">const</span> buf4)</span> &#123;</span><br><span class="line">  *buf4[<span class="number">0</span>] = <span class="string">&#x27;\0&#x27;</span>;    <span class="comment">// 成功：文字列中の文字の書き換え可能</span></span><br><span class="line">  buf4[<span class="number">0</span>] = <span class="literal">NULL</span>;     <span class="comment">// 成功：配列の内容の書き換え可能</span></span><br><span class="line">  <span class="comment">//buf4 = NULL;      // エラー：ポインタの指す先を変更不可</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><code>func1</code>は文字列は上書き不可、配列とポインタは可<ul>
+<li><code>func1</code>の<code>buf1</code>は文字列は上書き不可、配列とポインタは可<ul>
 <li><code>const</code>と<code>char</code>を入れ替えた場合は同じなので省略</li>
 </ul>
 </li>
-<li><code>func2</code>は配列は上書き不可、文字列とポインタは可</li>
-<li><code>func3</code>は文字列と配列は上書き不可、ポインタは可</li>
-<li><code>func4</code>はポインタは上書き不可、文字列と配列は可</li>
-<li>以下[<code>func4</code>]×[<code>func1</code>,<code>func2</code>,<code>func3</code>]で組み合わせ</li>
+<li><code>buf2</code>は配列は上書き不可、文字列とポインタは可</li>
+<li><code>buf3</code>は文字列と配列は上書き不可、ポインタは可</li>
+<li><code>buf4</code>はポインタは上書き不可、文字列と配列は可</li>
+<li>以下[<code>buf4</code>]×[<code>buf1</code>,<code>buf2</code>,<code>buf3</code>]で組み合わせ</li>
 </ul>
 <h3 id="考え方"><a href="#考え方" class="headerlink" title="考え方"></a>考え方</h3><p>プリミティブな型の前でも後でも意味は変わらないので後に置くことにして(ex. <code>char const</code>)、
 <code>const</code>より左の内容が上書き不可になる：</p>
@@ -251,25 +251,25 @@
 </tr>
 </thead>
 <tbody><tr>
-<td align="left"><strong>char</strong> const** buf1</td>
+<td align="left"><font color=red>char</font> const** buf1</td>
 <td align="left"><font color=red><strong>不可</strong></font></td>
 <td align="left">可</td>
 <td align="left">可</td>
 </tr>
 <tr>
-<td align="left">char <strong>*</strong> const* buf2</td>
+<td align="left">char <font color=red>*</font> const* buf2</td>
 <td align="left">可</td>
 <td align="left"><font color=red><strong>不可</strong></font></td>
 <td align="left">可</td>
 </tr>
 <tr>
-<td align="left">** <em>char</em> const*** const* buf3</td>
+<td align="left"><font color=red>char const*</font> const* buf3</td>
 <td align="left"><font color=red><strong>不可</strong></font></td>
 <td align="left"><font color=red><strong>不可</strong></font></td>
 <td align="left">可</td>
 </tr>
 <tr>
-<td align="left">char <strong>**</strong> const buf4</td>
+<td align="left">char <font color=red>**</font> const buf4</td>
 <td align="left">可</td>
 <td align="left">可</td>
 <td align="left"><font color=red><strong>不可</strong></font></td>
@@ -306,7 +306,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/23/mark-sweep.html" title="マーク＆スイープ法をテスト実装してみる" rel="bookmark">マーク＆スイープ法をテスト実装してみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/20/parsing-func-returning-func.html" title="関数ポインタを返す関数のパースと型の構築" rel="bookmark">関数ポインタを返す関数のパースと型の構築</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/18/pp-macro-expand.html" title="【C】プリプロセッサのマクロ展開アルゴリズム" rel="bookmark">【C】プリプロセッサのマクロ展開アルゴリズム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/printf-arg-index.html" title="【C】printfで引数の順番を指定して参照する" rel="bookmark">【C】printfで引数の順番を指定して参照する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/printf-substring.html" title="【C】printfで文字列の一部を表示する（最長制限）" rel="bookmark">【C】printfで文字列の一部を表示する（最長制限）</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/23/mark-sweep.html" title="マーク＆スイープ法をテスト実装してみる" rel="bookmark">マーク＆スイープ法をテスト実装してみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/20/parsing-func-returning-func.html" title="関数ポインタを返す関数のパースと型の構築" rel="bookmark">関数ポインタを返す関数のパースと型の構築</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/printf-arg-index.html" title="【C】printfで引数の順番を指定して参照する" rel="bookmark">【C】printfで引数の順番を指定して参照する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/18/pp-macro-expand.html" title="【C】プリプロセッサのマクロ展開アルゴリズム" rel="bookmark">【C】プリプロセッサのマクロ展開アルゴリズム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/printf-substring.html" title="【C】printfで文字列の一部を表示する（最長制限）" rel="bookmark">【C】printfで文字列の一部を表示する（最長制限）</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

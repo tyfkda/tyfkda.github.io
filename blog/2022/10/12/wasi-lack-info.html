@@ -215,11 +215,11 @@
 <h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>WASMはバイナリフォーマットが決められているがそれだけだと単なる演算しかできなくて、入出力などの外部とのやり取りはインポートした関数の呼び出し経由て行うことになる。
 どのような関数を用意してやるかはまったく自由なので、現状はPOSIX風なオレオレ定義でやっている。
 しかしそれだと生成した.wasmバイナリの可搬性が悪いので困ることになる。</p>
-<p>そのような経緯でWASI(WebAssembly System Interface)というものが出てきた（たぶん）。
+<p>そのような経緯で<a href="https://wasi.dev/">WASI</a>(WebAssembly System Interface)というものが出てきた（たぶん）。
 WASIはAPI（インポートされる関数の仕様）の規定で、それに従えばバイナリをWASI準拠の別の環境に持っていっても動かすことができる。</p>
 <p>自作Cコンパイラからの出力もそれに準拠したほうが可搬性が上がるのでよいだろう、と思ってるんだが情報が不足していて苦労している。</p>
 <h3 id="やったこと"><a href="#やったこと" class="headerlink" title="やったこと"></a>やったこと</h3><h4 id="ハローWASIワールド"><a href="#ハローWASIワールド" class="headerlink" title="ハローWASIワールド"></a>ハローWASIワールド</h4><p>ひとまずハローワールド、ということで文字列出力から探る。
-インポートの名前空間は <code>wasi_snapshot_preview1</code> （これもどうかと思うが…）、
+インポートのモジュール名は <code>wasi_snapshot_preview1</code> （これもどうかと思うが…）、
 エントリポイントは <code>_start</code> （<code>_start</code> はWASIのシステム予約で、ユーザ側は <code>main</code> からってんじゃないんだ）、
 ファイル出力は <code>fd_write</code> （<code>Iov</code> ってなによ？複数渡したいケースってあるんか？）
 などいろいろ戸惑いながら。

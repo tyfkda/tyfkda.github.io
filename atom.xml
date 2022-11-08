@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-10-12T09:26:54.946Z</updated>
+  <updated>2022-11-08T02:40:58.794Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2022/10/12/wasi-lack-info.html"/>
     <id>https://tyfkda.github.io/blog/2022/10/12/wasi-lack-info.html</id>
     <published>2022-10-12T09:00:00.000Z</published>
-    <updated>2022-10-12T09:26:54.946Z</updated>
+    <updated>2022-11-08T02:40:58.794Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作Cコンパイラ&lt;/a&gt;から出力するWASMのバイナリコードをWASIに準拠させたいが、WASIのAPIに関する情報が探せずに困ってる、というはなし。&lt;/p&gt;</summary>
@@ -38,7 +38,7 @@
     <link href="https://tyfkda.github.io/blog/2022/10/05/cpp-cast.html"/>
     <id>https://tyfkda.github.io/blog/2022/10/05/cpp-cast.html</id>
     <published>2022-10-05T03:00:00.000Z</published>
-    <updated>2022-10-05T06:22:47.601Z</updated>
+    <updated>2022-11-08T02:40:58.788Z</updated>
     
     
     <summary type="html">&lt;p&gt;C++のキャストについてあまりよく知らなかったので調べた。&lt;/p&gt;</summary>
@@ -55,7 +55,7 @@
     <link href="https://tyfkda.github.io/blog/2022/09/29/cc-aarch64.html"/>
     <id>https://tyfkda.github.io/blog/2022/09/29/cc-aarch64.html</id>
     <published>2022-09-29T06:00:00.000Z</published>
-    <updated>2022-10-11T01:14:03.545Z</updated>
+    <updated>2022-11-08T02:40:58.787Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作しているCコンパイラ&lt;/a&gt;ではx86-64のアセンブリを出力していたが、
@@ -74,7 +74,7 @@
     <link href="https://tyfkda.github.io/blog/2022/09/18/pp-macro-expand.html"/>
     <id>https://tyfkda.github.io/blog/2022/09/18/pp-macro-expand.html</id>
     <published>2022-09-17T23:00:00.000Z</published>
-    <updated>2022-09-17T23:03:02.118Z</updated>
+    <updated>2022-11-08T02:40:58.791Z</updated>
     
     
     <summary type="html">&lt;p&gt;C言語のプリプロセッサを自作して簡単なマクロは扱えていたが、
@@ -94,7 +94,7 @@
     <link href="https://tyfkda.github.io/blog/2022/09/16/css-object-fit.html"/>
     <id>https://tyfkda.github.io/blog/2022/09/16/css-object-fit.html</id>
     <published>2022-09-16T07:00:00.000Z</published>
-    <updated>2022-09-16T08:12:04.193Z</updated>
+    <updated>2022-11-08T02:40:58.788Z</updated>
     
     
     <summary type="html">&lt;p&gt;アスペクト比を保持したままキャンバスをブラウザ一杯に、長辺が収まるようにスケールさせたかったので調べた。&lt;/p&gt;
@@ -113,7 +113,7 @@
     <link href="https://tyfkda.github.io/blog/2022/07/29/ue5-cpp.html"/>
     <id>https://tyfkda.github.io/blog/2022/07/29/ue5-cpp.html</id>
     <published>2022-07-29T07:31:11.000Z</published>
-    <updated>2022-09-15T12:12:17.370Z</updated>
+    <updated>2022-11-08T02:40:58.792Z</updated>
     
     
     <summary type="html">&lt;p&gt;Unreal Engineのブループリントを使った簡単なサンプルの作り方はわかったので、C++も使えるようになろうと試してみた。&lt;/p&gt;</summary>
@@ -130,7 +130,7 @@
     <link href="https://tyfkda.github.io/blog/2022/07/07/ue5-first-game.html"/>
     <id>https://tyfkda.github.io/blog/2022/07/07/ue5-first-game.html</id>
     <published>2022-07-07T03:00:00.000Z</published>
-    <updated>2022-09-15T11:29:54.527Z</updated>
+    <updated>2022-11-08T02:40:58.792Z</updated>
     
     
     <summary type="html">&lt;p&gt;今までもUnreal Engineを使えるようになりたいと思っていたけど、&lt;a href=&quot;https://www.youtube.com/watch?v=WU0gvPcc3jQ&quot;&gt;Matrix Awakensのデモ動画&lt;/a&gt; を見てちょっとこれは凄すぎて次元が違う、使えるようにならないと取り残されると危機感を持った。&lt;/p&gt;
@@ -148,7 +148,7 @@
     <link href="https://tyfkda.github.io/blog/2022/06/28/archive-format.html"/>
     <id>https://tyfkda.github.io/blog/2022/06/28/archive-format.html</id>
     <published>2022-06-28T05:00:00.000Z</published>
-    <updated>2022-06-28T08:10:29.098Z</updated>
+    <updated>2022-11-08T02:40:58.786Z</updated>
     
     
     <summary type="html">&lt;a href=&quot;/blog/2022/03/13/elf-linker.html&quot; title=&quot;リンカーを自作した&quot;&gt;リンカーを自作した&lt;/a&gt;際に入力としてELFのオブジェクトファイル(.o)を受け付けるようにしていたが、それだけだとライブラリの扱いで無駄が生じるのでアーカイブファイル(.a)も入力できるようにした。</summary>
@@ -163,7 +163,7 @@
     <link href="https://tyfkda.github.io/blog/2022/05/29/vscode-return2.html"/>
     <id>https://tyfkda.github.io/blog/2022/05/29/vscode-return2.html</id>
     <published>2022-05-29T00:00:00.000Z</published>
-    <updated>2022-05-31T12:10:05.875Z</updated>
+    <updated>2022-11-08T02:40:58.793Z</updated>
     
     
       
@@ -183,7 +183,7 @@
     <link href="https://tyfkda.github.io/blog/2022/05/26/hira-kan-recog.html"/>
     <id>https://tyfkda.github.io/blog/2022/05/26/hira-kan-recog.html</id>
     <published>2022-05-26T03:00:00.000Z</published>
-    <updated>2022-06-06T04:02:21.508Z</updated>
+    <updated>2022-11-08T02:40:58.790Z</updated>
     
     
     <summary type="html">&lt;a href=&quot;/blog/2016/08/17/tensorflow-cnn.html&quot; title=&quot;TensorFlowでひらがな・漢字文字認識&quot;&gt;だいぶ以前&lt;/a&gt;にディープラーニング（CNN）で文字認識を試したことがあったが、学習のワークフローなどをまとめたいと思っているうちに時が流れて、ソースが失われてしまった。
