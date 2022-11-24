@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-11-08T02:40:58.794Z</updated>
+  <updated>2022-11-24T04:26:03.719Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【C】可変長引数の回避と引数の数による関数の呼び分け</title>
+    <link href="https://tyfkda.github.io/blog/2022/11/23/open-impl.html"/>
+    <id>https://tyfkda.github.io/blog/2022/11/23/open-impl.html</id>
+    <published>2022-11-23T10:00:00.000Z</published>
+    <updated>2022-11-24T04:26:03.719Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;例えばPOSIXの &lt;code&gt;open&lt;/code&gt; 関数は引数を2つ、または3つ与える形になっている。
+このような関数を自作C言語上で実装する場合に可変長引数を使用すると、内部的に引数をスタック上にストアして取り出す処理が行われるため、コストがかかってしまう。
+それを回避する方法を考える。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="c" scheme="https://tyfkda.github.io/tags/c/"/>
+    
+  </entry>
   
   <entry>
     <title>WASI上でのファイルオープンに悪戦苦闘した話</title>
@@ -175,24 +194,6 @@
     
     
     <category term="texteditor" scheme="https://tyfkda.github.io/tags/texteditor/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>転移学習で手書きのひらがな・漢字認識</title>
-    <link href="https://tyfkda.github.io/blog/2022/05/26/hira-kan-recog.html"/>
-    <id>https://tyfkda.github.io/blog/2022/05/26/hira-kan-recog.html</id>
-    <published>2022-05-26T03:00:00.000Z</published>
-    <updated>2022-11-08T02:40:58.790Z</updated>
-    
-    
-    <summary type="html">&lt;a href=&quot;/blog/2016/08/17/tensorflow-cnn.html&quot; title=&quot;TensorFlowでひらがな・漢字文字認識&quot;&gt;だいぶ以前&lt;/a&gt;にディープラーニング（CNN）で文字認識を試したことがあったが、学習のワークフローなどをまとめたいと思っているうちに時が流れて、ソースが失われてしまった。
-&lt;p&gt;そのまま葬り去られてしまうのは惜しいので供養（再挑戦）してみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="machine learning" scheme="https://tyfkda.github.io/tags/machine-learning/"/>
     
   </entry>
   

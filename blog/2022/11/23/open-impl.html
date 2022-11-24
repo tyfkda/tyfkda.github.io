@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="例えばPOSIXの open 関数は引数を2つ、または3つ与える形になっている。
+このような関数を自作C言語上で実装する場合に可変長引数を使用すると、内部的に引数をスタック上にストアして取り出す処理が行われるため、コストがかかってしまう。
+それを回避する方法を考える。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【C】可変長引数の回避と引数の数による関数の呼び分け"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【C】可変長引数の回避と引数の数による関数の呼び分け - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2022/11/23/open-impl.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【C】可変長引数の回避と引数の数による関数の呼び分け</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2022-11-23
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/c/">#c</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>例えばPOSIXの <code>open</code> 関数は引数を2つ、または3つ与える形になっている。
+このような関数を自作C言語上で実装する場合に可変長引数を使用すると、内部的に引数をスタック上にストアして取り出す処理が行われるため、コストがかかってしまう。
+それを回避する方法を考える。</p>
+<span id="more"></span>
+
+<h3 id="標準のopen関数の宣言"><a href="#標準のopen関数の宣言" class="headerlink" title="標準のopen関数の宣言"></a>標準のopen関数の宣言</h3><p>C言語ではオプショナルな引数みたいなことはできないので、<code>open</code> 関数のように引数を2個または3個受け付ける関数は <code>...</code> を使って可変長引数関数にすることになる：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">open</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *pathname, <span class="type">int</span> flags, <span class="comment">/*mode_t mode*/</span>...)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>3個目の引数の型がチェックされない・4個以上も受け付けてしまうという問題はあるが、ちゃんと利用できる。</p>
+<h3 id="open関数の実装方法"><a href="#open関数の実装方法" class="headerlink" title="open関数の実装方法"></a>open関数の実装方法</h3><p>引数の数が可変の関数を実装する場合、正攻法としては<code>stdarg.h</code>をインクルードして扱う。
+ただし可変長引数を扱う関数は通常の関数よりはコストがかかる。
+x86_64などの64ビット環境では関数への引数がレジスタ渡しされるが、一旦スタック上にストアして取り出すことになる。</p>
+<p><code>printf</code>のように場合によって異なる型を受け付けるのであれば可変長引数を使用する必要があると思うが、
+<code>open</code>のように引数が基本2つで場合によっては追加で<code>int</code>1つという固定の用途ではペナルティがデカすぎるように感じてしまう。</p>
+<p>そこで手としては、関数定義側では可変長引数のプロトタイプ宣言されているヘッダファイルをインクルードせずに、<code>...</code>を使わずに3引数を受け取る関数を定義してやる。
+そうすることによって引数のスタックへのストアを行わずに済む。</p>
+<h3 id="上記の問題点"><a href="#上記の問題点" class="headerlink" title="上記の問題点"></a>上記の問題点</h3><p>上記の方法は使用環境の呼出規約によっては問題が出る。
+MacOSでは可変長部分の引数はレジスタ渡しではなくスタック経由で渡されるため、宣言と定義がずれていると引数が正しく受け渡せなくなってしまう。</p>
+<h3 id="引数の数で関数を呼び分ける"><a href="#引数の数で関数を呼び分ける" class="headerlink" title="引数の数で関数を呼び分ける"></a>引数の数で関数を呼び分ける</h3><p><code>open</code>を可変長引数関数にしないためにヘッダのプロトタイプ宣言でも<code>...</code>を指定せずに3引数関数として宣言するが、
+呼び出し側は引数が2つでも受け付けないといけない。
+C言語では引数の数が違う同じ名前の関数を定義したり、それらの関数の呼び分けすることはできないが、プリプロセッサのマクロによるトリックを駆使すると引数の数によって切り替えることができる。</p>
+<p>マクロも可変長引数にすることができて、<code>...</code>が<code>__VA_ARGS__</code>として受け取れるということを使ってゴニョゴニョすると、引数の数によって切り替えることができる
+（参考：<a href="https://qiita.com/tyanmahou/items/bb45c0ad63b9df4abaf1">[備忘録]マクロの引数の数でオーバーロード - Qiita</a>）。</p>
+<p>それを利用すると、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">open</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *pathname, <span class="type">int</span> flags, <span class="type">mode_t</span> mode)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> open(...)  _OPEN_OVERLOAD(__VA_ARGS__, open, ((int(*)(const char*, int))open))(__VA_ARGS__)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _OPEN_OVERLOAD(_1, _2, _3, NAME, ...)  NAME</span></span><br></pre></td></tr></table></figure>
+
+<p><code>open</code>関数は3引数としてヘッダで宣言し、マクロで呼び分けられるようにする。
+3つ引数が与えられた場合はそのまま、2つの場合にはキャストで引数の数を偽装して、3番目の引数は与えずに（不定値！）呼び出すようにする。</p>
+<p>マクロが同じ名前でもマクロ展開は1度しかされないので、意図通り<code>open</code>関数を呼び出すことができる。</p>
+<p>実装側は宣言ヘッダをインクルードしないか、マクロを<code>#undef</code>してやればよい。</p>
+<p>問題としては、2つか3つ以外の引数を与えると意味不明なエラーメッセージが出てしまう。</p>
+<h4 id="細かい話"><a href="#細かい話" class="headerlink" title="細かい話"></a>細かい話</h4><p>gccやclangのコンパイラオプション<code>-pedantic</code>で厳密なチェックを有効にしていると、引数が3つの場合<code>_OPEN_OVERLOAD</code>でエラーになる。
+<code>...</code>が空というのが許されないらしい（可変長だけの場合は空でもいいのに、なんでや…）。
+<code>_OPEN_OVERLOAD</code>マクロ呼び出しに余分に引数を渡してやるか、コンパイルオプションに<code>-Wno-gnu-zero-variadic-macro-arguments</code>も指定すると回避できる。</p>
+<h3 id="真っ当な道"><a href="#真っ当な道" class="headerlink" title="真っ当な道"></a>真っ当な道</h3><p>可変長引数として定義する関数でも内部で<code>va_arg</code>が限定された使われ方かどうかを判定して、そういった場合には引数をスタックに展開しないように最適化するのが筋
+（gcc&#x2F;clangで最適化をかけて出力したソースを見るとそうなっている模様）。</p>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/08/14/c-const.html" title="【C】constポインタは何が上書き不可なのか" rel="bookmark">【C】constポインタは何が上書き不可なのか</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/23/mark-sweep.html" title="マーク＆スイープ法をテスト実装してみる" rel="bookmark">マーク＆スイープ法をテスト実装してみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/20/parsing-func-returning-func.html" title="関数ポインタを返す関数のパースと型の構築" rel="bookmark">関数ポインタを返す関数のパースと型の構築</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/18/pp-macro-expand.html" title="【C】プリプロセッサのマクロ展開アルゴリズム" rel="bookmark">【C】プリプロセッサのマクロ展開アルゴリズム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/printf-arg-index.html" title="【C】printfで引数の順番を指定して参照する" rel="bookmark">【C】printfで引数の順番を指定して参照する</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2022 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
