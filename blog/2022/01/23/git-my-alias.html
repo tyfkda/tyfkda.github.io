@@ -247,9 +247,9 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[alias]</span><br><span class="line">	rtm = rebase main</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="ツリー表示"><a href="#ツリー表示" class="headerlink" title="ツリー表示"></a>ツリー表示</h3><p>Sourcetree などのGUIアプリが使える場合にはそれでいいんだけど、そうじゃない場合には困る。
-<a href="https://jonas.github.io/tig/">tig</a> などを入れて操作を覚えればいいんだけど、その手間も省きたい怠惰な人は <code>tree</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[alias]</span><br><span class="line">	tree = log --graph --branches --date=short --format=\&quot;%C(yellow)%h %C(magenta)%ad%C(auto)%d%C(reset) %C(bold)%s%C(reset) %C(cyan)%an\&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="ツリー表示"><a href="#ツリー表示" class="headerlink" title="ツリー表示"></a>ツリー表示</h3><p>Sourcetree などのGUIアプリが使える場合にはそれでいいんだけど、そうじゃない場合でもツリー表示が見たい。
+<a href="https://jonas.github.io/tig/">tig</a> などを入れて操作を覚えればいいんだけど、その手間も省きたい怠惰な人は <code>his</code> (history)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[alias]</span><br><span class="line">	his = log --graph --branches --date=short --format=\&quot;%C(yellow)%h %C(magenta)%ad%C(auto)%d%C(reset) %C(bold)%s%C(reset) %C(cyan)%an\&quot;</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="エイリアス一覧"><a href="#エイリアス一覧" class="headerlink" title="エイリアス一覧"></a>エイリアス一覧</h3><p><code>git config --list</code> して <code>grep &#39;^alias&#39;</code> でも全然いいんだけども。</p>
@@ -269,7 +269,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/16/git-fixup-autosquash.html" title="【git】あとから修正を差し込む（fixupとautosquash）" rel="bookmark">【git】あとから修正を差し込む（fixupとautosquash）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/18/git-flow.html" title="git-flowコマンドラインツールをgithub-flowとして使う" rel="bookmark">git-flowコマンドラインツールをgithub-flowとして使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/07/git-worktree.html" title="gh-pagesをサブディレクトリ内で管理" rel="bookmark">gh-pagesをサブディレクトリ内で管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/17/git-log.html" title="自分が今日一日何をしたのか調べる(gitのlogから)" rel="bookmark">自分が今日一日何をしたのか調べる(gitのlogから)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/10/22/pull-request.html" title="GitHubでプルリクエストを送るときの操作手順" rel="bookmark">GitHubでプルリクエストを送るときの操作手順</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/16/git-fixup-autosquash.html" title="【git】あとから修正を差し込む（fixupとautosquash）" rel="bookmark">【git】あとから修正を差し込む（fixupとautosquash）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/18/git-flow.html" title="git-flowコマンドラインツールをgithub-flowとして使う" rel="bookmark">git-flowコマンドラインツールをgithub-flowとして使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/17/git-log.html" title="自分が今日一日何をしたのか調べる(gitのlogから)" rel="bookmark">自分が今日一日何をしたのか調べる(gitのlogから)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/07/git-worktree.html" title="gh-pagesをサブディレクトリ内で管理" rel="bookmark">gh-pagesをサブディレクトリ内で管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/10/22/pull-request.html" title="GitHubでプルリクエストを送るときの操作手順" rel="bookmark">GitHubでプルリクエストを送るときの操作手順</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
