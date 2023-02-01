@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="コンパイル結果を見ていた時にソースでは除算を使っているのに出力されたコードには使われていなかったことがあり、どういう仕組みかを調べた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="定数による整数除算の高速化【論文読み】"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>定数による整数除算の高速化【論文読み】 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/01/30/division-by-invariant-integers.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>定数による整数除算の高速化【論文読み】</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-01-30
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/algorithm/">#algorithm</a> <a href="/tags/math/">#math</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>コンパイル結果を見ていた時にソースでは除算を使っているのに出力されたコードには使われていなかったことがあり、どういう仕組みかを調べた。</p>
+<span id="more"></span>
+
+<p>ググったところ、Stack Overflowがヒットした：
+<a href="https://stackoverflow.com/questions/41183935/why-does-gcc-use-multiplication-by-a-strange-number-in-implementing-integer-divi">c - Why does GCC use multiplication by a strange number in implementing integer division? - Stack Overflow</a>。
+要するに除算は重いから、定数での除算は最適化で乗算やシフトなどの軽い演算に置き換えられるとか。
+そこで上記の回答に挙げられていた論文を読んでみる。</p>
+<h3 id="“Division-by-Invariant-Integers-using-Multiplication”"><a href="#“Division-by-Invariant-Integers-using-Multiplication”" class="headerlink" title="“Division by Invariant Integers using Multiplication”"></a>“Division by Invariant Integers using Multiplication”</h3><p>論文のpdf：<a href="https://gmplib.org/~tege/divcnst-pldi94.pdf">“Division by Invariant Integers using Multiplication”</a></p>
+<p>Nビット同士の除算で簡単な順に、(i)符号なしの場合、(ii)符号ありで商を０に向かって丸める、(iii)符号ありで商を−∞に丸める、手順が書かれている。
+まずは(i)符号なしの場合を読む。</p>
+<h4 id="符号なしの場合、導出"><a href="#符号なしの場合、導出" class="headerlink" title="符号なしの場合、導出"></a>符号なしの場合、導出</h4><p>論文の4章に符号なしNビット同士の除算について書かれている。</p>
+<p>割る数を <script type="math/tex">d</script>（不変）、割られる数を <script type="math/tex">n</script>（可変）とした時の商を <script type="math/tex">q = \lfloor \frac{n}{d} \rfloor</script> として、<script type="math/tex">\lfloor \frac{n}{d} \rfloor = \lfloor \frac{m * n}{2^{N + l}} \rfloor</script> （4.1式）となる <script type="math/tex">m</script> を求めるための不等式の導出がわかりにくい…。</p>
+<p>まず <script type="math/tex">l</script> がなにかがこの時点では書かれてないように見える。
+後の図4.1に <script type="math/tex">l = \lceil \log_2 d \rceil</script> と書かれているので、割る数 <script type="math/tex">d</script> の <code>log2</code>（＝２の何乗以下か）を示しているぽい。</p>
+<script type="math/tex">n = d</script> とすると <script type="math/tex">2^{N + l} \le m * d</script> となる、というのは(4.1)式に代入すれば左辺が1で、それに等しくなるためには
+<script type="math/tex">m * d</script> が <script type="math/tex">2^{N+l}</script> 以上である必要がある、ということから不等式が導かれる。
+
+<p>次の上限を抑える不等式も間をすっ飛ばしているので導出がわかりにくい…。
+その上 <script type="math/tex">n = q * d - 1</script> とするというのは、もともと <script type="math/tex">q = \lfloor \frac{n}{d} \rfloor</script> なので成り立つわけがなくおかしいので、
+変数名を <script type="math/tex">q</script> から例えば <script type="math/tex">i</script> に変えて <script type="math/tex">n = i * d - 1</script> などとする必要があるように思う。</p>
+<p>そうして代入すると左辺は <script type="math/tex">\lfloor \frac{i * d - 1}{d} \rfloor = \lfloor i - \frac{1}{d} \rfloor = i - 1</script>、
+右辺 <script type="math/tex">\lfloor \frac{m * (i * d - 1)}{2^{N + l}} \rfloor</script> が <script type="math/tex">i-1</script> となるためには分子が分母*iより小さくなる必要がある、という導出になる。</p>
+<script type="math/tex">d</script> を掛けて〜というのは、先ほどのに乗じた <script type="math/tex">2^{N+l} * (i * d) = 2^{N+l} * (i * d - 1 + 1) = 2^{N+l} * (i * d - 1) + 2^{N+l}</script>
+<p>となって、移項して <script type="math/tex">i * d - 1</script>　で括れば導出できる。</p>
+<p>そんなこんなで定理4.2で不等式(4.3)とその証明が示されるが、あまり理解できず…。</p>
+<h4 id="符号なしの場合、アルゴリズム"><a href="#符号なしの場合、アルゴリズム" class="headerlink" title="符号なしの場合、アルゴリズム"></a>符号なしの場合、アルゴリズム</h4><p>図4.1 に必要な係数と演算方法が、またその改良を施した版が図4.2に示される。
+割る値 <script type="math/tex">d</script> とそれから算出した <script type="math/tex">m</script> によって場合わけされる
+（<code>MULUH</code>＝Nビット同士の乗算結果2Nビットの上位Nビット（符号なし）、<code>SRL</code>＝論理右シフト）：</p>
+<ul>
+<li><script type="math/tex">d</script> が2のべき乗の場合
+<ul>
+<li>ビットシフトのみ： <code>q = SRL(n, l);</code></li>
+</ul>
+</li>
+<li><script type="math/tex">m \ge 2^N</script> の場合
+<ul>
+<li><code>t1 = MULUH(m - 2^N, n); q = SRL(t1 + SRL(n - t1, 1), sh_post - 1);</code></li>
+</ul>
+</li>
+<li>その他<ul>
+<li><code>q = SRL(MULUH(m, SRL(n, sh_pre)), sh_post);</code></li>
+</ul>
+</li>
+</ul>
+<p><code>m</code>, <code>sh_post</code>, <code>l</code> は図6.2の<code>CHOOSE_MULTIPLIER</code>で算出する。</p>
+<h4 id="残り"><a href="#残り" class="headerlink" title="残り"></a>残り</h4><p>5章符号あり除算（0に向かって丸め）ほか書かれている（が理解はできず…）</p>
+<h3 id="“Improved-division-by-invariant-integers”"><a href="#“Improved-division-by-invariant-integers”" class="headerlink" title="“Improved division by invariant integers”"></a>“Improved division by invariant integers”</h3><p><a href="https://gmplib.org/~tege/division-paper.pdf">https://gmplib.org/~tege/division-paper.pdf</a></p>
+<ul>
+<li>除算を1つの<code>umul</code> と 1つの<code>umullo</code> で計算する、30%ほど高速化、とか</li>
+</ul>
+<h3 id="“Reciprocal-Multiplication-a-tutorial”"><a href="#“Reciprocal-Multiplication-a-tutorial”" class="headerlink" title="“Reciprocal Multiplication, a tutorial”"></a>“Reciprocal Multiplication, a tutorial”</h3><p>同じくStack Overflowに回答されていたリンクを見てみる：
+<a href="https://homepage.divms.uiowa.edu/~jones/bcd/divide.html">Jones on reciprocal multiplication</a></p>
+<ul>
+<li>マイクロプロセッサやDSPチップからは整数除算命令が削除されてるとか？<ul>
+<li>乗算命令もなくした方がいいとか？</li>
+</ul>
+</li>
+<li>固定小数点での逆数乗算の解説</li>
+<li>乗算をシフトに置き換える話<ul>
+<li>RISCマシンには加算＆シフト命令がある</li>
+</ul>
+</li>
+<li>符号あり被除数の場合の解説</li>
+</ul>
+<p>実際の数値の例が多くてわかりやすい。</p>
+<hr>
+<p>ちょっと理解が中途半端になってしまったが、力尽きたのでこの辺で終わり…。</p>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/26/simplify-line-segments.html" title="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)" rel="bookmark">折れ線を簡略化する方法(Ramer-Douglas-Peucker法)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

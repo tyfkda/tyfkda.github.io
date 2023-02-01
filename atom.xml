@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2022-12-21T11:01:42.053Z</updated>
+  <updated>2023-02-01T14:20:41.687Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,49 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>定数による整数除算の高速化【論文読み】</title>
+    <link href="https://tyfkda.github.io/blog/2023/01/30/division-by-invariant-integers.html"/>
+    <id>https://tyfkda.github.io/blog/2023/01/30/division-by-invariant-integers.html</id>
+    <published>2023-01-30T09:00:00.000Z</published>
+    <updated>2023-02-01T14:20:41.687Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;コンパイル結果を見ていた時にソースでは除算を使っているのに出力されたコードには使われていなかったことがあり、どういう仕組みかを調べた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
+    
+    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>floor関数を実装する</title>
+    <link href="https://tyfkda.github.io/blog/2023/01/15/floor-impl.html"/>
+    <id>https://tyfkda.github.io/blog/2023/01/15/floor-impl.html</id>
+    <published>2023-01-15T03:00:00.000Z</published>
+    <updated>2023-02-01T14:20:04.418Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;C言語の数学関数の &lt;code&gt;floor&lt;/code&gt; を自前で実装するにはどうするか。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
+    
+    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【2022末】初めての自作PC</title>
     <link href="https://tyfkda.github.io/blog/2022/12/20/homebuilt-computer.html"/>
     <id>https://tyfkda.github.io/blog/2022/12/20/homebuilt-computer.html</id>
     <published>2022-12-20T03:00:00.000Z</published>
-    <updated>2022-12-21T11:01:42.053Z</updated>
+    <updated>2022-12-21T11:03:24.621Z</updated>
     
     
     <summary type="html">&lt;p&gt;初めてPCを自作したのでメモっておく。&lt;/p&gt;</summary>
@@ -156,39 +194,6 @@
     
     
     <category term="unreal" scheme="https://tyfkda.github.io/tags/unreal/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unreal Engineの入門</title>
-    <link href="https://tyfkda.github.io/blog/2022/07/07/ue5-first-game.html"/>
-    <id>https://tyfkda.github.io/blog/2022/07/07/ue5-first-game.html</id>
-    <published>2022-07-07T03:00:00.000Z</published>
-    <updated>2022-11-08T02:40:58.792Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;今までもUnreal Engineを使えるようになりたいと思っていたけど、&lt;a href=&quot;https://www.youtube.com/watch?v=WU0gvPcc3jQ&quot;&gt;Matrix Awakensのデモ動画&lt;/a&gt; を見てちょっとこれは凄すぎて次元が違う、使えるようにならないと取り残されると危機感を持った。&lt;/p&gt;
-&lt;p&gt;使用バージョン： Unreal Engine 5.0.2&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="unreal" scheme="https://tyfkda.github.io/tags/unreal/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>アーカイブファイルのフォーマット</title>
-    <link href="https://tyfkda.github.io/blog/2022/06/28/archive-format.html"/>
-    <id>https://tyfkda.github.io/blog/2022/06/28/archive-format.html</id>
-    <published>2022-06-28T05:00:00.000Z</published>
-    <updated>2022-11-08T02:40:58.786Z</updated>
-    
-    
-    <summary type="html">&lt;a href=&quot;/blog/2022/03/13/elf-linker.html&quot; title=&quot;リンカーを自作した&quot;&gt;リンカーを自作した&lt;/a&gt;際に入力としてELFのオブジェクトファイル(.o)を受け付けるようにしていたが、それだけだとライブラリの扱いで無駄が生じるのでアーカイブファイル(.a)も入力できるようにした。</summary>
-    
-    
-    
     
   </entry>
   
