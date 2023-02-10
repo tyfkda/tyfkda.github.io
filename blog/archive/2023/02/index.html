@@ -10,8 +10,6 @@
 
     <!--Description-->
     
-        <meta name="description" content="ネットワーク上の画像を読み込むのにVolleyを使う方法で最初に見た記事がImageLoader#getImageListenerでリスナーを作ってImageLoader#getでImageContainerを作る方式だったのでそれを使っていたが、Google I&amp;#x2F;O 2013 の動画に出てきたNetworkImageViewを使うと自分でリクエストをキャンセルする必要もなくて楽だった（ただし動画のスライドはパッケージ名が違っているので注意）。">
-    
 
     <!--Author-->
     
@@ -20,7 +18,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="Volleyでの画像表示はNetworkImageViewが楽だった"/>
+        <meta property="og:title" content="Kludge Factory"/>
     
 
     <!--Open Graph Description-->
@@ -31,7 +29,7 @@
 
     <!--Type page-->
     
-        <meta property="og:type" content="article" />
+        <meta property="og:type" content="website" />
     
 
     <!--Page Cover-->
@@ -42,7 +40,7 @@
 
     <!-- Title -->
     
-    <title>Volleyでの画像表示はNetworkImageViewが楽だった - Kludge Factory</title>
+    <title>アーカイブ: 2023/2 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +65,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/01/30/volley.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/archive/2023/02/"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -152,95 +150,57 @@
 </nav>
 
     <!-- Main Content -->
-    <!-- Page Header -->
-<!-- Set your background image for this header in your post front-matter: cover -->
+    
 
+<!-- Page Header -->
+<!-- Set your background image for this header in the theme's configuration: index_cover -->
 <header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <h1>Volleyでの画像表示はNetworkImageViewが楽だった</h1>
-                    
-                    <span class="meta">
-                        <!-- Date and Author -->
-                        
-                        
-                            2015-01-30
-                        
-                    </span>
+                <div class="site-heading">
+                    <h1>2023/2</h1>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
-
-            <!-- Tags and categories -->
-           
-                <div class="col-lg-4 col-md-5 post-tags">
-                    
-                        
-
-
-<a href="/tags/android/">#android</a>
-
-
-                    
-                </div>
-                <div class="col-lg-4 col-md-5 post-categories">
-                    
-                </div>
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             
+                <div class="post-preview">
+    <a href="/blog/2023/02/10/wasm-try-catch.html">
+        <h1 class="post-title archive">
+            【WASM】例外を扱う
+        </h1>
+    </a>
+    <p class="post-meta archive">
+        <!-- Date and Author -->
+        
+        2023-02-10
 
-            <!-- Gallery -->
-            
-
-            <!-- Post Main Content -->
-            <div class="col-lg-9 col-md-9">
-                <p>ネットワーク上の画像を読み込むのにVolleyを使う方法で最初に見た記事が<code>ImageLoader#getImageListener</code>でリスナーを作って<code>ImageLoader#get</code>で<code>ImageContainer</code>を作る方式だったのでそれを使っていたが、<a href="https://www.youtube.com/watch?v=yhv8l9F44qo#t=16m40s">Google I&#x2F;O 2013 の動画</a>に出てきた<code>NetworkImageView</code>を使うと自分でリクエストをキャンセルする必要もなくて楽だった（ただし動画のスライドはパッケージ名が違っているので注意）。</p>
-<span id="more"></span>
-
-<p>レイアウトで<code>ImageView</code>の代わりに<a href="http://afzaln.com/volley/com/android/volley/toolbox/NetworkImageView.html">NetworkImageView</a>を配置して：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;com.android.volley.toolbox.NetworkImageView</span><br><span class="line">        android:id=&quot;@+id/hoge&quot;</span><br><span class="line">        ...&gt;</span><br></pre></td></tr></table></figure>
-
-<p><a href="http://afzaln.com/volley/com/android/volley/toolbox/NetworkImageView.html#setImageUrl%28java.lang.String,%20com.android.volley.toolbox.ImageLoader%29">setImageUrl</a>を呼び出せばそれだけでOK：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NetworkImageView imageView = (NetworkImageView) convertView.findViewById(R.id.hoge);</span><br><span class="line">imageView.setImageUrl(url, imageLoader);</span><br></pre></td></tr></table></figure>
-
-<p>ListViewのAdapterなどでViewを使いまわされる場合にも自分でキャンセルする必要がない。またアクティビティだかフラグメントが非アクティブになる時にも自動的にキャンセルされる（らしい）。</p>
-<p><code>getImageListener</code>で指定していた第２，第３引数の<code>defaultImageResId</code>と<code>errorImageResId</code>も設定できる：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">imageView.setDefaultImageResId(defaultImageResId);</span><br><span class="line">imageView.setErrorImageResId(errorImageResId);</span><br></pre></td></tr></table></figure>
-
-<p>普段はネットワークのURLから読み込むけど、ある条件ではリソース中のnoimageを表示したい、という場合には上記の<code>defaultImageResId</code>を設定して、<code>imageView.setImageUrl(null)</code>とすればよい。</p>
-<p>この簡単さ、いや逆になんで最初からこういうのなかったんだ、という気にさえなってくる。</p>
-
-
+        
+            <span class="post-tags">
                 
+                <a href="/tags/wasm/" style="text-decoration:none">#wasm</a>
+            </span>
+        
 
-            </div>
-
-            <!-- Related posts -->
-            <div class="related-posts col-lg-3 col-md-3">
-                <hr>
-                <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/01/28/android-context.html" title="AndroidのContextについて" rel="bookmark">AndroidのContextについて</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/03/android-gawa-native.html" title="Androidでガワネイティブ" rel="bookmark">Androidでガワネイティブ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2017/01/19/android-studio-jar.html" title="Android Studioで.jarを作る" rel="bookmark">Android Studioで.jarを作る</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/12/29/android-timer.html" title="Androidで定期アニメーションさせる方法" rel="bookmark">Androidで定期アニメーションさせる方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/06/22/android-zip-movie.html" title="Androidの拡張ファイルから動画を再生する" rel="bookmark">Androidの拡張ファイルから動画を再生する</a></h3></div></li></ul>
-            </div>
-
-            <!-- Comments -->
+    </p>
+</div>
             
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    
-
-
-                </div>
-            
+            <div class="archive-before-pagination"></div>
+            <ul class="pager">
+    
+    
+</ul>
         </div>
     </div>
-</article>
+</div>
+
 
     <!-- Footer -->
     <hr />

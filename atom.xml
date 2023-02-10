@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-02-01T14:20:41.687Z</updated>
+  <updated>2023-02-10T10:59:29.072Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【WASM】例外を扱う</title>
+    <link href="https://tyfkda.github.io/blog/2023/02/10/wasm-try-catch.html"/>
+    <id>https://tyfkda.github.io/blog/2023/02/10/wasm-try-catch.html</id>
+    <published>2023-02-10T10:00:00.000Z</published>
+    <updated>2023-02-10T10:59:29.072Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;WASMは通常の制御フローしかなくて大域ジャンプはできないものかと思い込んでいたが、例外も使えるということを知ったのでどんなもんか調べた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="wasm" scheme="https://tyfkda.github.io/tags/wasm/"/>
+    
+  </entry>
   
   <entry>
     <title>定数による整数除算の高速化【論文読み】</title>
@@ -177,23 +194,6 @@
     
     
     <category term="html" scheme="https://tyfkda.github.io/tags/html/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unreal EngineのC++プロジェクトを試してみる</title>
-    <link href="https://tyfkda.github.io/blog/2022/07/29/ue5-cpp.html"/>
-    <id>https://tyfkda.github.io/blog/2022/07/29/ue5-cpp.html</id>
-    <published>2022-07-29T07:31:11.000Z</published>
-    <updated>2022-11-08T02:40:58.792Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;Unreal Engineのブループリントを使った簡単なサンプルの作り方はわかったので、C++も使えるようになろうと試してみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="unreal" scheme="https://tyfkda.github.io/tags/unreal/"/>
     
   </entry>
   
