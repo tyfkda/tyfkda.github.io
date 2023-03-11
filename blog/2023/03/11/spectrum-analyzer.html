@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="音楽に合わせてバーが動く、スペクトラムアナライザー（またの名をグラフィックイコライザー、通称グライコ）をずっとやってみたかった。
+WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計算も簡単に利用できるのでやってみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【WebAudio】スペクトラムアナライザーを作る"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【WebAudio】スペクトラムアナライザーを作る - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/03/11/spectrum-analyzer.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('//www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【WebAudio】スペクトラムアナライザーを作る</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-03-11
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/audio/">#audio</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>音楽に合わせてバーが動く、スペクトラムアナライザー（またの名をグラフィックイコライザー、通称グライコ）をずっとやってみたかった。
+WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計算も簡単に利用できるのでやってみた。</p>
+<span id="more"></span>
+
+<h3 id="デモ"><a href="#デモ" class="headerlink" title="デモ"></a>デモ</h3><iframe class="applet" src="/assets/spectrum-analyzer/spectrum-analyzer.html" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto; width:100%; height:440px"></iframe>
+
+
+<h3 id="もっとも重要なこと：横軸を対数でプロットする"><a href="#もっとも重要なこと：横軸を対数でプロットする" class="headerlink" title="もっとも重要なこと：横軸を対数でプロットする"></a>もっとも重要なこと：横軸を対数でプロットする</h3><p>WebAudioを使ってスペアナを作ろうとしてググった時に出てくるサンプルサイトなどを参考に作ってみても「なんかそれっぽくない…」となってしまう。
+問題は<a href="https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getByteFrequencyData"><code>AnalyserNode.getByteFrequencyData()</code></a>で取得した周波数ごとのデータをそのまま横軸にプロットしていくところ。</p>
+<p>フーリエ変換した結果を配列に受け取れるが、各要素はサンプリング周波数の半分を等間隔に区切った周波数になる。
+しかし人が音を聞き取る感覚としては周波数を対数で感じる。
+可聴範囲が20Hz〜20,000Hzとのことでそれを線形にプロットすると低音部分が潰れてしまい、ほとんど見えなくなってしまう。</p>
+<p>なので横軸（周波数）を対数となるようにプロットする必要がある。</p>
+<p>具体的には、最低20Hzと最高20000Hzをそれぞれ対数log10を取って、横軸に沿って線形補間したものを指数にして周波数に戻して、それに応じたFFT内のデータを取得する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> analyserNode = <span class="literal">null</span></span><br><span class="line"><span class="keyword">let</span> dataArray = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">init</span>(<span class="params">audioCtx</span>) &#123;  <span class="comment">// AudioContext</span></span><br><span class="line">  analyserNode = audioCtx.<span class="title function_">createAnalyser</span>()</span><br><span class="line">  <span class="comment">// fftSizeを設定</span></span><br><span class="line">  <span class="keyword">const</span> bufferLength = analyserNode.<span class="property">frequencyBinCount</span></span><br><span class="line">  dataArray = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(bufferLength)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">update</span>(<span class="params"></span>) &#123;</span><br><span class="line">  analyserNode.<span class="title function_">getByteFrequencyData</span>(dataArray)  <span class="comment">// FFTの結果を取得</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="variable constant_">WIDTH</span> = <span class="number">512</span></span><br><span class="line">  <span class="keyword">const</span> minHz = <span class="number">20</span></span><br><span class="line">  <span class="keyword">const</span> maxHz = <span class="number">20000</span></span><br><span class="line">  <span class="keyword">const</span> minHzVal = <span class="title class_">Math</span>.<span class="title function_">log10</span>(minHz)</span><br><span class="line">  <span class="keyword">const</span> maxHzVal = <span class="title class_">Math</span>.<span class="title function_">log10</span>(maxHz)</span><br><span class="line">  <span class="keyword">const</span> bufferLength = analyserNode.<span class="property">frequencyBinCount</span></span><br><span class="line">  <span class="keyword">const</span> sampleRate = analyserNode.<span class="property">context</span>.<span class="property">sampleRate</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="variable constant_">WIDTH</span>; ++i) &#123;</span><br><span class="line">    <span class="keyword">const</span> e = i / <span class="variable constant_">WIDTH</span> * (maxHzVal - minHzVal) + minHzVal  <span class="comment">// 対数を線形補間</span></span><br><span class="line">    <span class="keyword">const</span> freq = <span class="number">10</span> ** e  <span class="comment">// 周波数に戻す</span></span><br><span class="line">    <span class="keyword">const</span> bin = (freq * bufferLength / (sampleRate * <span class="number">0.5</span>)) | <span class="number">0</span>  <span class="comment">// 対応するインデクス</span></span><br><span class="line">    <span class="keyword">let</span> v = dataArray[bin]</span><br><span class="line">    <span class="comment">// vに応じてバーを描画</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>LED式の表示のように横をブロックに分けて表示したい場合には対応する範囲の最大値を用いるとよい。</p>
+<h3 id="AnalyserNodeの問題：遅延回避にsmoothingTimeConstantを下げる"><a href="#AnalyserNodeの問題：遅延回避にsmoothingTimeConstantを下げる" class="headerlink" title="AnalyserNodeの問題：遅延回避にsmoothingTimeConstantを下げる"></a>AnalyserNodeの問題：遅延回避にsmoothingTimeConstantを下げる</h3><p>上の対策だけでそれっぽく動くのだけど、よく見ると少し音より遅れているように見えた。
+音と同期してないと気持ちよくないのでなんとかしたかった。</p>
+<p>しかし理由が分からなくて悩んだ。
+<code>getByteFrequencyData</code> で取得できる値が少し遅れてしまっているのか、
+<code>AudioSource</code> から <code>context.destination</code> と <code>AnalyserNode</code> に分けて入れてるのが悪いのか、
+<code>requestAnimationFrame</code> に問題があるのか、
+そもそも<code>fftSize</code> 分だけ遅れた状態になってしまうからまずいのか、
+などとあれこれ推測したが分からなかった。</p>
+<p>ひょんな拍子に解決法がわかった。
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/smoothingTimeConstant"><code>AnalyserNode.smoothingTimeConstant</code></a> を下げてやれば解決する。
+これは結果があまりブレて見えないように、前回の取得結果との補間をしているっぽい。
+デフォルトが<code>0.8</code>で、「ほとんどのケースで十分」などと書かれているが、音のスペアナとして利用する場合にはレスポンスが悪く見えてしまうので下げてやる必要がある（体感0.3以下、実際には<a href="https://webaudio.github.io/web-audio-api/#blackman-window">ブラックマン窓</a>がどうとかこうとか…）。</p>
+<h3 id="細かなこと"><a href="#細かなこと" class="headerlink" title="細かなこと"></a>細かなこと</h3><p>デシベル範囲の調整</p>
+<ul>
+<li><code>AnalyserNode</code>に<code>maxDecibels</code>と<code>minDecibels</code>プロパティがあって、得られる値はその範囲に影響する。普通高周波部分は振幅が低いので、見栄え的には別途持ち上げたほうがいいかもしれない</li>
+</ul>
+<p>直流成分</p>
+<ul>
+<li>普通は問題はないと思うが、場合によっては<code>AnalyserNode</code>の前に直流成分を取り除いたほうがいいかもしれない。FFTする場合、直流成分が含まれていると結果が劣化するとのことなので、防止のため<ul>
+<li>「DCオフセット除去」で検索</li>
+</ul>
+</li>
+<li>WebAudioでやる場合には<a href="https://github.com/tyfkda/nesemu/blob/main/src/dc_remove_worker.ts"><code>AudioWorklet</code>で移動平均を求めて引いてやれば</a>よいでしょう</li>
+</ul>
+<p><code>AudioBufferSourceNode</code>は不便</p>
+<ul>
+<li>WebAudioで曲を鳴らすのに最初<code>AudioBufferSourceNode</code>を使ってみたが、再生中の位置の取得やシークができないので、htmlの<code>audio</code>メディアタグを使い<code>AudioContext.createMediaElementSource()</code>で作成したノードに繋げるとよい</li>
+<li><code>audio</code>タグに<code>controls</code>を指定すると自動的にUIも表示されるのでこういう用途に便利</li>
+<li>WebAudioにつなぐには<a href="https://developer.mozilla.org/ja/docs/Web/API/AudioContext/createMediaElementSource"><code>AudioContext.createMediaElementSource()</code></a>を使う</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API">Visualizations with Web Audio API - Web API | MDN</a>　横軸が線形なところだけなんとかして</li>
+<li><a href="https://demo.audiomotion.me/">audioMotion.js</a>　いろんなタイプのスペアナ表示ができる。ライブラリとして簡単に利用できるようなのでこちらを使わせてもらうといいかも</li>
+<li><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装">高速フーリエ変換の実装</a>　実際のところ自分でFFTを計算して動かしたことがないので、完全に理解したとは言いがたい…</li>
+<li>ハード的に実装する場合にはバンドパスフィルターがどうとかで、FFTせずにやってるのかしらん</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/01/square-duty.html" title="矩形波のデューティ比を変化させる" rel="bookmark">矩形波のデューティ比を変化させる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/15/white-noise.html" title="周波数指定のホワイトノイズ" rel="bookmark">周波数指定のホワイトノイズ</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

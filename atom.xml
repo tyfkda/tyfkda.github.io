@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-03-05T08:36:16.407Z</updated>
+  <updated>2023-03-11T03:31:37.390Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【WebAudio】スペクトラムアナライザーを作る</title>
+    <link href="https://tyfkda.github.io/blog/2023/03/11/spectrum-analyzer.html"/>
+    <id>https://tyfkda.github.io/blog/2023/03/11/spectrum-analyzer.html</id>
+    <published>2023-03-11T03:00:00.000Z</published>
+    <updated>2023-03-11T03:31:37.390Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;音楽に合わせてバーが動く、スペクトラムアナライザー（またの名をグラフィックイコライザー、通称グライコ）をずっとやってみたかった。
+WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計算も簡単に利用できるのでやってみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="audio" scheme="https://tyfkda.github.io/tags/audio/"/>
+    
+  </entry>
   
   <entry>
     <title>【JupyterLab】コールバックでセル出力を書き換える方法</title>
@@ -170,26 +188,6 @@
     
     
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【C】プリプロセッサのマクロ展開アルゴリズム</title>
-    <link href="https://tyfkda.github.io/blog/2022/09/18/pp-macro-expand.html"/>
-    <id>https://tyfkda.github.io/blog/2022/09/18/pp-macro-expand.html</id>
-    <published>2022-09-17T23:00:00.000Z</published>
-    <updated>2022-11-08T02:40:58.791Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;C言語のプリプロセッサを自作して簡単なマクロは扱えていたが、
-いろいろなソースを食わせてみたところうまく展開できないケースがあったので修正した。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-    <category term="c" scheme="https://tyfkda.github.io/tags/c/"/>
     
   </entry>
   
