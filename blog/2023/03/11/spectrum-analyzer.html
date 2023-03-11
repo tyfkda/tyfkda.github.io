@@ -246,9 +246,11 @@ WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計
 </ul>
 <p><code>AudioBufferSourceNode</code>は不便</p>
 <ul>
-<li>WebAudioで曲を鳴らすのに最初<code>AudioBufferSourceNode</code>を使ってみたが、再生中の位置の取得やシークができないので、htmlの<code>audio</code>メディアタグを使い<code>AudioContext.createMediaElementSource()</code>で作成したノードに繋げるとよい</li>
-<li><code>audio</code>タグに<code>controls</code>を指定すると自動的にUIも表示されるのでこういう用途に便利</li>
+<li>WebAudioで曲を鳴らすのに最初<code>AudioBufferSourceNode</code>を使ってみたが、再生中の位置の取得やシークができないので、htmlの<code>audio</code>メディアタグを使った方がいい<ul>
 <li>WebAudioにつなぐには<a href="https://developer.mozilla.org/ja/docs/Web/API/AudioContext/createMediaElementSource"><code>AudioContext.createMediaElementSource()</code></a>を使う</li>
+</ul>
+</li>
+<li><code>audio</code>タグに<code>controls</code>を指定すると自動的にUIも表示されるのでこういう用途に便利</li>
 </ul>
 <h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
 <li><a href="https://developer.mozilla.org/ja/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API">Visualizations with Web Audio API - Web API | MDN</a>　横軸が線形なところだけなんとかして</li>
@@ -266,7 +268,7 @@ WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/01/square-duty.html" title="矩形波のデューティ比を変化させる" rel="bookmark">矩形波のデューティ比を変化させる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/15/white-noise.html" title="周波数指定のホワイトノイズ" rel="bookmark">周波数指定のホワイトノイズ</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/01/square-duty.html" title="矩形波のデューティ比を変化させる" rel="bookmark">矩形波のデューティ比を変化させる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/15/white-noise.html" title="周波数指定のホワイトノイズ" rel="bookmark">周波数指定のホワイトノイズ</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
