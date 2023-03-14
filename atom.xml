@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-03-11T23:06:55.045Z</updated>
+  <updated>2023-03-14T12:43:08.727Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【Rust】委譲に使えるクレート(Ambassador)</title>
+    <link href="https://tyfkda.github.io/blog/2023/03/14/rust-delegation-ambassador.html"/>
+    <id>https://tyfkda.github.io/blog/2023/03/14/rust-delegation-ambassador.html</id>
+    <published>2023-03-14T13:00:00.000Z</published>
+    <updated>2023-03-14T12:43:08.727Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Rustでは継承が使えないが委譲をするにしてもグルーコードを書く必要があって面倒と思ってた（&lt;a href=&quot;/blog/2020/09/27/composition-over-inheritance.html&quot; title=&quot;「継承より合成（委譲）」について&quot;&gt;「継承より合成（委譲）」について&lt;/a&gt;）んだけど、とあるコードを見ていたら&lt;a href=&quot;https://crates.io/crates/ambassador&quot;&gt;ambassador&lt;/a&gt;というクレートを使っていた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="rust" scheme="https://tyfkda.github.io/tags/rust/"/>
+    
+  </entry>
   
   <entry>
     <title>【WebAudio】スペクトラムアナライザーを作る</title>
@@ -170,25 +187,6 @@ WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計
     
     
     <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>M1Mac向けにコンパイルする</title>
-    <link href="https://tyfkda.github.io/blog/2022/09/29/cc-aarch64.html"/>
-    <id>https://tyfkda.github.io/blog/2022/09/29/cc-aarch64.html</id>
-    <published>2022-09-29T06:00:00.000Z</published>
-    <updated>2022-11-08T02:40:58.787Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作しているCコンパイラ&lt;/a&gt;ではx86-64のアセンブリを出力していたが、
-ノートパソコンを近年のMacBookAirにしたところCPUアーキテクチャが違うためコンパイル結果を動かせなくなってしまった。
-そこでバックエンドとしてaarch64を追加した。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
     
   </entry>
   

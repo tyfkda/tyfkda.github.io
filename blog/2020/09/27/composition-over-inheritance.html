@@ -24,7 +24,7 @@ struct で独自のデータ型を定義できて、
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="「継承より合成（移譲）」について"/>
+        <meta property="og:title" content="「継承より合成（委譲）」について"/>
     
 
     <!--Open Graph Description-->
@@ -46,7 +46,7 @@ struct で独自のデータ型を定義できて、
 
     <!-- Title -->
     
-    <title>「継承より合成（移譲）」について - Kludge Factory</title>
+    <title>「継承より合成（委譲）」について - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -164,7 +164,7 @@ struct で独自のデータ型を定義できて、
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>「継承より合成（移譲）」について</h1>
+                    <h1>「継承より合成（委譲）」について</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
@@ -230,7 +230,7 @@ struct で独自のデータ型を定義できて、
 <p>よくいわれる、<a href="https://ja.wikipedia.org/wiki/Is-a">継承はis-a</a>、合成はhas-aを表現するが、自然言語では言い方によってはどちらにも表現できるので間違って使ってしまうとおかしなことになる、
 ということだと思ってたんだけど、is-aでも合成のほうが望ましいということなんだろうか？
 どちらにせよ、Rustでは継承が使えないから常に合成を使うしかない。</p>
-<h3 id="合成を使用する際の問題点と利点"><a href="#合成を使用する際の問題点と利点" class="headerlink" title="合成を使用する際の問題点と利点"></a>合成を使用する際の問題点と利点</h3><h4 id="問題点"><a href="#問題点" class="headerlink" title="問題点"></a>問題点</h4><p>is-aを表現する場合にも合成を使用する際の面倒な点として、移譲するコードを書く必要がある。
+<h3 id="合成を使用する際の問題点と利点"><a href="#合成を使用する際の問題点と利点" class="headerlink" title="合成を使用する際の問題点と利点"></a>合成を使用する際の問題点と利点</h3><h4 id="問題点"><a href="#問題点" class="headerlink" title="問題点"></a>問題点</h4><p>is-aを表現する場合にも合成を使用する際の面倒な点として、委譲するコードを書く必要がある。
 継承であれば親クラスのメソッドが自動的に呼び出されるのに対して、合成の場合には明示的に記述する必要がある。</p>
 <p>また実装上の問題点として継承では処理の大部分は共通で一部だけ特殊化したいといったときにメソッドをオーバーライドすることで実現できるが、合成ではできない
 （別のカプセルになっているので）。
@@ -252,6 +252,7 @@ struct で独自のデータ型を定義できて、
 <li><a href="https://postd.cc/why-composition-is-often-better-than-inheritance/">クラスの「継承」より「合成」がよい理由とは？ゲーム開発におけるコードのフレキシビリティと可読性の向上 | POSTD</a></li>
 <li><a href="https://softwareengineering.stackexchange.com/questions/75189/why-avoid-java-inheritance-extends">design - Why avoid Java Inheritance “Extends” - Software Engineering Stack Exchange</a></li>
 </ul>
+<p>追記リンク：<a href="/blog/2023/03/14/rust-delegation-ambassador.html" title="【Rust】委譲に使えるクレート(Ambassador)">【Rust】委譲に使えるクレート(Ambassador)</a></p>
 
 
                 

@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="最近のProcessingには通常のモードに加えて、JavaScriptモードやAndroidモードなど様々なモードが付いている。またツールバーのモードのプルダウンメニューから「Add Mode…」で、標準以外のモードも追加することができるようになっている。">
+        <meta name="description" content="Rustでは継承が使えないが委譲をするにしてもグルーコードを書く必要があって面倒と思ってた（「継承より合成（委譲）」について）んだけど、とあるコードを見ていたらambassadorというクレートを使っていた。">
     
 
     <!--Author-->
@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="Processingに独自のモードを追加する方法"/>
+        <meta property="og:title" content="【Rust】委譲に使えるクレート(Ambassador)"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>Processingに独自のモードを追加する方法 - Kludge Factory</title>
+    <title>【Rust】委譲に使えるクレート(Ambassador) - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +67,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2014/05/30/custom-mode-processing.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/03/14/rust-delegation-ambassador.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -160,13 +160,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>Processingに独自のモードを追加する方法</h1>
+                    <h1>【Rust】委譲に使えるクレート(Ambassador)</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2014-05-30
+                            2023-03-14
                         
                     </span>
                 </div>
@@ -187,7 +187,7 @@
                         
 
 
-<a href="/tags/processing/">#processing</a>
+<a href="/tags/rust/">#rust</a>
 
 
                     
@@ -202,51 +202,42 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>最近のProcessingには通常のモードに加えて、JavaScriptモードやAndroidモードなど様々なモードが付いている。またツールバーのモードのプルダウンメニューから「Add Mode…」で、標準以外のモードも追加することができるようになっている。</p>
+                <p>Rustでは継承が使えないが委譲をするにしてもグルーコードを書く必要があって面倒と思ってた（<a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（委譲）」について">「継承より合成（委譲）」について</a>）んだけど、とあるコードを見ていたら<a href="https://crates.io/crates/ambassador">ambassador</a>というクレートを使っていた。</p>
 <span id="more"></span>
 
-<p>モードといっても動作は様々で、JavaScriptモードはスケッチのソースを通常のJavaモードと同じくJavaの文法で書いて、実行した時やエクスポート時にブラウザ上で動くコードを出力するようになっている。どうやってブラウザで動しているかというと、エクスポート時にはProcessingのコードをコンパイルせずにそのままhtmlに埋め込んでいて、ブラウザで読み込んだ時に<a href="http://processingjs.org/">Processing.js</a>を使ってJavaScript上でコンパイル、実行している。</p>
-<p><a href="https://github.com/jdf/processing.py">Pythonモード</a>では、スケッチ上でコードをPythonで書いて、実行するとPythonのコードがそのままJythonに渡されて、JythonからPAppletなどを呼び出して動作している。</p>
-<p>という機能があるので、自分で独自のモードを追加したい。が<a href="http://wiki.processing.org/w/Main_Page">ProcessingのWiki</a>を見てもそういう情報はない。なのでソースを参考にしつつ勝手にやってみる。</p>
-<h3 id="ディレクトリ構成"><a href="#ディレクトリ構成" class="headerlink" title="ディレクトリ構成"></a>ディレクトリ構成</h3><p>まず追加したいモードを、Processingが参照するディレクトリのmodes（Macの場合、~&#x2F;Documents&#x2F;Processing&#x2F;modes）以下にディレクトリを作り、その中に必要なファイルを入れる。例えば新たに追加するモードをFoobarModeとした場合、</p>
+<h3 id="Ambassador"><a href="#Ambassador" class="headerlink" title="Ambassador"></a>Ambassador</h3><p><a href="https://crates.io/crates/ambassador">Ambassador</a>は</p>
+<blockquote>
+<p>Delegate trait implementations via procedural macros</p>
+</blockquote>
+<p>とのことで、アトリビュートを指定することで委譲するコードを自動生成してくれる。</p>
+<p>詳しい解説は<a href="https://docs.rs/ambassador/0.3.5/ambassador/">ドキュメント</a>を読むとして、</p>
 <ul>
-<li>FoobarMode&#x2F;<ul>
-<li>mode&#x2F;<ul>
-<li>FoobarMode.jar</li>
+<li>委譲を可能にするトレイト側に <code>#[delegatable_trait]</code> アトリビュートを指定</li>
+<li>構造体で、あるトレイトを自分のフィールドに委譲したい場合に <code>#[derive(Delegate)]</code> と <code>#[delegate(FooTrait, target=&quot;bar&quot;)]</code> を指定</li>
 </ul>
-</li>
-<li>theme&#x2F;</li>
-<li>mode.properties</li>
-<li>keywords.txt</li>
-</ul>
-</li>
-</ul>
-<p>他にexamples&#x2F;やformatter&#x2F;というディレクトリが使われるが、なくても動くみたい。</p>
-<h3 id="クラスの実装"><a href="#クラスの実装" class="headerlink" title="クラスの実装"></a>クラスの実装</h3><p>FoobarMode.jar には、<code>FoobarMode</code> という、<a href="https://github.com/processing/processing/blob/master/app%2Fsrc%2Fprocessing%2Fapp%2FMode.java">Mode</a>クラスを継承したクラスを作り、抽象メソッドを実装する。実装する必要があるメソッドは、</p>
-<ul>
-<li><code>getTitle</code></li>
-<li><code>createEditor</code></li>
-<li><code>getDefaultExtension</code></li>
-<li><code>getExtensions</code></li>
-<li><code>getIgnorable</code></li>
-</ul>
-<p><code>createEditor</code>で<a href="https://github.com/processing/processing/blob/master/app%2Fsrc%2Fprocessing%2Fapp%2FEditor.java">Editor</a>クラスを継承した実体を返す必要があって、楽をして<a href="https://github.com/processing/processing/blob/master/app%2Fsrc%2Fprocessing%2Fmode%2Fjava%2FJavaEditor.java">JavaEditor</a>を拝借したいと思うのだけど、コンストラクタが<code>protected</code>になっていて外部から生成できないため、しかたがないのでそれも実装してやる。実装する必要があるメソッドは、</p>
-<ul>
-<li><code>createToolbar</code></li>
-<li><code>createFormatter</code></li>
-<li><code>buildFileMenu</code></li>
-<li><code>buildSketchMenu</code></li>
-<li><code>handleImportLibrary</code></li>
-<li><code>buildHelpMenu</code></li>
-<li><code>getCommentPrefix</code></li>
-<li><code>internalCloseRunner</code></li>
-<li><code>deactivateRun</code></li>
-</ul>
-<p><code>createFormatter</code>では、Javaモードの<a href="https://github.com/processing/processing/blob/master/app%2Fsrc%2Fprocessing%2Fmode%2Fjava%2FAutoFormat.java">AutoFormat</a>をとりあえずそのまま使える。</p>
-<h3 id="Javaのコンパイル時にjarファイルを指定する"><a href="#Javaのコンパイル時にjarファイルを指定する" class="headerlink" title="Javaのコンパイル時にjarファイルを指定する"></a>Javaのコンパイル時にjarファイルを指定する</h3><p>上記のクラスをコンパイルするためには、Processingのクラスを参照する必要がある。Processingが実行時に使用しているjarファイルがどこかにあると思うので（Macの場合、&#x2F;Applications&#x2F;Processing.app&#x2F;Contents&#x2F;Java&#x2F;pde.jar）、それを<code>javac -cp</code>で指定してやる：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ javac -<span class="built_in">cp</span> .../pde.jar ソースファイル</span><br></pre></td></tr></table></figure>
+<p>で使える。
+構造体以外にも <code>enum</code> などでも使える。</p>
+<h4 id="なぜかエラーが出るケース"><a href="#なぜかエラーが出るケース" class="headerlink" title="なぜかエラーが出るケース"></a>なぜかエラーが出るケース</h4><p>どういう条件なのか分からないが、エラーが出るケースがある。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">error: cannot find macro `ambassador_impl_FooTrait` in this scope</span><br><span class="line">  --&gt; mods/xxx/yyy/zzz/foobar.rs:66:12</span><br><span class="line">   |</span><br><span class="line">66 | #[delegate(FooTrait, target=&quot;info&quot;)]</span><br><span class="line">   |            ^^^^^^^^</span><br><span class="line">   |</span><br><span class="line">   = note: consider importing this macro:</span><br><span class="line">           crate::ambassador_impl_FooTrait</span><br><span class="line">   = help: have you added the `#[macro_use]` on the module/import?</span><br></pre></td></tr></table></figure>
 
-<p>以上でProcessingを再起動すると、モードのプルダウンメニューに新しいモードが追加される。実際に切り替えてみると、一応は動くが、エディタでなぜか改行が効かないけど…。また当然のことながら、実行はまだできない。</p>
+<p>この場合、トレイトを宣言している側のファイル頭に <code>#![macro_use]</code> と置く必要がある。</p>
+<p>どういう条件かわからなくて、別モジュールなのかスーパートレイトだとなのかトレイトオブジェクトとして使用されるとなのか、最小限の条件を突き止めようとしたがわからず…。
+Ambassador がマクロを生成してる？のを外部モジュールから使おうとしたら？なのかどうか…。</p>
+<p><a href="https://github.com/tyfkda/galangua/blob/29ebf98611862dc45dfc54934ab9a1d5ff92c80a/mods/galangua-oo/src/app/game/enemy/enemy_base.rs#L1">自分が試した際に問題が起きた箇所</a>：<code>CoordinateTrait</code> と <code>FormationTrait</code> で。</p>
+<h4 id="別クレートの場合"><a href="#別クレートの場合" class="headerlink" title="別クレートの場合"></a>別クレートの場合</h4><p><code>Cargo.toml</code> が別れてる別のクレートのトレイトを委譲する場合も、別のエラーが出る：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">error: cannot find macro `ambassador_impl_BarTrait` in this scope</span><br><span class="line">  --&gt; mods/xxx/yyy/zzz/foobar.rs:64:12</span><br><span class="line">   |</span><br><span class="line">64 | #[delegate(BarTrait, target=&quot;info&quot;)]</span><br><span class="line">   |            ^^^^^^^^</span><br><span class="line">   |</span><br><span class="line">   = note: consider importing this macro:</span><br><span class="line">           hogepiyo::ambassador_impl_BarTrait</span><br></pre></td></tr></table></figure>
+
+<p>別クレートのトレイト側で <code>#[delegatable_trait]</code> アトリビュートを設定していても、それによって生成されたマクロ？が外部からは見えない？らしくエラーが出る。</p>
+<p>この場合、利用側に<code>use hogepiyo::ambassador_impl_BarTrait;</code>とする必要がある。</p>
+<h3 id="一部のメソッドを委譲したい（が無理っぽい）"><a href="#一部のメソッドを委譲したい（が無理っぽい）" class="headerlink" title="一部のメソッドを委譲したい（が無理っぽい）"></a>一部のメソッドを委譲したい（が無理っぽい）</h3><p>トレイトに含まれる一部のメソッドは自前でカスタマイズして残りは委譲する、ということができればしたい。
+しかしそういうことはできないっぽい。</p>
+<p>やるとしたら、トレイトを細かく分割して<a href="https://doc.rust-lang.org/rust-by-example/trait/supertraits.html">スーパートレイト</a>で結合してやる必要がある。</p>
+<p>そういうことができるようなクレートを自作しようにも、そもそも普通のトレイトでも複数の<code>impl</code>に分けて書くことはできないようなので今のところ難しそう。</p>
+<p><a href="https://github.com/hobofan/ambassador/issues/13">Add support for partial delegation · Issue #13 · hobofan&#x2F;ambassador</a></p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://crates.io/crates/ambassador">ambassador - crates.io: Rust Package Registry</a></li>
+<li><a href="https://github.com/hobofan/ambassador">hobofan&#x2F;ambassador: Delegation of trait implementations via procedural macros</a></li>
+</ul>
 
 
                 
@@ -257,7 +248,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/05/21/building-processing.html" title="Processingをビルドする" rel="bookmark">Processingをビルドする</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/01/10/error-diffusion-gamma.html" title="誤差拡散法にガンマ補正を施す" rel="bookmark">誤差拡散法にガンマ補正を施す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/04/18/golden-angle.html" title="黄金角" rel="bookmark">黄金角</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/01/jbox2d.html" title="ProcessingでBox2Dを使う (JBox2D)" rel="bookmark">ProcessingでBox2Dを使う (JBox2D)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/21/metropolis-light-transport.html" title="メトロポリス輸送の事始め" rel="bookmark">メトロポリス輸送の事始め</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（委譲）」について" rel="bookmark">「継承より合成（委譲）」について</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/03/ecs-in-rust.html" title="【Rust】ECSを使ってみる(Specs)" rel="bookmark">【Rust】ECSを使ってみる(Specs)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/21/legion-ecs.html" title="【Rust】Legion ECSを触ってみた" rel="bookmark">【Rust】Legion ECSを触ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか" rel="bookmark">Rustで状態管理や相互参照をどうするか</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
