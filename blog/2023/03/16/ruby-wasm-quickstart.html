@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="その昔JavaScriptがあまり好きではなくて、「ブラウザでもRubyでスクリプト書きてぇ〜！」などと思っていた。
+その後JavaScriptにもだいぶ慣れたのでそういうこともなくなったが、最近ではwasm化されて動かせるとのことなので触ってみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ruby.wasmを使ってみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ruby.wasmを使ってみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/03/16/ruby-wasm-quickstart.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ruby.wasmを使ってみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-03-16
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ruby/">#ruby</a> <a href="/tags/wasm/">#wasm</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>その昔JavaScriptがあまり好きではなくて、「ブラウザでもRubyでスクリプト書きてぇ〜！」などと思っていた。
+その後JavaScriptにもだいぶ慣れたのでそういうこともなくなったが、最近ではwasm化されて動かせるとのことなので触ってみた。</p>
+<span id="more"></span>
+
+<h3 id="簡単な使い方"><a href="#簡単な使い方" class="headerlink" title="簡単な使い方"></a>簡単な使い方</h3><p><a href="https://github.com/ruby/ruby.wasm/tree/main/packages/npm-packages/ruby-head-wasm-wasi#quick-start-for-browser">ruby.wasmのQuick Start (for Browser)</a>に簡単な説明が書かれている：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/ruby-head-wasm-wasi@latest/dist/browser.umd.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">const</span> &#123; <span class="title class_">DefaultRubyVM</span> &#125; = <span class="variable language_">window</span>[<span class="string">&quot;ruby-wasm-wasi&quot;</span>];</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">const</span> <span class="title function_">main</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt; &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// Fetch and instantiate WebAssembly binary</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">//      Tips: Replace the binary with debug info if you want symbolicated stack trace.</span></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">//      (only nightly release for now)</span></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">//      &quot;https://cdn.jsdelivr.net/npm/ruby-head-wasm-wasi@next/dist/ruby.debug+stdlib.wasm&quot;</span></span></span><br><span class="line"><span class="language-javascript">        <span class="string">&quot;https://cdn.jsdelivr.net/npm/ruby-head-wasm-wasi@latest/dist/ruby.wasm&quot;</span></span></span><br><span class="line"><span class="language-javascript">      );</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> buffer = <span class="keyword">await</span> response.<span class="title function_">arrayBuffer</span>();</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> <span class="variable language_">module</span> = <span class="keyword">await</span> <span class="title class_">WebAssembly</span>.<span class="title function_">compile</span>(buffer);</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> &#123; vm &#125; = <span class="keyword">await</span> <span class="title class_">DefaultRubyVM</span>(<span class="variable language_">module</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      vm.<span class="title function_">printVersion</span>();</span></span><br><span class="line"><span class="language-javascript">      vm.<span class="built_in">eval</span>(<span class="string">`</span></span></span><br><span class="line"><span class="string"><span class="language-javascript">        require &quot;js&quot;</span></span></span><br><span class="line"><span class="string"><span class="language-javascript">        luckiness = [&quot;Lucky&quot;, &quot;Unlucky&quot;].sample</span></span></span><br><span class="line"><span class="string"><span class="language-javascript">        JS::eval(&quot;document.body.innerText = &#x27;#&#123;luckiness&#125;&#x27;&quot;)</span></span></span><br><span class="line"><span class="string"><span class="language-javascript">      `</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">main</span>();</span></span><br><span class="line"><span class="language-javascript">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>vm.eval(Rubyコード文字列)</code> でRubyコードを実行する。
+Ruby側では <code>require &quot;js&quot;</code> して <code>JS</code> 経由でアクセスできる。</p>
+<ul>
+<li>ruby.wasmの解説は <a href="https://github.com/ruby/ruby.wasm/tree/main/packages/npm-packages/ruby-head-wasm-wasi#quick-start-for-browser">ruby.wasm&#x2F;packages&#x2F;npm-packages&#x2F;ruby-head-wasm-wasi at main · ruby&#x2F;ruby.wasm</a> に書かれている。</li>
+<li><code>JS</code> モジュールに関しては <a href="https://ruby.github.io/ruby.wasm/JS.html#method-c-global">module JS - ruby.wasm 0.3.0 Documentation</a>　に書かれている。</li>
+</ul>
+<h3 id="RubyからJavaScriptの関数を呼び出す"><a href="#RubyからJavaScriptの関数を呼び出す" class="headerlink" title="RubyからJavaScriptの関数を呼び出す"></a>RubyからJavaScriptの関数を呼び出す</h3><p>RubyからJavaScriptにアクセスするには、 <a href="https://ruby.github.io/ruby.wasm/JS.html#method-c-global"><code>JS::global</code></a> でJavaScriptのグローバルを参照できる。</p>
+<p>例えばJavaScriptで関数を定義しておいて：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">jsFunc</span>(<span class="params">...args</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;jsFunc called!&#x27;</span>, args)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Rubyから呼び出す：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="variable constant_">JS</span><span class="symbol">:</span><span class="symbol">:global</span>.call(<span class="symbol">:jsFunc</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>呼び出す関数名はシンボルでも文字列でもよい</li>
+</ul>
+<h4 id="受け渡せる型"><a href="#受け渡せる型" class="headerlink" title="受け渡せる型"></a>受け渡せる型</h4><p>RubyからJavaScriptに受け渡せる値の型は、</p>
+<ul>
+<li>シンプルな値（数値、文字列）は問題なし</li>
+<li>配列はダメ</li>
+<li>ラムダ関数は可能（JSから普通に<code>f()</code>として呼び出せる）：コールバックで使える</li>
+</ul>
+<h4 id="Uint8Array"><a href="#Uint8Array" class="headerlink" title="Uint8Array"></a>Uint8Array</h4><p>RubyとJavaScript間で小規模以上のデータをやり取りしたいが配列はダメだった。
+<code>Uint8Array</code> はどうかと試したら可能だった。</p>
+<p>Rubyから</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">u8a = <span class="variable constant_">JS</span><span class="symbol">:</span><span class="symbol">:eval</span>(<span class="string">&#x27;return new Uint8Array(30)&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>で生成して受け取れる。
+ブラケットを使って <code>u8a[0] = 123</code> とか普通にアクセスできる。
+JavaScriptの関数に渡せばJavaScript側からも見れた。</p>
+<ul>
+<li>長さの取得方法はわからなかった（<code>.length</code> はエラー）</li>
+</ul>
+<h3 id="Rubyから値を返して、JavaScriptから呼び出す"><a href="#Rubyから値を返して、JavaScriptから呼び出す" class="headerlink" title="Rubyから値を返して、JavaScriptから呼び出す"></a>Rubyから値を返して、JavaScriptから呼び出す</h3><p><code>vm.eval</code> だとJavaScriptの値を渡すことができない（リテラルとして埋め込んでならできるけど）のでなんとかしたい。
+Rubyから関数を返してそれを呼び出してやればできるかと思ったがやり方がわからなかった。</p>
+<p><a href="https://github.com/ruby/ruby.wasm/tree/main/packages/npm-packages/ruby-head-wasm-wasi#gc-limitation-with-javascript-interoperability">これ</a>を参考に、クラスのインスタンスを返して、それに対して <code>call(&quot;メソッド名&quot;, 引数, ...)</code> で呼び出せる：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// JavaScript</span></span><br><span class="line"><span class="keyword">const</span> rnode = vm.<span class="built_in">eval</span>(<span class="string">`</span></span><br><span class="line"><span class="string">  class RNode</span></span><br><span class="line"><span class="string">    def set_jnode(jnode)</span></span><br><span class="line"><span class="string">      @jnode = jnode</span></span><br><span class="line"><span class="string">    end</span></span><br><span class="line"><span class="string">  end</span></span><br><span class="line"><span class="string">  RNode.new</span></span><br><span class="line"><span class="string">`</span>);</span><br><span class="line"></span><br><span class="line">rnode.<span class="title function_">call</span>(<span class="string">&quot;set_jnode&quot;</span>, vm.<span class="title function_">wrap</span>(jnode));</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>vm.wrap(jsValue)</code> でRubyの値に変換（数値とかでも自動には変換してくれない）</li>
+</ul>
+<h3 id="ファイルシステム"><a href="#ファイルシステム" class="headerlink" title="ファイルシステム"></a>ファイルシステム</h3><p>ファイルの扱いがどうなっているか。</p>
+<h4 id="カレントディレクトリ"><a href="#カレントディレクトリ" class="headerlink" title="カレントディレクトリ"></a>カレントディレクトリ</h4><p>ルートにいる、ファイルは空：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">p Dir.pwd        <span class="comment"># =&gt; &quot;/&quot; ルートディレクトリ</span></span><br><span class="line">p Dir.glob(<span class="string">&#x27;*&#x27;</span>)  <span class="comment"># =&gt; []  ファイルなし</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="ファイルの読み書き"><a href="#ファイルの読み書き" class="headerlink" title="ファイルの読み書き"></a>ファイルの読み書き</h4><p>自分の用途としてはブラウザ上で動かすことなので実際のローカルファイルに直接アクセスはできなくていいんだけど、メモリ上でファイルを扱えれば幅が広がると思って試してみたが、<code>Errno::ENOTCAPABLE</code> が出る：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">File.open(<span class="string">&#x27;foo.txt&#x27;</span>, <span class="string">&#x27;w&#x27;</span>) <span class="keyword">do</span> |<span class="params">f</span>|</span><br><span class="line">  f.puts(<span class="string">&#x27;Hello&#x27;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment"># Uncaught (in promise) Error: eval:10:in `initialize&#x27;: Capabilities insufficient @ rb_sysopen - foo.txt (Errno::ENOTCAPABLE)</span></span><br><span class="line"></span><br><span class="line">Dir.mkdir(<span class="string">&#x27;/foo&#x27;</span>)</span><br><span class="line"><span class="comment"># Uncaught (in promise) Error: eval:13:in `mkdir&#x27;: Capabilities insufficient @ dir_s_mkdir - bar (Errno::ENOTCAPABLE)</span></span><br></pre></td></tr></table></figure>
+
+<p>書き込みができないので、読み込みも対象ファイルがないためできず…。</p>
+<h4 id="ライブラリ読み込み"><a href="#ライブラリ読み込み" class="headerlink" title="ライブラリ読み込み"></a>ライブラリ読み込み</h4><p><code>require &quot;JS&quot;</code>はできるが、他のライブラリは使えないっぽい。</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&quot;date&quot;</span></span><br><span class="line">p DateTime.now</span><br><span class="line"><span class="comment"># Uncaught (in promise) Error: eval:1:in `require&#x27;: cannot load such file -- date (LoadError)</span></span><br></pre></td></tr></table></figure>
+
+<p>CDNから読み込むwasmバイナリを<code>ruby.wasm</code>から<code>ruby+stdlib.wasm</code>に変更すればライブラリは使える。</p>
+<p>ruby.wasmでは内部で <a href="https://github.com/kateinoigakukun/wasi-vfs">wasi-vfs</a> が使われてる（<a href="https://www.ruby-lang.org/ja/news/2022/12/25/ruby-3-2-0-released/">Ruby 3.2.0 リリース</a>）とのこと。
+<code>+stdlib</code>はライブラリを事前にパックしてるもので、後からの書き込みはできないっぽい。</p>
+<h4 id="ファイル操作をできるようにするには"><a href="#ファイル操作をできるようにするには" class="headerlink" title="ファイル操作をできるようにするには"></a>ファイル操作をできるようにするには</h4><p>wasi-vfsでは実行時にファイルの書き込みなどはできなそう。
+どうしたらいいかと漁ってたら、<a href="https://github.com/ongaeshi/rubyonbrowser/blob/38dcc5c6c62bf75535afd0a0527674d808a00c05/src/browser.ts#L10-L21">Ruby on Browserのソース</a>が参考になりそうだった。
+出来合いのruby.wasmを使うのでなく、<a href="https://www.npmjs.com/package/@wasmer/wasi"><code>@wasmer/wasi</code></a>や<a href="https://www.npmjs.com/package/@wasmer/wasmfs"><code>@wasmer/wasmfs</code></a>と組み合わせることで実現している。</p>
+<p>ちょっと自分でも試してみたがWebpack関係？でうまく動かなかったので、また後日確認したい。</p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li>リポジトリ：<a href="https://github.com/ruby/ruby.wasm">ruby&#x2F;ruby.wasm: ruby.wasm is a collection of WebAssembly ports of the CRuby.</a></li>
+</ul>
+<h4 id="他参考になりそうなページ"><a href="#他参考になりそうなページ" class="headerlink" title="他参考になりそうなページ"></a>他参考になりそうなページ</h4><ul>
+<li><a href="https://zenn.dev/koduki/articles/3619f53e8c0575">WebAssembly対応でRubyは何が出来るようになったのか？</a></li>
+<li><a href="https://ongaeshi.hatenablog.com/entry/rubyonbrowser-1.0.0">Ruby on Browser 1.0 リリース - ブログのおんがえし</a></li>
+<li><a href="https://zenn.dev/makenowjust/articles/f2a1cb28f1e476">ruby.wasmを使って自作Rubyライブラリをブラウザで試せるようにした話</a></li>
+<li><a href="https://zenn.dev/0kate/articles/434d7de29cb6af">wasi-vfsでパックしたバイナリ(CRuby)を眺めてみた</a></li>
+<li><a href="https://www.ruby-lang.org/ja/news/2022/12/25/ruby-3-2-0-released/">Ruby 3.2.0 リリース</a></li>
+<li><a href="https://twitter.com/kateinoigakukun">kateinoigakukun（@kateinoigakukun）さん &#x2F; Twitter</a><ul>
+<li><a href="https://product.st.inc/entry/fukaborirubykaigi2022_vol1">kateinoigakukunがプログラムに興味を持ったきっかけ、Wasmとの出会い。深掘りRubyKaigi 2022 with ko1 &amp; kateinoigakukun 文字起こしレポートvol.1 - STORES Product Blog</a></li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2011/08/15/bayesian-filter.html" title="「ベイジアンフィルタを実装してみよう」をRubyで" rel="bookmark">「ベイジアンフィルタを実装してみよう」をRubyで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/03/21/easy-dsl.html" title="Rubyで簡単DSL" rel="bookmark">Rubyで簡単DSL</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/06/01/ga-helloworld.html" title="GAで"Hello, world!"" rel="bookmark">GAで"Hello, world!"</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

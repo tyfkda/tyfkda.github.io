@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-03-14T12:43:08.727Z</updated>
+  <updated>2023-03-16T23:21:23.191Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ruby.wasmを使ってみる</title>
+    <link href="https://tyfkda.github.io/blog/2023/03/16/ruby-wasm-quickstart.html"/>
+    <id>https://tyfkda.github.io/blog/2023/03/16/ruby-wasm-quickstart.html</id>
+    <published>2023-03-16T12:00:00.000Z</published>
+    <updated>2023-03-16T23:21:23.191Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;その昔JavaScriptがあまり好きではなくて、「ブラウザでもRubyでスクリプト書きてぇ〜！」などと思っていた。
+その後JavaScriptにもだいぶ慣れたのでそういうこともなくなったが、最近ではwasm化されて動かせるとのことなので触ってみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="ruby" scheme="https://tyfkda.github.io/tags/ruby/"/>
+    
+    <category term="wasm" scheme="https://tyfkda.github.io/tags/wasm/"/>
+    
+  </entry>
   
   <entry>
     <title>【Rust】委譲に使えるクレート(Ambassador)</title>
@@ -170,23 +190,6 @@ WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計
     
     
     <category term="wasm" scheme="https://tyfkda.github.io/tags/wasm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【C++】static_castとreinterpret_cast、またdynamic_castの違い</title>
-    <link href="https://tyfkda.github.io/blog/2022/10/05/cpp-cast.html"/>
-    <id>https://tyfkda.github.io/blog/2022/10/05/cpp-cast.html</id>
-    <published>2022-10-05T03:00:00.000Z</published>
-    <updated>2022-11-08T02:40:58.788Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;C++のキャストについてあまりよく知らなかったので調べた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   
