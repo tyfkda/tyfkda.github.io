@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-03-19T01:10:33.172Z</updated>
+  <updated>2023-03-19T01:23:34.878Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2023/03/19/js-case-range.html"/>
     <id>https://tyfkda.github.io/blog/2023/03/19/js-case-range.html</id>
     <published>2023-03-19T01:00:00.000Z</published>
-    <updated>2023-03-19T01:10:33.172Z</updated>
+    <updated>2023-03-19T01:23:34.878Z</updated>
     
     
     <summary type="html">&lt;p&gt;JavaScriptの&lt;code&gt;case&lt;/code&gt;である範囲の値を指定できないかな〜と思ったらできるらしい。&lt;/p&gt;</summary>
@@ -30,21 +30,6 @@
     
     
     <category term="javascript" scheme="https://tyfkda.github.io/tags/javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>映画『Winny』に出てくるED法</title>
-    <link href="https://tyfkda.github.io/blog/2023/03/17/winny-movie.html"/>
-    <id>https://tyfkda.github.io/blog/2023/03/17/winny-movie.html</id>
-    <published>2023-03-17T03:07:22.000Z</published>
-    <updated>2023-03-17T07:43:38.781Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;Winnyは同時代を生きていたけど全然詳しくないが、映画の予告編が面白そう。&lt;/p&gt;</summary>
-    
-    
-    
     
   </entry>
   
@@ -186,6 +171,25 @@ WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計
     
     
     
+    
+  </entry>
+  
+  <entry>
+    <title>【C】可変長引数の回避と引数の数による関数の呼び分け</title>
+    <link href="https://tyfkda.github.io/blog/2022/11/23/open-impl.html"/>
+    <id>https://tyfkda.github.io/blog/2022/11/23/open-impl.html</id>
+    <published>2022-11-23T10:00:00.000Z</published>
+    <updated>2022-11-24T04:26:03.719Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;例えばPOSIXの &lt;code&gt;open&lt;/code&gt; 関数は引数を2つ、または3つ与える形になっている。
+このような関数を自作C言語上で実装する場合に可変長引数を使用すると、内部的に引数をスタック上にストアして取り出す処理が行われるため、コストがかかってしまう。
+それを回避する方法を考える。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="c" scheme="https://tyfkda.github.io/tags/c/"/>
     
   </entry>
   
