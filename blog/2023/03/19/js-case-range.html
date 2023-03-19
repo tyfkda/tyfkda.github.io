@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="GitHubに置いているリポジトリの公開ページをGitHub Pagesで作る場合に、どうやって管理したらいいか自分のやり方をメモ。">
+        <meta name="description" content="JavaScriptのcaseである範囲の値を指定できないかな〜と思ったらできるらしい。">
     
 
     <!--Author-->
@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="gh-pagesをサブディレクトリ内で管理"/>
+        <meta property="og:title" content="【JavaScript】caseで「これ以上これ以下」にマッチさせる"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>gh-pagesをサブディレクトリ内で管理 - Kludge Factory</title>
+    <title>【JavaScript】caseで「これ以上これ以下」にマッチさせる - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +67,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/06/07/git-worktree.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/03/19/js-case-range.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -160,13 +160,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>gh-pagesをサブディレクトリ内で管理</h1>
+                    <h1>【JavaScript】caseで「これ以上これ以下」にマッチさせる</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2016-06-07
+                            2023-03-19
                         
                     </span>
                 </div>
@@ -187,7 +187,7 @@
                         
 
 
-<a href="/tags/git/">#git</a>
+<a href="/tags/javascript/">#javascript</a>
 
 
                     
@@ -202,34 +202,32 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>GitHubに置いているリポジトリの公開ページをGitHub Pagesで作る場合に、どうやって管理したらいいか自分のやり方をメモ。</p>
+                <p>JavaScriptの<code>case</code>である範囲の値を指定できないかな〜と思ったらできるらしい。</p>
 <span id="more"></span>
 
-<ul>
-<li>‘16&#x2F;08&#x2F;26: <code>gh-pages</code>ブランチに入れなくても、<code>master</code>の<code>docs</code>ディレクトリ内に置けばGitHub pagesとして見れるようになったらしい <a href="https://github.com/blog/2233-publish-your-project-documentation-with-github-pages">Publish Your Project Documentation with GitHub Pages</a></li>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">switch</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">1</span> &lt;= x &amp;&amp; x &lt;= <span class="number">10</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>と書ける。</p>
+<h3 id="前口上"><a href="#前口上" class="headerlink" title="前口上"></a>前口上</h3><p>JavaScriptの基本的な文法はC言語とほとんど同じなので、<code>case 1: case 2: ...</code> と続けて書けば複数の値に対してマッチさせた処理を書くことができる。
+ただこれが10個とかになると書くのがダルいので、「a以上b以下」みたいに書けたら楽できる。</p>
+<p>gccではそのような拡張があって、 <code>case 1...10:</code> と書ける（<a href="https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html">Case Ranges (Using the GNU Compiler Collection (GCC))</a>）。
+JavaScriptでもそういうことができるのか調べた。</p>
+<h3 id="case式"><a href="#case式" class="headerlink" title="case式"></a>case式</h3><p>ググったらすぐ見つかった。</p>
+<p><a href="https://stackoverflow.com/a/48969351">How can I use ranges in a switch case statement using JavaScript? - Stack Overflow</a></p>
+<p><code>case</code> に式が書けるので <code>1 &lt;= x &amp;&amp; x &lt;= 10</code> などと書ける。
+注意点としては、 <code>switch (true)</code> とする必要がある（<code>switch (x)</code>だとマッチしない）。</p>
+<h4 id="上から順に検査される"><a href="#上から順に検査される" class="headerlink" title="上から順に検査される"></a>上から順に検査される</h4><p>Stack Overflow に書かれているように、上から検査されるので <code>case x &lt; 1: ...; case x &lt; 10: ...;</code> などとしていってもよい。</p>
+<p>その場合でも、<code>default</code>はどこに書いても大丈夫だった。</p>
+<h4 id="if〜else-ifと同じ？"><a href="#if〜else-ifと同じ？" class="headerlink" title="if〜else ifと同じ？"></a>if〜else ifと同じ？</h4><p>自分で式を書く必要があるので、<code>if (xxx) ... else if (yyy) ...</code> とほとんど同じに使える。
+ただ、<code>break</code>を書かないで下の条件の処理に合流させることで、ちょっとひねった書き方が可能になる。</p>
+<p>また<code>default</code>を途中に差し込めるので、同様に合流させられる。</p>
+<h3 id="微妙？"><a href="#微妙？" class="headerlink" title="微妙？"></a>微妙？</h3><p><code>switch (true)</code> とした上ですべての <code>case</code> に式を書く必要があるので、一部の範囲だけ複数マッチしたいがその他は普通の定数 <code>case</code> 、みたいなことができない。</p>
+<p>また自分の中では <code>switch</code> 文は値 <code>x</code> に対してどれがマッチするか〜という具合に <code>x</code> を棚上げできて脳負荷を下げられるのが利点という感覚で、それぞれに式を書かれて<code>x</code>以外が触られたり、上から順に条件を見ていく必要があったりするのは辛い。</p>
+<p><code>break</code>を書かないでFallthroughをしないんだったら<code>if〜else if</code>と変わらないので、その方がわかりやすいのではないかと思った
+（そっちだと<code>&#123;&#125;</code>でスコープも区切れるという利点もある）。</p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch#an_alternative_to_if...else_chains">An alternative to if…else chains - switch - JavaScript | MDN</a></li>
 </ul>
-<h3 id="gitで複数ブランチを編集する方法"><a href="#gitで複数ブランチを編集する方法" class="headerlink" title="gitで複数ブランチを編集する方法"></a>gitで複数ブランチを編集する方法</h3><p>GitHubでページをホストできるGitHub Pagesで、各リポジトリごとのページは<code>gh-pages</code>というブランチの内容が<code>アカウント名.github.io/リポジトリ名</code>に公開される。</p>
-<p>普段は<code>master</code>だか<code>develop</code>ブランチで作業していて、ビルドで生成した内容を<code>gh-pages</code>で公開したい場合に、<code>git</code>の使い方でいろいろ方法がある：</p>
-<ol>
-<li><code>git branch</code>でブランチを切り替えて修正を反映させる</li>
-<li>別フォルダに<code>gh-pages</code>ブランチをチェックアウトしてそちらに更新内容を反映させる</li>
-<li><code>git subtree</code>を使う</li>
-<li><code>git worktree</code>を使う</li>
-</ol>
-<p>1はそれぞれのブランチを同時に参照できない、2はフォルダを別の場所に作らないといけないのが面倒、3はよく知らない、で4の方法でやることにする。</p>
-<h3 id="gh-pagesブランチを親なしで作成する"><a href="#gh-pagesブランチを親なしで作成する" class="headerlink" title="gh-pagesブランチを親なしで作成する"></a>gh-pagesブランチを親なしで作成する</h3><p>まずは対象となる<code>gh-pages</code>ブランチを作成する。ブランチを作るときに通常であれば<code>git branch</code>または<code>git checkout -b</code>などとして作成するが、そうした場合には現在のコミットが親になってしまう。GitHub Pagesに公開したいブランチの内容は作業用のブランチとはまったく別の内容（成果物のHTMLなどだけで、ビルド用の設定ファイルやソースは必要ない）なので、現在のコミットからファイルを引き継がないほうが都合がよい。</p>
-<p>gitでは<code>--orphan</code>で親のない、独立したブランチを作成できる：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git checkout --orphan gh-pages  <span class="comment"># gh-pagesを親なしのブランチとして作成</span></span><br><span class="line">$ git reset --hard  <span class="comment"># 今までいたブランチの内容がステージングされているので、クリアする</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">&#x27;Hello&#x27;</span> &gt; index.html  <span class="comment"># 適当にファイル追加</span></span><br><span class="line">$ git add index.html</span><br><span class="line">$ git commit -am <span class="string">&#x27;Create gh-pages&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/assets/git-worktree.png" alt="git-worktree"></p>
-<h3 id="git-worktree"><a href="#git-worktree" class="headerlink" title="git worktree"></a>git worktree</h3><p><a href="https://git-scm.com/docs/git-worktree">git-worktree</a>を使うと、指定のブランチをサブディレクトリ以下にチェックアウトすることができる。これを使うと作業用のブランチと公開用の<code>gh-pages</code>ブランチを切り替えずに、同時に編集することができるようになる。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git checkout master</span><br><span class="line">$ git worktree add dist gh-pages  <span class="comment"># distがブランチをチェックアウトするディレクトリ名、gh-pagesが取り込むブランチ名</span></span><br></pre></td></tr></table></figure>
-
-<p>上記の例だと<code>dist</code>ディレクトリ以下に<code>gh-pages</code>ブランチの内容（<code>index.html</code>）が格納される。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── MASTER.txt</span><br><span class="line">└── dist</span><br><span class="line">    └── index.html</span><br><span class="line"></span><br><span class="line">1 directory, 2 files</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="gh-pagesの更新"><a href="#gh-pagesの更新" class="headerlink" title="gh-pagesの更新"></a>gh-pagesの更新</h3><p><code>worktree</code>で指定したディレクトリ内に<code>gh-pages</code>ブランチの内容がチェックアウトされているので、その中のファイルを修正してコミット、プッシュでGitHubに上げると、GitHub Pagesに反映される。</p>
 
 
                 
@@ -240,7 +238,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/16/git-fixup-autosquash.html" title="【git】あとから修正を差し込む（fixupとautosquash）" rel="bookmark">【git】あとから修正を差し込む（fixupとautosquash）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/17/git-log.html" title="自分が今日一日何をしたのか調べる(gitのlogから)" rel="bookmark">自分が今日一日何をしたのか調べる(gitのlogから)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/18/git-flow.html" title="git-flowコマンドラインツールをgithub-flowとして使う" rel="bookmark">git-flowコマンドラインツールをgithub-flowとして使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/23/git-my-alias.html" title="【git】まれに使用するエイリアス６選" rel="bookmark">【git】まれに使用するエイリアス６選</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/10/22/pull-request.html" title="GitHubでプルリクエストを送るときの操作手順" rel="bookmark">GitHubでプルリクエストを送るときの操作手順</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/js-game-engine.html" title="JSでオレオレゲームエンジン" rel="bookmark">JSでオレオレゲームエンジン</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="GitHubに置いているリポジトリの公開ページをGitHub Pagesで作る場合に、どうやって管理したらいいか自分のやり方をメモ。">
+        <meta name="description" content="Winnyは同時代を生きていたけど全然詳しくないが、映画の予告編が面白そう。">
     
 
     <!--Author-->
@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="gh-pagesをサブディレクトリ内で管理"/>
+        <meta property="og:title" content="映画『Winny』に出てくるED法"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>gh-pagesをサブディレクトリ内で管理 - Kludge Factory</title>
+    <title>映画『Winny』に出てくるED法 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +67,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2016/06/07/git-worktree.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/03/17/winny-movie.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -160,13 +160,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>gh-pagesをサブディレクトリ内で管理</h1>
+                    <h1>映画『Winny』に出てくるED法</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2016-06-07
+                            2023-03-17
                         
                     </span>
                 </div>
@@ -182,54 +182,28 @@
 
             <!-- Tags and categories -->
            
-                <div class="col-lg-4 col-md-5 post-tags">
-                    
-                        
-
-
-<a href="/tags/git/">#git</a>
-
-
-                    
-                </div>
-                <div class="col-lg-4 col-md-5 post-categories">
-                    
-                </div>
-            
 
             <!-- Gallery -->
             
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>GitHubに置いているリポジトリの公開ページをGitHub Pagesで作る場合に、どうやって管理したらいいか自分のやり方をメモ。</p>
+                <p>Winnyは同時代を生きていたけど全然詳しくないが、映画の予告編が面白そう。</p>
 <span id="more"></span>
 
-<ul>
-<li>‘16&#x2F;08&#x2F;26: <code>gh-pages</code>ブランチに入れなくても、<code>master</code>の<code>docs</code>ディレクトリ内に置けばGitHub pagesとして見れるようになったらしい <a href="https://github.com/blog/2233-publish-your-project-documentation-with-github-pages">Publish Your Project Documentation with GitHub Pages</a></li>
-</ul>
-<h3 id="gitで複数ブランチを編集する方法"><a href="#gitで複数ブランチを編集する方法" class="headerlink" title="gitで複数ブランチを編集する方法"></a>gitで複数ブランチを編集する方法</h3><p>GitHubでページをホストできるGitHub Pagesで、各リポジトリごとのページは<code>gh-pages</code>というブランチの内容が<code>アカウント名.github.io/リポジトリ名</code>に公開される。</p>
-<p>普段は<code>master</code>だか<code>develop</code>ブランチで作業していて、ビルドで生成した内容を<code>gh-pages</code>で公開したい場合に、<code>git</code>の使い方でいろいろ方法がある：</p>
-<ol>
-<li><code>git branch</code>でブランチを切り替えて修正を反映させる</li>
-<li>別フォルダに<code>gh-pages</code>ブランチをチェックアウトしてそちらに更新内容を反映させる</li>
-<li><code>git subtree</code>を使う</li>
-<li><code>git worktree</code>を使う</li>
-</ol>
-<p>1はそれぞれのブランチを同時に参照できない、2はフォルダを別の場所に作らないといけないのが面倒、3はよく知らない、で4の方法でやることにする。</p>
-<h3 id="gh-pagesブランチを親なしで作成する"><a href="#gh-pagesブランチを親なしで作成する" class="headerlink" title="gh-pagesブランチを親なしで作成する"></a>gh-pagesブランチを親なしで作成する</h3><p>まずは対象となる<code>gh-pages</code>ブランチを作成する。ブランチを作るときに通常であれば<code>git branch</code>または<code>git checkout -b</code>などとして作成するが、そうした場合には現在のコミットが親になってしまう。GitHub Pagesに公開したいブランチの内容は作業用のブランチとはまったく別の内容（成果物のHTMLなどだけで、ビルド用の設定ファイルやソースは必要ない）なので、現在のコミットからファイルを引き継がないほうが都合がよい。</p>
-<p>gitでは<code>--orphan</code>で親のない、独立したブランチを作成できる：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git checkout --orphan gh-pages  <span class="comment"># gh-pagesを親なしのブランチとして作成</span></span><br><span class="line">$ git reset --hard  <span class="comment"># 今までいたブランチの内容がステージングされているので、クリアする</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">&#x27;Hello&#x27;</span> &gt; index.html  <span class="comment"># 適当にファイル追加</span></span><br><span class="line">$ git add index.html</span><br><span class="line">$ git commit -am <span class="string">&#x27;Create gh-pages&#x27;</span></span><br></pre></td></tr></table></figure>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IccywXpHmqo?start=40" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-<p><img src="/assets/git-worktree.png" alt="git-worktree"></p>
-<h3 id="git-worktree"><a href="#git-worktree" class="headerlink" title="git worktree"></a>git worktree</h3><p><a href="https://git-scm.com/docs/git-worktree">git-worktree</a>を使うと、指定のブランチをサブディレクトリ以下にチェックアウトすることができる。これを使うと作業用のブランチと公開用の<code>gh-pages</code>ブランチを切り替えずに、同時に編集することができるようになる。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git checkout master</span><br><span class="line">$ git worktree add dist gh-pages  <span class="comment"># distがブランチをチェックアウトするディレクトリ名、gh-pagesが取り込むブランチ名</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>「このNekoFightにはAIを搭載しています。
+AIの方式は単なる三層のニューラルネットで、学習アルゴリズムは私独自のED法です。
+ED法はバックプロパゲーションが実際の神経系ではあり得ないんじゃないかと私が考えて開発したものなんですけれども、
+学習速度が非常に早いのと、中間層を追加すると性能が無制限に向上できるという特徴を持ったアルゴリズムです。」</p>
+</blockquote>
+<p>（実話なのか知りませんが）法廷で新しいアルゴリズムを思いついてコードを書こうとするところ、シビレます。</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Q_O6Qrb3t48" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-<p>上記の例だと<code>dist</code>ディレクトリ以下に<code>gh-pages</code>ブランチの内容（<code>index.html</code>）が格納される。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── MASTER.txt</span><br><span class="line">└── dist</span><br><span class="line">    └── index.html</span><br><span class="line"></span><br><span class="line">1 directory, 2 files</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="gh-pagesの更新"><a href="#gh-pagesの更新" class="headerlink" title="gh-pagesの更新"></a>gh-pagesの更新</h3><p><code>worktree</code>で指定したディレクトリ内に<code>gh-pages</code>ブランチの内容がチェックアウトされているので、その中のファイルを修正してコミット、プッシュでGitHubに上げると、GitHub Pagesに反映される。</p>
+<p>本人による解説動画。</p>
+<p>ED＝誤差拡散</p>
 
 
                 
@@ -240,7 +214,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/16/git-fixup-autosquash.html" title="【git】あとから修正を差し込む（fixupとautosquash）" rel="bookmark">【git】あとから修正を差し込む（fixupとautosquash）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/17/git-log.html" title="自分が今日一日何をしたのか調べる(gitのlogから)" rel="bookmark">自分が今日一日何をしたのか調べる(gitのlogから)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/01/18/git-flow.html" title="git-flowコマンドラインツールをgithub-flowとして使う" rel="bookmark">git-flowコマンドラインツールをgithub-flowとして使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/23/git-my-alias.html" title="【git】まれに使用するエイリアス６選" rel="bookmark">【git】まれに使用するエイリアス６選</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/10/22/pull-request.html" title="GitHubでプルリクエストを送るときの操作手順" rel="bookmark">GitHubでプルリクエストを送るときの操作手順</a></h3></div></li></ul>
+                
             </div>
 
             <!-- Comments -->
