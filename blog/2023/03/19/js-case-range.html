@@ -207,7 +207,8 @@
 
 <h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">switch</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">1</span> &lt;= x &amp;&amp; x &lt;= <span class="number">10</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>と書ける。</p>
+<p>と書ける
+（ES2020から？）。</p>
 <h3 id="前口上"><a href="#前口上" class="headerlink" title="前口上"></a>前口上</h3><p>JavaScriptの基本的な文法はC言語とほとんど同じなので、<code>case 1: case 2: ...</code> と続けて書けば複数の値に対してマッチさせた処理を書くことができる。
 ただこれが10個とかになると書くのがダルいので、「a以上b以下」みたいに書けたら楽できる。</p>
 <p>gccではそのような拡張があって、 <code>case 1...10:</code> と書ける（<a href="https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html">Case Ranges (Using the GNU Compiler Collection (GCC))</a>）。
@@ -226,7 +227,7 @@ JavaScriptでもそういうことができるのか調べた。</p>
 <p><code>break</code>を書かないでFallthroughをしないんだったら<code>if〜else if</code>と変わらないので、その方がわかりやすいのではないかと思った
 （そっちだと<code>&#123;&#125;</code>でスコープも区切れるという利点もある）。</p>
 <h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch#an_alternative_to_if...else_chains">An alternative to if…else chains - switch - JavaScript | MDN</a></li>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/switch#if...else_%E3%83%81%E3%82%A7%E3%83%BC%E3%83%B3%E3%81%AB%E3%82%88%E3%82%8B%E4%BB%A3%E6%9B%BF">if…else チェーンによる代替 - switch - JavaScript | MDN</a></li>
 </ul>
 
 
@@ -238,7 +239,7 @@ JavaScriptでもそういうことができるのか調べた。</p>
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/js-game-engine.html" title="JSでオレオレゲームエンジン" rel="bookmark">JSでオレオレゲームエンジン</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/js-game-engine.html" title="JSでオレオレゲームエンジン" rel="bookmark">JSでオレオレゲームエンジン</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
