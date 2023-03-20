@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="Rustで参照から可変参照を拝借するにはワイルドに unsafeを使うことになるんだけど（悪かった自慢）、Clippyにかけたら「未定義動作」だと言って怒られたので修正する。">
+        <meta name="description" content="Rustで参照から可変参照を拝借するにはワイルドに unsafeを使うことになるんだけど（悪かった自慢）、Clippyにかけたら未定義動作だと言って怒られたので修正する。">
     
 
     <!--Author-->
@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="【Rust】参照から可変参照を取り出す（未定義動作ではない（けど安全でもない））方法"/>
+        <meta property="og:title" content="【Rust】参照から可変参照に変換する（未定義動作ではない（けど安全でもない））方法"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>【Rust】参照から可変参照を取り出す（未定義動作ではない（けど安全でもない））方法 - Kludge Factory</title>
+    <title>【Rust】参照から可変参照に変換する（未定義動作ではない（けど安全でもない））方法 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -160,7 +160,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>【Rust】参照から可変参照を取り出す（未定義動作ではない（けど安全でもない））方法</h1>
+                    <h1>【Rust】参照から可変参照に変換する（未定義動作ではない（けど安全でもない））方法</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
@@ -202,7 +202,7 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>Rustで参照から可変参照を拝借するにはワイルドに <code>unsafe</code>を使うことになるんだけど（悪かった自慢）、<a href="https://doc.rust-lang.org/clippy/">Clippy</a>にかけたら「未定義動作」だと言って怒られたので修正する。</p>
+                <p>Rustで参照から可変参照を拝借するにはワイルドに <code>unsafe</code>を使うことになるんだけど（悪かった自慢）、<a href="https://doc.rust-lang.org/clippy/">Clippy</a>にかけたら未定義動作だと言って怒られたので修正する。</p>
 <span id="more"></span>
 
 <h3 id="未定義動作版"><a href="#未定義動作版" class="headerlink" title="未定義動作版"></a>未定義動作版</h3><p>以前<a href="/blog/2020/03/31/peep-ref.html" title="Rustで状態管理や相互参照をどうするか">Rustで状態管理や相互参照をどうするか</a>で行った<code>peep</code>関数：</p>
@@ -211,8 +211,8 @@
 <p>をClippyにかけるとエラーが出る：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">error: casting `&amp;T` to `&amp;mut T` may cause undefined behavior, consider instead using an `UnsafeCell`</span><br><span class="line"> --&gt; unsafe_util.rs:2:10</span><br><span class="line">  |</span><br><span class="line">2 |     &amp;mut *(t as *const T as *mut T)</span><br><span class="line">  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^</span><br><span class="line">  |</span><br><span class="line">  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#cast_ref_to_mut</span><br></pre></td></tr></table></figure>
 
-<p>代わりに<code>UnsafeCell</code>を使え、と言われている。</p>
-<h3 id="UnsafeCell経由版"><a href="#UnsafeCell経由版" class="headerlink" title="UnsafeCell経由版"></a><code>UnsafeCell</code>経由版</h3><p>Clippyのメッセージでは<code>UnsafeCell</code> を使えとのことだけど <code>self</code>の可変参照を（コンパイラを騙して）取得したいので、<code>UnsafeCell</code> として保持しておくわけにはいかなかった。
+<p><code>&amp;T</code> から <code>&amp;mut T</code> へのキャストは未定義動作なので、代わりに<code>UnsafeCell</code>を使え、と言われている。</p>
+<h3 id="UnsafeCell経由版"><a href="#UnsafeCell経由版" class="headerlink" title="UnsafeCell経由版"></a><code>UnsafeCell</code>経由版</h3><p><code>UnsafeCell</code> を使えとのことだけど <code>self</code>の可変参照を（コンパイラを騙して）取得したいので、<code>UnsafeCell</code> として保持しておくわけにはいかなかった。
 なので参照→<code>UnsafeCell</code>→可変参照とキャストしてやる：</p>
 <figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::cell::UnsafeCell;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">unsafe</span> <span class="keyword">fn</span> <span class="title function_">peep</span>&lt;<span class="symbol">&#x27;a</span>, T&gt;(t: &amp;T) <span class="punctuation">-&gt;</span> &amp;<span class="symbol">&#x27;a</span> <span class="keyword">mut</span> T &#123;</span><br><span class="line">    <span class="title function_ invoke__">get_mut</span>(<span class="title function_ invoke__">get_shared</span>(t))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Safety: the caller must ensure that there are no references that</span></span><br><span class="line"><span class="comment">// point to the *contents* of the `UnsafeCell`.</span></span><br><span class="line"><span class="keyword">unsafe</span> <span class="keyword">fn</span> <span class="title function_">get_mut</span>&lt;<span class="symbol">&#x27;a</span>, T&gt;(ptr: &amp;UnsafeCell&lt;T&gt;) <span class="punctuation">-&gt;</span> &amp;<span class="symbol">&#x27;a</span> <span class="keyword">mut</span> T &#123;</span><br><span class="line">    <span class="keyword">unsafe</span> &#123; &amp;<span class="keyword">mut</span> *ptr.<span class="title function_ invoke__">get</span>() &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">get_shared</span>&lt;T&gt;(ptr: &amp;T) <span class="punctuation">-&gt;</span> &amp;UnsafeCell&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">t</span> = ptr <span class="keyword">as</span> *<span class="keyword">const</span> T <span class="keyword">as</span> *<span class="keyword">const</span> UnsafeCell&lt;T&gt;;</span><br><span class="line">    <span class="comment">// SAFETY: `T` and `UnsafeCell&lt;T&gt;` have the same memory layout</span></span><br><span class="line">    <span class="keyword">unsafe</span> &#123; &amp;*t &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -231,8 +231,9 @@
 </blockquote>
 <h3 id="本来のUnsafeCellの使い方は？"><a href="#本来のUnsafeCellの使い方は？" class="headerlink" title="本来のUnsafeCellの使い方は？"></a>本来のUnsafeCellの使い方は？</h3><p>正確に理解できているとは言い難いんだけど上記でコンパイラやClippyに怒られないのは騙しているだけで、結局危険なことには変わりはないはず（メモリレイアウトが保証されてるので未定義動作ではないという程度で）。</p>
 <p><code>UnsafeCell</code>は本来は「内部可変性」、外には不変に見せる（なので借用として複数に共有できる）けど内部では内容を書き換える、という用途に使用するのだと思う。
-例えば構造体のフィールドとして<code>struct Foo &#123; t: UnsafeCell&lt;T&gt; &#125;</code>というふうに所有しておいて、不変の借用<code>&amp;UnsafeCell&lt;T&gt;</code>が共有できて、その上で内部可変性で裏で<code>&amp;mut T</code>に変換して内容を書き換える、ということが未定義動作ではなくできるよ、ということだと思う。</p>
-<p>まあ<code>&amp;UnsafeCell</code>で受け渡すのもアレなので包んだ<code>&amp;Foo</code> で受け渡して、
+例えば<code>let mut t: UnsafeCell&lt;T&gt; = ...;</code>というふうに所有しておいて、不変の借用<code>&amp;UnsafeCell&lt;T&gt;</code>が共有できて、その上で内部可変性で裏で<code>&amp;mut T</code>に変換して内容を書き換える、ということが未定義動作ではなくできるよ、ということだと思う
+（その上で安全性は自分で保証する必要がある）。</p>
+<p>まあ<code>&amp;UnsafeCell</code>で受け渡すのもアレなので構造体<code>struct Foo&#123;&#125;</code>などで包んだ<code>&amp;Foo</code> で受け渡して、
 <code>impl Foo&#123;&#125;</code> 内部のメソッドで密かに内部を変更するというのが筋だろうと思う
 （さらには<code>RefCell</code>や<code>Cell</code>を使って、<code>UnsafeCell</code>は使わないべきではある）。</p>
 <ul>
