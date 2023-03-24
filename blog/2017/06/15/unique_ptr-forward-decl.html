@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="C++11で、前方参照しているクラスをunique_ptrで保持するクラスの宣言方法がわかっていなかったのでメモ。">
+        <meta name="description" content="C++11で、前方宣言しているクラスをunique_ptrで保持するクラスの宣言方法がわかっていなかったのでメモ。">
     
 
     <!--Author-->
@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="【C++】クラスの前方参照とunique_ptr"/>
+        <meta property="og:title" content="【C++】クラスの前方宣言とunique_ptr"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>【C++】クラスの前方参照とunique_ptr - Kludge Factory</title>
+    <title>【C++】クラスの前方宣言とunique_ptr - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -160,7 +160,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>【C++】クラスの前方参照とunique_ptr</h1>
+                    <h1>【C++】クラスの前方宣言とunique_ptr</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
@@ -202,7 +202,7 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>C++11で、前方参照しているクラスを<code>unique_ptr</code>で保持するクラスの宣言方法がわかっていなかったのでメモ。</p>
+                <p>C++11で、前方宣言しているクラスを<code>unique_ptr</code>で保持するクラスの宣言方法がわかっていなかったのでメモ。</p>
 <span id="more"></span>
 
 <h3 id="生ポインタの場合"><a href="#生ポインタの場合" class="headerlink" title="生ポインタの場合"></a>生ポインタの場合</h3><p>適当な<code>Foo</code>クラスがあったとして、</p>
@@ -211,8 +211,8 @@
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// foo.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;foo.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line">Foo::~<span class="built_in">Foo</span>() &#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Foo:dtor&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><code>Foo</code>クラスを生ポインタで持つクラス<code>Bar</code>があったとする。
-<code>Foo</code>クラスを前方参照することでヘッダ<code>&quot;foo.h&quot;</code>のインクルードを避けることができる：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>;  <span class="comment">// 前方参照</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Bar</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Bar</span>();</span><br><span class="line">  ~<span class="built_in">Bar</span>();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  Foo* foo;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<code>Foo</code>クラスを前方宣言することでヘッダ<code>&quot;foo.h&quot;</code>のインクルードを避けることができる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>;  <span class="comment">// 前方宣言</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Bar</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Bar</span>();</span><br><span class="line">  ~<span class="built_in">Bar</span>();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  Foo* foo;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <p>実体を利用する.cppファイル側でインクルードすることで、問題なくコンパイルできる：</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;bar.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;foo.h&quot;</span>  <span class="comment">// インクルード</span></span></span><br><span class="line"></span><br><span class="line">Bar::<span class="built_in">Bar</span>() : <span class="built_in">foo</span>(<span class="keyword">new</span> <span class="built_in">Foo</span>()) &#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Bar:ctor&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Bar::~<span class="built_in">Bar</span>() &#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Bar:dtor&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">delete</span> foo;  <span class="comment">// &lt;- 自分で解放する必要あり</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -230,7 +230,7 @@
 <p>するとコンパイルエラーが出る：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ g++ -c main.cpp</span><br><span class="line">main.cpp:4:7: error: call to implicitly-deleted copy constructor of &#x27;Bar&#x27;</span><br><span class="line">  Bar bar = Bar();</span><br><span class="line">      ^     ~~~~~</span><br><span class="line">./bar.h:13:24: note: copy constructor of &#x27;Bar&#x27; is implicitly deleted because field &#x27;foo&#x27; has a deleted copy constructor</span><br><span class="line">  std::unique_ptr&lt;Foo&gt; foo;</span><br><span class="line">                       ^</span><br><span class="line">include/c++/v1/memory:2621:31: note: copy constructor</span><br><span class="line">      is implicitly deleted because &#x27;unique_ptr&lt;Foo, std::__1::default_delete&lt;Foo&gt; &gt;&#x27; has a user-declared move constructor</span><br><span class="line">    _LIBCPP_INLINE_VISIBILITY unique_ptr(unique_ptr&amp;&amp; __u) _NOEXCEPT</span><br><span class="line">                              ^</span><br><span class="line">1 error generated.</span><br></pre></td></tr></table></figure>
 
-<p>デストラクタは宣言しているのになぜだ！？と原因がよくわからなかったんだけど、コピーコンストラクタが使われる？がその際にデフォルトが使われる？が<code>Bar</code>が前方参照で実体が不明なので？エラーになるらしい。
+<p>デストラクタは宣言しているのになぜだ！？と原因がよくわからなかったんだけど、コピーコンストラクタが使われる？がその際にデフォルトが自動生成される？が<code>Bar</code>内の<code>Foo</code>が前方宣言で実体が不明なので？エラーになるらしい。
 エラーを回避するにはコピーコンストラクタを宣言すればよいらしい：</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bar.h</span></span><br><span class="line">  <span class="built_in">Bar</span>(<span class="type">const</span> Bar&amp;);  <span class="comment">// &lt;- コピーコンストラクタを宣言</span></span><br></pre></td></tr></table></figure>
 
@@ -258,7 +258,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/08/cpp-lambda.html" title="【C++】ラムダ関数" rel="bookmark">【C++】ラムダ関数</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/26/cpp-multi-value.html" title="【C++】関数から多値を返す" rel="bookmark">【C++】関数から多値を返す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/10/05/cpp-cast.html" title="【C++】static_castとreinterpret_cast、またdynamic_castの違い" rel="bookmark">【C++】static_castとreinterpret_cast、またdynamic_castの違い</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/12/lambda-is-a-functor.html" title="【C++】C++のラムダ式はファンクタだったのか…" rel="bookmark">【C++】C++のラムダ式はファンクタだったのか…</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/10/05/cpp-cast.html" title="【C++】static_castとreinterpret_cast、またdynamic_castの違い" rel="bookmark">【C++】static_castとreinterpret_cast、またdynamic_castの違い</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/08/cpp-lambda.html" title="【C++】ラムダ関数" rel="bookmark">【C++】ラムダ関数</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/26/cpp-multi-value.html" title="【C++】関数から多値を返す" rel="bookmark">【C++】関数から多値を返す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/12/lambda-is-a-functor.html" title="【C++】C++のラムダ式はファンクタだったのか…" rel="bookmark">【C++】C++のラムダ式はファンクタだったのか…</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
