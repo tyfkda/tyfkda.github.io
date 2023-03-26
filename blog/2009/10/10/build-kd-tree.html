@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="フォトンマップを作った後、実際に描画するときに放射輝度を求めるために視点からの交点近辺のフォトンを取り出す必要がある。
+この処理を高速に行うためにはkd-treeを使うといい、という話。
+でもいきなり3D用のkd-treeのルーチンを書いて動かせる自信がない…なので2Dのテストプログラムを作る。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="kd-treeの構築と近傍要素の抽出"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>kd-treeの構築と近傍要素の抽出 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/10/10/build-kd-tree.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>kd-treeの構築と近傍要素の抽出</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-10-10
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/algorithm/">#algorithm</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><img src="/assets/blog/build-kd-tree.png" alt="kd-tree"></p>
+<p>フォトンマップを作った後、実際に描画するときに放射輝度を求めるために視点からの交点近辺のフォトンを取り出す必要がある。
+この処理を高速に行うためには<a href="http://ja.wikipedia.org/wiki/Kd%E6%9C%A8">kd-tree</a>を使うといい、という話。</p>
+<p>でもいきなり3D用のkd-treeのルーチンを書いて動かせる自信がない…なので2Dのテストプログラムを作る。</p>
+<span id="more"></span>
+
+<h4 id="kd-treeの構築"><a href="#kd-treeの構築" class="headerlink" title="kd-treeの構築"></a>kd-treeの構築</h4><ul>
+<li>木をバランスさせるため、フォトンを記録し終わってから構築する</li>
+<li>分割する軸を選ぶ（x,y,zで一番長い軸にしてみた）</li>
+<li>分割軸に沿ってソート</li>
+<li>左右でバランスするように、左右の要素数を決める（葉が左詰になって欲しいので、あれこれ計算）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 木を分割する中央のインデクスを求める</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">select_median_index</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">  <span class="comment">// 左詰にするため、あれこれ計算</span></span><br><span class="line">  <span class="type">int</span> <span class="variable">h</span> <span class="operator">=</span> log2(n);</span><br><span class="line">  <span class="type">int</span> <span class="variable">s</span> <span class="operator">=</span> <span class="number">1</span> &lt;&lt; h;</span><br><span class="line">  <span class="type">int</span> <span class="variable">d</span> <span class="operator">=</span> n - s;</span><br><span class="line">  <span class="type">int</span> <span class="variable">s2</span> <span class="operator">=</span> s / <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">if</span> (s2 &gt; <span class="number">0</span> &amp;&amp; d &gt;= s2) d = s2-<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">return</span> s2 + d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>０オリジンの場合、ノードiの子供はi<em>2+1とi</em>2+2</li>
+<li>再帰的に繰り返す</li>
+<li>分割するたびにソートしなおすので、クイックソートがO(n logn)として、O(n log^2(n))？</li>
+</ul>
+<h4 id="近傍要素の探索"><a href="#近傍要素の探索" class="headerlink" title="近傍要素の探索"></a>近傍要素の探索</h4><ul>
+<li>ツリーの根から始めて、含まれるほうの枝は必ず見て、含まれないほうの枝は最大距離以内だったら見る</li>
+<li>今までに見つかった近傍要素中の最大距離を更新していく</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 「フォトンマッピング」本6.4 最近傍フォトンの効率的発見、locate_photons()参照</span></span><br><span class="line"><span class="type">float</span> <span class="title function_">traverse</span><span class="params">(PhotonAndDistance[] buf, vec pos, <span class="type">int</span> index, <span class="type">float</span> d2)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (index &lt; photons.length) &#123;</span><br><span class="line">    <span class="keyword">if</span> (index * <span class="number">2</span> + <span class="number">2</span> &lt; photons.length) &#123;  <span class="comment">// 子供がいる</span></span><br><span class="line">      <span class="type">float</span> <span class="variable">e</span> <span class="operator">=</span> axis_distance(nodes[index].divaxis, pos, photons[index].pos);</span><br><span class="line">      <span class="keyword">if</span> (e &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        d2 = traverse(buf, pos, index * <span class="number">2</span> + <span class="number">1</span>, d2);  <span class="comment">// 左の枝を見る</span></span><br><span class="line">        <span class="keyword">if</span> (e * e &lt; d2) &#123;</span><br><span class="line">          d2 = traverse(buf, pos, index * <span class="number">2</span> + <span class="number">2</span>, d2);  <span class="comment">// 右の枝を見る</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        d2 = traverse(buf, pos, index * <span class="number">2</span> + <span class="number">2</span>, d2);  <span class="comment">// 右の枝を見る</span></span><br><span class="line">        <span class="keyword">if</span> (e * e &lt; d2) &#123;</span><br><span class="line">          d2 = traverse(buf, pos, index * <span class="number">2</span> + <span class="number">1</span>, d2);  <span class="comment">// 左の枝を見る</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> <span class="variable">e2</span> <span class="operator">=</span> photons[index].pos.sub(pos).sqlength();</span><br><span class="line">    <span class="keyword">if</span> (e2 &lt; d2) &#123;</span><br><span class="line">      <span class="comment">// フォトンを挿入</span></span><br><span class="line">      <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> buf.length;</span><br><span class="line">      <span class="type">int</span> l, r;</span><br><span class="line">      <span class="keyword">for</span> (l=<span class="number">0</span>, r=n; l&lt;r; ) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> (l + r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (e2 &lt; buf[m].distance2) &#123;</span><br><span class="line">          r = m;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          l = m + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 後ろにずらす</span></span><br><span class="line">      <span class="type">PhotonAndDistance</span> <span class="variable">temp</span> <span class="operator">=</span> buf[buf.length-<span class="number">1</span>];</span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> i=buf.length; --i&gt;l; ) buf[i] = buf[i-<span class="number">1</span>];</span><br><span class="line">      buf[l] = temp;</span><br><span class="line">      buf[l].photon = photons[index];</span><br><span class="line">      buf[l].distance2 = e2;</span><br><span class="line">      <span class="comment">// 最大距離更新</span></span><br><span class="line">      d2 = buf[buf.length-<span class="number">1</span>].distance2;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> d2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>バランスしてれば O(log(n))</li>
+</ul>
+<h4 id="雑多"><a href="#雑多" class="headerlink" title="雑多"></a>雑多</h4><ul>
+<li>フォトンマップの場合、空間にある程度ばらけて分布するのではなく、壁などの表面に偏って分布するだろうからkd-treeがうまく機能するか不安だったけど、できてるっぽい</li>
+<li>実際にフォトンマッピングで使う場合は、球じゃなくて楕円体で絞り込んだり、法線があまりにも違ってたらはじくとかする必要があるかもしれない</li>
+<li>Proce55ing(Java)はどうも…<ul>
+<li>ソートさせるときに軸によって条件を外部から与えたい、けど関数ポインタがない、のでファンクタを渡すようにする<ul>
+<li>いちいちベースクラスを作って継承してオブジェクト生成して…とかメンドイ</li>
+</ul>
+</li>
+<li>KDTreeクラスがPhotonクラスに依存、分離させたい</li>
+</ul>
+</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="http://d.hatena.ne.jp/you_got/20090429/1240978307">計算幾何学に出会う - 道化がつぶやく</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/26/simplify-line-segments.html" title="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)" rel="bookmark">折れ線を簡略化する方法(Ramer-Douglas-Peucker法)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/22/sort-kd-tree.html" title="kd-treeバランス時のソート" rel="bookmark">kd-treeバランス時のソート</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

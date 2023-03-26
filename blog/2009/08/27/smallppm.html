@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="内容はわかってないけどsmallppmのソースをちくちくいじって遊んでみる。
+速度が速いから気軽に試せてイイ。
+影がくっきりしてるので、フォトンは１点から放出してるのかな。フォトンの放出は関数genpで行っている。
+pr-&amp;gt;o=Vec(50,60,85);
+
+Ray::oはoriginだからこ">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="smallppmを眺めてみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>smallppmを眺めてみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/08/27/smallppm.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>smallppmを眺めてみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-08-27
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cg/">#cg</a> <a href="/tags/gi/">#gi</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>内容はわかってないけど<a href="http://ompf.org/forum/viewtopic.php?f=8&t=1381">smallppm</a>のソースをちくちくいじって遊んでみる。
+速度が速いから気軽に試せてイイ。</p>
+<p>影がくっきりしてるので、フォトンは１点から放出してるのかな。フォトンの放出は関数genpで行っている。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">pr-&gt;o=Vec(<span class="number">50</span>,<span class="number">60</span>,<span class="number">85</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Ray::oはoriginだからこれを乱数で散らせば半影が作れるんじゃ…と思ったらsmallppmでは乱数を使ってない！
+乱数を使わないで、どうやったらフォトンを増やすと精度が上がるんだろう…。
+<code>genp</code>関数の中でフォトンの方向を決定するのに<code>hal()</code>関数を呼び出している。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> primes[<span class="number">61</span>]=&#123;<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">11</span>,<span class="number">13</span>,<span class="number">17</span>,<span class="number">19</span>,<span class="number">23</span>,<span class="number">29</span>,<span class="number">31</span>,<span class="number">37</span>,<span class="number">41</span>,<span class="number">43</span>,<span class="number">47</span>,<span class="number">53</span>,<span class="number">59</span>,<span class="number">61</span>,<span class="number">67</span>,<span class="number">71</span>,<span class="number">73</span>,<span class="number">79</span>,</span><br><span class="line"><span class="number">83</span>,<span class="number">89</span>,<span class="number">97</span>,<span class="number">101</span>,<span class="number">103</span>,<span class="number">107</span>,<span class="number">109</span>,<span class="number">113</span>,<span class="number">127</span>,<span class="number">131</span>,<span class="number">137</span>,<span class="number">139</span>,<span class="number">149</span>,<span class="number">151</span>,<span class="number">157</span>,<span class="number">163</span>,<span class="number">167</span>,<span class="number">173</span>,<span class="number">179</span>,<span class="number">181</span>,</span><br><span class="line"><span class="number">191</span>,<span class="number">193</span>,<span class="number">197</span>,<span class="number">199</span>,<span class="number">211</span>,<span class="number">223</span>,<span class="number">227</span>,<span class="number">229</span>,<span class="number">233</span>,<span class="number">239</span>,<span class="number">241</span>,<span class="number">251</span>,<span class="number">257</span>,<span class="number">263</span>,<span class="number">269</span>,<span class="number">271</span>,<span class="number">277</span>,<span class="number">281</span>,<span class="number">283</span>&#125;;</span><br><span class="line"><span class="type">double</span> <span class="title function_">hal</span><span class="params">(<span class="type">const</span> <span class="type">int</span> b, <span class="type">int</span> j)</span> &#123; <span class="comment">// Halton sequence</span></span><br><span class="line">  <span class="type">double</span> h = <span class="number">0.0</span>, f = <span class="number">1.</span>/(<span class="type">double</span>)primes[b], fct = f;</span><br><span class="line">  <span class="keyword">while</span> (j&gt;<span class="number">0</span>)&#123;h += (j%primes[b])*fct; j /= primes[b]; fct *= f;&#125; <span class="keyword">return</span> h;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>halは「Halton sequence」とのコメント。ref:</p>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Halton_sequence">WikiPedia</a></li>
+<li><a href="http://www.puc-rio.br/marco.ind/quasi_mc.html">http://www.puc-rio.br/marco.ind/quasi_mc.html</a></li>
+<li><a href="http://lucille.atso-net.jp/blog/?p=165">http://lucille.atso-net.jp/blog/?p=165</a></li>
+</ul>
+<p><a href="http://en.wikipedia.org/wiki/Low-discrepancy_sequence">Low-discrepancy</a>、低食い違いてなんだ？
+これが<a href="http://en.wikipedia.org/wiki/Quasi-Monte_Carlo_method">Quasi Monte Carlo</a>というやつだろうか…
+準モンテカルロって、乱数じゃないけどばらばらに散らばった点でサンプリングするとなんか収束が速くていいよ、ってことかな？</p>
+<p><code>genp</code>では<code>hal</code>の第１引数に0と1を渡してるので、基数として2と3のペアが使われてる。
+他には拡散面の跳ね返り方向やロシアンルーレットにも<code>hal</code>を使ってる。</p>
+<h4 id="カラーの求め方"><a href="#カラーの求め方" class="headerlink" title="カラーの求め方"></a>カラーの求め方</h4><p><a href="http://lucille.atso-net.jp/blog/?p=636">syoyoさんのパストレーサー</a>では求めたラディアンスの０～１を直接カラー値にしている。smallppmではなんかの値（<code>hp-&gt;flux*(1.0/(PI*hp-&gt;r2*num_photon*1000.0)</code>)て書いてあるからラディアンス？）を<code>toInt()</code>関数でカラーにしてる：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">toInt</span><span class="params">(<span class="type">double</span> x)</span>&#123;<span class="keyword">return</span> <span class="type">int</span>(<span class="built_in">pow</span>(<span class="number">1</span>-<span class="built_in">exp</span>(-x),<span class="number">1</span>/<span class="number">2.2</span>)*<span class="number">255</span>+<span class="number">.5</span>);&#125; <span class="comment">//tone mapping</span></span><br></pre></td></tr></table></figure>
+
+<p>コメントには「トーンマッピング」と書いてあって、なにやら難しい計算をしている。
+exp(-x)が１から指数的に小さくなってく値でそれを１から引いて1&#x2F;2.2乗するので[0, 1)の値。</p>
+<p>smallppmの元になったという<a href="http://www.kevinbeason.com/smallpt/">smallpt</a>を見てみると、ラディアンスを1&#x2F;2.2乗してる：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="type">int</span> <span class="title function_">toInt</span><span class="params">(<span class="type">double</span> x)</span>&#123; <span class="keyword">return</span> <span class="type">int</span>(<span class="built_in">pow</span>(clamp(x),<span class="number">1</span>/<span class="number">2.2</span>)*<span class="number">255</span>+<span class="number">.5</span>); &#125;</span><br></pre></td></tr></table></figure>
+
+<p>この1&#x2F;2.2乗はなんなのか。
+Windowsでのディスプレイのガンマ値は2.2とからしいけどそれを打ち消すもの？人間の目の特性？</p>
+<p>それぞれの計算式の値を比べてみる：</p>
+<!--
+|x|<span style="color:#000000;">■</span><span style="color:#170007;">■</span><span style="color:#2f000f;">■</span><span style="color:#470017;">■</span><span style="color:#5f001f;">■</span><span style="color:#770027;">■</span><span style="color:#8f002f;">■</span><span style="color:#a70037;">■</span><span style="color:#bf003f;">■</span><span style="color:#d70047;">■</span><span style="color:#ef004f;">■</span><span style="color:#ff0057;">■</span><span style="color:#ff005f;">■</span><span style="color:#ff0067;">■</span><span style="color:#ff006f;">■</span><span style="color:#ff0077;">■</span><span style="color:#ff007f;">■</span><span style="color:#ff0087;">■</span><span style="color:#ff008f;">■</span><span style="color:#ff0097;">■</span><span style="color:#ff009f;">■</span><span style="color:#ff00a7;">■</span><span style="color:#ff00af;">■</span><span style="color:#ff00b7;">■</span><span style="color:#ff00bf;">■</span><span style="color:#ff00c7;">■</span><span style="color:#ff00cf;">■</span><span style="color:#ff00d7;">■</span><span style="color:#ff00df;">■</span><span style="color:#ff00e7;">■</span><span style="color:#ff00ef;">■</span><span style="color:#ff00f7;">■</span><span style="color:#ff00ff;">■</span>|
+|pow(x, 1/2.2)|<span style="color:#000000;">■</span><span style="color:#570034;">■</span><span style="color:#770048;">■</span><span style="color:#8f0057;">■</span><span style="color:#a30063;">■</span><span style="color:#b5006e;">■</span><span style="color:#c50077;">■</span><span style="color:#d30080;">■</span><span style="color:#e00088;">■</span><span style="color:#ec008f;">■</span><span style="color:#f80096;">■</span><span style="color:#ff009d;">■</span><span style="color:#ff00a3;">■</span><span style="color:#ff00a9;">■</span><span style="color:#ff00af;">■</span><span style="color:#ff00b5;">■</span><span style="color:#ff00ba;">■</span><span style="color:#ff00c0;">■</span><span style="color:#ff00c5;">■</span><span style="color:#ff00c9;">■</span><span style="color:#ff00ce;">■</span><span style="color:#ff00d3;">■</span><span style="color:#ff00d7;">■</span><span style="color:#ff00dc;">■</span><span style="color:#ff00e0;">■</span><span style="color:#ff00e4;">■</span><span style="color:#ff00e8;">■</span><span style="color:#ff00ec;">■</span><span style="color:#ff00f0;">■</span><span style="color:#ff00f4;">■</span><span style="color:#ff00f8;">■</span><span style="color:#ff00fc;">■</span><span style="color:#ff00ff;">■</span>|
+|pow(1-exp(-x), 1/2.2)|<span style="color:#000000;">■</span><span style="color:#550034;">■</span><span style="color:#720047;">■</span><span style="color:#870055;">■</span><span style="color:#960060;">■</span><span style="color:#a3006a;">■</span><span style="color:#ae0072;">■</span><span style="color:#b7007a;">■</span><span style="color:#bf0080;">■</span><span style="color:#c60087;">■</span><span style="color:#cc008c;">■</span><span style="color:#d10092;">■</span><span style="color:#d60096;">■</span><span style="color:#da009b;">■</span><span style="color:#dd009f;">■</span><span style="color:#e100a3;">■</span><span style="color:#e400a7;">■</span><span style="color:#e600ab;">■</span><span style="color:#e900ae;">■</span><span style="color:#eb00b1;">■</span><span style="color:#ed00b4;">■</span><span style="color:#ef00b7;">■</span><span style="color:#f000ba;">■</span><span style="color:#f200bc;">■</span><span style="color:#f300bf;">■</span><span style="color:#f400c1;">■</span><span style="color:#f500c4;">■</span><span style="color:#f600c6;">■</span><span style="color:#f700c8;">■</span><span style="color:#f800ca;">■</span><span style="color:#f800cc;">■</span><span style="color:#f900ce;">■</span><span style="color:#fa00cf;">■</span>|
+-->
+
+<p>見た目全然違う。
+どれがそれっぽいのか。
+線形だと値がクランプされて色がおかしくなるけど、1&#x2F;2.2乗する場合はマテリアルカラーと見た目の色が違うのであわせにくいんじゃないか、という懸念。</p>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/03/distributed-pathtracing.html" title="分散レイトレの成果をパストレに組み込んでみる" rel="bookmark">分散レイトレの成果をパストレに組み込んでみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/20/path-tracer-reflection.html" title="syoyoさんのサンプルパストレーサーに鏡面反射と屈折を組み込んでみる" rel="bookmark">syoyoさんのサンプルパストレーサーに鏡面反射と屈折を組み込んでみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/12/photon-mapping.html" title="フォトンマッピングを試す" rel="bookmark">フォトンマッピングを試す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/15/smallpm.html" title="smallpm - Global Illumination in 128 lines of C++" rel="bookmark">smallpm - Global Illumination in 128 lines of C++</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

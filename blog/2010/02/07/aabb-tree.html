@@ -10,6 +10,9 @@
 
     <!--Description-->
     
+        <meta name="description" content="レイトレでポリゴンモデルを扱いたかったので、いままでやったことなかったBVH(Bounding Volume Hierarchy)を組み込んでみた。
+BVHの中でも、AABBTreeは単に軸に平行なバウンディングボックスなので構築もレイとの交差判定も楽。参考はDirtypunk’s Column -">
+    
 
     <!--Author-->
     
@@ -18,7 +21,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="Kludge Factory"/>
+        <meta property="og:title" content="AABBTreeを組み込んで、レイトレでポリゴン描画"/>
     
 
     <!--Open Graph Description-->
@@ -29,7 +32,7 @@
 
     <!--Type page-->
     
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content="article" />
     
 
     <!--Page Cover-->
@@ -40,7 +43,7 @@
 
     <!-- Title -->
     
-    <title>glut - Kludge Factory</title>
+    <title>AABBTreeを組み込んで、レイトレでポリゴン描画 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -65,7 +68,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/tags/glut/"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2010/02/07/aabb-tree.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -150,57 +153,105 @@
 </nav>
 
     <!-- Main Content -->
-    
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
 
-<!-- Page Header -->
-<!-- Set your background image for this header in the theme's configuration: index_cover -->
 <header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="site-heading">
-                    <h1>#glut</h1>
+                <div class="post-heading">
+                    <h1>AABBTreeを組み込んで、レイトレでポリゴン描画</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2010-02-07
+                        
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            
-                <div class="post-preview">
-    <a href="/blog/2007/05/18/glut-haskell.html">
-        <h1 class="post-title archive">
-            HaskellでGLUT
-        </h1>
-    </a>
-    <p class="post-meta archive">
-        <!-- Date and Author -->
-        
-        2007-05-18
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-        
-            <span class="post-tags">
-                
-                <a href="/tags/haskell/" style="text-decoration:none">#haskell</a> <a href="/tags/glut/" style="text-decoration:none">#glut</a>
-            </span>
-        
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
 
-    </p>
-</div>
+
+<a href="/tags/cg/">#cg</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
             
-            <div class="archive-before-pagination"></div>
-            <ul class="pager">
-    
-    
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><img src="/assets/blog/aabb-tree.png" alt="AABB tree"></p>
+<p>レイトレでポリゴンモデルを扱いたかったので、いままでやったことなかったBVH(Bounding Volume Hierarchy)を組み込んでみた。
+BVHの中でも、AABBTreeは単に軸に平行なバウンディングボックスなので構築もレイとの交差判定も楽。参考は<a href="http://www.flipcode.com/archives/Dirtypunks_Column-Issue_05_AABB_Trees_Back_To_Playing_With_Blocks.shtml">Dirtypunk’s Column - Issue 05 - AABB Trees - Back To Playing With Blocks</a>。
+ノードの分割は「ヒューリスティックでうまい具合にやってね」とのことなんで、適当に長軸でソートしてバランスするように分割してみた。
+ポリゴンが均一に大体同じ大きさに割られているモデルの場合これでいけそうな気がする。</p>
+<ul>
+<li>描画：450x338で36.382秒<ul>
+<li>うち、AABBTreeの構築に26.448秒</li>
 </ul>
+</li>
+<li>モデル：<a href="http://graphics.stanford.edu/data/3Dscanrep/#dragon">DRAGON</a><ul>
+<li>ハイポリ ８７万１４１４トライアングル、４３万７６４５頂点</li>
+<li>PLYファイルで頂点法線がないので、フラットポリゴン</li>
+<li>むしろ、Processingでこのサイズのデータを描画できたことに驚いた。</li>
+<li>AABBTreeのノードは１トライアングルまで分けてるので、ノード数＝要素数×2-1</li>
+<li>ノード情報：{24(AABB)+8(childptrx2)+4(leafptr)} * (871414(頂点) * 2 - 1) &#x3D; 62,741,772 (59.8M)</li>
+<li>トライアングル情報：{(4(座標ベクトルへのptr) + 4(法線ベクトルへのptr)) * 3(頂点)} * 871414(トライアングル) &#x3D; 20,913,936 (19.9M)</li>
+<li>頂点座標：{3(xyz) * 4(float)} * 437645(頂点) &#x3D; 5,251,740 (5.0M)</li>
+<li>面法線：{3(xyz) * 4(float)} * 871414(トライアングル) &#x3D; 10,456,968 (10.0M)</li>
+<li>＋ベクトルもノードも全部newなので、そのオーバーヘッド（x1.5くらい？）</li>
+</ul>
+</li>
+<li>謎のドットノイズが</li>
+</ul>
+<p>マテリアルとかテクスチャとか入れてもっとキャッチーなモデル、<a href="http://f.hatena.ne.jp/minami_SC/20080426043209">はちゅねミク</a>とか出したいな</p>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/28/distributed-raytracing.html" title="分散レイトレ" rel="bookmark">分散レイトレ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/03/distributed-pathtracing.html" title="分散レイトレの成果をパストレに組み込んでみる" rel="bookmark">分散レイトレの成果をパストレに組み込んでみる</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
         </div>
     </div>
-</div>
-
+</article>
 
     <!-- Footer -->
     <hr />

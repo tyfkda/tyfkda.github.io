@@ -187,7 +187,7 @@
                         
 
 
-<a href="/tags/gi/">#gi</a>
+<a href="/tags/cg/">#cg</a>
 
 
                     
@@ -210,6 +210,7 @@
 <p>視線が当たった位置の面法線と光源への方向との角度（内積）を調べて明るさにする：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">color <span class="title function_">shading</span><span class="params">(vec pos, vec normal, vec light_pos)</span> &#123;</span><br><span class="line">  <span class="type">vec</span> <span class="variable">lv</span> <span class="operator">=</span> light_pos.sub(pos).normal();</span><br><span class="line">  <span class="type">float</span> <span class="variable">f</span> <span class="operator">=</span> max(normal.dot(lv), <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> color(<span class="number">255</span> * f, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">vec</span> <span class="variable">light_pos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">vec</span>(<span class="number">10</span>, <span class="number">10</span>, -<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">    <span class="type">float</span> <span class="variable">t</span> <span class="operator">=</span> intersect_line_sphere(eyepos, raydir, sphere_center, sphere_radius);</span><br><span class="line">    <span class="keyword">if</span> (t &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="type">vec</span> <span class="variable">pos</span> <span class="operator">=</span> eyepos.add(raydir.scale(t));  <span class="comment">// 交差位置</span></span><br><span class="line">      <span class="type">vec</span> <span class="variable">nrm</span> <span class="operator">=</span> pos.sub(sphere_center).normal();  <span class="comment">// 法線</span></span><br><span class="line">      img[j] = shading(pos, nrm, light_pos);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      img[j] = color(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
+
                 
 
             </div>
@@ -218,7 +219,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/raycast.html" title="レイトレーサー基本のキ" rel="bookmark">レイトレーサー基本のキ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/19/refraction.html" title="屈折" rel="bookmark">屈折</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/17/reflection.html" title="鏡面反射" rel="bookmark">鏡面反射</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/17/shadow.html" title="影" rel="bookmark">影</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/28/distributed-raytracing.html" title="分散レイトレ" rel="bookmark">分散レイトレ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/03/distributed-pathtracing.html" title="分散レイトレの成果をパストレに組み込んでみる" rel="bookmark">分散レイトレの成果をパストレに組み込んでみる</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

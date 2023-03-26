@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="kd-treeを作ったとき軸に沿ってのソートにクイックソートを使っていた。
+だけど各レベルで完全にソートする必要はなくて、中央とする個数の左と右で値の大小関係が成り立ってればいい。
+「フォトンマッピング」本ではちょっと凝ったやりかたをしている：
+#define  swap(ph, a, b) &amp;#1">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="kd-treeバランス時のソート"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>kd-treeバランス時のソート - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/10/22/sort-kd-tree.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>kd-treeバランス時のソート</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-10-22
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/algorithm/">#algorithm</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出">kd-treeを作ったとき</a>軸に沿ってのソートにクイックソートを使っていた。
+<p>だけど各レベルで完全にソートする必要はなくて、中央とする個数の左と右で値の大小関係が成り立ってればいい。
+「フォトンマッピング」本ではちょっと凝ったやりかたをしている：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>  swap(ph, a, b) &#123; Photon *ph2=ph[a]; ph[a]=ph[b]; ph[b]=ph2; &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">median_split</span><span class="params">(Photon** p, <span class="type">int</span> start, <span class="type">int</span> end, <span class="type">int</span> median, <span class="type">int</span> axis)</span> &#123;</span><br><span class="line">  <span class="type">int</span> left = start;</span><br><span class="line">  <span class="type">int</span> right = end;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (right &gt; left) &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">float</span> v = p[right]-&gt;pos[axis];</span><br><span class="line">    <span class="type">int</span> i = left<span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> j = right;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">      <span class="keyword">while</span> (p[++i]-&gt;pos[axis] &lt; v);</span><br><span class="line">      <span class="keyword">while</span> (p[--j]-&gt;pos[axis] &gt; v &amp;&amp; j&gt;left);</span><br><span class="line">      <span class="keyword">if</span> (i &gt;= j) <span class="keyword">break</span>;</span><br><span class="line">      swap(p, i, j);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    swap(p, i, right);</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= median)  right = i<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span> (i &lt;= median)  left = i+<span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>どう動作するのかパッと見わからないんだけど、クイックソートが２重再帰するところをmedianを含むほうだけをループするようにしてるぽい（参考：<a href="http://www.asahi-net.or.jp/~qb3k-kwsk/rpg/program/tutorial/t04s.html">クイックソートのソース</a>）。
+適当に見積もったところ、全体のソートでのスワップ回数は n.log2(n) 程度になるっぽい。</p>
+<p>ではと思って速度を比較したところ、クイックソートを使った場合とほとんど差がなかった、おかしいな？
+上のやり方だとソートの基準値を右端に取っているのとループでの判定が多いからかも知れず。
+あと大方ソート済みのデータに弱いのかも知れず。qsortと同じようにちょっと書き換え：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (right &gt; left) &#123;</span><br><span class="line">  <span class="type">const</span> <span class="type">float</span> v = p[(left+right)/<span class="number">2</span>]-&gt;pos[axis];</span><br><span class="line">  <span class="type">int</span> i = left<span class="number">-1</span>;</span><br><span class="line">  <span class="type">int</span> j = right+<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    <span class="keyword">while</span> (p[++i]-&gt;pos[axis] &lt; v);</span><br><span class="line">    <span class="keyword">while</span> (p[--j]-&gt;pos[axis] &gt; v);</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= j) <span class="keyword">break</span>;</span><br><span class="line">    swap(p, i, j);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (i &gt;= median)  right = i<span class="number">-1</span>;</span><br><span class="line">  <span class="keyword">if</span> (i &lt;= median)  left = i+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>このように変更したところ、1000万個のフォトンのソートにクイックソートを使った場合 1分40秒かかったところが 28秒271 と3.5倍高速になった。まあ劇的ではないけど、多少は速いようだ。</p>
+<p><a href="http://codepad.org/rNFwZF8E">codepadで試す</a></p>
+<hr>
+<p><a href="http://www.kmonos.net/wlog/103.html#_0111091111">http://www.kmonos.net/wlog/103.html#_0111091111</a>
+のnth_elementと同じ要領でいけると思うんだけど、具体的にどうやるのかわかってない。</p>
+<p>下のように変更するとちゃんとソートできない模様。ダメじゃん。</p>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/10/26/simplify-line-segments.html" title="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)" rel="bookmark">折れ線を簡略化する方法(Ramer-Douglas-Peucker法)</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

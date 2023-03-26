@@ -10,12 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="位置を記憶させる - エンジニアのソフトウェア的愛情
-
-ghc -package GLUT glutgame.hs
-
-でコンパイル、実行できた。いい感じです。
-「 $= ってなによ？」とか、壁は高い。">
+        <meta name="description" content="レイトレーサーを作るシリーズ：syoyoさんのパストレーサーに鏡面反射と屈折を組み込んでみる。">
     
 
     <!--Author-->
@@ -25,7 +20,7 @@ ghc -package GLUT glutgame.hs
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="HaskellでGLUT"/>
+        <meta property="og:title" content="syoyoさんのサンプルパストレーサーに鏡面反射と屈折を組み込んでみる"/>
     
 
     <!--Open Graph Description-->
@@ -47,7 +42,7 @@ ghc -package GLUT glutgame.hs
 
     <!-- Title -->
     
-    <title>HaskellでGLUT - Kludge Factory</title>
+    <title>syoyoさんのサンプルパストレーサーに鏡面反射と屈折を組み込んでみる - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -72,7 +67,7 @@ ghc -package GLUT glutgame.hs
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2007/05/18/glut-haskell.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/07/20/path-tracer-reflection.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -165,13 +160,13 @@ ghc -package GLUT glutgame.hs
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>HaskellでGLUT</h1>
+                    <h1>syoyoさんのサンプルパストレーサーに鏡面反射と屈折を組み込んでみる</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2007-05-18
+                            2009-07-20
                         
                     </span>
                 </div>
@@ -192,7 +187,7 @@ ghc -package GLUT glutgame.hs
                         
 
 
-<a href="/tags/haskell/">#haskell</a> <a href="/tags/glut/">#glut</a>
+<a href="/tags/cg/">#cg</a> <a href="/tags/gi/">#gi</a>
 
 
                     
@@ -207,12 +202,33 @@ ghc -package GLUT glutgame.hs
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p><a href="http://d.hatena.ne.jp/E_Mattsan/20070424#1177419072">位置を記憶させる - エンジニアのソフトウェア的愛情</a></p>
-<blockquote>
-<p><code>ghc -package GLUT glutgame.hs</code></p>
-</blockquote>
-<p>でコンパイル、実行できた。いい感じです。
-「 <code>$=</code> ってなによ？」とか、壁は高い。</p>
+                <p>レイトレーサーを作るシリーズ：<a href="http://lucille.atso-net.jp/blog/?p=636">syoyoさんのパストレーサー</a>に鏡面反射と屈折を組み込んでみる。</p>
+<span id="more"></span>
+
+<p>視線が物体に当たったとき、サイコロを振って<a href="/blog/2009/07/17/reflection.html" title="鏡面反射">鏡面反射</a>するか<a href="/blog/2009/07/19/refraction.html" title="屈折">屈折</a>するか拡散反射かを振り分ける（ロシアンルーレット）。
+それ以前に法線と視線が同じ方向だったら、物体内部から出て行く光だとして屈折計算をする：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (ray.dir.dot(isect.n) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">  <span class="type">float</span> <span class="variable">r</span> <span class="operator">=</span> random(<span class="number">1.0</span>);</span><br><span class="line">  r -= isect.material.reflection;</span><br><span class="line">  <span class="keyword">if</span> (r &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> calc_reflection(isect.p, isect.n, ray.dir, depth);</span><br><span class="line">  &#125;</span><br><span class="line">  r -= isect.material.refraction;</span><br><span class="line">  <span class="keyword">if</span> (r &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> calc_refraction(isect.p, isect.n, ray.dir, depth, <span class="number">1.0</span>, isect.material.refractive_index);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> calc_diffuse(isect, depth);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> calc_refraction(isect.p, isect.n.neg(), ray.dir, depth, isect.material.refractive_index, <span class="number">1.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>結果：
+<img src="/assets/blog/path-tracer-reflection.png" alt="Path tracer with reflection/refraction"></p>
+<p>おお、ノイジーだけどそれっぽい！集光模様も出てる！</p>
+<ul>
+<li>今回の設定<ul>
+<li>2x2サブサンプリング、１レイあたり128パス、再帰は１６段まで（反射や屈折は除く）</li>
+<li>死ぬほど重い<ul>
+<li>元のパストレーサーでは、視線が何とも当たらなければ空のスカイライトで計算が打ち切られるのである程度早く収束するようだけど、コーネルボックスみたいに全体が囲まれているシーンだと光源にたどり着くまで計算するので時間がかかる</li>
+<li>光源にたどり着けなかったら結局黒になっちゃうので、最大の再帰回数はある程度大きく取らないとまずい</li>
+<li>光源にぶつかったら計算を打ち切るようにしてみた</li>
+</ul>
+</li>
+<li>マテリアルカラーを1.0にすると光の強さが減衰しないようにみえるので、0.8にしてみる</li>
+<li>光源は単位はなにか知らないけど１０とか強い値にしてるのに、全体的に暗い。計算はあっているのか？トーンマッピングしたらそれっぽくなるか？</li>
+<li>カラーブリーディングしすぎな気が…</li>
+</ul>
+</li>
+<li><a href="http://graphics.ucsd.edu/~henrik/images/cbox.html">Cornell box images by Henrik Wann Jensen</a> 結果画面はここを参考にすること、やっぱ全然違う気がする…</li>
+<li>元ソースが綺麗でコンパクトだからいじりやすくてイイ！</li>
+</ul>
 
 
                 
@@ -223,7 +239,7 @@ ghc -package GLUT glutgame.hs
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/fizzbuzz-haskell.html" title="fizzbuzz@Haskell" rel="bookmark">fizzbuzz@Haskell</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/15/knapsack.html" title="【Haskell】ナップサック問題を解く" rel="bookmark">【Haskell】ナップサック問題を解く</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/03/distributed-pathtracing.html" title="分散レイトレの成果をパストレに組み込んでみる" rel="bookmark">分散レイトレの成果をパストレに組み込んでみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/12/photon-mapping.html" title="フォトンマッピングを試す" rel="bookmark">フォトンマッピングを試す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/08/27/smallppm.html" title="smallppmを眺めてみる" rel="bookmark">smallppmを眺めてみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/15/smallpm.html" title="smallpm - Global Illumination in 128 lines of C++" rel="bookmark">smallpm - Global Illumination in 128 lines of C++</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

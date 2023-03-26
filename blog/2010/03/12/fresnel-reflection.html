@@ -10,9 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="「Fizz-Buzz問題」というのが話題になってるとのこと（どうしてプログラマに・・・プログラムが書けないのか?）。
-練習がてらHaskellで書いてみた：
-fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F">
+        <meta name="description" content="屈折率\eta_iの物質から入射角\theta_iで屈折率\eta_tの物質に入るときの反射率はフレネル方程式で求められる。
+入射面に対する光の平行成分の反射率はr_{||} = \frac{\eta\cos\theta_i - \cos\theta_t}{\eta\cos\theta_i + \c">
     
 
     <!--Author-->
@@ -22,7 +21,7 @@ fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F"
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="fizzbuzz@Haskell"/>
+        <meta property="og:title" content="フレネル反射"/>
     
 
     <!--Open Graph Description-->
@@ -44,7 +43,7 @@ fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F"
 
     <!-- Title -->
     
-    <title>fizzbuzz@Haskell - Kludge Factory</title>
+    <title>フレネル反射 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -69,7 +68,7 @@ fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F"
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2007/05/18/fizzbuzz-haskell.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2010/03/12/fresnel-reflection.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -162,13 +161,13 @@ fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F"
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>fizzbuzz@Haskell</h1>
+                    <h1>フレネル反射</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2007-05-18
+                            2010-03-12
                         
                     </span>
                 </div>
@@ -189,7 +188,7 @@ fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F"
                         
 
 
-<a href="/tags/haskell/">#haskell</a>
+<a href="/tags/cg/">#cg</a>
 
 
                     
@@ -204,12 +203,20 @@ fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F"
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>「Fizz-Buzz問題」というのが話題になってるとのこと（<a href="http://www.aoky.net/articles/jeff_atwood/why_cant_programmers_program.htm">どうしてプログラマに・・・プログラムが書けないのか?</a>）。
-練習がてらHaskellで書いてみた：</p>
-<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">fizzbuzz</span> :: <span class="type">Int</span> -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">fizzbuzz</span> x</span><br><span class="line">    | x `mod` <span class="number">15</span> == <span class="number">0</span>   = <span class="string">&quot;FizzBuzz&quot;</span></span><br><span class="line">    | x `mod` <span class="number">3</span> == <span class="number">0</span>    = <span class="string">&quot;Fizz&quot;</span></span><br><span class="line">    | x `mod` <span class="number">5</span> == <span class="number">0</span>    = <span class="string">&quot;Buzz&quot;</span></span><br><span class="line">    | otherwise         = show x</span><br><span class="line"></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    putStr $ unlines $ map fizzbuzz [<span class="number">1</span>..<span class="number">100</span>]</span><br></pre></td></tr></table></figure>
+                <p><img src="/assets/blog/fresnel-reflection1.png" alt="fresnel"></p>
+<p>屈折率<script type="math/tex">\eta_i</script>の物質から入射角<script type="math/tex">\theta_i</script>で屈折率<script type="math/tex">\eta_t</script>の物質に入るときの反射率は<a href="http://en.wikipedia.org/wiki/Fresnel_equations">フレネル方程式</a>で求められる。
+入射面に対する光の平行成分の反射率は<script type="math/tex">r_{||} = \frac{\eta\cos\theta_i - \cos\theta_t}{\eta\cos\theta_i + \cos\theta_t}</script>
+、直交成分の反射率は<script type="math/tex">r_{\perp} = \frac{\cos\theta_i - \eta\cos\theta_t}{\cos\theta_i + \eta\cos\theta_t}</script>
+となる、らしい。
+偏光されてない光の場合の反射率<script type="math/tex">k_r</script>は<script type="math/tex">k_r = \frac{1}{2}\left(r_{||}^2 + r_{\perp}^2\right)</script>となる(sqrtいらないの？)。</p>
+<script type="math/tex">\eta</script>は<script type="math/tex">\eta = \frac{\eta_{t}}{\eta_{i}}</script>、屈折して出て行く角度<script type="math/tex">\theta_t</script>のcosは<script type="math/tex">\cos\theta_t = \sqrt{1 - \frac{1}{\eta^2}\left(1 - \cos^2\theta_i\right)}</script>で求められる。
 
-<p>結構悩んだ。
-<a href="http://karetta.jp/book-node/gauche-hacks/023107">関数言語脳的</a>にいけてるかな？</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">float</span> <span class="title function_">fresnel_reflectance</span><span class="params">(<span class="type">float</span> cos_theta_i, <span class="type">float</span> eta_i, <span class="type">float</span> eta_t)</span> &#123;</span><br><span class="line">  <span class="type">float</span> <span class="variable">eta</span> <span class="operator">=</span> eta_t / eta_i;</span><br><span class="line">  <span class="type">float</span> <span class="variable">D</span> <span class="operator">=</span> <span class="number">1.0</span> - <span class="number">1.0</span> / sq(eta) * (<span class="number">1.0</span> - sq(cos_theta_i));</span><br><span class="line">  <span class="keyword">if</span> (D &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="type">float</span> <span class="variable">cos_theta_t</span> <span class="operator">=</span> sqrt(D);</span><br><span class="line">    <span class="type">float</span> <span class="variable">rp</span> <span class="operator">=</span> (eta * cos_theta_i - cos_theta_t) / (eta * cos_theta_i + cos_theta_t);</span><br><span class="line">    <span class="type">float</span> <span class="variable">rs</span> <span class="operator">=</span> (cos_theta_i - eta * cos_theta_t) / (cos_theta_i + eta * cos_theta_t);</span><br><span class="line">    <span class="type">float</span> <span class="variable">kr</span> <span class="operator">=</span> <span class="number">0.5</span> * (sq(rp) + sq(rs));</span><br><span class="line">    <span class="keyword">return</span> kr;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1.0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/blog/fresnel-reflection2.png" alt="Balls under water"></p>
+<p>よくやる<a href="http://en.wikipedia.org/wiki/Schlick's_approximation">Schlickの近似</a>は<script type="math/tex">k_r \simeq F_\theta + (1 - F_\theta)(1 - \cos\theta_i)^5 , F_\theta = \frac{(\eta - 1)^2}{(\eta + 1)^2}</script></p>
+<p><img src="/assets/blog/fresnel-reflection3.png" alt="error"></p>
+<p>個人的には、フレネル反射って効果がいまいち微妙であまりありがたみわからないんだよね…。</p>
 
 
                 
@@ -220,7 +227,7 @@ fizzbuzz :: Int -&amp;gt; Stringfizzbuzz x    | x `mod` 15 == 0   = &amp;quot;F"
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2007/05/18/glut-haskell.html" title="HaskellでGLUT" rel="bookmark">HaskellでGLUT</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/15/knapsack.html" title="【Haskell】ナップサック問題を解く" rel="bookmark">【Haskell】ナップサック問題を解く</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/28/distributed-raytracing.html" title="分散レイトレ" rel="bookmark">分散レイトレ</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->

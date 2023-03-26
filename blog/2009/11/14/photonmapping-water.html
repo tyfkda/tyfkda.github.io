@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="あってるのかどうか、判断がつかない。
+
+水面はサイン波の組み合わせ。こんなに波立たせてるのに、コースティクスがいまいち。もっとポリゴン数を上げて、あとサイン波じゃなくてフラクタルとかにしたらそれっぽくなるのかな
+水面は反射４屈折６（フレネルなし）だけど、水上にはほとんどコースティクスが確認できず
+水">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="水面"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>水面 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/11/14/photonmapping-water.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>水面</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-11-14
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cg/">#cg</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><img src="/assets/blog/photonmapping-water1.png" alt="水面１"></p>
+<p><img src="/assets/blog/photonmapping-water2.png" alt="水面２"></p>
+<p>あってるのかどうか、判断がつかない。</p>
+<ul>
+<li>水面はサイン波の組み合わせ。こんなに波立たせてるのに、コースティクスがいまいち。もっとポリゴン数を上げて、あとサイン波じゃなくてフラクタルとかにしたらそれっぽくなるのかな</li>
+<li>水面は反射４屈折６（フレネルなし）だけど、水上にはほとんどコースティクスが確認できず</li>
+<li>水中では進んだ距離の指数で青くなっていく、アウトスキャタリング的なことをしてみた(0.75, 0.95, 0.95)、でも効果わかりにくい</li>
+<li>水中から見上げる画像は、全反射だけじゃなくて上に抜ける角度にしたかったけど、カメラが実装されてないのでそのまま</li>
+<li>水の屈折率は1.3334</li>
+<li>放射４０万フォトン</li>
+<li>今んところレイとの交差判定が総当りなのでむちゃむちゃ重い。32x32で精一杯</li>
+<li>水中でも水の密度？によってゆらゆら光が屈折すると面白いかもしれない</li>
+</ul>
+<p><img src="/assets/blog/photonmapping-water3.png" alt="フォトンマップ"> フォトンマップ</p>
+<ul>
+<li><a href="http://www.kevinbeason.com/scs/pane/">Kevin Beason’s Ray Tracing Page</a>: <a href="http://www.kevinbeason.com/scs/pane/water1.png">http://www.kevinbeason.com/scs/pane/water1.png</a> <a href="http://www.kevinbeason.com/scs/pane/water2.png">http://www.kevinbeason.com/scs/pane/water2.png</a> ムチャクチャ綺麗</li>
+<li><a href="http://sunflow.sourceforge.net/gallery/v002/cornell-box05.png">SunFlow ver 0.02</a> (<a href="http://rise.sourceforge.net/images/old_gallery/cornell-box05.png">RISE</a>)</li>
+</ul>
+<p>追記：よい写真</p>
+<ul>
+<li><a href="http://churaumi.ti-da.net/e1564826.html">昼休み:美ら海写真館&#x3D;Photo 検索 Library&#x3D;</a></li>
+<li><a href="http://hosifuruterasu.com/menuphoto1/DSC09726.jpg">水族館の中で（沖縄）上からさす光の柱の中で魚が泳ぎます。</a></li>
+</ul>
+<h4 id="別アングル"><a href="#別アングル" class="headerlink" title="別アングル"></a>別アングル</h4><p>カメラを実装して、別アングルからの画像を作ってみた。</p>
+<p>左の絵の別アングル：すごく浅く狭く感じる。水の透明感はいい感じ。</p>
+<p><img src="/assets/blog/photonmapping-water4.png" alt="水面４"></p>
+<p>右の絵の別アングル：球を小さくして浮かして、水中から上を見上げてみた。屈折で透過する領域と全反射する領域ができて満足。画角120度。</p>
+<p><img src="/assets/blog/photonmapping-water5.png" alt="水面５"></p>
+<p>そろそろシーンをソースに書いてるのが辛くなってきた。</p>
+<p>カメラのソース：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Camera</span> &#123;</span><br><span class="line">  vec eye, base, xaxis, yaxis;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">lookat</span><span class="params">(vec org, vec target, vec up, <span class="type">float</span> fov, <span class="type">int</span> width, <span class="type">int</span> height)</span> &#123;</span><br><span class="line">    eye = org;</span><br><span class="line">    <span class="type">vec</span> <span class="variable">zaxis</span> <span class="operator">=</span> target.sub(org).normal();</span><br><span class="line">    <span class="type">vec</span> <span class="variable">tempx</span> <span class="operator">=</span> zaxis.cross(up);</span><br><span class="line">    xaxis = tempx.scale(<span class="number">2</span> * sin(fov/<span class="number">2</span>) * width / height / tempx.length() / width);</span><br><span class="line">    <span class="type">vec</span> <span class="variable">tempy</span> <span class="operator">=</span> zaxis.cross(xaxis);</span><br><span class="line">    yaxis = tempy.scale(<span class="number">2</span> * sin(fov/<span class="number">2</span>) / tempy.length() / height);</span><br><span class="line">    base = zaxis.add(xaxis.scale(-<span class="number">0.5</span> * width)).add(yaxis.scale(-<span class="number">0.5</span> * height));</span><br><span class="line">  &#125;</span><br><span class="line">  vec <span class="title function_">raydir</span><span class="params">(<span class="type">float</span> x, <span class="type">float</span> y)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> base.add(xaxis.scale(x)).add(yaxis.scale(y)).normal();</span><br><span class="line">  &#125;</span><br><span class="line">  vec <span class="title function_">org</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> eye;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/28/distributed-raytracing.html" title="分散レイトレ" rel="bookmark">分散レイトレ</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

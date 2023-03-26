@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="smallptにイメージベースドライティング(Image Based Lighting)を組み込んでみる。
+データはLight Probe Image Galleryの.hdr。
+これはRGBEフォーマットらしい。読み込みはにソースがある。
+しかし一部おかしなところがあって、ヘッダの読み込みRGBE">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="イメージベースドライティングを試してみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>イメージベースドライティングを試してみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/11/16/image-based-lighting.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>イメージベースドライティングを試してみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-11-16
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cg/">#cg</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://www.kevinbeason.com/smallpt/">smallpt</a>にイメージベースドライティング(Image Based Lighting)を組み込んでみる。
+データは<a href="http://www.debevec.org/Probes/">Light Probe Image Gallery</a>の.hdr。
+これはRGBEフォーマットらしい。読み込みは<a href="http://www.graphics.cornell.edu/online/formats/rgbe/"></a>にソースがある。
+しかし一部おかしなところがあって、ヘッダの読み込み<code>RGBE_ReadHeader()</code>でフォーマットの指定子ががきたらループを抜けるようになってるけど、データはその後にEXPOSUREがきたりしていて読み込みに失敗するのでちょっと変更：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">RGBE_ReadHeader</span><span class="params">(FILE *fp, <span class="type">int</span> *width, <span class="type">int</span> *height, rgbe_header_info *info)</span></span><br><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">    <span class="keyword">if</span> ((buf[<span class="number">0</span>] == <span class="number">0</span>)||(buf[<span class="number">0</span>] == <span class="string">&#x27;\n&#x27;</span>))</span><br><span class="line"><span class="comment">//    return rgbe_error(rgbe_format_error,&quot;no FORMAT specifier found&quot;);</span></span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(buf,<span class="string">&quot;FORMAT=32-bit_rle_rgbe\n&quot;</span>) == <span class="number">0</span>)</span><br><span class="line"><span class="comment">//    break;       /* format found so break out of loop */</span></span><br><span class="line">      <span class="comment">/*nothing*/</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (info &amp;&amp; (<span class="built_in">sscanf</span>(buf,<span class="string">&quot;GAMMA=%g&quot;</span>,&amp;tempf) == <span class="number">1</span>)) &#123;</span><br><span class="line">      info-&gt;gamma = tempf;</span><br><span class="line">      info-&gt;valid |= RGBE_VALID_GAMMA;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (info &amp;&amp; (<span class="built_in">sscanf</span>(buf,<span class="string">&quot;EXPOSURE=%g&quot;</span>,&amp;tempf) == <span class="number">1</span>)) &#123;</span><br><span class="line">      info-&gt;exposure = tempf;</span><br><span class="line">      info-&gt;valid |= RGBE_VALID_EXPOSURE;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (fgets(buf,<span class="keyword">sizeof</span>(buf)/<span class="keyword">sizeof</span>(buf[<span class="number">0</span>]),fp) == <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> rgbe_error(rgbe_read_error,<span class="literal">NULL</span>);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">//  if (fgets(buf,sizeof(buf)/sizeof(buf[0]),fp) == 0)</span></span><br><span class="line"><span class="comment">//    return rgbe_error(rgbe_read_error,NULL);</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">strcmp</span>(buf,<span class="string">&quot;\n&quot;</span>) != <span class="number">0</span>)</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>これを使って、環境マップの読み込み：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">float</span>* envmap;</span><br><span class="line"><span class="type">int</span> env_width, env_height;</span><br><span class="line"><span class="type">bool</span> <span class="title function_">read_envmap</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* fn)</span> &#123;</span><br><span class="line">  FILE* f = fopen(fn, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> (f != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    rgbe_header_info info;</span><br><span class="line">    RGBE_ReadHeader(f, &amp;env_width, &amp;env_height, &amp;info);</span><br><span class="line">    envmap = (<span class="type">float</span>*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">float</span>) * <span class="number">3</span> * env_width * env_height);</span><br><span class="line">    RGBE_ReadPixels_RLE(f, envmap, env_width, env_height);</span><br><span class="line">    fclose(f);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>あとはパストレーシングで、レイの交差判定でなにとも当たらなかったらレイの方向で環境マップからひっぱってくるようにする。球マップのほうはベクトルからuvの求め方がわからなかったので（「(Dx<em>r,Dy</em>r) where r&#x3D;(1&#x2F;pi)*acos(Dz)&#x2F;sqrt(Dx^2 + Dy^2)」と書いてあったけどなぜかうまくいかなかった）、十字になってるキューブマップのほうで：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Vec <span class="title function_">env</span><span class="params">(<span class="type">const</span> Ray&amp; r)</span> &#123;</span><br><span class="line">  <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> tbl[][<span class="number">2</span>] = &#123;</span><br><span class="line">    &#123; <span class="number">0</span>, <span class="number">1</span> &#125;,    <span class="comment">// 0: -X</span></span><br><span class="line">    &#123; <span class="number">2</span>, <span class="number">1</span> &#125;,    <span class="comment">// 1: +X</span></span><br><span class="line">    &#123; <span class="number">1</span>, <span class="number">2</span> &#125;,    <span class="comment">// 2: -Y</span></span><br><span class="line">    &#123; <span class="number">1</span>, <span class="number">0</span> &#125;,    <span class="comment">// 3: +Y</span></span><br><span class="line">    &#123; <span class="number">1</span>, <span class="number">1</span> &#125;,    <span class="comment">// 4: -Z</span></span><br><span class="line">    &#123; <span class="number">1</span>, <span class="number">3</span> &#125;,    <span class="comment">// 5: +Z</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="type">int</span> dir = find_dir(r.d);</span><br><span class="line">  <span class="type">const</span> Vec&amp; d = r.d;</span><br><span class="line">  <span class="type">double</span> u, v;</span><br><span class="line">  <span class="keyword">switch</span> (dir) &#123;</span><br><span class="line">  <span class="keyword">default</span>:</span><br><span class="line">  <span class="keyword">case</span> <span class="number">0</span>:  u = -d.z / -d.x; v = -d.y / -d.x; <span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">1</span>:  u =  d.z /  d.x; v = -d.y /  d.x; <span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">2</span>:  u =  d.x / -d.y; v =  d.z / -d.y; <span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">3</span>:  u =  d.x /  d.y; v = -d.z /  d.y; <span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">4</span>: u =  d.x / -d.z; v = -d.y / -d.z; <span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">5</span>: u =  d.x /  d.z; v =  d.y /  d.z; <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">int</span> s0 = env_width  * tbl[dir][<span class="number">0</span>] / <span class="number">3</span>;</span><br><span class="line">  <span class="type">int</span> t0 = env_height * tbl[dir][<span class="number">1</span>] / <span class="number">4</span>;</span><br><span class="line">  <span class="type">int</span> s = (<span class="type">int</span>)((u * <span class="number">0.5</span> + <span class="number">0.5</span>) * env_width/<span class="number">3</span>)  + s0;</span><br><span class="line">  <span class="type">int</span> t = (<span class="type">int</span>)((v * <span class="number">0.5</span> + <span class="number">0.5</span>) * env_height/<span class="number">4</span>) + t0;</span><br><span class="line">  <span class="type">float</span>* p = &amp;envmap[(s + t * env_width) * <span class="number">3</span>];</span><br><span class="line">  <span class="keyword">return</span> Vec(p[<span class="number">0</span>], p[<span class="number">1</span>], p[<span class="number">2</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ベクトルが立方体のどちらを向いているか</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">find_dir</span><span class="params">(<span class="type">const</span> Vec&amp; d)</span> &#123;</span><br><span class="line">  <span class="type">double</span> x = <span class="built_in">fabs</span>(d.x), y = <span class="built_in">fabs</span>(d.y), z = <span class="built_in">fabs</span>(d.z);</span><br><span class="line">  <span class="keyword">if</span> (x &gt; y) &#123;</span><br><span class="line">    <span class="keyword">if</span> (x &gt; z) <span class="keyword">return</span> d.x &lt; <span class="number">0</span> ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">else</span>       <span class="keyword">return</span> d.z &lt; <span class="number">0</span> ? <span class="number">4</span> : <span class="number">5</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (y &gt; z) <span class="keyword">return</span> d.y &lt; <span class="number">0</span> ? <span class="number">2</span> : <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">else</span>       <span class="keyword">return</span> d.z &lt; <span class="number">0</span> ? <span class="number">4</span> : <span class="number">5</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h4><p><img src="/assets/blog/image-based-lighting1.png" alt="IBL1">
+<img src="/assets/blog/image-based-lighting2.png" alt="IBL2"></p>
+<ul>
+<li>ピクセルあたり1000サンプルで、1024x768で描画したものを256x192に縮小</li>
+<li>環境マップからのサンプルは、キューブマップの角のときのフィルタの仕方がわからなかったので、ポイントサンプル</li>
+<li>smallptのシーンは、でかい球の内部に構成されているとは予想外だったので、天井や壁を取っ払っても環境が描画されなくてハマッた</li>
+<li>環境マップの放射輝度そのままだと明るすぎたので、適当にスケールしてる</li>
+<li>フォトンマッピングに組み込むにはどうしたらいいのかな</li>
+</ul>
+<h3 id="追記"><a href="#追記" class="headerlink" title="追記"></a>追記</h3><p>球のLightProbeのときうまくいかないと思ったのは単に上下が逆転していただけだった…。継ぎ目もほとんどわからない。
+球のほうが計算式は簡単になるけど、ファイルサイズが２倍くらいデカい。</p>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/28/distributed-raytracing.html" title="分散レイトレ" rel="bookmark">分散レイトレ</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
