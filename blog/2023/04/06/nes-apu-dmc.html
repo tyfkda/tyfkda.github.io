@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ファミコンは音楽を鳴らす機能として矩形波×2、三角波、ノイズというシンプルな方法に加えて、DMCというサンプリング音源による方法がある。
+そんな機能が搭載されてたこと自体も驚きだが、サンプリング音源なんて容量制限が厳しくて使ってるゲームなんてほとんどないでしょと後回しにしてたんだが、後期の豪華なゲームでは結構使われているので再現する方法を調べた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ファミコンのDMCチャンネルの再現方法"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ファミコンのDMCチャンネルの再現方法 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ファミコンのDMCチャンネルの再現方法</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-04-06
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/nes/">#nes</a> <a href="/tags/audio/">#audio</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ファミコンは音楽を鳴らす機能として矩形波×2、三角波、ノイズというシンプルな方法に加えて、<strong>DMCというサンプリング音源による方法</strong>がある。
+そんな機能が搭載されてたこと自体も驚きだが、サンプリング音源なんて容量制限が厳しくて使ってるゲームなんてほとんどないでしょと後回しにしてたんだが、後期の豪華なゲームでは結構使われているので再現する方法を調べた。</p>
+<span id="more"></span>
+
+<h3 id="DMC概要"><a href="#DMC概要" class="headerlink" title="DMC概要"></a>DMC概要</h3><p>DMCは<a href="https://en.wikipedia.org/wiki/Delta_modulation">Delta Modulation</a> Channelの略で、時間ごとの波形の上げ下げを１ビットで表現するデータで音を再生する。
+「そんなんでサンプリング音源を再現できるの！？」と驚いてしまうが、ノイズは入ってしまうものの音声などもちゃんと再生できる。</p>
+<p>内部的に現在値が7bitで保持されていて、時間ごとにデータから１ビット取り出して+2または-2される。
+再生レートは16段階から選択できて、最低4.2kHzから最高33.1kHzになる。
+データはDMA転送でCPUがアクセスできるメモリと同じバスでプログラムROMから取得される。</p>
+<p>データを配置できる開始アドレスは$C000~$FFC0の64バイト単位。
+再生できる長さは1から16バイト刻みで4081(&#x3D; 255 × 16 + 1)まで
+（サンプル数は×8）。</p>
+<h3 id="再生レートとデータサイズ"><a href="#再生レートとデータサイズ" class="headerlink" title="再生レートとデータサイズ"></a>再生レートとデータサイズ</h3><p>$4010レジスタの下位４ビットによるテーブル参照でカウンタの値が求まり、再生レートは次のようになる：</p>
+<table>
+<thead>
+<tr>
+<th align="right">Rate</th>
+<th align="right">値</th>
+<th align="right">再生レート [Hz]</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0</td>
+<td align="right">428</td>
+<td align="right">4,181.71 Hz</td>
+</tr>
+<tr>
+<td align="right">1</td>
+<td align="right">380</td>
+<td align="right">4,709.93 Hz</td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td align="right">340</td>
+<td align="right">5,264.04 Hz</td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td align="right">320</td>
+<td align="right">5,593.04 Hz</td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td align="right">286</td>
+<td align="right">6,257.95 Hz</td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td align="right">254</td>
+<td align="right">7,046.35 Hz</td>
+</tr>
+<tr>
+<td align="right">6</td>
+<td align="right">226</td>
+<td align="right">7,919.35 Hz</td>
+</tr>
+<tr>
+<td align="right">7</td>
+<td align="right">214</td>
+<td align="right">8,363.42 Hz</td>
+</tr>
+<tr>
+<td align="right">8</td>
+<td align="right">190</td>
+<td align="right">9,419.86 Hz</td>
+</tr>
+<tr>
+<td align="right">9</td>
+<td align="right">160</td>
+<td align="right">11,186.1 Hz</td>
+</tr>
+<tr>
+<td align="right">10</td>
+<td align="right">142</td>
+<td align="right">12,604.0 Hz</td>
+</tr>
+<tr>
+<td align="right">11</td>
+<td align="right">128</td>
+<td align="right">13,982.6 Hz</td>
+</tr>
+<tr>
+<td align="right">12</td>
+<td align="right">106</td>
+<td align="right">16,884.6 Hz</td>
+</tr>
+<tr>
+<td align="right">13</td>
+<td align="right">84</td>
+<td align="right">21,306.8 Hz</td>
+</tr>
+<tr>
+<td align="right">14</td>
+<td align="right">72</td>
+<td align="right">24,858.0 Hz</td>
+</tr>
+<tr>
+<td align="right">15</td>
+<td align="right">54</td>
+<td align="right">33,143.9 Hz</td>
+</tr>
+</tbody></table>
+<p>テーブルの値でカウンタを初期化して、CPUの動作クロック1,789,773 Hzのたびにカウンタをデクリメント
+（実際にはDMCは1APU&#x3D;2CPUサイクルごとなので、カウンタもテーブルの値の半分）、
+0になったらサンプリングデータ（１ビット）で上下させる。
+例えばRate&#x3D;0ではテーブルの値は428なので、再生レートは 1,789,773 &#x2F; 428 &#x3D; 4,181.71[Hz] となる。</p>
+<p>しかし再生レートの音源を再現できるかというと、DMCではサンプルにつき±2しか変化させられないので、それだと表現できる音量が小さすぎる。
+なので実際にはより高いレートが必要になると思う
+（いくつかみたところ、たいてい15を使っていた）。</p>
+<p>１サンプルが１ビットなのでデータサイズは大まかに１秒につき再生レート&#x2F;8バイトとなる。
+例えばレート15で音源が約0.1秒だったらレジスタ$4013に指定する長さは26（≒0.1×1789773&#x2F;(54×8×16)）で、データサイズは417（&#x3D;26×16+1）バイトとなる。</p>
+<h3 id="サンプリングデータの取得方法"><a href="#サンプリングデータの取得方法" class="headerlink" title="サンプリングデータの取得方法"></a>サンプリングデータの取得方法</h3><p>WebAudio（に限らないがオーディオのAPIがコールバックで時間ごとに呼び出される方式）で再生する場合、そのAPI側の時間進行によってDMC再生のエミュレーションを進める必要がある。
+ノイズチャンネルなどの場合には周波数やボリュームだけわかっていれば処理することができるが、DMCの場合はタイミングに合わせてサンプリングデータを取得する必要がある。</p>
+<p>実際のファミコンのハードウェアではDMA（Direct Memory Access）を使ってメモリ（プログラムROM領域）から読み込んでいる
+（マッパーによるバンク切り替えも反映される）。</p>
+<p>エミュレーションする場合、<code>ScriptableProcessorNode</code>を使うんであればメインスレッドで動くので、APIのコールバック内からもNESエミュレーション側のデータを見にいける。
+しかし<code>AudioWorklet</code>の場合には別スレッドで見にいけないのでどうするか。</p>
+<h4 id="AudioWorkletにデータを送る"><a href="#AudioWorkletにデータを送る" class="headerlink" title="AudioWorkletにデータを送る"></a>AudioWorkletにデータを送る</h4><p>メインスレッド側のデータには直接アクセスできないので、最初にプログラムROM全体を<a href="https://developer.mozilla.org/ja/docs/Web/API/MessagePort/postMessage"><code>worklet.port.postMessage()</code></a>で送ってやることにした。
+プログラムROMはものによっては数百キロバイトとかあるが、問題なく送れるっぽい。
+第二引数にTransferable Object（例えば<code>uint8Array.buffer</code>）を渡すことで無駄な複製が抑えられるとか
+（あまり効果はわからなかった）。</p>
+<p>AudioWorklet側でプログラムROMを参照できるようになったらあとはDMAに合わせて該当アドレスに対応するデータを自分で取得すればよい。
+実際のハードウェアではDMAのたびにCPUが4サイクル程度ストールするとのことだが、現状はとくになにもしてない
+（厳密なエミュレーションを目指してないので）。</p>
+<h4 id="サンプル時の処理"><a href="#サンプル時の処理" class="headerlink" title="サンプル時の処理"></a>サンプル時の処理</h4><p>サンプルを進めるタイミングはDMCのエミュレーションの周期とAPI側のサンプリングレートが異なっているので、<a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法">ノイズの時</a>の「サンプルごとの処理」と同様に。</p>
+<p>DMAで取得したデータからカウントごとに下位1ビットを見て、内部に保持する7ビットの値を1なら+2、0なら-2する。
+が0以上127以下の範囲を超える場合には更新しない。</p>
+<h4 id="IRQ"><a href="#IRQ" class="headerlink" title="IRQ"></a>IRQ</h4><p>DMCからCPU割り込みを起こせる機能があるらしく、カウンタが0になるたびにIRQを発生させられるようだが未実装。
+<code>postMessage</code>でメインスレッドに送った場合、レイテンシがどのくらいになるかは気になる。</p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li>作成したソース：<a href="https://github.com/tyfkda/nesemu/blob/c37b5021523bff1e033353d338146b696a644c36/src/dmc_channel_worker.ts">DmcChannelProcessor</a>、<a href="https://github.com/tyfkda/nesemu/blob/c37b5021523bff1e033353d338146b696a644c36/src/util/audio/delta_modulation_sampler.ts">DeltaModulationSampler</a></li>
+<li><a href="https://www.nesdev.org/wiki/APU_DMC">APU DMC - NESdev Wiki</a> 動作の詳しい解説はここを見ること</li>
+<li><a href="https://www.youtube.com/watch?v=mJnz6dEWwIw&t=811">NES Sound: The DMC - Behind the Code - YouTube</a> 動画全体よいが、特に”Double Dribble”や他のゲームもデータが誤ってバイト内で逆転してるのを発見した、というのがすごい</li>
+<li><a href="https://qiita.com/Quramy/items/8c12e6c3ad208c97c99a">WebWorkersで巨大データ転送の不思議 - Qiita</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="related-posts col-lg-3 col-md-3">
+                <hr>
+                <h3>関連記事</h3>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/01/square-duty.html" title="矩形波のデューティ比を変化させる" rel="bookmark">矩形波のデューティ比を変化させる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/07/07/nes-scrolling.html" title="ファミコンでのBGスクロール" rel="bookmark">ファミコンでのBGスクロール</a></h3></div></li></ul>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

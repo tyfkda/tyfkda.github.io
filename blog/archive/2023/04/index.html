@@ -10,8 +10,6 @@
 
     <!--Description-->
     
-        <meta name="description" content="自由変数への代入の続きで、末尾呼び出しの実装方法。今回も[Three implementation models for Scheme](http://www.cs.indiana.edu/~dyb/papers/3imp.pdf)の、4.6節を参考にする。">
-    
 
     <!--Author-->
     
@@ -20,7 +18,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="スタックベースVMのスクリプト言語での末尾呼び出しの実装方法"/>
+        <meta property="og:title" content="Kludge Factory"/>
     
 
     <!--Open Graph Description-->
@@ -31,7 +29,7 @@
 
     <!--Type page-->
     
-        <meta property="og:type" content="article" />
+        <meta property="og:type" content="website" />
     
 
     <!--Page Cover-->
@@ -42,7 +40,7 @@
 
     <!-- Title -->
     
-    <title>スタックベースVMのスクリプト言語での末尾呼び出しの実装方法 - Kludge Factory</title>
+    <title>アーカイブ: 2023/4 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +65,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/04/24/tail-recursion.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/archive/2023/04/"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -152,88 +150,57 @@
 </nav>
 
     <!-- Main Content -->
-    <!-- Page Header -->
-<!-- Set your background image for this header in your post front-matter: cover -->
+    
 
+<!-- Page Header -->
+<!-- Set your background image for this header in the theme's configuration: index_cover -->
 <header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <h1>スタックベースVMのスクリプト言語での末尾呼び出しの実装方法</h1>
-                    
-                    <span class="meta">
-                        <!-- Date and Author -->
-                        
-                        
-                            2013-04-24
-                        
-                    </span>
+                <div class="site-heading">
+                    <h1>2023/4</h1>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
-
-            <!-- Tags and categories -->
-           
-                <div class="col-lg-4 col-md-5 post-tags">
-                    
-                        
-
-
-<a href="/tags/compiler/">#compiler</a>
-
-
-                    
-                </div>
-                <div class="col-lg-4 col-md-5 post-categories">
-                    
-                </div>
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             
+                <div class="post-preview">
+    <a href="/blog/2023/04/06/nes-apu-dmc.html">
+        <h1 class="post-title archive">
+            ファミコンのDMCチャンネルの再現方法
+        </h1>
+    </a>
+    <p class="post-meta archive">
+        <!-- Date and Author -->
+        
+        2023-04-06
 
-            <!-- Gallery -->
-            
-
-            <!-- Post Main Content -->
-            <div class="col-lg-9 col-md-9">
-                <a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法">自由変数への代入</a>の続きで、末尾呼び出しの実装方法。今回も[Three implementation models for Scheme](http://www.cs.indiana.edu/~dyb/papers/3imp.pdf)の、4.6節を参考にする。
-
-<span id="more"></span>
-
-<p>VMをスタックベースにした場合、末尾呼び出しのときにその呼び出された関数への変数バインディングをスタックから取り除かなければいけないが、参照が生き残る可能性があるので簡単にはいかない？ちょっと英文がよくわからなかった。結局のところ、末尾呼び出しの場合は新しいコールフレームの作成をせずに、呼び出す関数への引数をスタックに積むコードを通常の関数呼び出しと同じように出力して、実際に<code>apply</code>（関数の命令の先頭にジャンプ）する前に自分自身に渡された引数を取り除いてやればいい。この論文のVMでは、戻り先の命令やフレームポインタは関数への引数より前に積まれているので、簡単にシフトできる。</p>
-<p>どの式が末尾呼び出しかという判定は、論文ではコンパイルの関数が次に実行すべき命令を常に持っていて、それが<code>return</code>だったら、というように判定している。自作のスクリプト言語で構文木を構築した場合はどうしたらいいかとちょっと悩んだが、なんのことはない、再帰で伝搬していけばいいだけだった。</p>
-<p>関数定義の場合は、関数本体の最後の式に「末尾だよ」、という設定を行う。または<code>return</code>式だったら戻す値に末尾設定を行う。</p>
-<p>末尾だと指定されたノードは、自分の種類によってそれをどう伝搬させるかを定義する。ノードが関数呼び出しだったら、めでたくそいつは末尾呼び出しと判定される。if式だったらthenノードとelseノードの両方に伝搬させる。他のノードの場合は伝搬させない。例えば二項演算とかであればその左右のノードは末尾とはならないので、伝搬を打ち切る。</p>
-
-
+        
+            <span class="post-tags">
                 
+                <a href="/tags/nes/" style="text-decoration:none">#nes</a> <a href="/tags/audio/" style="text-decoration:none">#audio</a>
+            </span>
+        
 
-            </div>
-
-            <!-- Related posts -->
-            <div class="related-posts col-lg-3 col-md-3">
-                <hr>
-                <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li></ul>
-            </div>
-
-            <!-- Comments -->
+    </p>
+</div>
             
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    
-
-
-                </div>
-            
+            <div class="archive-before-pagination"></div>
+            <ul class="pager">
+    
+    
+</ul>
         </div>
     </div>
-</article>
+</div>
+
 
     <!-- Footer -->
     <hr />
