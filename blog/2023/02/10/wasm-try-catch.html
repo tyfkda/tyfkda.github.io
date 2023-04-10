@@ -239,7 +239,8 @@
 <a href="https://caniuse.com/mdn-javascript_builtins_webassembly_exception_is">JavaScript built-in: WebAssembly: Exception: is | Can I use… Support tables for HTML5, CSS3, etc</a></p>
 <h3 id="その他"><a href="#その他" class="headerlink" title="その他"></a>その他</h3><ul>
 <li>実際の例外処理：WASMでは単純な数値型以外は線形メモリ上に置く必要があってその位置をグローバル変数で管理することになるが、例外で大域ジャンプが行われると値がずれてしまう可能性があるので調整する仕組みを入れる必要がある</li>
-<li>C言語からのコンパイルで<code>setjmp</code>が動くようにしてやろうと考えたが、<code>try</code>〜<code>catch</code>にするには代入先の変数名を特定して構文木を書き換える必要があるので、ちょっと手間がかかりそう</li>
+<li>C言語からのコンパイルで<code>setjmp</code>が動くようにしてやろうと考えたが、<code>try</code>〜<code>catch</code>にするには代入先の変数名を特定して構文木を書き換える必要があるので、<del>ちょっと手間がかかりそう</del>
+  <a href="https://github.com/tyfkda/xcc/commit/3fdb2189e2e8670f996a979ea569b493c6a9fb38">対応した</a></li>
 </ul>
 
 
@@ -251,7 +252,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/03/16/ruby-wasm-quickstart.html" title="ruby.wasmを使ってみる" rel="bookmark">ruby.wasmを使ってみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/07/12/rust-wasm-pack.html" title="【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…" rel="bookmark">【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/11/22/wasm-bin-format.html" title="【WASM】WASMのバイナリフォーマット" rel="bookmark">【WASM】WASMのバイナリフォーマット</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/03/16/ruby-wasm-quickstart.html" title="ruby.wasmを使ってみる" rel="bookmark">ruby.wasmを使ってみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/07/12/rust-wasm-pack.html" title="【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…" rel="bookmark">【Rust】非同期処理でクロージャをうまく使う方法はあるんだろうか…</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/10/12/wasi-lack-info.html" title="WASI上でのファイルオープンに悪戦苦闘した話" rel="bookmark">WASI上でのファイルオープンに悪戦苦闘した話</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
