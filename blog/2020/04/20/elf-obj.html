@@ -191,7 +191,7 @@
                         
 
 
-<a href="/tags/os/">#os</a> <a href="/tags/elf/">#elf</a>
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/os/">#os</a> <a href="/tags/elf/">#elf</a>
 
 
                     
@@ -244,6 +244,8 @@
 
 <p>オブジェクトファイル内で定義されているグローバルな <code>main</code> 関数が8番に出力されている。</p>
 <p>他、2〜7はセクションを指す。</p>
+<p>実際のバイナリデータは、セクションヘッダの情報[8]のOffset<code>0x00b0</code>からSize<code>0x00d8</code>バイト分格納されていることがわかる。
+形式は<a href="https://llvm.org/doxygen/structllvm_1_1ELF_1_1Elf64__Sym.html">Elf64_Sym構造体</a>（EntSize<code>0x18</code>バイト）が個数分羅列されている。</p>
 <h4 id="文字列テーブル"><a href="#文字列テーブル" class="headerlink" title="文字列テーブル"></a>文字列テーブル</h4><p>文字列テーブルはシンボル名を保持するのに使用される。
 構造は単に使用される文字列を連結しただけというもので、各文字列はヌルターミネートされている。</p>
 <p>セクションテーブルのセクション[9] .strtabはOffsetが0x188でSizeが0x0eとなっているので、そこを見ると：</p>
@@ -270,6 +272,7 @@
 <p><code>Offset</code> の <code>..0a</code> はテキストセクション先頭から書き換え先のオフセット、
 <code>Addend</code> の <code>-4</code> はアドレス解決時の加算値。</p>
 <p><a href="https://docs.oracle.com/cd/E19683-01/817-4912/6mkdg542u/index.html#chapter6-26">このへん</a> に <code>Type</code> ごとの再配置の計算式が書いてある。</p>
+<p>実際のバイナリデータの形式は<a href="https://llvm.org/doxygen/structllvm_1_1ELF_1_1Elf64__Rela.html">Elf64_Rela構造体</a>。</p>
 <h3 id="例3-データ参照の場合"><a href="#例3-データ参照の場合" class="headerlink" title="例3: データ参照の場合"></a>例3: データ参照の場合</h3><p>文字列などのデータがある場合：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span> *<span class="title function_">get_message</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;Hello, world!\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -310,7 +313,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/01/28/hello-elf-world.html" title="ELF64を動的に生成してHello World" rel="bookmark">ELF64を動的に生成してHello World</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/11/build-linux.html" title="Linuxカーネルをビルドしてみる" rel="bookmark">Linuxカーネルをビルドしてみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/12/27/baremetal-ctxswtch-rpz.html" title="Raspberry Pi Zeroでベアメタルコンテキストスイッチ" rel="bookmark">Raspberry Pi Zeroでベアメタルコンテキストスイッチ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/18/data-segment.html" title="はりぼてOSアプリのメモリレイアウト" rel="bookmark">はりぼてOSアプリのメモリレイアウト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/02/23/fin-hariboteos.html" title="「OS自作入門」とりあえず完了" rel="bookmark">「OS自作入門」とりあえず完了</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/03/13/elf-linker.html" title="リンカーを自作した" rel="bookmark">リンカーを自作した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/01/28/hello-elf-world.html" title="ELF64を動的に生成してHello World" rel="bookmark">ELF64を動的に生成してHello World</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li></ul>
             </div>
 
             <!-- Comments -->
