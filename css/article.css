@@ -64,6 +64,13 @@ article .container .related-posts .popular-posts-title a {
   color: #555;
   font-size: 0.6em;
 }
+article .container .recent-posts .recent_posts li.recent_post {
+  list-style-type: none;
+}
+article .container .recent-posts .recent_posts li.recent_post a {
+  color: #555;
+  font-size: 0.7em;
+}
 article a {
   text-decoration: underline;
 }

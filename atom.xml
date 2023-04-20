@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-04-10T12:39:23.980Z</updated>
+  <updated>2023-04-19T23:08:57.707Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html</id>
     <published>2023-04-05T15:00:00.000Z</published>
-    <updated>2023-04-10T12:39:23.980Z</updated>
+    <updated>2023-04-19T23:08:57.707Z</updated>
     
     
     <summary type="html">&lt;p&gt;ファミコンは音楽を鳴らす機能として矩形波×2、三角波、ノイズというシンプルな方法に加えて、&lt;strong&gt;DMCというサンプリング音源による方法&lt;/strong&gt;がある。
@@ -161,7 +161,7 @@ WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計
     <link href="https://tyfkda.github.io/blog/2023/02/10/wasm-try-catch.html"/>
     <id>https://tyfkda.github.io/blog/2023/02/10/wasm-try-catch.html</id>
     <published>2023-02-10T10:00:00.000Z</published>
-    <updated>2023-04-10T12:39:23.981Z</updated>
+    <updated>2023-04-19T23:08:57.708Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASMは通常の制御フローしかなくて大域ジャンプはできないものかと思い込んでいたが、例外も使えるということを知ったのでどんなもんか調べた。&lt;/p&gt;</summary>
