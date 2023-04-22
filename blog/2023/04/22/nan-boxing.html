@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="スクリプト言語を作る際のクロージャの実装方法、特に変数バインディングにヒープじゃなくてスタックを使うバーチャルマシンでの実装方法について調べた。">
+        <meta name="description" content="動的言語内で扱う値の内部表現に関する最適化で、NaN Boxingという方法を知ったのでメモ。">
     
 
     <!--Author-->
@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="スクリプト言語でのクロージャの実装方法"/>
+        <meta property="og:title" content="浮動小数点数とポインタを混在させるテクニック（NaN Boxing）"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>スクリプト言語でのクロージャの実装方法 - Kludge Factory</title>
+    <title>浮動小数点数とポインタを混在させるテクニック（NaN Boxing） - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +67,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2013/04/11/implement-closure.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -160,13 +160,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>スクリプト言語でのクロージャの実装方法</h1>
+                    <h1>浮動小数点数とポインタを混在させるテクニック（NaN Boxing）</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2013-04-11
+                            2023-04-22
                         
                     </span>
                 </div>
@@ -202,25 +202,51 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>スクリプト言語を作る際のクロージャの実装方法、特に変数バインディングにヒープじゃなくてスタックを使うバーチャルマシンでの実装方法について調べた。</p>
+                <p>動的言語内で扱う値の内部表現に関する最適化で、NaN Boxingという方法を知ったのでメモ。</p>
 <span id="more"></span>
 
-<p>参考にしたのは <a href="http://www.cs.indiana.edu/~dyb/papers/3imp.pdf">Three Implementation Models for Scheme</a> の４章スタックベースモデルの4.4節ディスプレイクロージャ。</p>
-<p>論文の３章ではヒープベースモデルという、スタティックスコープのチェーンをヒープ上に持つ方式の説明があって、その方式だとクロージャが生成されたスコープを抜けてもそのクロージャが参照する環境がヒープ上にあるので特に問題なく変数バインディングを保持できる。しかしこの方式だと関数呼び出しごとにヒープ確保が必要になってしまい実行速度が犠牲になってしまう。そこで４章でスタックベースモデルという、スタティックチェーン（関数への引数）などをスタックに配置する実装が説明される。</p>
-<p>しかし関数への引数をスタック上に持つようにすると、クロージャを生成したスコープを抜けた時点でコールフレームが削除されてしまうので変数バインディングが破壊されてしまう問題がある。</p>
-<p>4.4節での解決方法は、クロージャを生成するときに、内部で使われる自由変数を調べて、そのコピーをヒープ上に確保してクロージャに保持する、というもの。代入がなければ値は変更されないのでこの方法で解決できる（代入がある場合の変更は4.5節でなされる）。</p>
-<p>論文ではSchemeを使っていてLisp系だとパースはすでに完了しているので、コンパイルの段階で内部で使われる自由変数を走査して調べているが、Lisp系じゃない自前のスクリプト言語を作るときにはどうせパースを行う必要があるので、そのときに変数の参照を調べることにする。</p>
-<p>例えば次のようなコードがあった場合、</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>(<span class="params">f</span>) &#123;  <span class="comment">// (A) 束縛:f</span></span><br><span class="line">  <span class="keyword">function</span>(<span class="params">x</span>) &#123;  <span class="comment">// (B) 束縛:x</span></span><br><span class="line">    <span class="keyword">function</span>(<span class="params">y</span>) &#123;  <span class="comment">// (C) 束縛:y</span></span><br><span class="line">      <span class="title function_">f</span>(y)</span><br><span class="line">    &#125;  <span class="comment">// 参照:f,y =&gt; 自由:f</span></span><br><span class="line">  &#125;  <span class="comment">// 参照:f =&gt; 自由:f</span></span><br><span class="line">&#125;  <span class="comment">// 参照:f =&gt; 自由:なし</span></span><br></pre></td></tr></table></figure>
+<h3 id="あらまし"><a href="#あらまし" class="headerlink" title="あらまし"></a>あらまし</h3><p>動的言語を作るという内容の本でオンラインでも読めてすごくおすすめな<a href="https://www.craftinginterpreters.com/">Crafting Interpreters</a>の最後の章の最適化の話の中で<a href="https://www.craftinginterpreters.com/optimization.html#nan-boxing">NaN Boxing</a>について書かれている。</p>
+<p>いわゆる動的言語では変数が型情報を持っているんじゃなくて値自体で型を区別できるようになっている。
+普通に実装するには内部表現として型情報とその型に関するデータとして持つことになるが、NaN Boxingではそれをまとめた形で持つようにする。
+CPUで扱える１ワード（64ビット<code>int</code>）で表現することで持ち運びやコピーが簡単になり、キャッシュも効いて高速化するという利点がある。</p>
+<h3 id="普通のやり方"><a href="#普通のやり方" class="headerlink" title="普通のやり方"></a>普通のやり方</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">  VAL_BOOL,</span><br><span class="line">  VAL_NIL,</span><br><span class="line">  VAL_NUMBER,</span><br><span class="line">  VAL_OBJ</span><br><span class="line">&#125; ValueType;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  ValueType type;</span><br><span class="line">  <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">    <span class="type">bool</span> boolean;</span><br><span class="line">    <span class="type">double</span> number;</span><br><span class="line">    Obj *obj;</span><br><span class="line">  &#125; as;</span><br><span class="line">&#125; Value;</span><br></pre></td></tr></table></figure>
 
-<p>パースは外側のfunction→内側のfunctionと進むが、パースが進んで最も内部のfunction (C)にきたとする。functionの本体をパースして、参照された変数すべてをその関数が参照しているということを記録していく(f, y)。その中で自分のパラメータ(y)じゃないものを(C)のlambda式の自由変数とする(f)。</p>
-<p>functionのパースを抜けるときに、自由変数は外側のfunctionから参照する、ということを伝えるため、上のブロックに参照を伝搬させる。ここでは関数(B)にfへの参照を追加する。そして同様に(B)のfunctionのパースを抜けるときに、参照がfで束縛変数がxなので自由変数がfとなる。</p>
-<p>一番外側のfunctionの(A)も同様に行われ、ここでfは束縛されているため、自由変数はなしとなる。</p>
-<p>コード生成時には、関数で使われる自由変数をコピーするコードを生成する。実際にはクロージャの自由変数となる値をスタックに積んでいき、クロージャの生成時にそれらをヒープから確保したバッファにコピーする。(A)は自由変数がないので特に何もなし、(B)はローカル変数fをコピーしてクロージャを生成する。(C)はクロージャ(B)に閉じ込められたfをさらにコピーしてクロージャが生成される。</p>
-<p>生成されるバーチャルコードは次のようになる：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># クロージャ(A)の生成                                                           </span><br><span class="line">close 0        # 自由変数なしでクロージャ(A)を生成                              </span><br><span class="line"># クロージャ(A)の本体コード                                                     </span><br><span class="line">refer-local 0  # fを参照                                                        </span><br><span class="line">argument       # スタックに積む                                                 </span><br><span class="line">close 1        # 自由変数1つでクロージャ(B)を生成                               </span><br><span class="line"># クロージャ(B)の本体コード                                                     </span><br><span class="line">refer-free 1   # (B)に保持された自由変数fを参照                                 </span><br><span class="line">argument       # スタックに積む                                                 </span><br><span class="line">close 1        # 自由変数1つ                                                    </span><br><span class="line"># クロージャ(C)の本体コード                                                     </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><code>Value</code>構造体に型の種類を判別するための<code>ValueType</code>と、型ごとの情報を共用体<code>as</code>で持つ（<a href="https://en.wikipedia.org/wiki/Tagged_union">Tagged union</a>と呼ばれる）。
+<code>double</code>や<code>Obj</code>ポインタのアライメントがあるので、<code>Value</code>のサイズは16バイトになる。
+これをどうにかしてもっと短縮したい、というエクストリームプレイ。</p>
+<h3 id="NaN-Boxing"><a href="#NaN-Boxing" class="headerlink" title="NaN Boxing"></a>NaN Boxing</h3><p>大まかには<code>double</code>とポインタどちらも64ビット長だけど、どうにかして一つの64ビットで型も判別できるようにした上でさらに値も保持する、というテクニック。</p>
+<p>浮動小数点数のフォーマットはIEEE754で決まっていて、符号1ビット|指数部11ビット|仮数部52ビットの計64ビットで構成されている。
+普通の数値では指数部は1〜2046（ゲタ1022）だが、<code>NaN</code>は特別で指数部11ビットがすべて1となっている。
+ただ<code>NaN</code>は無限大と非数にしか使われず仮数部最上位の1ビット以外は使用されないので、それを使う。</p>
+<p>64ビット環境のポインタも今の所実際には下位48ビットしか使われてないので、うまく詰め込める（※）。</p>
+<p>なので判定手順は</p>
+<ul>
+<li>もし指数部＋仮数部上位２ビットが１(<code>QNAN</code>)でないなら、数値（浮動小数点数）</li>
+<li>全て１なら：下位の値によって<ul>
+<li>1：<code>nil</code></li>
+<li>2：<code>true</code></li>
+<li>3：<code>false</code></li>
+<li>他：オブジェクトへのポインタ（この場合のみ最上位の符号ビットが立ってる）</li>
+</ul>
+</li>
+</ul>
+<h3 id="実際にテスト"><a href="#実際にテスト" class="headerlink" title="実際にテスト"></a>実際にテスト</h3><p>テストコード：<a href="https://ideone.com/vzSfcB">ideone.com</a></p>
+<p>抜粋：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">uint64_t</span> Value;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SIGN_BIT ((uint64_t)0x8000000000000000)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> QNAN     ((uint64_t)0x7ffc000000000000)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IS_NUMBER(value)    (((value) &amp; QNAN) != QNAN)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IS_OBJ(value)       (((value) &amp; (QNAN | SIGN_BIT)) == (QNAN | SIGN_BIT))</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  <span class="type">char</span> s[] = <span class="string">&quot;Hello, world!&quot;</span>;</span><br><span class="line">  Value str = OBJ_VAL(copyString(s, <span class="built_in">strlen</span>(s)));</span><br><span class="line"></span><br><span class="line">  Value values[] = &#123;</span><br><span class="line">    NIL_VAL,</span><br><span class="line">    FALSE_VAL,</span><br><span class="line">    TRUE_VAL,</span><br><span class="line">    NUMBER_VAL(<span class="number">1.234</span>),</span><br><span class="line">    NUMBER_VAL(<span class="number">-0.789e5</span>),</span><br><span class="line">    NUMBER_VAL(<span class="number">0.0</span>),</span><br><span class="line">    NUMBER_VAL(<span class="number">1.0</span> / <span class="number">0.0</span>),</span><br><span class="line">    NUMBER_VAL(<span class="number">-1.0</span> / <span class="number">0.0</span>),</span><br><span class="line">    NUMBER_VAL(<span class="number">0.0</span> / <span class="number">0.0</span>),</span><br><span class="line">    str,</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; <span class="keyword">sizeof</span>(values) / <span class="keyword">sizeof</span>(*values); ++i) &#123;</span><br><span class="line">    printValue(values[i]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>VMの実行時には現在実行中のクロージャを保持しておき、refer-freeでクロージャから値を取り出すようにする。関数呼び出し時にはリターンアドレス、フレームポインタとともにクロージャもスタックに積み、リターン時に復帰させるようにする。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ cc nan-boxing.c &amp;&amp; ./a.out</span><br><span class="line">7ffc000000000001: nil</span><br><span class="line">7ffc000000000002: false</span><br><span class="line">7ffc000000000003: true</span><br><span class="line">3ff3be76c8b43958: 1.234</span><br><span class="line">c0f3434000000000: -78900</span><br><span class="line">0000000000000000: 0</span><br><span class="line">7ff0000000000000: inf</span><br><span class="line">fff0000000000000: -inf</span><br><span class="line">7ff8000000000000: nan</span><br><span class="line">fffc6000003c8050: &quot;Hello, world!&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="その他"><a href="#その他" class="headerlink" title="その他"></a>その他</h3><ul>
+<li>約10%高速化、との話</li>
+<li>環境によってはNaN Boxingが使えない場合に備えて、<code>#ifdef</code>で分岐できるようにしている</li>
+<li><code>double</code>との型変換に無理やりキャストじゃなくて、<code>memcpy</code>使うんだぁ…（最適化で消えるらしい）</li>
+<li>cloxでは整数型はないけど、<code>nil</code>や真偽値のタグをもっと上位に移動させて、整数タグの場合には下位32ビットを使用すれば追加できそう</li>
+<li>現行の64ビットアーキテクチャでもハードウェア的にやカーネル的に全アドレスが使用されるわけではなく、アドレスバス（52ビット？）やページテーブル（48ビット？）自体がフルに使うようにはなってないらしい（要出典）</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://www.craftinginterpreters.com/optimization.html#nan-boxing">Optimization · Crafting Interpreters</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tagged_pointer">Tagged pointer</a> 浮動小数点数を使わない場合、タグを下位に埋め込んだりしたもんだった</li>
+</ul>
 
 
                 

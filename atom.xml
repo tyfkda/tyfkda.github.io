@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-04-19T23:08:57.707Z</updated>
+  <updated>2023-04-22T22:54:48.899Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>浮動小数点数とポインタを混在させるテクニック（NaN Boxing）</title>
+    <link href="https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html"/>
+    <id>https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html</id>
+    <published>2023-04-22T12:00:00.000Z</published>
+    <updated>2023-04-22T22:54:48.899Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;動的言語内で扱う値の内部表現に関する最適化で、NaN Boxingという方法を知ったのでメモ。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+  </entry>
   
   <entry>
     <title>ファミコンのDMCチャンネルの再現方法</title>
@@ -170,25 +187,6 @@ WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計
     
     
     <category term="wasm" scheme="https://tyfkda.github.io/tags/wasm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>定数による整数除算の高速化【論文読み】</title>
-    <link href="https://tyfkda.github.io/blog/2023/01/30/division-by-invariant-integers.html"/>
-    <id>https://tyfkda.github.io/blog/2023/01/30/division-by-invariant-integers.html</id>
-    <published>2023-01-30T09:00:00.000Z</published>
-    <updated>2023-04-01T03:30:19.185Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;コンパイル結果を見ていた時にソースでは除算を使っているのに出力されたコードには使われていなかったことがあり、どういう仕組みかを調べた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
-    
-    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
     
   </entry>
   
