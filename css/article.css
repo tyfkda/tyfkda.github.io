@@ -1,3 +1,21 @@
+.transition-all {
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  transition: all 0.5s;
+}
+.background-cover {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}
+.serif {
+  font-family: 'Lora', 'Times New Roman', serif;
+}
+.sans-serif,
+article .container .recent-posts .recent_posts {
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
 article .container .row img {
   max-width: 100% !important;
   height: auto;

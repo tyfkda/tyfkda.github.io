@@ -10,7 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="WASMは通常の制御フローしかなくて大域ジャンプはできないものかと思い込んでいたが、例外も使えるということを知ったのでどんなもんか調べた。">
+        <meta name="description" content="WASI用に出力されたWebAssemblyバイナリをJS上で動かすためのランタイムを探ったが混沌としていた。
+できればコマンドライン(node.js)からとブラウザ上の両方で動くといいんだけど、決定版みたいなものが現状ないように見える。">
     
 
     <!--Author-->
@@ -20,7 +21,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="【WASM】例外を扱う"/>
+        <meta property="og:title" content="【WASM】WASIランタイム（JS用）が混沌としている"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +43,7 @@
 
     <!-- Title -->
     
-    <title>【WASM】例外を扱う - Kludge Factory</title>
+    <title>【WASM】WASIランタイム（JS用）が混沌としている - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +68,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/02/10/wasm-try-catch.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -160,13 +161,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>【WASM】例外を扱う</h1>
+                    <h1>【WASM】WASIランタイム（JS用）が混沌としている</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2023-02-10
+                            2023-04-23
                         
                     </span>
                 </div>
@@ -202,45 +203,97 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>WASMは通常の制御フローしかなくて大域ジャンプはできないものかと思い込んでいたが、例外も使えるということを知ったのでどんなもんか調べた。</p>
+                <p>WASI用に出力されたWebAssemblyバイナリをJS上で動かすためのランタイムを探ったが混沌としていた。
+できればコマンドライン(node.js)からとブラウザ上の両方で動くといいんだけど、決定版みたいなものが現状ないように見える。</p>
 <span id="more"></span>
 
-<h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>ドキュメントは<a href="https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/Exceptions.md">WebAssembly&#x2F;exception-handling</a>に書かれている：</p>
-<ul>
-<li><code>throw</code> で例外を起こす、「タグ」で識別する</li>
-<li><code>try</code>〜<code>catch</code>はWASMバイトコードのブロック</li>
-<li><code>rethrow</code> は何段投げるかを指定する（ラベルも可）</li>
-<li><code>delegate</code> で上に任せることもできる</li>
+<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><ul>
+<li>@wasmer&#x2F;wasi は古いバージョン(0.12.0)なら動かせるけど、最新版(1.2.2)だと期待する動作がさせられない</li>
+<li>wasi-jsはコマンドラインからは動かせるが、ブラウザ上で動かせなかった</li>
+<li>コマンドライン版とブラウザ版とで使うランタイムを変えることも検討したほうがいいかも</li>
 </ul>
-<h3 id="例"><a href="#例" class="headerlink" title="例"></a>例</h3><p>ドキュメントだけだとよくわからなかったので、WATソースを書いて動かしてみた：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">;; try.wat</span><br><span class="line">(module</span><br><span class="line">  (tag $NOT_ENOUGH_MONEY_EXCEPTION (export &quot;TAG_NEME&quot;) (param i32))</span><br><span class="line"></span><br><span class="line">  (func $main (export &quot;main&quot;) (result i32)</span><br><span class="line">    try $l1 (result i32)</span><br><span class="line">      i32.const 200</span><br><span class="line">      i32.const 300</span><br><span class="line">      call $purchase</span><br><span class="line">    catch $NOT_ENOUGH_MONEY_EXCEPTION</span><br><span class="line">      drop  ;; i32</span><br><span class="line">      i32.const -1</span><br><span class="line">    catch_all</span><br><span class="line">      i32.const -2</span><br><span class="line">    end</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">  (func $purchase (param $cache i32) (param $price i32) (result i32)</span><br><span class="line">    local.get $cache</span><br><span class="line">    local.get $price</span><br><span class="line">    i32.lt_s</span><br><span class="line">    if</span><br><span class="line">      local.get $price</span><br><span class="line">      local.get $cache</span><br><span class="line">      i32.sub</span><br><span class="line">      throw $NOT_ENOUGH_MONEY_EXCEPTION</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    local.get $cache</span><br><span class="line">    local.get $price</span><br><span class="line">    i32.sub</span><br><span class="line">    )</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+<p>動作確認したマトリクス：</p>
+<table>
+<thead>
+<tr>
+<th align="left">モジュール</th>
+<th align="center">コマンドライン (node.js)</th>
+<th align="center">ブラウザ (WebPack)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">@wasmer&#x2F;wasi 0.12.0</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+</tr>
+<tr>
+<td align="left">@wasmer&#x2F;wasi 最新 1.2.2</td>
+<td align="center">❌（実ファイルが読めない）</td>
+<td align="center">△（標準出力を乗っ取れない）</td>
+</tr>
+<tr>
+<td align="left">wasi-js</td>
+<td align="center">✅</td>
+<td align="center">❌（<code>path</code>モジュールが解決できず）</td>
+</tr>
+<tr>
+<td align="left">node.js標準ライブラリ</td>
+<td align="center">✅</td>
+<td align="center">❌</td>
+</tr>
+</tbody></table>
+<h3 id="あらすじ"><a href="#あらすじ" class="headerlink" title="あらすじ"></a>あらすじ</h3><a href="/blog/2022/10/12/wasi-lack-info.html" title="WASI上でのファイルオープンに悪戦苦闘した話">WASI上でのファイルオープンに悪戦苦闘した話</a> でWasm/WASIをnode.js上から動かそうとしていた続き。
 
-<p>上記を <a href="https://github.com/WebAssembly/wabt"><code>wat2wasm</code></a> でコンパイルするが、現状ではオプション <code>--enable-exceptions</code> を指定する必要があった（バージョン1.0.32）。</p>
+<p>実際にはコマンドライン上だけじゃなくブラウザ上でも動かしたいので、WebPack（バージョン５）して使う方法も調べた。</p>
+<h3 id="WasmerJS編"><a href="#WasmerJS編" class="headerlink" title="WasmerJS編"></a>WasmerJS編</h3><p>npmでwasiと検索するとトップの方に<code>@wasmer/wasi</code>が出てくるので、以前に引き続き試してみた。
+現在公開されてるバージョンは1.2.2。</p>
+<h4 id="最新版はメモリファイル専用で、ローカルファイルは読み書きできない？"><a href="#最新版はメモリファイル専用で、ローカルファイルは読み書きできない？" class="headerlink" title="最新版はメモリファイル専用で、ローカルファイルは読み書きできない？"></a>最新版はメモリファイル専用で、ローカルファイルは読み書きできない？</h4><p>WASIをコマンドラインで動かすランライム環境としてWasmerというのがあって、そこが提供してるJavaScriptのモジュールなので機能的にも問題ないだろうし同等のことができるだろうと疑問を持つことなく使ってみた。</p>
+<p>単純に動かす分にはいいんだが実ファイルの読み書きで行き詰まった。
+いろいろ試した結果どうも最新版1.2.2ではそもそもできないっぽい。
+<a href="https://github.com/wasmerio/wasmer-js/blob/80b158341965d6d3203f68ae2be26d5b6858d65b/examples/node/fs.mjs#L19-L24">node.js用サンプル</a>を見ると実際のファイルじゃなくて仮想ファイルを扱ってるだけだった。
+そう思ってみると<a href="https://github.com/wasmerio/wasmer-js#api-docs">README.mdのAPI Docs</a>に<code>wasi.fs</code>は思いっきり<code>MemFS</code>型と書いてあった。
+ローカルファイルは読めないってことだったのね。</p>
+<p>一応WebPackしてブラウザ上で仮想ファイルを扱うことはできたが、標準出力・エラーの乗っ取り方がわからなかった。
+実行が終わった後に<code>wasi.getStdoutString()</code>で取得して処理するのは厳しい。</p>
 <ul>
-<li>タグセクション(13)が追加で出力される<ul>
-<li><code>--verbose</code> 指定でどんなバイナリが出力されるかがわかりやすい</li>
+<li>wasmer_wasi_js_bg.wasm がない、とエラーになる：<a href="https://github.com/wasmerio/wasmer-js/issues/290#issuecomment-1025154332">Can’t resolve ‘wasmer_wasi_js_bg.wasm’ · Issue #290 · wasmerio&#x2F;wasmer-js</a> .wasmをリソースにするとかじゃなく、無視リストに入れると一応動く</li>
 </ul>
-</li>
-</ul>
-<p>そして<a href="https://gist.github.com/kanaka/3c9caf38bc4da2ecec38f41ba24b77df#file-runwasm-js">runwasm</a>を使って実行： <code>node runwasm.js try.wasm main</code></p>
+<h4 id="旧バージョン0-12-0なら動かせる"><a href="#旧バージョン0-12-0なら動かせる" class="headerlink" title="旧バージョン0.12.0なら動かせる"></a>旧バージョン0.12.0なら動かせる</h4><p>@wasmer&#x2F;cli や rubyonbrowser を見たところ@wasmer&#x2F;wasiを使っていた。
+え？と思ってpackage.jsonを見たところ、</p>
 <ul>
-<li>node.js 18より前だと <code>--experimental-wasm-eh</code> オプションを指定する必要がある</li>
-<li>例外なので当然ながら、<code>try</code>内から呼び出した関数内で<code>throw</code>すると関数を飛び越えて<code>catch</code>できる<ul>
-<li>タグに対応する型でパラメータを送れて、キャッチ側でそれを利用できる</li>
-</ul>
-</li>
-<li>WASM内でキャッチされなかった例外はNode.js側でもキャッチできる<ul>
-<li>例外はJavaScriptの <a href="https://developer.mozilla.org/en-US/docs/WebAssembly/JavaScript_interface/Exception"><code>WebAssembly.Exception</code></a> クラス： <code>if (e instanceof WebAssembly.Exception) ...</code></li>
-<li>タグも<code>export</code>できるので、それを使って判定できる：<code>if (e.is(instance.exports.NOT_ENOUGH_MONEY_EXCEPTION) ...</code></li>
+<li>最新バージョンではなく、<a href="https://github.com/wasmerio/wasmer-js/releases/tag/v0.12.0">0.12.0</a>を使用</li>
+<li>ローカルファイルも扱える<ul>
+<li>コマンドライン上で実ファイルを扱うには <code>fs</code> かつ <code>preopens: &#123;&#39;.&#39;: &#39;.&#39;&#125;</code> を指定</li>
+<li>ブラウザでは仮想ファイル、 <a href="https://github.com/wasmerio/wasmer-js/tree/0.x/packages/wasmfs"><code>@wasmer/wasmfs 0.12.0</code></a> を使う<ul>
+<li>npmに公開されてるのと<a href="https://github.com/wasmerio/wasmfs">wasmerio&#x2F;wasmfs</a>は違う？わけわからん…</li>
 </ul>
 </li>
 </ul>
-<h3 id="ブラウザで動くか？"><a href="#ブラウザで動くか？" class="headerlink" title="ブラウザで動くか？"></a>ブラウザで動くか？</h3><p>wabtやNode.js 16だとコマンドラインオプションが必要だったが、Google ChromeやSafariでは問題なく動いた：
-<a href="https://caniuse.com/mdn-javascript_builtins_webassembly_exception_is">JavaScript built-in: WebAssembly: Exception: is | Can I use… Support tables for HTML5, CSS3, etc</a></p>
-<h3 id="その他"><a href="#その他" class="headerlink" title="その他"></a>その他</h3><ul>
-<li>実際の例外処理：WASMでは単純な数値型以外は線形メモリ上に置く必要があってその位置をグローバル変数で管理することになるが、例外で大域ジャンプが行われると値がずれてしまう可能性があるので調整する仕組みを入れる必要がある</li>
-<li>C言語からのコンパイルで<code>setjmp</code>が動くようにしてやろうと考えたが、<code>try</code>〜<code>catch</code>にするには代入先の変数名を特定して構文木を書き換える必要があるので、<del>ちょっと手間がかかりそう</del>
-  <a href="https://github.com/tyfkda/xcc/commit/3fdb2189e2e8670f996a979ea569b493c6a9fb38">対応した</a></li>
+</li>
+</ul>
+<p>ググってファイルが扱えるように書いてあるドキュメントはこのバージョンのことだったらしい（公式よ…）。</p>
+<p>WebPackの際には<a href="https://www.npmjs.com/package/buffer"><code>buffer</code></a>や<a href="https://www.npmjs.com/package/path-browser"><code>path</code></a>も要求される（WebPack5からはPolyfillが除外された？とのことで自分で追加する）。</p>
+<p>ブラウザ上で動かす際に標準出力・エラーをフックして違う処理をする、ということもできた
+（<code>wasi.fs.writeSync</code> を書き換える、<a href="https://github.com/ongaeshi/rubyonbrowser/blob/38dcc5c6c62bf75535afd0a0527674d808a00c05/src/browser.ts#L24-L46">rubyonbrowserのソース参照</a>）。</p>
+<p>懸念としては、バージョン1以前のもので現在はファイルの機能が切られてしまってるので、今後WasmやWASIが更新されてもサポートは望めなさそうという点。</p>
+<h3 id="wasi-js"><a href="#wasi-js" class="headerlink" title="wasi-js"></a>wasi-js</h3><p>他にランタイムがないかググって出てきたのが<a href="https://www.npmjs.com/package/wasi-js">wasi-js</a>。
+READMEを読むと@wasmer&#x2F;wasiの0.12.0からフォークしたものとのこと、なのでまさに上記の通り。</p>
+<p>こちらの開発はまだアクティブなのでこちらの方がいいのではないかと思ったが、WebPackした際に<code>process</code>やら<code>util</code>やら要求されて、最終的に<code>path</code>が解決できなかった。
+cowasmというブラウザ上でPythonを動かすプロジェクトの一部なのでできるはずだが…。</p>
+<h3 id="node-js標準-Experimental"><a href="#node-js標準-Experimental" class="headerlink" title="node.js標準 (Experimental)"></a>node.js標準 (Experimental)</h3><p>いろいろ手間取ってる間に次の記事を見つけた：
+<a href="https://kakts-tec.hatenablog.com/entry/2019/12/16/221941">Node.js のWASIモジュールについて - kakts-log</a>。node.js自体が<a href="https://nodejs.dev/en/api/v19/wasi/">WASIライブラリ</a>を提供している。
+結局のところコマンドライン用とブラウザ用で動かすソースは別だったので、コマンドライン用はこちらを使うのがいいかもしれない。</p>
+<p>まだExpermentalとのことで実行には<code>node</code>のコマンドラインオプションに<code>--experimental-wasi-unstable-preview1</code>を指定する必要がある
+（または環境変数<code>NODE_OPTIONS</code>に指定しておく）。</p>
+<p>node.jsのライブラリなので、ブラウザには持っていけない。</p>
+<h3 id="結論-1"><a href="#結論-1" class="headerlink" title="結論"></a>結論</h3><p>現状WasmerJS0.12.0を使い、node.jsでExperimentalが取れたらコマンドライン版はそちらに移行するのがいいかもしれない。
+またはコマンドラインはもうWasmerやWasmtimeに任せるか。</p>
+<h3 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h3><ul>
+<li>テストコード：<a href="https://github.com/tyfkda/wasi-on-js-test">https://github.com/tyfkda/wasi-on-js-test</a></li>
+<li><a href="https://github.com/ongaeshi/rubyonbrowser">ongaeshi&#x2F;rubyonbrowser: Ruby on Browser using Ruby WASM&#x2F;WASI</a> 実際に動くので一番参考になった</li>
+<li><a href="https://www.npmjs.com/package/@wasmer/cli">@wasmer&#x2F;cli - npm</a> これも動く</li>
+<li><a href="https://wasmer.io/posts/wasmer-js-a-new-hope">Wasmer-JS: A New Hope</a> Rust上で使うとまた状況は違うんだろうか…</li>
+<li><a href="https://www.npmjs.com/package/@bjorn3/browser_wasi_shim">@bjorn3&#x2F;browser_wasi_shim - npm</a> これはどうだ？</li>
 </ul>
 
 
