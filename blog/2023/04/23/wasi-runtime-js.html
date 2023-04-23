@@ -242,6 +242,7 @@
 <td align="center">❌</td>
 </tr>
 </tbody></table>
+<p>テストコード：<a href="https://github.com/tyfkda/wasi-on-js-test">https://github.com/tyfkda/wasi-on-js-test</a></p>
 <h3 id="あらすじ"><a href="#あらすじ" class="headerlink" title="あらすじ"></a>あらすじ</h3><a href="/blog/2022/10/12/wasi-lack-info.html" title="WASI上でのファイルオープンに悪戦苦闘した話">WASI上でのファイルオープンに悪戦苦闘した話</a> でWasm/WASIをnode.js上から動かそうとしていた続き。
 
 <p>実際にはコマンドライン上だけじゃなくブラウザ上でも動かしたいので、WebPack（バージョン５）して使う方法も調べた。</p>
@@ -289,7 +290,6 @@ cowasmというブラウザ上でPythonを動かすプロジェクトの一部�
 <h3 id="結論-1"><a href="#結論-1" class="headerlink" title="結論"></a>結論</h3><p>現状WasmerJS0.12.0を使い、node.jsでExperimentalが取れたらコマンドライン版はそちらに移行するのがいいかもしれない。
 またはコマンドラインはもうWasmerやWasmtimeに任せるか。</p>
 <h3 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h3><ul>
-<li>テストコード：<a href="https://github.com/tyfkda/wasi-on-js-test">https://github.com/tyfkda/wasi-on-js-test</a></li>
 <li><a href="https://github.com/ongaeshi/rubyonbrowser">ongaeshi&#x2F;rubyonbrowser: Ruby on Browser using Ruby WASM&#x2F;WASI</a> 実際に動くので一番参考になった</li>
 <li><a href="https://www.npmjs.com/package/@wasmer/cli">@wasmer&#x2F;cli - npm</a> これも動く</li>
 <li><a href="https://wasmer.io/posts/wasmer-js-a-new-hope">Wasmer-JS: A New Hope</a> Rust上で使うとまた状況は違うんだろうか…</li>
