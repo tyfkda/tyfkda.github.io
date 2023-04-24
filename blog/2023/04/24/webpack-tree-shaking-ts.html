@@ -10,7 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="3Dのゲームが簡単に、しかもマルチプラットフォーム用に作れるという噂のUnity3Dを試してみる。">
+        <meta name="description" content="TypeScriptでコードを書いて、ブラウザで動かすためにWebPackでまとめてるアプリで、Worklet用に別に出力しているソースに不要なコードも含まれてしまってサイズが大きくなってしまっていた。
+「Worklet側でもimportされるコードをソースを手動で分離するか〜」と思ったが、TreeShakingという機能でできるということなのでやってみた。">
     
 
     <!--Author-->
@@ -20,7 +21,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="Unity3Dを試してみる"/>
+        <meta property="og:title" content="TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +43,7 @@
 
     <!-- Title -->
     
-    <title>Unity3Dを試してみる - Kludge Factory</title>
+    <title>TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +68,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2012/12/18/unity3d.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/04/24/webpack-tree-shaking-ts.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -160,13 +161,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>Unity3Dを試してみる</h1>
+                    <h1>TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2012-12-18
+                            2023-04-24
                         
                     </span>
                 </div>
@@ -187,7 +188,7 @@
                         
 
 
-<a href="/tags/unity/">#unity</a>
+<a href="/tags/typescript/">#typescript</a>
 
 
                     
@@ -202,29 +203,36 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>3Dのゲームが簡単に、しかもマルチプラットフォーム用に作れるという噂のUnity3Dを試してみる。</p>
+                <p>TypeScriptでコードを書いて、ブラウザで動かすためにWebPackでまとめてるアプリで、Worklet用に別に出力しているソースに不要なコードも含まれてしまってサイズが大きくなってしまっていた。
+「Worklet側でも<code>import</code>されるコードをソースを手動で分離するか〜」と思ったが、<strong>TreeShaking</strong>という機能でできるということなのでやってみた。</p>
 <span id="more"></span>
 
-<p>ずっと前に買ってそのままにしていた本</p>
-<iframe src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=tyfkda-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4797365331" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+<h3 id="TypeScriptのコードでTreeShakingを有効にする"><a href="#TypeScriptのコードでTreeShakingを有効にする" class="headerlink" title="TypeScriptのコードでTreeShakingを有効にする"></a>TypeScriptのコードでTreeShakingを有効にする</h3><p><a href="https://webpack.js.org/guides/tree-shaking/">WebPackのTree Shakingの説明</a>によればwebpack.config.jsに<code>optimization: &#123;usedExports: true&#125;</code>と指定すればいいとのこと。
+がやってみるとされなかった。
+他にもpackage.jsonに<code>&quot;sideEffects&quot;: false</code>を指定してみたりしたけど変わらず。</p>
+<p>ググったところ、TypeScriptから変換している場合にはtsconfig.jsonの<code>&quot;compilerOptions&quot;</code>内で<code>&quot;module&quot;: &quot;es6&quot;</code>とする必要があるとのこと：
+（<a href="https://github.com/webpack/webpack.js.org/issues/995#issuecomment-300679434">Typescript + Tree shaking configuration · Issue 995 · webpack&#x2F;webpack.js.org</a>）</p>
+<p><code>&quot;commonjs&quot;</code>だったのを<code>&quot;es6&quot;</code>に変更することでTreeShakingが機能するようになって、生成されるjsのファイルサイズが小さくなった、めでたしめでたし…</p>
+<ul>
+<li>要するにTypeScriptからJavaScriptにトランスパイルする際に、<code>&quot;commonjs&quot;</code>だと<code>import</code>が<code>require</code>に変換されてしまい、それだとES6モジュール定義が失われてしまいTreeShakingで判定されない</li>
+<li><a href="https://webpack.js.org/guides/typescript/">WebPackのTypeScriptのBasic Setup</a> はちゃんと<code>&quot;module&quot;: &quot;es6&quot;</code>となっていた</li>
+</ul>
+<h3 id="ts-nodeも動くようにする"><a href="#ts-nodeも動くようにする" class="headerlink" title="ts-nodeも動くようにする"></a>ts-nodeも動くようにする</h3><p>しかし上記の設定をすると、ツールとしてローカルで動かしていたTypeScriptのコードでエラーが出るようになってしまった：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ npx ts-node ./tools/getmapperno.ts test.nes</span><br><span class="line">(node:43571) Warning: To load an ES module, set &quot;type&quot;: &quot;module&quot; in the package.json or use the .mjs extension.</span><br><span class="line">(Use `node --trace-warnings ...` to show where the warning was created)</span><br><span class="line">./tools/getmapperno.ts:1</span><br><span class="line">import * as fs from &#x27;fs&#x27;;</span><br><span class="line">^^^^^^</span><br><span class="line"></span><br><span class="line">SyntaxError: Cannot use import statement outside a module</span><br></pre></td></tr></table></figure>
 
-<p>を参考に。</p>
-<ul>
-<li><a href="http://unity3d.com/">Unityのページ</a>にアクセス</li>
-<li>ダウンロードしてインストール（バージョンは4.0だった）</li>
-<li>起動してライセンスを選ぶ、とりあえずフリーのバージョン “Activate the free version of Unity” を選ぶ</li>
-<li>アカウントを登録</li>
+<p>TypeScriptのコードを<a href="https://www.npmjs.com/package/ts-node">ts-node</a>で動かしていたんだけどその場合も<code>&quot;es6&quot;</code>モジュールとしてコンパイルされ、それがnode.jsで動かせないっぽい。
+ワーニングに示されてる対応をしても動作しなかった。</p>
+<p>あれこれ調べたが、結局は<a href="https://www.npmjs.com/package/ts-node#commonjs">ts-nodeの説明</a>に書かれていた。
+曰く、tsconfig.jsonに追加で<code>&quot;ts-node&quot;: &#123;&quot;compilerOptions&quot;: &#123;&quot;module&quot;: &quot;CommonJS&quot;&#125;&#125;</code>と指定する：</p>
+<figure class="highlight json"><figcaption><span>[tsconfig.json]</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;compilerOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;module&quot;</span><span class="punctuation">:</span> <span class="string">&quot;es6&quot;</span><span class="punctuation">,</span></span><br><span class="line">    ...</span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  ...<span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ts-node&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;compilerOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;module&quot;</span><span class="punctuation">:</span> <span class="string">&quot;CommonJS&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>（他にはWebPackで使用するtsconfigのファイルを変更（<a href="https://mizchi.dev/202006101314-switch-tsconfig-on-webpack">webpack + ts-loader で使う tsconfig.json を動的に切り替える - mizdev</a>）、
+または<a href="https://www.npmjs.com/package/ts-node#project">ts-nodeにコマンドラインオプション<code>-P</code>で指定</a>という方法もあった。）</p>
+<p>ts-nodeの場合<code>&quot;CommonJS&quot;</code>としてコンパイルするとして回避したけど、そうじゃないと動かない理由というのはよくわかってない…JavaScriptのモジュールの仕組みもよく理解してない…。</p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://webpack.js.org/guides/tree-shaking/">Tree Shaking | webpack</a></li>
+<li><a href="https://typestrong.org/ts-node/docs/">Overview | ts-node</a></li>
 </ul>
-<p>滞りなく動いた</p>
-<ul>
-<li>デモのAngryBotsすげーよくできてる</li>
-<li>２章（シーンにオブジェクトを追加して、剛体として設定、キー入力で動かす）できた</li>
-<li>シーンエディタってエディタのカメラを移動・回転させるのをどうやるのかとか、最初なかなかとっつきづらい。わかってしまえば問題ないんだけど。</li>
-<li>JavaScriptで動作を制御できるなんて便利だな</li>
-<li>Buildもできた</li>
-<li>３章を見て、iPhoneやAndroid用にビルドするには別途ライセンス登録が必要($400)</li>
-</ul>
-<p><a href="http://game.g.hatena.ne.jp/Nao_u/?word=Unity%E3%81%A7%E4%B8%80%E9%80%B1%E9%96%93%E3%81%A7%E5%85%A8%E6%96%B9%E4%BD%8D%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%81%9F">Unityで一週間で全方位シューティングを作ってみた - Nao_uの日記</a> １週間でこんなの作れるのか〜凄すぎ</p>
 
 
                 
@@ -235,7 +243,7 @@
             <div class="related-posts col-lg-3 col-md-3">
                 <hr>
                 <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/19/cache-http.html" title="Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する" rel="bookmark">Unityでhttpでのファイル取得時にキャッシュしておき、変更があった時にだけ取得する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/06/14/fixed-font.html" title="【Unity】固定幅ビットマップフォントを使う" rel="bookmark">【Unity】固定幅ビットマップフォントを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/11/generate-prefabs.html" title="【Unity】スクリプトでプレハブを大量生産する" rel="bookmark">【Unity】スクリプトでプレハブを大量生産する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/09/23/interior-mapping.html" title="【Unity】Shader Graphでインテリアマッピング" rel="bookmark">【Unity】Shader Graphでインテリアマッピング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/09/modify-xcproj.html" title="【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する" rel="bookmark">【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する</a></h3></div></li></ul>
+                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/06/25/refer-lib-ts.html" title="TypeScriptでライブラリを分離する方法" rel="bookmark">TypeScriptでライブラリを分離する方法</a></h3></div></li></ul>
             </div>
 
             <!-- Related posts -->

@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-04-23T08:40:15.617Z</updated>
+  <updated>2023-04-24T07:23:27.907Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,29 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</title>
+    <link href="https://tyfkda.github.io/blog/2023/04/24/webpack-tree-shaking-ts.html"/>
+    <id>https://tyfkda.github.io/blog/2023/04/24/webpack-tree-shaking-ts.html</id>
+    <published>2023-04-24T10:00:00.000Z</published>
+    <updated>2023-04-24T07:23:27.907Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;TypeScriptでコードを書いて、ブラウザで動かすためにWebPackでまとめてるアプリで、Worklet用に別に出力しているソースに不要なコードも含まれてしまってサイズが大きくなってしまっていた。
+「Worklet側でも&lt;code&gt;import&lt;/code&gt;されるコードをソースを手動で分離するか〜」と思ったが、&lt;strong&gt;TreeShaking&lt;/strong&gt;という機能でできるということなのでやってみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="typescript" scheme="https://tyfkda.github.io/tags/typescript/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【WASM】WASIランタイム（JS用）が混沌としている</title>
     <link href="https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html</id>
     <published>2023-04-23T08:00:00.000Z</published>
-    <updated>2023-04-23T08:40:15.617Z</updated>
+    <updated>2023-04-24T07:23:27.907Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASI用に出力されたWebAssemblyバイナリをJS上で動かすためのランタイムを探ったが混沌としていた。
@@ -39,7 +57,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html</id>
     <published>2023-04-22T12:00:00.000Z</published>
-    <updated>2023-04-23T07:45:25.944Z</updated>
+    <updated>2023-04-24T07:23:27.906Z</updated>
     
     
     <summary type="html">&lt;p&gt;動的言語内で扱う値の内部表現に関する最適化で、NaN Boxingという方法を知ったのでメモ。&lt;/p&gt;</summary>
@@ -173,21 +191,6 @@ WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計
     
     
     <category term="audio" scheme="https://tyfkda.github.io/tags/audio/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【JupyterLab】コールバックでセル出力を書き換える方法</title>
-    <link href="https://tyfkda.github.io/blog/2023/03/05/jupyterlab-output.html"/>
-    <id>https://tyfkda.github.io/blog/2023/03/05/jupyterlab-output.html</id>
-    <published>2023-03-05T08:30:00.000Z</published>
-    <updated>2023-04-01T03:30:19.187Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;表題の通り、JupyterLab でボタンによる操作などのコールバックで、セル出力を更新する場合の方法。&lt;/p&gt;</summary>
-    
-    
-    
     
   </entry>
   
