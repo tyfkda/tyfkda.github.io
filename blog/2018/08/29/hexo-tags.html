@@ -216,7 +216,7 @@
 <figure class="highlight md"><figcaption><span>source/tags/index.md</span></figcaption><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: All tags</span><br><span class="line"><span class="section">type: &quot;tags&quot;</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="メニューに追加"><a href="#メニューに追加" class="headerlink" title="メニューに追加"></a>メニューに追加</h3><p>テーマの_config.yml の <code>menu</code> に追加する：</p>
-<figure class="highlight json"><figcaption><span>themes/clean-blog/_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"># Header</span><br><span class="line">menu<span class="punctuation">:</span></span><br><span class="line">  Home<span class="punctuation">:</span> /</span><br><span class="line">  Archives<span class="punctuation">:</span> /archives</span><br><span class="line">  Tags<span class="punctuation">:</span> /tags</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>themes/clean-blog/_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Header</span></span><br><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">Home:</span> <span class="string">/</span></span><br><span class="line">  <span class="attr">Archives:</span> <span class="string">/archives</span></span><br><span class="line">  <span class="attr">Tags:</span> <span class="string">/tags</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="タグ名でソート"><a href="#タグ名でソート" class="headerlink" title="タグ名でソート"></a>タグ名でソート</h3><p>そのままだと順不同だったので、ソートしてやる：</p>
 <figure class="highlight diff"><figcaption><span>themes/clean-blog/layout/page.ejs</span><a href="https://github.com/klugjo/hexo-theme-clean-blog/blob/master/layout/page.ejs#L32">page.ejs</a></figcaption><table><tr><td class="code"><pre><span class="line"><span class="deletion">-                &lt;% items.forEach(function(item)&#123; %&gt;</span></span><br><span class="line"><span class="addition">+                &lt;% items.sort(&#x27;name&#x27;).forEach(function(item)&#123; %&gt;</span></span><br></pre></td></tr></table></figure>
@@ -229,17 +229,19 @@
             </div>
 
             <!-- Related posts -->
-            <div class="related-posts col-lg-3 col-md-3">
-                <hr>
-                <h3>関連記事</h3>
-                <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/17/jekyll-to-hexo.html" title="JekyllからHexoに乗り換える" rel="bookmark">JekyllからHexoに乗り換える</a></h3></div></li></ul>
-            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    
+                </div>
 
-            <!-- Related posts -->
-            <div class="recent-posts col-lg-3 col-md-3">
-                <hr>
-                <h3>新着記事</h3>
-                <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/04/24/webpack-tree-shaking-ts.html">TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</a></li><li class="recent_post"><a href="/blog/2023/04/23/wasi-runtime-js.html">【WASM】WASIランタイム（JS用）が混沌としている</a></li><li class="recent_post"><a href="/blog/2023/04/22/nan-boxing.html">浮動小数点数とポインタを混在させるテクニック（NaN Boxing）</a></li><li class="recent_post"><a href="/blog/2023/04/06/nes-apu-dmc.html">ファミコンのDMCチャンネルの再現方法</a></li><li class="recent_post"><a href="/blog/2023/03/28/winny-movie.html">映画『Winny』に出てくるED法</a></li></ul>
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/04/24/webpack-tree-shaking-ts.html">TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</a></li><li class="recent_post"><a href="/blog/2023/04/23/wasi-runtime-js.html">【WASM】WASIランタイム（JS用）が混沌としている</a></li><li class="recent_post"><a href="/blog/2023/04/22/nan-boxing.html">浮動小数点数とポインタを混在させるテクニック（NaN Boxing）</a></li><li class="recent_post"><a href="/blog/2023/04/06/nes-apu-dmc.html">ファミコンのDMCチャンネルの再現方法</a></li><li class="recent_post"><a href="/blog/2023/03/28/winny-movie.html">映画『Winny』に出てくるED法</a></li></ul>
+                </div>
             </div>
 
             <!-- Comments -->

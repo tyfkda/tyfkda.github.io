@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-04-24T07:23:27.907Z</updated>
+  <updated>2023-04-25T08:28:44.667Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/24/webpack-tree-shaking-ts.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/24/webpack-tree-shaking-ts.html</id>
     <published>2023-04-24T10:00:00.000Z</published>
-    <updated>2023-04-24T07:23:27.907Z</updated>
+    <updated>2023-04-25T08:28:44.667Z</updated>
     
     
     <summary type="html">&lt;p&gt;TypeScriptでコードを書いて、ブラウザで動かすためにWebPackでまとめてるアプリで、Worklet用に別に出力しているソースに不要なコードも含まれてしまってサイズが大きくなってしまっていた。
@@ -39,7 +39,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html</id>
     <published>2023-04-23T08:00:00.000Z</published>
-    <updated>2023-04-24T07:23:27.907Z</updated>
+    <updated>2023-04-25T08:28:44.666Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASI用に出力されたWebAssemblyバイナリをJS上で動かすためのランタイムを探ったが混沌としていた。
@@ -57,7 +57,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html</id>
     <published>2023-04-22T12:00:00.000Z</published>
-    <updated>2023-04-24T07:23:27.906Z</updated>
+    <updated>2023-04-25T08:28:44.664Z</updated>
     
     
     <summary type="html">&lt;p&gt;動的言語内で扱う値の内部表現に関する最適化で、NaN Boxingという方法を知ったのでメモ。&lt;/p&gt;</summary>
@@ -74,7 +74,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html</id>
     <published>2023-04-05T15:00:00.000Z</published>
-    <updated>2023-04-22T23:23:38.770Z</updated>
+    <updated>2023-04-25T08:28:44.665Z</updated>
     
     
     <summary type="html">&lt;p&gt;ファミコンは音楽を鳴らす機能として矩形波×2、三角波、ノイズというシンプルな方法に加えて、&lt;strong&gt;DMCというサンプリング音源による方法&lt;/strong&gt;がある。
