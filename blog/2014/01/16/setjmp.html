@@ -206,7 +206,7 @@
 <span id="more"></span>
 
 <p><code>call/cc</code>で渡された継続が呼び出しだけで、引数として使われていない場合には、関数呼び出しの内部から外部に脱出するケースしか発生しないので、通常の継続で必要となる、スタックのコピーと復元をしなくてもスタックポインタやフレームポインタを戻して次の命令から実行を再開すればよい。</p>
-<p>論文には「単なるgoto」と書いてあって、実際に抜けたあとの飛び先もコンパイル時に決定するけれど、末尾呼び出しで引数がシフトされてスタックをいじった場合にスタック操作が煩雑になるので自分の実装ではそこまでしてなくて、新しいコールフレームを作って（コールフレームには戻り先とフレームポインタと現在のクロージャが保持されている）Cの<code>setjmp</code>~&#96;longjmp&#96;のような形で実現した。</p>
+<p>論文には「単なるgoto」と書いてあって、実際に抜けたあとの飛び先もコンパイル時に決定するけれど、末尾呼び出しで引数がシフトされてスタックをいじった場合にスタック操作が煩雑になるので自分の実装ではそこまでしてなくて、新しいコールフレームを作って（コールフレームには戻り先とフレームポインタと現在のクロージャが保持されている）Cの<code>setjmp</code> ~ <code>longjmp</code>のような形で実現した。</p>
 <p>さらにいえば、継続が内部で使われていないことがわかれば、その<code>setjmp</code>も完全に省くことができる。なので例えばC言語のfor文っぽいマクロ</p>
 <figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line"><span class="comment">;; C言語のようなforマクロ</span></span><br><span class="line">(<span class="name">defmacro</span> for (<span class="name">var</span> start end <span class="symbol">&amp;rest</span> body)</span><br><span class="line">  `(call/cc</span><br><span class="line">    (lambda (break)</span><br><span class="line">       (let continue ((,var ,start))</span><br><span class="line">            (when (&lt; ,var ,end)</span><br><span class="line">              ,@body</span><br><span class="line">              (continue (+ ,var <span class="number">1</span>)))))))</span><br><span class="line"></span><br><span class="line"><span class="comment">;; 使用例</span></span><br><span class="line">(<span class="name">for</span> i <span class="number">0</span> <span class="number">10</span></span><br><span class="line">     (<span class="name">when</span> (<span class="name">eq</span>? i <span class="number">5</span>)</span><br><span class="line">       (<span class="name">break</span>))</span><br><span class="line">     (<span class="name">print</span> i))</span><br></pre></td></tr></table></figure>
 
@@ -217,7 +217,7 @@
 <p>フレームポインタはスタックポインタの値と合成して１つの整数にできるかもしれないけど、実行中のクロージャはやはりスタック上にとっておく必要があるな。</p>
 <p>末尾呼び出しでスタックがずれることはは考える必要がない（それまでの引数がシフトされてしまうようであれば<code>call/cc</code>で渡された継続もなくなっているはずなので、<code>longjmp</code>は呼び出されない）けど、スコープの拡張が起こるとスタック上の配置がずれてしまうので、やはり調整が必要。それには<code>longjmp</code>呼び出し地点と<code>setjmp</code>地点のズレを計算するか、あらかじめスコープで使われるローカル変数をすべて計算してスタック配置を計算しておく必要がある。</p>
 <h3 id="追記２"><a href="#追記２" class="headerlink" title="追記２"></a>追記２</h3><p>継続が内部のスコープに補足される場合には、末尾呼び出しで<code>SETJMP</code>を保持しているフレームがなくなってしまう可能性があってやはりまずかった。</p>
-<p>じゃあっつって自由変数としてキャプチャされる場合は<code>SETJMP</code>~&#96;LONGJMP&#96;じゃなくて普通の継続にする、としてしまうと、ループ構文は字面的にはキャプチャが発生してしまうので、ループ内部から脱出しようとするだけで通常の継続になってしまって、嬉しくない。</p>
+<p>じゃあっつって自由変数としてキャプチャされる場合は<code>SETJMP</code> ~ <code>LONGJMP</code>じゃなくて普通の継続にする、としてしまうと、ループ構文は字面的にはキャプチャが発生してしまうので、ループ内部から脱出しようとするだけで通常の継続になってしまって、嬉しくない。</p>
 <p>なので現在のところ、問題あるケースはあるが稀だろうということで、とりあえず実装してみた。</p>
 
 

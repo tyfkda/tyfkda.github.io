@@ -105,11 +105,11 @@
   </entry>
   
   <entry>
-    <title>【Rust】参照から可変参照に変換する（未定義動作ではない（けど安全でもない））方法</title>
+    <title>【Rust】不変参照から可変参照に変換する（未定義動作ではない（けど安全でもない））方法</title>
     <link href="https://tyfkda.github.io/blog/2023/03/20/ref-to-mut-ref.html"/>
     <id>https://tyfkda.github.io/blog/2023/03/20/ref-to-mut-ref.html</id>
     <published>2023-03-20T09:00:00.000Z</published>
-    <updated>2023-04-01T03:30:25.141Z</updated>
+    <updated>2023-04-26T07:53:29.364Z</updated>
     
     
     <summary type="html">&lt;p&gt;Rustで参照から可変参照を拝借するにはワイルドに &lt;code&gt;unsafe&lt;/code&gt;を使うことになるんだけど（悪かった自慢）、&lt;a href=&quot;https://doc.rust-lang.org/clippy/&quot;&gt;Clippy&lt;/a&gt;にかけたら未定義動作だと言って怒られたので修正する。&lt;/p&gt;</summary>
@@ -122,11 +122,11 @@
   </entry>
   
   <entry>
-    <title>【JavaScript】caseで「これ以上これ以下」にマッチさせる</title>
+    <title>【JavaScript】switch-caseで「これ以上これ以下」にマッチさせる</title>
     <link href="https://tyfkda.github.io/blog/2023/03/19/js-case-range.html"/>
     <id>https://tyfkda.github.io/blog/2023/03/19/js-case-range.html</id>
     <published>2023-03-19T01:00:00.000Z</published>
-    <updated>2023-04-01T03:30:19.186Z</updated>
+    <updated>2023-04-26T08:24:00.684Z</updated>
     
     
     <summary type="html">&lt;p&gt;JavaScriptの&lt;code&gt;case&lt;/code&gt;である範囲の値を指定できないかな〜と思ったらできるらしい。&lt;/p&gt;</summary>

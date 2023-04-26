@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="【JavaScript】caseで「これ以上これ以下」にマッチさせる"/>
+        <meta property="og:title" content="【JavaScript】switch-caseで「これ以上これ以下」にマッチさせる"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>【JavaScript】caseで「これ以上これ以下」にマッチさせる - Kludge Factory</title>
+    <title>【JavaScript】switch-caseで「これ以上これ以下」にマッチさせる - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -160,7 +160,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>【JavaScript】caseで「これ以上これ以下」にマッチさせる</h1>
+                    <h1>【JavaScript】switch-caseで「これ以上これ以下」にマッチさせる</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
@@ -216,7 +216,8 @@ JavaScriptでもそういうことができるのか調べた。</p>
 <h3 id="case式"><a href="#case式" class="headerlink" title="case式"></a>case式</h3><p>ググったらすぐ見つかった。</p>
 <p><a href="https://stackoverflow.com/a/48969351">How can I use ranges in a switch case statement using JavaScript? - Stack Overflow</a></p>
 <p><code>case</code> に式が書けるので <code>1 &lt;= x &amp;&amp; x &lt;= 10</code> などと書ける。
-注意点としては、 <code>switch (true)</code> とする必要がある（<code>switch (x)</code>だとマッチしない）。</p>
+注意点としては、 <code>switch (true)</code> とする必要がある（<code>switch (x)</code>だとマッチしない）。
+これは<code>switch</code>と<code>case</code>の値が「<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/switch">厳密等価演算子(<code>===</code>)を使用して</a>」比較されることによる。</p>
 <h4 id="上から順に検査される"><a href="#上から順に検査される" class="headerlink" title="上から順に検査される"></a>上から順に検査される</h4><p>Stack Overflow に書かれているように、上から検査されるので <code>case x &lt; 1: ...; case x &lt; 10: ...;</code> などとしていってもよい。</p>
 <p>その場合でも、<code>default</code>はどこに書いても大丈夫だった。</p>
 <h4 id="if〜else-ifと同じ？"><a href="#if〜else-ifと同じ？" class="headerlink" title="if〜else ifと同じ？"></a>if〜else ifと同じ？</h4><p>自分で式を書く必要があるので、<code>if (xxx) ... else if (yyy) ...</code> とほとんど同じに使える。

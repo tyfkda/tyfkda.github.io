@@ -213,6 +213,10 @@
 <h3 id="追記"><a href="#追記" class="headerlink" title="追記"></a>追記</h3><p>いったん <code>defmacro</code> を定義すると、それを使って <code>defmacro</code> を定義するというわけのわからんことができるようになる：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(defmacro defmacro (name params &amp;body body)</span><br><span class="line">  `(register-macro &#x27;,name</span><br><span class="line">     (lambda ,params ,@body)))</span><br></pre></td></tr></table></figure>
 
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="/blog/2014/01/26/program-writing-program.html" title="プログラムを書くプログラム（を書く…）">プログラムを書くプログラム（を書く…）</a></li>
+</ul>
+
 
                 
 
