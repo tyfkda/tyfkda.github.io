@@ -205,7 +205,7 @@
                 <p>Rustで参照から可変参照を拝借するにはワイルドに <code>unsafe</code>を使うことになるんだけど（悪かった自慢）、<a href="https://doc.rust-lang.org/clippy/">Clippy</a>にかけたら未定義動作だと言って怒られたので修正する。</p>
 <span id="more"></span>
 
-<h3 id="未定義動作版"><a href="#未定義動作版" class="headerlink" title="未定義動作版"></a>未定義動作版</h3><p>以前<a href="/blog/2020/03/31/peep-ref.html" title="【Rust】状態管理や相互参照をどうするか">【Rust】状態管理や相互参照をどうするか</a>で行った<code>peep</code>関数：</p>
+<h3 id="未定義動作版"><a href="#未定義動作版" class="headerlink" title="未定義動作版"></a>未定義動作版</h3><p>以前<a href="/blog/2020/03/31/peep-ref.html" title="【Rust】状態管理や相互参照をどうするか">状態管理や相互参照をどうするか</a>で行った<code>peep</code>関数：</p>
 <figure class="highlight rs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">unsafe</span> <span class="keyword">fn</span> <span class="title function_">peep</span>&lt;<span class="symbol">&#x27;a</span>, T: ?<span class="built_in">Sized</span>&gt;(t: &amp;T) <span class="punctuation">-&gt;</span> &amp;<span class="symbol">&#x27;a</span> <span class="keyword">mut</span> T &#123;</span><br><span class="line">    &amp;<span class="keyword">mut</span> *(t <span class="keyword">as</span> *<span class="keyword">const</span> T <span class="keyword">as</span> *<span class="keyword">mut</span> T)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>をClippyにかけるとエラーが出る：</p>
