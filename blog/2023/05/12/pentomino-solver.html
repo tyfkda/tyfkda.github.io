@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="頭の体操と余興として、ペントミノ（５つの四角形）を並べて長方形を作るパズルを解くプログラムを書いてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ペントミノパズルを解く（深さ優先探索法、Dancing Links法）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ペントミノパズルを解く（深さ優先探索法、Dancing Links法） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/05/12/pentomino-solver.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-05-12
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/puzzle/">#puzzle</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>頭の体操と余興として、ペントミノ（５つの四角形）を並べて長方形を作るパズルを解くプログラムを書いてみた。</p>
+<span id="more"></span>
+
+<p>動作環境：MacBook Air 2020（CPUのスペックわからず…）</p>
+<h3 id="ペントミノパズル"><a href="#ペントミノパズル" class="headerlink" title="ペントミノパズル"></a>ペントミノパズル</h3><p><a href="https://en.wikipedia.org/wiki/Pentomino">ペントミノ</a>は四角形を５つ繋げた形で、表裏・回転を同一とすると12種類の形状がある。
+これらを1個ずつ使って長方形を作るというパズル。
+ペントミノが合計で5x12&#x3D;60の面積なので、6x10、5x12、4x15、3x20、そして8x8の中央4マスを抜いた形でそれぞれ解が何通りあるか調べる。</p>
+<p>各ピースは表裏反転や90度回転させることができるので、最大8パターンの置き方がある。</p>
+<p>人間が解くには１つでも難しすぎるが、コンピュータならすべての組み合わせを列挙してやれば力技で一応解ける。
+ただそれだとものすごく時間がかかるので、なんらかの対応が必要になる。</p>
+<h3 id="SATソルバーを試してみる（失敗）"><a href="#SATソルバーを試してみる（失敗）" class="headerlink" title="SATソルバーを試してみる（失敗）"></a>SATソルバーを試してみる（失敗）</h3><p>例によって専用のソルバーを書くんじゃなくてSATソルバーに解かせようとした。
+パッと思いついたのはピースを軸に考えて、</p>
+<ul>
+<li>各ピースの反転・回転ごとに盤面の各位置のどこかにある、という条件が１つだけ成り立つ</li>
+<li>ピースのペア全てでお互いが重ならないようにするため、一方のピースがこの位置の場合、他方がこの位置じゃない、という条件を列挙</li>
+</ul>
+<p>という論理式を組み立てれば解けそう。
+npmの<a href="https://www.npmjs.com/package/logic-solver">Logic Solver</a>でやってみたが、スタック溢れで解けなかった。</p>
+<p><a href="https://www.fishlet.com/2022/01/21/pentomino/">Pentomino Packing – Fishlet</a>を参考に、逆に配置先のマスを中心に考えて、</p>
+<ul>
+<li>盤面の全マス60箇所について、12種類のピースのどれか１つだけが占める</li>
+<li>各ピースについて、ある反転・回転でこの位置ならば、この５つのマスを占める</li>
+</ul>
+<p>という具合にやってみたが変わらず。
+<code>TOTAL_MEMORY</code>を書き換えて無理やり動かしても、最初の解は（54秒かかって）得られるがその後が返ってこなかった。</p>
+<p>以前数独などは同じLogic Solverで解けたし、それらと比べてそんな問題が複雑なわけじゃないと直感的には思うんだが…。</p>
+<h3 id="手動でソルバーを書く（深さ優先探索）"><a href="#手動でソルバーを書く（深さ優先探索）" class="headerlink" title="手動でソルバーを書く（深さ優先探索）"></a>手動でソルバーを書く（深さ優先探索）</h3><p>しかたがないので手動でペントミノを解くソルバーを作ってみる。
+解く手順は、まだ使用してないピースを置いてみるというのを再帰的に繰り返して、すべて置けたらそれが解の候補、というのをすべてのパターンについて調べる。
+行き詰まったら以前に置いたものを取りやめて別のケースを試す（深さ優先探索）、というのを全ケースについて調べる。</p>
+<p>SATソルバーを利用する場合とは違って、配置先の例えば左上から順に収まるピースを入れていく、という方針にする。
+こうすることで前半に好き勝手に配置して後半行き詰まる、となる前に早めに枝刈りができて高速化が見込める。</p>
+<p>バックトラッキング・深さ優先探索というのをあまり組んだことがなくてほぼ初挑戦な感じ。
+副作用嫌いとしては探索していく際に盤面の状態を複製してダメだったら捨てるという方式にしたいところだが、とにかくチェックする盤面が多いので避けた方がいいだろう。
+ピースを置いたら盤面を書き換えてダメだったら元に戻す、という方式にする
+（ビットボードで持ってれば60ビットで済むのでコピーでもよさそうではある）。</p>
+<h4 id="対称の解をはじく"><a href="#対称の解をはじく" class="headerlink" title="対称の解をはじく"></a>対称の解をはじく</h4><p>盤面を上下左右対称の配置は１通りの解として数える
+（8x8の正方形の場合は回転も含める）。
+重複をチェックするために盤面を文字列化して<code>HashSet</code>に登録して同一判定を行った。</p>
+<p>対称になる解の探索を早めに打ち切れれば高速化できそうだけど、うまい方法思いつかず…。</p>
+<h4 id="高速化"><a href="#高速化" class="headerlink" title="高速化"></a>高速化</h4><p>最初次のピースの位置を長辺方向に調べていたがそれだと遅くて、短辺方向の方が早くに行き詰まり枝刈りできてお得。
+動かしてみると全ての解2,339通りを求めるのに2.6秒程度（探索盤面数2,584万）、まあこんなもんか。</p>
+<p><a href="https://www.asahi-net.or.jp/~rn8t-nkmr/pentomino/index.html">ペントミノを解く</a> の <a href="https://www.asahi-net.or.jp/~rn8t-nkmr/pentomino/optimize/index.html">第5章 C言語版の高速化あれこれ</a> を参考にして、
+ピースXは反転・回転がどれも同じ形で１種類なことを利用して、盤面の左上部分に先に配置してしまうようにすると、0.4秒程度（探索盤面数325万）に短縮された。</p>
+<h3 id="Dancing-Links"><a href="#Dancing-Links" class="headerlink" title="Dancing Links"></a>Dancing Links</h3><p>他になにか高速化できる手段がないかとググっていると、なにやら「Algorithm X」「Dancing Links」という方式があるらしい。
+ドナルド・クヌース先生が2000年に発表したアルゴリズムらしく、「Exact Cover Problem」という、条件を満たす重複なしの候補の組を調べるのに使えるらしい。
+名前がカッコよすぎて興味そそる…。</p>
+<p>アルゴリズムの肝は、双方向リンクリスト（次だけじゃなく前のリンクも辿れる）の要素を取り除いた時に、取り除いた要素のリンクをクリアせずにそのまま取っておけば簡単に元に戻すことができる、ということを使うとのこと。
+言われてみれば「なるほど確かに！」と感心する。</p>
+<p>あとはExact Coverを満たすために、行列の列が条件、行が候補として、ある条件列に対してどの候補を選ぶか、というのを調べるために、ある候補を選択した場合はそいつが満たす条件を効率よく除外できるようにしている。
+すでに満たされた条件と被る候補はリンクから除外されるので探索せずに済む。</p>
+<p>ペントミノパズルの場合、条件（列）は「盤面の各マスを埋めるピースが１つ」と「ピース12種類が１回ずつ使われる」（計60+12&#x3D;72）、
+候補（行）は各ピース・反転・回転が盤面のある位置にあった場合（大まかに12（ピース）x2（反転）x4（回転）x6x10（盤面）&#x3D;5,760）、となる。</p>
+<p>Rustの<a href="https://crates.io/crates/dancing-links">dancing-links</a>クレートを利用しただけで内部動作を完全に理解したわけではないけど、（ピースX処理をしない状態と比較して）手動で組んだ場合より速くなるというわけではないっぽい？
+手動で組んだ場合には左上から順に調べていって行き詰まったら枝刈りができるけど、Dancing Linksは汎用的なアルゴリズムなのでそのような特殊化が入らないはずなので
+（すべての解を求めるのに4.4秒程だった）。</p>
+<p>論文には手動で組んだ場合に遜色ないようなことが書かれているので、なにか勘違いまたは実装間違いしてるかも知れず
+（ちょっと論文の要点が掴めず…）。</p>
+<h3 id="成果物"><a href="#成果物" class="headerlink" title="成果物"></a>成果物</h3><ul>
+<li>リポジトリ：<a href="https://github.com/tyfkda/PentominoSolver">tyfkda&#x2F;PentominoSolver</a></li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://www.fishlet.com/2022/01/21/pentomino/">Pentomino Packing – Fishlet</a> SATソルバーを使った方法とバックトラッキングによる方法が書かれている<ul>
+<li>SAT版は<a href="https://www.princeton.edu/~chaff/zchaff.html">zChaff</a>を使うが、かなり時間がかかる</li>
+<li>出力されるCNFファイルをMiniSatに食わせてみたが、さらに時間がかかる</li>
+</ul>
+</li>
+<li><a href="https://www.asahi-net.or.jp/~rn8t-nkmr/pentomino/index.html">ペントミノを解く</a> 高速化が参考になる</li>
+<li><a href="https://arxiv.org/abs/cs/0011047">[cs&#x2F;0011047] Dancing links</a> クヌース先生の論文がarXivに</li>
+<li><a href="https://www.codeproject.com/Articles/271634/Puzzle-Solver">Solve the Pentomino puzzle with C++ and dancing links - CodeProject</a> AlgorithmX で行列を減らしてく手順が書かれている、11分13秒がAlgorithmX・DancingLinksを使うと14秒とのこと</li>
+<li><a href="https://matsu7874.hatenablog.com/entry/2018/07/15/200000">ポリオミノの敷き詰め問題をDancing LinksとKnuth’s Algorithm Xを使って解く - matsu7874のブログ</a> わかりやすい</li>
+<li><a href="https://benhoyt.com/writings/python-pentomino/">Fast pentomino puzzle solver ported from Forth to Python</a> Pythonで、速い（2.6秒）。コード生成してるが、アルゴリズムは手動で組んだ場合と同じっぽい。</li>
+<li><a href="https://crates.io/crates/dancing-links">dancing-links - crates.io: Rust Package Registry</a> Rust用Dancing Linksモジュール（問題によっては時間がかかったり無限ループする場合があるような？）</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く" rel="bookmark">カックロをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクをSATソルバーで解く" rel="bookmark">ナンバーリンクをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/05/slitherlink-solver.html" title="スリザーリンクをSATソルバーで解く" rel="bookmark">スリザーリンクをSATソルバーで解く</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/05/12/pentomino-solver.html">ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</a></li><li class="recent_post"><a href="/blog/2023/04/24/webpack-tree-shaking-ts.html">TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</a></li><li class="recent_post"><a href="/blog/2023/04/23/wasi-runtime-js.html">【WASM】WASIランタイム（JS用）が混沌としている</a></li><li class="recent_post"><a href="/blog/2023/04/22/nan-boxing.html">浮動小数点数とポインタを混在させるテクニック（NaN Boxing）</a></li><li class="recent_post"><a href="/blog/2023/04/06/nes-apu-dmc.html">ファミコンのDMCチャンネルの再現方法</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

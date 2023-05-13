@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-04-28T09:01:24.102Z</updated>
+  <updated>2023-05-13T01:03:50.898Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,28 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</title>
+    <link href="https://tyfkda.github.io/blog/2023/05/12/pentomino-solver.html"/>
+    <id>https://tyfkda.github.io/blog/2023/05/12/pentomino-solver.html</id>
+    <published>2023-05-12T10:00:00.000Z</published>
+    <updated>2023-05-13T01:03:50.898Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;頭の体操と余興として、ペントミノ（５つの四角形）を並べて長方形を作るパズルを解くプログラムを書いてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
+    
+  </entry>
+  
+  <entry>
     <title>TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</title>
     <link href="https://tyfkda.github.io/blog/2023/04/24/webpack-tree-shaking-ts.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/24/webpack-tree-shaking-ts.html</id>
     <published>2023-04-24T10:00:00.000Z</published>
-    <updated>2023-04-28T09:01:24.102Z</updated>
+    <updated>2023-05-05T08:00:00.701Z</updated>
     
     
     <summary type="html">&lt;p&gt;TypeScriptでコードを書いて、ブラウザで動かすためにWebPackでまとめてるアプリで、Worklet用に別に出力しているソースに不要なコードも含まれてしまってサイズが大きくなってしまっていた。
@@ -39,7 +56,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html</id>
     <published>2023-04-23T08:00:00.000Z</published>
-    <updated>2023-04-28T09:01:24.102Z</updated>
+    <updated>2023-05-05T08:00:00.700Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASI用に出力されたWebAssemblyバイナリをJS上で動かすためのランタイムを探ったが混沌としていた。
@@ -57,7 +74,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html</id>
     <published>2023-04-22T12:00:00.000Z</published>
-    <updated>2023-04-28T09:01:24.099Z</updated>
+    <updated>2023-05-05T08:00:00.696Z</updated>
     
     
     <summary type="html">&lt;p&gt;動的言語内で扱う値の内部表現に関する最適化で、NaN Boxingという方法を知ったのでメモ。&lt;/p&gt;</summary>
@@ -74,7 +91,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html</id>
     <published>2023-04-05T15:00:00.000Z</published>
-    <updated>2023-04-28T09:01:24.100Z</updated>
+    <updated>2023-05-05T08:00:00.697Z</updated>
     
     
     <summary type="html">&lt;p&gt;ファミコンは音楽を鳴らす機能として矩形波×2、三角波、ノイズというシンプルな方法に加えて、&lt;strong&gt;DMCというサンプリング音源による方法&lt;/strong&gt;がある。
@@ -109,7 +126,7 @@
     <link href="https://tyfkda.github.io/blog/2023/03/20/ref-to-mut-ref.html"/>
     <id>https://tyfkda.github.io/blog/2023/03/20/ref-to-mut-ref.html</id>
     <published>2023-03-20T09:00:00.000Z</published>
-    <updated>2023-05-04T11:00:33.343Z</updated>
+    <updated>2023-05-05T08:00:00.698Z</updated>
     
     
     <summary type="html">&lt;p&gt;Rustで参照から可変参照を拝借するにはワイルドに &lt;code&gt;unsafe&lt;/code&gt;を使うことになるんだけど（悪かった自慢）、&lt;a href=&quot;https://doc.rust-lang.org/clippy/&quot;&gt;Clippy&lt;/a&gt;にかけたら未定義動作だと言って怒られたので修正する。&lt;/p&gt;</summary>
@@ -126,7 +143,7 @@
     <link href="https://tyfkda.github.io/blog/2023/03/19/js-case-range.html"/>
     <id>https://tyfkda.github.io/blog/2023/03/19/js-case-range.html</id>
     <published>2023-03-19T01:00:00.000Z</published>
-    <updated>2023-05-04T11:00:33.343Z</updated>
+    <updated>2023-05-05T08:00:00.696Z</updated>
     
     
     <summary type="html">&lt;p&gt;JavaScriptの&lt;code&gt;case&lt;/code&gt;である範囲の値を指定できないかな〜と思ったらできるらしい。&lt;/p&gt;</summary>
@@ -172,25 +189,6 @@
     
     
     <category term="rust" scheme="https://tyfkda.github.io/tags/rust/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【WebAudio】スペクトラムアナライザーを作る</title>
-    <link href="https://tyfkda.github.io/blog/2023/03/11/spectrum-analyzer.html"/>
-    <id>https://tyfkda.github.io/blog/2023/03/11/spectrum-analyzer.html</id>
-    <published>2023-03-11T03:00:00.000Z</published>
-    <updated>2023-04-01T03:30:25.143Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;音楽に合わせてバーが動く、スペクトラムアナライザー（またの名をグラフィックイコライザー、通称グライコ）をずっとやってみたかった。
-WebAudioを使えば音楽の再生やスペクトラム解析に必要なFFT計算も簡単に利用できるのでやってみた
-（ハードウェアではなくソフトウェアで）。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="audio" scheme="https://tyfkda.github.io/tags/audio/"/>
     
   </entry>
   
