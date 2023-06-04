@@ -159,9 +159,10 @@ hr.small {
   }
 }
 .intro-header {
-  background-color: #808080;
+  background-color: #c0c0c0;
   background-position: center center;
   background-attachment: scroll;
+  background-blend-mode: multiply;
   margin-bottom: 50px;
 }
 .intro-header .site-heading,

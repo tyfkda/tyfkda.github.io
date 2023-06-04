@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="例えば２次元配列を扱う際に計算中は１次元に展開して持っておいて、出力時に戻そうとしたときに、リストを固定の長さで分割して二重（２次元）リストにして返す、ということがしたかった。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/06/04/split-by-width.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-06-04
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/haskell/">#haskell</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>例えば２次元配列を扱う際に計算中は１次元に展開して持っておいて、出力時に戻そうとしたときに、リストを固定の長さで分割して二重（２次元）リストにして返す、ということがしたかった。</p>
+<span id="more"></span>
+
+<h3 id="実装手順"><a href="#実装手順" class="headerlink" title="実装手順"></a>実装手順</h3><p>ライブラリ関数でできあいのものがあるかわからなかったので、自作する。</p>
+<h4 id="自分で再帰する"><a href="#自分で再帰する" class="headerlink" title="自分で再帰する"></a>自分で再帰する</h4><p>まずはナイーブに、自分で再帰させて実装する：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">splitByWidth1</span> :: <span class="type">Int</span> -&gt; [a] -&gt; [[a]]</span><br><span class="line"><span class="title">splitByWidth1</span> w ss = <span class="keyword">let</span> (sh, st) = splitAt w ss</span><br><span class="line">    <span class="keyword">in</span> sh: <span class="keyword">if</span> null st <span class="keyword">then</span> [] <span class="keyword">else</span> splitByWidth1 w st</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://hackage.haskell.org/package/base-4.18.0.0/docs/Prelude.html#v:splitAt"><code>splitAt</code></a>で分割し、残りがあれば再帰させてリストを作成する。</p>
+<p>テスト：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">main</span> :: <span class="type">IO</span> ()</span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">let</span> ss = splitByWidth1 <span class="number">7</span> [&#x27;a&#x27;..&#x27;z&#x27;]</span><br><span class="line">    print ss  <span class="comment">-- [&quot;abcdefg&quot;,&quot;hijklmn&quot;,&quot;opqrstu&quot;,&quot;vwxyz&quot;]</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="unfoldrを使う"><a href="#unfoldrを使う" class="headerlink" title="unfoldrを使う"></a>unfoldrを使う</h4><p>自分で再帰するのは明らかに面倒なので、<a href="https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-List.html#v:unfoldr"><code>unfoldr</code></a>を使ってみる。
+<code>unfoldr</code>は<code>Maybe</code>を返す関数を渡して、<code>Nothing</code>が返るまでの<code>Just</code>の値をリストに展開してくれる：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Data.List (<span class="title">unfoldr</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">splitByWidth2</span> w = unfoldr (\ss -&gt; <span class="keyword">if</span> null ss <span class="keyword">then</span> <span class="type">Nothing</span> <span class="keyword">else</span> <span class="type">Just</span> (splitAt w ss))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Just</code>にはその段の値と、続けるための情報というペアを返す<ul>
+<li><code>splitAt</code> の結果がうまくそのまま使える形になっていた</li>
+</ul>
+</li>
+</ul>
+<h4 id="if-elseをやめる"><a href="#if-elseをやめる" class="headerlink" title="if-elseをやめる"></a>if-elseをやめる</h4><p>自分で<code>if</code>判定するのはまどろっこしい。
+<code>Bool</code>値が真のときには<code>Just a</code>を、偽のときには<code>Nothing</code>を返す<code>whenMaybe</code>というユーティリティ関数を作って：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Data.Bool (<span class="title">bool</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">whenMaybe</span> :: <span class="type">Bool</span> -&gt; a -&gt; <span class="type">Maybe</span> a</span><br><span class="line"><span class="comment">-- whenMaybe True  a = Just a</span></span><br><span class="line"><span class="comment">-- whenMaybe False _ = Nothing</span></span><br><span class="line"><span class="title">whenMaybe</span> = bool (const <span class="type">Nothing</span>) <span class="type">Just</span></span><br></pre></td></tr></table></figure>
+
+<p><code>Just</code>の場合は中身に関数を適用する、という具合にしたい。
+<a href="https://hackage.haskell.org/package/base-4.18.0.0/docs/Prelude.html#v:-60--36--62-"><code>&lt;$&gt;</code></a> でまさにそういうことができる：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">splitByWidth3</span> w = unfoldr (\ss -&gt; splitAt w &lt;$&gt; whenMaybe (not $ null ss) ss)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>動作の説明：<ul>
+<li><code>ss</code> が <code>not $ null</code> なら <code>Just ss</code> となり、関数も適用されて <code>Just (splitAt w ss)</code> となる</li>
+<li><code>ss</code> が <code>not $ null</code> じゃなければ、<code>Nothing</code> で<code>unfoldr</code>終了となる</li>
+</ul>
+</li>
+<li>「<code>&lt;$&gt;</code>は<code>fmap</code>の中置記法シノニム」とのことで、型シグネチャは <code>(&lt;$&gt;) :: Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b</code></li>
+<li><a href="https://hackage.haskell.org/package/base-4.18.0.0/docs/Prelude.html#v:fmap"><code>fmap</code></a> は <code>Functor</code> 型クラスのメソッドで、<code>Functor</code>のインスタンスに関数を適用させられる<ul>
+<li><code>Functor</code>である<code>Maybe</code>は、<code>Just</code>の中身に関数（<code>splitAt w</code>）が適用される（<code>Nothing</code>はそのまま）</li>
+</ul>
+</li>
+</ul>
+<h4 id="引数を２回適用してるのを回避したい"><a href="#引数を２回適用してるのを回避したい" class="headerlink" title="引数を２回適用してるのを回避したい"></a>引数を２回適用してるのを回避したい</h4><p>ラムダ式の引数 <code>ss</code> を２ヶ所（<code>not $ null</code> と <code>whenMaybe</code>）に渡す必要があるのをなんかうまいことやりたい。
+<code>not . null</code>を<code>f</code>、<code>whenMaybe</code>の引数の順序を入れ替えた<code>flip whenMaybe</code>を<code>g</code>とすると、<code>g x (f x)</code>という形になっている。
+こういう時は、<a href="https://hackage.haskell.org/package/base-4.18.0.0/docs/Prelude.html#v:-60--42--62-"><code>&lt;*&gt;</code></a> を使って<code>(g &lt;*&gt; f) x</code>と書けるらしい：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">splitByWidth4</span> w = unfoldr (\ss -&gt; splitAt w &lt;$&gt; (flip whenMaybe &lt;*&gt; not . null) ss)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>(&lt;*&gt;) :: Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b</code></li>
+<li><a href="https://stackoverflow.com/a/47779932">haskell - Is there a standard function that computes <code>f x (g x)</code>? - Stack Overflow</a><ul>
+<li><code>Applicative f</code>の<code>f</code>が<code>((-&gt;) r)</code>という関数適用に相当して？型シグネチャを変形すると<code>((-&gt;) r) (a -&gt; b) -&gt; ((-&gt;) r) a -&gt; ((-&gt;) r) b</code> ≡ <code>(r -&gt; a -&gt; b) -&gt; (r -&gt; a) -&gt; (r -&gt; b)</code> という型に相当する、とか</li>
+<li><a href="https://hackage.haskell.org/package/base-4.10.1.0/docs/src/GHC.Base.html#line-699"><code>Applicative ((-&gt;) a)</code>の<code>&lt;*&gt;</code>のソース</a>：<code>(&lt;*&gt;) f g x = f x (g x)</code> 実装が２回適用するようになっている</li>
+</ul>
+</li>
+</ul>
+<h4 id="関数合成する"><a href="#関数合成する" class="headerlink" title="関数合成する"></a>関数合成する</h4><p>ラムダ式の引数が最後に渡すだけになったので、関数合成してポイントフリースタイルにしてやる：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">splitByWidth5</span> w = unfoldr $ (splitAt w &lt;$&gt;) . (flip whenMaybe &lt;*&gt; not . null)</span><br></pre></td></tr></table></figure>
+
+<h4 id="flipをなくす"><a href="#flipをなくす" class="headerlink" title="flipをなくす"></a>flipをなくす</h4><p>VSCodeで修正のサジェストされて、<code>flip &lt;*&gt;</code> を <a href="https://hackage.haskell.org/package/base-4.18.0.0/docs/Prelude.html#v:-61--60--60-"><code>=&lt;&lt;</code></a> に置き換える：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">splitByWidth6</span> w = unfoldr $ (splitAt w &lt;$&gt;) . (whenMaybe =&lt;&lt; not . null)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>(=&lt;&lt;) :: Monad m =&gt; (a -&gt; m b) -&gt; m a -&gt; m b</code></li>
+<li>バインド <code>&gt;&gt;=</code> の左右逆とのこと</li>
+</ul>
+<p>ひとまず完。</p>
+<h3 id="わかりやすい？-わかりにくい？"><a href="#わかりやすい？-わかりにくい？" class="headerlink" title="わかりやすい？ わかりにくい？"></a>わかりやすい？ わかりにくい？</h3><p>最後の <code>splitByWidth6</code> を見るとパッと見、簡潔ですっきりしてるので、わかりやすい気もする。
+しかし <code>&lt;$&gt;</code> などがどうやって動くのかを知っている必要がある。
+するとファンクターがどうとかアプリカティブがどうとかいう話を掘っていく必要が出てくる。</p>
+<p><code>splitByWidth6</code> を見て動作を理解できるか？
+わかってる人が見たら簡潔で理解しやすいのかもしれないが、自分には無理だね…。</p>
+<p>プログラミングするのにどれだけのことが一般的に理解できるものとしていいものなんだろうか？
+自分からすると圏論はわからんしHaskellでどう活きてるのかも理解してない。
+そこが普通理解できるものとして要求されるとなると厳しい。
+ただベタに書くんだったら別にHaskellを使う必要もなくなってしまう。</p>
+<p>圏論を理解したいと思って本を読んだりするんだけど、ムズいスね。</p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://scrapbox.io/mrsekut-p/%E5%9C%8F%E8%AB%96%E3%81%A8%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0">圏論とプログラミング - mrsekut-p</a><ul>
+<li><a href="https://scrapbox.io/mrsekut-p/%E9%96%A2%E6%89%8B%E3%81%A8Functor">関手とFunctor - mrsekut-p</a> を見ると、<code>Functor</code>、<code>fmap</code>がどういうことかちょっとわかるような気がする</li>
+</ul>
+</li>
+<li><a href="https://stackoverflow.com/questions/47779818/is-there-a-standard-function-that-computes-f-x-g-x">haskell - Is there a standard function that computes <code>f x (g x)</code>? - Stack Overflow</a></li>
+</ul>
+<h4 id="動画"><a href="#動画" class="headerlink" title="動画"></a>動画</h4><iframe width="560" height="315" src="https://www.youtube.com/embed/IpvhsTpsULk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+
+<h3 id="後日談：もっと簡単な方法"><a href="#後日談：もっと簡単な方法" class="headerlink" title="後日談：もっと簡単な方法"></a>後日談：もっと簡単な方法</h3><ul>
+<li><a href="https://stackoverflow.com/a/12882583">Grouping a list into lists of n elements in Haskell - Stack Overflow</a><ul>
+<li><code>takeWhile (not . null) . unfoldr (Just . splitAt n)</code></li>
+<li>無限リストを<code>takeWhile</code>で取り出せばよかったか…<code>unfoldr</code>で止めなきゃ、と思い込んでた…</li>
+<li><a href="https://hackage.haskell.org/package/split-0.2.3.5/docs/Data-List-Split.html#v:chunksOf"><code>chunksOf</code></a> <code>split</code>モジュールに用意されてた</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/15/knapsack.html" title="【Haskell】ナップサック問題を解く" rel="bookmark">【Haskell】ナップサック問題を解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/17/nabeatsu.html" title="世界のナベアツにHaskellで挑戦する" rel="bookmark">世界のナベアツにHaskellで挑戦する</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/06/04/split-by-width.html">【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</a></li><li class="recent_post"><a href="/blog/2023/05/12/pentomino-solver.html">ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</a></li><li class="recent_post"><a href="/blog/2023/04/24/webpack-tree-shaking-ts.html">TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</a></li><li class="recent_post"><a href="/blog/2023/04/23/wasi-runtime-js.html">【WASM】WASIランタイム（JS用）が混沌としている</a></li><li class="recent_post"><a href="/blog/2023/04/22/nan-boxing.html">浮動小数点数とポインタを混在させるテクニック（NaN Boxing）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
