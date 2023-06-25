@@ -10,7 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="WASMで負の数を得る命令ってどうやるんだろうか？とC言語からコンパイルしてみたら、条件分岐のないイカしたビット操作のコードを出力してきた。">
+        <meta name="description" content="WASMで負の数を得る命令ってどうやるんだろうか？
+と思って試しに絶対値を返す関数をC言語からコンパイルしてみたら、条件分岐のないイカしたビット操作のコードを出力してきた。">
     
 
     <!--Author-->
@@ -202,7 +203,8 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>WASMで負の数を得る命令ってどうやるんだろうか？とC言語からコンパイルしてみたら、条件分岐のないイカしたビット操作のコードを出力してきた。</p>
+                <p>WASMで負の数を得る命令ってどうやるんだろうか？
+と思って試しに絶対値を返す関数をC言語からコンパイルしてみたら、条件分岐のないイカしたビット操作のコードを出力してきた。</p>
 <span id="more"></span>
 
 <p>C言語で絶対値を得るコード：</p>
@@ -212,7 +214,7 @@
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ emcc -s WASM=1 -s NO_EXIT_RUNTIME=1 -O1 neg.c &amp;&amp; wasm2wat a.out.wasm</span><br><span class="line">(module</span><br><span class="line">  ...</span><br><span class="line">  (func (;1;) (<span class="built_in">type</span> 1) (param i32) (result i32)</span><br><span class="line">    (<span class="built_in">local</span> i32)</span><br><span class="line">    local.get 0</span><br><span class="line">    local.get 0</span><br><span class="line">    i32.const 31</span><br><span class="line">    i32.shr_s</span><br><span class="line">    local.tee 1</span><br><span class="line">    i32.add</span><br><span class="line">    local.get 1</span><br><span class="line">    i32.xor)</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
 
 <p>条件分岐がないコードを出力してくる。
-一見何しているのかわからなかったので読み解いてみた。</p>
+一見何しているのかわからなかったので、符号付き4ビット整数で考えてみる：</p>
 <ul>
 <li>引数が負の場合（例： <code>-5=1011b</code>）：<ul>
 <li><code>shr_s -5, 31 (= 1111b = -1)</code>: 符号ビットで埋めた値 <code>-1</code> が得られる</li>
@@ -230,7 +232,8 @@
 </ul>
 </li>
 </ul>
-<p>出力されるコードが多少長くなっても条件分岐をさせないほうがパフォーマンスがいいということなんですかね。</p>
+<p>算術右シフトで負の場合は-1を、正または0の場合は0を得ることで、条件分岐をせずに済むようにしている。
+出力されるコードが多少長くなってもそのほうがパフォーマンスがいいということなんですかね。</p>
 <h4 id="x86の場合"><a href="#x86の場合" class="headerlink" title="x86の場合"></a>x86の場合</h4><p>試しにMacOS&#x2F;x86のgcc(Clang)でコンパイルしてみたらまたちょっと違って、<code>negl</code> で符号反転した値を作って <code>cmovl</code> という条件付きムーブ命令で選択するコードが出力された：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ gcc -S -O1 -fno-asynchronous-unwind-tables neg.c &amp;&amp; <span class="built_in">cat</span> neg.s</span><br><span class="line">_abs:</span><br><span class="line">	pushq	%rbp</span><br><span class="line">	movq	%rsp, %rbp</span><br><span class="line">	movl	%edi, %eax  <span class="comment"># %ediが引数、それを%eaxにコピー</span></span><br><span class="line">	negl	%eax        <span class="comment"># 符号反転してみて</span></span><br><span class="line">	cmovll	%edi, %eax  <span class="comment"># CMOVL(Move if less): 負だったら元の値を選択</span></span><br><span class="line">	popq	%rbp</span><br><span class="line">	retq</span><br><span class="line">$ gcc -v</span><br><span class="line">Apple clang version 12.0.0 (clang-1200.0.32.27)</span><br><span class="line">Target: x86_64-apple-darwin19.6.0</span><br></pre></td></tr></table></figure>
 
@@ -253,7 +256,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/06/04/split-by-width.html">【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</a></li><li class="recent_post"><a href="/blog/2023/05/12/pentomino-solver.html">ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</a></li><li class="recent_post"><a href="/blog/2023/04/24/webpack-tree-shaking-ts.html">TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</a></li><li class="recent_post"><a href="/blog/2023/04/23/wasi-runtime-js.html">【WASM】WASIランタイム（JS用）が混沌としている</a></li><li class="recent_post"><a href="/blog/2023/04/22/nan-boxing.html">浮動小数点数とポインタを混在させるテクニック（NaN Boxing）</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/06/25/10-minute-physics.html">Ten Minute Physicsを動かしてみる</a></li><li class="recent_post"><a href="/blog/2023/06/04/split-by-width.html">【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</a></li><li class="recent_post"><a href="/blog/2023/05/12/pentomino-solver.html">ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</a></li><li class="recent_post"><a href="/blog/2023/04/24/webpack-tree-shaking-ts.html">TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</a></li><li class="recent_post"><a href="/blog/2023/04/23/wasi-runtime-js.html">【WASM】WASIランタイム（JS用）が混沌としている</a></li></ul>
                 </div>
             </div>
 

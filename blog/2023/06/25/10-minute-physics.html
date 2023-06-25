@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Ten Minute Physicsという、スクラッチで物理シミュレーションを作るというページがあったので一通り動かしてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Ten Minute Physicsを動かしてみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Ten Minute Physicsを動かしてみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Ten Minute Physicsを動かしてみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-06-25
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/physics/">#physics</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://matthias-research.github.io/pages/tenMinutePhysics/index.html">Ten Minute Physics</a>という、スクラッチで物理シミュレーションを作るというページがあったので一通り動かしてみた。</p>
+<span id="more"></span>
+
+<ul>
+<li>動画による説明もあってわかりやすい</li>
+<li>実際にブラウザ上で動作するコードも提供されている</li>
+<li>簡単なボールのバウンドから始まって、衝突、クロスシミュ、GPU、流体、など</li>
+<li><a href="https://matthias-research.github.io/pages/index.html">Matthias Müller</a>氏はPBD (Position Based Dynamics)の研究者らしい</li>
+</ul>
+<h3 id="メモ"><a href="#メモ" class="headerlink" title="メモ"></a>メモ</h3><h4 id="01-Introduction-to-2d-web-browser-physics"><a href="#01-Introduction-to-2d-web-browser-physics" class="headerlink" title="01 - Introduction to 2d web browser physics"></a>01 - Introduction to 2d web browser physics</h4><ul>
+<li>htmlファイル1つで、中に書かれたJavaScriptで実行</li>
+<li>描画にはHTMLキャンバスを利用</li>
+<li>ボールに重力が働いているという単純なシーン</li>
+<li>シンプレクティック・オイラー法（速度を更新してから位置を更新する）<ul>
+<li>シミュレーションが安定する</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> gravity = &#123; <span class="attr">x</span>: <span class="number">0.0</span>, <span class="attr">y</span>: -<span class="number">10.0</span>&#125;;</span><br><span class="line"><span class="keyword">var</span> timeStep = <span class="number">1.0</span> / <span class="number">60.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">simulate</span>(<span class="params"></span>) &#123;</span><br><span class="line">  ball.<span class="property">vel</span>.<span class="property">x</span> += gravity.<span class="property">x</span> * timeStep;</span><br><span class="line">  ball.<span class="property">vel</span>.<span class="property">y</span> += gravity.<span class="property">y</span> * timeStep;</span><br><span class="line">  ball.<span class="property">pos</span>.<span class="property">x</span> += ball.<span class="property">vel</span>.<span class="property">x</span> * timeStep;</span><br><span class="line">  ball.<span class="property">pos</span>.<span class="property">y</span> += ball.<span class="property">vel</span>.<span class="property">y</span> * timeStep;</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>誤差を少なくする方法<ul>
+<li>❌方程式を解く：簡単な問題にしか使えない</li>
+<li>❌洗練された積分：遅い、衝突時には改善されない</li>
+<li>✅<code>dt</code>を小さく：シンプル、うまくいく！</li>
+</ul>
+</li>
+</ul>
+<h4 id="02-Introduction-to-3d-and-VR-web-browser-physics"><a href="#02-Introduction-to-3d-and-VR-web-browser-physics" class="headerlink" title="02 - Introduction to 3d and VR web browser physics"></a>02 - Introduction to 3d and VR web browser physics</h4><ul>
+<li><a href="https://threejs.org/">THREE.js</a> を使って3D表示</li>
+<li>ライト、マテリアル、メッシュ、ベクトル、カメラ、とお作法が大変だけど、シミュレーションのキモは変わらず：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Ball</span> &#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="title function_">simulate</span>(<span class="params"></span>)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">vel</span>.<span class="title function_">addScaledVector</span>(physicsScene.<span class="property">gravity</span>, physicsScene.<span class="property">dt</span>);</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">pos</span>.<span class="title function_">addScaledVector</span>(<span class="variable language_">this</span>.<span class="property">vel</span>, physicsScene.<span class="property">dt</span>);</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<h4 id="03-Ball-collision-handling-in-2d"><a href="#03-Ball-collision-handling-in-2d" class="headerlink" title="03 - Ball collision handling in 2d"></a>03 - Ball collision handling in 2d</h4><ul>
+<li>いくつもの円がお互いに衝突するデモ（いったん2Dに戻る）</li>
+<li>衝突後の相対速度＝衝突前の相対速度＊反発係数　になる（１で完全弾性）<ul>
+<li>速度を直接変更する</li>
+</ul>
+</li>
+<li>ボール同士のコリジョンは二重ループですべてのペアについて調べる(<script type="math/tex">O(n^2)</script>)<ul>
+<li>めり込んだ距離を押し戻すという処理をしている（質量に関係なく等分に）</li>
+<li>速度が衝突する方向か？という判定はしてない</li>
+</ul>
+</li>
+</ul>
+<h4 id="04-How-to-write-a-pinball-simulation"><a href="#04-How-to-write-a-pinball-simulation" class="headerlink" title="04 How to write a pinball simulation"></a>04 How to write a pinball simulation</h4><ul>
+<li>ピンボール</li>
+<li>フリッパーは角速度で動かして角度に制限をつける</li>
+<li>フリッパーのコリジョン：カプセル形状（四角の先端に半円を被せた形）<ul>
+<li>フリッパーの速度は、角速度から衝突地点の速度を計算</li>
+<li>衝突で変化するのはボール側の速度だけで、フリッパーは影響を受けないものとしている</li>
+</ul>
+</li>
+<li>ボールがバンパー（当たると勢いよく弾かれるやつ）と当たった場合は、指定の速度になるよう押し出している</li>
+</ul>
+<h4 id="05-The-simplest-possible-physics-simulation-method"><a href="#05-The-simplest-possible-physics-simulation-method" class="headerlink" title="05 The simplest possible physics simulation method"></a>05 The simplest possible physics simulation method</h4><ul>
+<li>拘束を扱う方法の候補：<ul>
+<li>ばね：硬さの調整が必要、硬くしすぎると不安定になる</li>
+<li>一般化座標系：複雑</li>
+<li>拘束力を解く：ずれ(drift)を打ち消すトリックが必要</li>
+</ul>
+</li>
+<li>単純な方法：無理やり位置を合わす！<ul>
+<li>速度もいじる：（新たな位置 - 以前の位置）&#x2F;dt</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">while simulating</span><br><span class="line">  v &lt;- v + g dt</span><br><span class="line">  p &lt;- x</span><br><span class="line">  x &lt;- x + v dt</span><br><span class="line">  satisfyConstraint(x)</span><br><span class="line">  v &lt;- (x - p) / dt</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>シミュレーションを進めるサブステップを1000とか100とかしてる、強烈…！</li>
+<li>解析的に解いて動かした場合との比較：サブステップを増やせば解析的に解いた場合に収束する</li>
+<li>Position Based Dynamics (PBD)、Verlet法などと言われる方法</li>
+</ul>
+<h4 id="06-Writing-a-triple-pendulum-simulation-is-simple"><a href="#06-Writing-a-triple-pendulum-simulation-is-simple" class="headerlink" title="06 Writing a triple pendulum simulation is simple"></a>06 Writing a triple pendulum simulation is simple</h4><ul>
+<li>三重振り子</li>
+<li>長さを拘束するために位置を動かす、根元の方から計算していくが、末端側の位置だけを動かす、とかではなく両方動かす<ul>
+<li>なので拘束の解決後も微妙にずれてはいるハズ</li>
+</ul>
+</li>
+<li>サブステップ数はShortで100</li>
+<li><a href="https://github.com/matthias-research/pages/blob/e5f4706cd2b8ef3d950039f63d99d63c69e0c740/tenMinutePhysics/06-pendulum.html#L112-L188">解析的に解いた版</a>との比較も見れる<ul>
+<li>一部解析的ではなく数値積分してる（<code>omega</code>、<code>theta</code>の更新）</li>
+</ul>
+</li>
+<li>XPBD (extended position-based dynamics)：はソフト拘束には有効だが、このハード拘束の場合はPBDと同じ正確度とのこと</li>
+</ul>
+<h4 id="07-Intuitive-3d-Vector-Math-for-Simulation"><a href="#07-Intuitive-3d-Vector-Math-for-Simulation" class="headerlink" title="07 Intuitive 3d Vector Math for Simulation"></a>07 Intuitive 3d Vector Math for Simulation</h4><ul>
+<li>３次元ベクトルの数学</li>
+</ul>
+<h4 id="08-Providing-user-interaction-with-a-3d-scene"><a href="#08-Providing-user-interaction-with-a-3d-scene" class="headerlink" title="08 Providing user interaction with a 3d scene"></a>08 Providing user interaction with a 3d scene</h4><ul>
+<li>３次元ビューをマウス操作で物体を掴んだりできる便利クラス <code>Grabber</code><ul>
+<li>レイキャスト：THREE.jsの<a href="https://threejs.org/docs/#api/en/core/Raycaster"><code>Raycaster</code></a>クラス<code>intersectObjects</code>メソッド</li>
+</ul>
+</li>
+</ul>
+<h4 id="09-Getting-ready-to-simulate-the-world-with-XPBD"><a href="#09-Getting-ready-to-simulate-the-world-with-XPBD" class="headerlink" title="09 Getting ready to simulate the world with XPBD"></a>09 Getting ready to simulate the world with XPBD</h4><ul>
+<li>力ベースシミュレーション／撃力ベースシミュレーション</li>
+<li>位置ベースシミュレーション<ul>
+<li>陰的オイラー積分に非常に近い</li>
+<li>ソフトさを扱う場合のみ非物理的→XPBDで修正</li>
+</ul>
+</li>
+<li>イテレーション（拘束処理だけ何回かやる） vs サブステップ（dtを何分割かする）<ul>
+<li>サブステップの方が効果的</li>
+</ul>
+</li>
+<li>拘束をソフトに：<ul>
+<li>PBD：補正量に定数 <script type="math/tex">k \in [0, 1]</script> を乗算（タイムステップによって硬さが変わってしまう）</li>
+<li>XPBD：<script type="math/tex">\lambda</script>計算時に<script type="math/tex">\alpha / \Delta t^2</script>を考慮</li>
+</ul>
+</li>
+<li>三角錐の体積を保持する拘束：ソフトボディ</li>
+</ul>
+<h4 id="10-Simple-and-unbreakable-simulation-of-soft-bodies"><a href="#10-Simple-and-unbreakable-simulation-of-soft-bodies" class="headerlink" title="10 Simple and unbreakable simulation of soft bodies"></a>10 Simple and unbreakable simulation of soft bodies</h4><ul>
+<li>ソフトボディ：<ul>
+<li>連続モデル＆グローバルソルバー：コンピュータ以前、数式で解くための方法</li>
+<li>離散モデル＆ローカルソルバー：質点を簡単な拘束でつなげる（自然！）</li>
+</ul>
+</li>
+<li>離散モデル：テッセレーションが挙動に強く影響する<ul>
+<li>→ ユニフォームメッシュを使う、非等方性非連続シミュレートを利用</li>
+</ul>
+</li>
+<li>ローカルソルバー：収束が遅い<ul>
+<li>→ サブステップを使う</li>
+</ul>
+</li>
+<li>スタンフォードバニー：四面体メッシュ化<ul>
+<li>頂点ごとに１質点、辺ごとに１距離拘束</li>
+<li>四面体ごとに１体積拘束</li>
+</ul>
+</li>
+<li>デモ：<ul>
+<li>サブステップ：10</li>
+<li>体積拘束のソフトさは０で、距離拘束のソフトさをいじれる</li>
+</ul>
+</li>
+</ul>
+<h4 id="11-Finding-overlaps-among-thousands-of-objects-blazing-fast"><a href="#11-Finding-overlaps-among-thousands-of-objects-blazing-fast" class="headerlink" title="11 Finding overlaps among thousands of objects blazing fast"></a>11 Finding overlaps among thousands of objects blazing fast</h4><ul>
+<li>ナイーブに衝突判定すると<script type="math/tex">O(n^2)</script></li>
+<li>レギュラーグリッド：空間を一定間隔の格子に分割する</li>
+<li>質点の半径をr、グリッドサイズh &#x3D; 2rとすると、隣接する格子だけチェックすればよい</li>
+<li>密集グリッド表現：パーティクル数のサイズの配列を別途用意<ul>
+<li>セル順にソート</li>
+<li>セルに含まれるパーティクルの個数は次のセルの番号との差分から求められる</li>
+</ul>
+</li>
+<li>範囲の制限をなくす：<code>hash(xi, yi) % tableSize</code><ul>
+<li>ハッシュが衝突しても大丈夫</li>
+</ul>
+</li>
+<li>構築はかなり巧妙…！</li>
+<li>ボールごとにクエリして、対象のボールに対して衝突判定する<ul>
+<li>（完全に理解したとは言い難い）</li>
+</ul>
+</li>
+</ul>
+<h4 id="12-100x-speedup-for-soft-body-simulations"><a href="#12-100x-speedup-for-soft-body-simulations" class="headerlink" title="12 100x speedup for soft body simulations"></a>12 100x speedup for soft body simulations</h4><ul>
+<li>ソフトボディの高速化：削減したシミュレーション用メッシュで計算
+　* 詳細なモデルの頂点を削減したものにどう割り当てるかという話？よくわからず…</li>
+</ul>
+<h4 id="13-Writing-a-Tetrahedralizer-for-Blender"><a href="#13-Writing-a-Tetrahedralizer-for-Blender" class="headerlink" title="13 Writing a Tetrahedralizer for Blender"></a>13 Writing a Tetrahedralizer for Blender</h4><ul>
+<li>Blenderのプラグインとそのアルゴリズム</li>
+<li>インクリメンタルドロネーメッシュ</li>
+</ul>
+<h4 id="14-The-secret-of-cloth-simulation"><a href="#14-The-secret-of-cloth-simulation" class="headerlink" title="14 The secret of cloth simulation"></a>14 The secret of cloth simulation</h4><ul>
+<li>布シミュの秘密：布は曲がるだけ！（ほとんど伸びない）</li>
+<li>曲げ拘束：<ul>
+<li>隣接する三角形の頂点に距離拘束を入れる：今回はこっち</li>
+<li>角度拘束を入れる：より重い</li>
+</ul>
+</li>
+</ul>
+<h4 id="15-Self-collisions-solving-the-hardest-problem-in-animation"><a href="#15-Self-collisions-solving-the-hardest-problem-in-animation" class="headerlink" title="15 Self-collisions, solving the hardest problem in animation"></a>15 Self-collisions, solving the hardest problem in animation</h4><ul>
+<li>布シミュでセルフコリジョンを扱う<ul>
+<li>コリジョンはパーティクルで行っていて、三角形で行うわけではない</li>
+</ul>
+</li>
+<li>サブステップ10<ul>
+<li>サブステップを大きくしてそもそも抜けが発生しないようにするのが重要ぽい</li>
+</ul>
+</li>
+<li>布：パーティクルを0.01[m]間隔で配置、横30 x 縦200</li>
+<li>布の厚さ(<code>thickness</code>)：0.01 [m]　（＝パーティクルの直径）</li>
+</ul>
+<h4 id="16-Simulation-on-the-GPU"><a href="#16-Simulation-on-the-GPU" class="headerlink" title="16 Simulation on the GPU"></a>16 Simulation on the GPU</h4><ul>
+<li><a href="https://developer.nvidia.com/warp-python">Python+Warp</a>、<a href="https://www.nvidia.com/ja-jp/omniverse/">Nvidia Omniverse</a>で動かす</li>
+<li>速度の更新だけGPUにやらせる</li>
+<li>拘束で複数のスレッドが位置を書き換えると問題が起こる件</li>
+</ul>
+<h4 id="17-How-to-write-an-Eulerian-Fluid-Simulator-with-200-lines-of-code"><a href="#17-How-to-write-an-Eulerian-Fluid-Simulator-with-200-lines-of-code" class="headerlink" title="17 How to write an Eulerian Fluid Simulator with 200 lines of code."></a>17 How to write an Eulerian Fluid Simulator with 200 lines of code.</h4><ul>
+<li>カルマン渦、いいよね</li>
+<li>オイラリアン（グリッドベース）</li>
+<li>圧力計算：Overrelaxationを入れる</li>
+</ul>
+<h4 id="18-How-to-write-a-FLIP-Water-Simulator"><a href="#18-How-to-write-a-FLIP-Water-Simulator" class="headerlink" title="18 How to write a FLIP Water Simulator."></a>18 How to write a FLIP Water Simulator.</h4><ul>
+<li>パーティクルとグリッドを併用する感じ？</li>
+<li>PIC (Particle In Cell)とFLIP (FLuid Implicit Particle)のブレンド</li>
+</ul>
+<h4 id="19-Differential-equations-and-calculus-from-scratch"><a href="#19-Differential-equations-and-calculus-from-scratch" class="headerlink" title="19 Differential equations and calculus from scratch"></a>19 Differential equations and calculus from scratch</h4><ul>
+<li>なぜここでこの内容なのかわからず…動画長い…</li>
+</ul>
+<h4 id="20-How-to-write-a-height-field-water-simulation"><a href="#20-How-to-write-a-height-field-water-simulation" class="headerlink" title="20 How to write a height-field water simulation."></a>20 How to write a height-field water simulation.</h4><ul>
+<li>波動方程式を隣接するセルとの高さの差分で解くやつ</li>
+<li>屈折で水面下が歪むのがいいね</li>
+</ul>
+<h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><ul>
+<li>後半は理解せずに流してしまった…</li>
+<li>WebGPUとか使って、ブラウザ上でGPUで動かしたい</li>
+<li>PBD、XPBDを見てみる</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://matthias-research.github.io/pages/tenMinutePhysics/">Ten Minute Physics</a><ul>
+<li>YouTube: <a href="https://www.youtube.com/@TenMinutePhysics">Ten Minute Physics - YouTube</a></li>
+<li>リポジトリ： <a href="https://github.com/matthias-research/pages/tree/master/tenMinutePhysics">https://github.com/matthias-research/pages/tree/master/tenMinutePhysics</a></li>
+<li>Twitter: <a href="https://twitter.com/TenMinPhysics">TenMinutePhysics（@TenMinPhysics） &#x2F; Twitter</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="PBD関連"><a href="#PBD関連" class="headerlink" title="PBD関連"></a>PBD関連</h4><ul>
+<li><a href="https://qiita.com/cy-tatsuya-sakai/items/a028f2a639083786a5a0">Position Based Dynamics : XPBD、SubstepXPBDをUnityで実装してみた - Qiita</a></li>
+<li><a href="https://www.4gamer.net/games/032/G003263/20140904089/">［CEDEC 2014］剛体から流体まで，セガのプログラマーが語る「位置ベース物理シミュレーション」の最前線</a></li>
+<li><a href="https://carmencincotti.com/2022-08-08/xpbd-extended-position-based-dynamics/">Extended Position Based Dynamics | XPBD | Carmen’s Graphics Blog</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/06/25/10-minute-physics.html">Ten Minute Physicsを動かしてみる</a></li><li class="recent_post"><a href="/blog/2023/06/04/split-by-width.html">【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</a></li><li class="recent_post"><a href="/blog/2023/05/12/pentomino-solver.html">ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</a></li><li class="recent_post"><a href="/blog/2023/04/24/webpack-tree-shaking-ts.html">TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</a></li><li class="recent_post"><a href="/blog/2023/04/23/wasi-runtime-js.html">【WASM】WASIランタイム（JS用）が混沌としている</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

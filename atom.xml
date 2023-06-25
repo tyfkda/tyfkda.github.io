@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-06-19T06:57:46.718Z</updated>
+  <updated>2023-06-25T10:50:24.549Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ten Minute Physicsを動かしてみる</title>
+    <link href="https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html"/>
+    <id>https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html</id>
+    <published>2023-06-25T10:00:00.000Z</published>
+    <updated>2023-06-25T10:50:24.549Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://matthias-research.github.io/pages/tenMinutePhysics/index.html&quot;&gt;Ten Minute Physics&lt;/a&gt;という、スクラッチで物理シミュレーションを作るというページがあったので一通り動かしてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="physics" scheme="https://tyfkda.github.io/tags/physics/"/>
+    
+  </entry>
   
   <entry>
     <title>【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</title>
@@ -169,26 +186,6 @@
     
     
     <category term="javascript" scheme="https://tyfkda.github.io/tags/javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ruby.wasmを使ってみる</title>
-    <link href="https://tyfkda.github.io/blog/2023/03/16/ruby-wasm-quickstart.html"/>
-    <id>https://tyfkda.github.io/blog/2023/03/16/ruby-wasm-quickstart.html</id>
-    <published>2023-03-16T12:00:00.000Z</published>
-    <updated>2023-04-01T03:30:19.190Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;その昔JavaScriptがあまり好きではなくて、「ブラウザでもRubyでスクリプト書きてぇ〜！」などと思っていた。
-その後JavaScriptにもだいぶ慣れたのでそういうこともなくなったが、最近ではwasm化されて動かせるとのことなので触ってみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="ruby" scheme="https://tyfkda.github.io/tags/ruby/"/>
-    
-    <category term="wasm" scheme="https://tyfkda.github.io/tags/wasm/"/>
     
   </entry>
   
