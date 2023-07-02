@@ -216,18 +216,18 @@
 <p>条件分岐がないコードを出力してくる。
 一見何しているのかわからなかったので、符号付き4ビット整数で考えてみる：</p>
 <ul>
-<li>引数が負の場合（例： <code>-5=1011b</code>）：<ul>
-<li><code>shr_s -5, 31 (= 1111b = -1)</code>: 符号ビットで埋めた値 <code>-1</code> が得られる</li>
-<li><code>tee</code> でスタックトップをローカルに格納、しかし取り除かない</li>
-<li><code>add -5, -1 (= 1010b = -6)</code>: <code>引数-1</code></li>
-<li><code>xor -6, -1 (= 0101b = 5)</code>: 全ビット反転</li>
+<li>引数が負の場合（例： 引数＝変数0＝<code>-5=1011b</code>、ブラケット内は現在のスタック）：<ul>
+<li><code>shr_s [-5, -5, 31] (=&gt; 1111b = -1)</code>: 算術右シフトで、符号ビットで埋めた値 <code>-1</code> が得られる</li>
+<li><code>tee 1 [-5, -1]</code> ローカル変数に格納で、スタックトップを変数1に格納（値は取り除かない）</li>
+<li><code>add [-5, -1] (=&gt; 1010b = -6)</code>: 加算、<code>引数-1</code></li>
+<li><code>xor [-6, -1] (=&gt; 0101b = 5)</code>: 排他的論理和によって、全ビット反転</li>
 <li><strong>要するに２の補数を取っている</strong></li>
 </ul>
 </li>
-<li>正か0の場合（例： <code>5</code>）：<ul>
-<li><code>shr_s 5, 31 (= 0)</code>: <code>0</code></li>
-<li><code>add 5, 0 (= 5)</code>: 変化なし</li>
-<li><code>xor 5, 0 (= 5)</code>: 変化なし</li>
+<li>正か0の場合（例： 引数＝変数0＝<code>5</code>）：<ul>
+<li><code>shr_s [5, 5, 31] (=&gt; 0)</code>: <code>0</code></li>
+<li><code>add [5, 0] (=&gt; 5)</code>: 変化なし</li>
+<li><code>xor [5, 0] (=&gt; 5)</code>: 変化なし</li>
 <li>引数の値がそのまま得られる</li>
 </ul>
 </li>
@@ -249,7 +249,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/10/21/regalloc-linearscan.html" title="自作Cコンパイラでレジスタ割り付け" rel="bookmark">自作Cコンパイラでレジスタ割り付け</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/10/21/regalloc-linearscan.html" title="自作Cコンパイラでレジスタ割り付け" rel="bookmark">自作Cコンパイラでレジスタ割り付け</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
