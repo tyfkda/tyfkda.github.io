@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="以前数学関数を自前で実装する一環でatanは実装したが、欠けていた逆三角関数asinを実装したかった。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="arcsinを数値計算する方法を探し求めて彷徨う"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>arcsinを数値計算する方法を探し求めて彷徨う - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/07/17/calc-asin.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://twitter.com/tyfkda">
+                            
+                                <i class="fa fa-twitter fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>arcsinを数値計算する方法を探し求めて彷徨う</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-07-17
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/math/">#math</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>以前数学関数を自前で実装する一環で<a href="/blog/2020/12/30/fp-compiler.html" title="コンパイラを浮動小数点数に対応させる（それと数学関数を実装）">atanは実装した</a>が、欠けていた逆三角関数<code>asin</code>を実装したかった。</p>
+<span id="more"></span>
+
+<h3 id="マクローリン展開"><a href="#マクローリン展開" class="headerlink" title="マクローリン展開"></a>マクローリン展開</h3><p>まずはなんの工夫もなくマクローリン展開を使ってみる。</p>
+<script type="math/tex">\arcsin x</script> の微分を求めるには、<script type="math/tex">y = \arcsin x</script> とおくと逆関数だから <script type="math/tex">x = \sin y</script> となり、全微分 <script type="math/tex">dx = (\sin y)^\prime dy = \cos y dy</script> から
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{aligned}
+\frac{dy}{dx} &= \frac{1}{\cos y} = \frac{1}{\sqrt{1 - \sin^2 y}} \\
+              &= \frac{1}{\sqrt{1 - x^2}}
+\end{aligned}
+%]]></script>
+
+<p>以降は愚直に微分すると</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{aligned}
+\left( \arcsin x \right) ^{\prime \prime} &= x \cdot \left( 1 - x^2 \right)^{3/2} \\
+\left( \arcsin x \right) ^{\prime \prime \prime} &= \left( 2x^2 + 1 \right) \cdot \left( 1 - x^2 \right)^{5/2}
+\end{aligned}
+%]]></script>
+
+<p>（以下略）となる。</p>
+<p>微分した関数を使ってマクローリン展開すると一般項は、偶数項が0となり奇数項だけ残り</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{aligned}
+f(x) &= \arcsin x \\
+  &= x + \frac{1}{6}x^3 + \frac{3}{40}x^5 + \frac{5}{112}x^7 + \frac{35}{1152}x^9 + \frac{63}{2816}x^{11} + \cdots \\
+  &= x + \frac{1}{3} \left( \frac{1}{2} \right) x^3 + \frac{1}{5} \left( \frac{3 \cdot 1}{4 \cdot 2} \right) x^5 + \frac{1}{7} \left( \frac{5 \cdot 3 \cdot 1}{6 \cdot 4 \cdot 2} \right) x^7 + \cdots   \\
+  &= \sum_{n=0}^\infty \frac{1}{4^n (2 n + 1)} \binom{2n}{n} x^{2n + 1}
+\end{aligned}
+%]]></script>
+
+<p>（<script type="math/tex">\binom{n}{k}</script> は組み合わせ <script type="math/tex">{}_n C_k = \frac{n!}{(n - k)! k!} </script>）。</p>
+<h3 id="精度をマシにしたい"><a href="#精度をマシにしたい" class="headerlink" title="精度をマシにしたい"></a>精度をマシにしたい</h3><p>マクローリン展開ということもありx&#x3D;0付近では精度はいいが、遠ざかるにつれ精度が悪くなる。
+単に項の数を増やしても精度が上がらなかった。
+逆正弦関数なのでx&#x3D;1ではジャスト<script type="math/tex">\pi/2</script>を返して欲しい。
+じゃあx&#x3D;1でテイラー展開するか、と思ったが微分した関数に1を与えると0除算で<script type="math/tex">\infty</script>なので求められない。</p>
+<p>ググってみると<a href="https://math.stackexchange.com/a/1837723">Finding the Taylor series of $\arcsin(1-x)$ - Mathematics Stack Exchange</a>
+が見つかった。
+それによると</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\arcsin(1 − x) = \frac{\pi}{2} − \sqrt{2}𝑥^{1/2} − \frac{\sqrt{2}}{12} x^{3/2} + O(x^{5/2})
+%]]></script>
+
+<p>とのこと。
+これを使えばx&#x3D;1付近の値を求められる。</p>
+<h4 id="項を増やしたい（sympy使用、失敗編）"><a href="#項を増やしたい（sympy使用、失敗編）" class="headerlink" title="項を増やしたい（sympy使用、失敗編）"></a>項を増やしたい（sympy使用、失敗編）</h4><p>誤差が<script type="math/tex">x^{5/2}</script>のオーダーでは心許ないので、もっと項を増やしたい。
+ちょっと手計算で微分を計算してみたが早々に計算間違いをしでかしたので、ググってsympyというPython上で変数を使った微分ができるライブラリがあることを知った：</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> scipy <span class="keyword">as</span> sc</span><br><span class="line"><span class="keyword">import</span> sympy <span class="keyword">as</span> sy</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.misc <span class="keyword">import</span> derivative</span><br><span class="line"></span><br><span class="line">sy.init_printing(order=<span class="string">&#x27;grevlex&#x27;</span>)</span><br><span class="line"></span><br><span class="line">x = sy.symbols(<span class="string">&#x27;x&#x27;</span>, real=<span class="literal">True</span>)</span><br><span class="line">y = sy.asin(<span class="number">1</span> - x ** <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">    deriv = sy.diff(y, x, n)  <span class="comment"># n階微分</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;\n### <span class="subst">&#123;n&#125;</span>&#x27;</span>)</span><br><span class="line">    display(deriv)</span><br><span class="line">    display(deriv.subs([(x, <span class="number">0</span>)]))  <span class="comment"># x=0を代入する</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>diff</code>でn階微分、<code>subs</code>でxに0を代入した結果を計算できる</li>
+</ul>
+<p>微分を手計算しなくていいのすごい！
+でx&#x3D;0を代入してみると<code>NaN</code>になってしまった。
+分母に<script type="math/tex">-(x^2-1)^2+1</script>があって0を代入するから0除算で♾️に発散してしまうからダメか…（と勘違いして別の方法を探した）。</p>
+<h4 id="テイラー展開を試す"><a href="#テイラー展開を試す" class="headerlink" title="テイラー展開を試す"></a>テイラー展開を試す</h4><p>x&#x3D;0だけで展開してるし、x&#x3D;1では傾きが無限大で展開できないので、もう少し違う点をいくつか持っておいて展開すればいいんじゃないか？
+と試してみたが、結局1付近では精度が悪かった。</p>
+<h4 id="二分探索を試す"><a href="#二分探索を試す" class="headerlink" title="二分探索を試す"></a>二分探索を試す</h4><p>級数展開が使えないならどうしたものか…と見ていたらxが正の場合には<script type="math/tex">x \le \arcsin x \le \frac{\pi}{2} x</script>のようなので、二分探索はどうかと考えた。
+<code>asin</code>は単調増加なので中点の<code>sin</code>の値を計算してその値より大きいか小さいかで探索していく：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">double</span> <span class="title function_">my_asin_bisect</span><span class="params">(<span class="type">double</span> x)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (x &lt; <span class="number">-1</span> || x &gt; <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> NAN;</span><br><span class="line">  <span class="keyword">if</span> (x &lt; <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> -<span class="built_in">asin</span>(-x);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Binary search</span></span><br><span class="line">  <span class="type">double</span> min = x, max = M_PI_2 * x;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">16</span>; ++i) &#123;</span><br><span class="line">    <span class="type">double</span> m = (min + max) * <span class="number">0.5</span>;</span><br><span class="line">    <span class="type">double</span> y = <span class="built_in">sin</span>(m);</span><br><span class="line">    <span class="keyword">if</span> (x &gt;= y)</span><br><span class="line">      min = m;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      max = m;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> (min + max) * <span class="number">0.5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>計算したところ、16回ループで（標準のライブラリで求めた値との差）は1e-6くらいだった。
+<code>sin(m)</code>も独自実装ではマクローリン展開なので相当重そうだけど、最悪計算できるだけマシだからこれでもいいか…と一瞬思った。</p>
+<h3 id="Wolfram-Alphaで係数を調べる"><a href="#Wolfram-Alphaで係数を調べる" class="headerlink" title="Wolfram|Alphaで係数を調べる"></a>Wolfram|Alphaで係数を調べる</h3><p>その後ググってるとWolfram|Alphaでもっと項の係数を調べられた：
+<a href="https://www.wolframalpha.com/input?i=taylor+series+arcsin(1-x)&lang=ja">taylor series arcsin(1-x) - Wolfram|Alpha</a>
+一般項はわからないけど誤差が<script type="math/tex">x^{11}</script>なら十分か、と思った。</p>
+<p>ていうか係数は∞にならずに計算できるんだっけ？と気づいた。
+どうもsympyでうまく約分できてないだけで、１階微分<script type="math/tex">\frac{-2}{\sqrt{2 - x^2}}</script>から計算していけばちゃんと計算できた。</p>
+<h4 id="組み合わせる"><a href="#組み合わせる" class="headerlink" title="組み合わせる"></a>組み合わせる</h4><p>二分探索で計算するよりも、x&#x3D;0近辺では<script type="math/tex">\arcsin x</script>、x&#x3D;1近辺では<script type="math/tex">\arcsin (1-x)</script>のマクローリン展開を使うのが精度がよかった。
+項をどこまで計算するかによるけどx&#x3D;0.55あたりで切り替えるのがよさそうで、誤差は最大で<code>1.0e-10</code>のオーダーだった。</p>
+<h3 id="muslのソースを見てみる"><a href="#muslのソースを見てみる" class="headerlink" title="muslのソースを見てみる"></a>muslのソースを見てみる</h3><p>答え合わせ的にオープンソースのライブラリ、muslのソースを見てみた：<a href="https://github.com/cloudius-systems/musl/blob/00733dd1cf791d13ff6155509cf139a5f7b2eecb/src/math/asin.c#L12">musl&#x2F;src&#x2F;math&#x2F;asin.c at master · cloudius-systems&#x2F;musl</a>
+コメントによれば、</p>
+<ul>
+<li><script type="math/tex">R(x^2)</script>を<script type="math/tex">x^3</script>以降の有理近似（誤差2^-58.75以下）</li>
+<li>[0, 0.5] では <script type="math/tex">x + x \cdot x^2 \cdot R(x^2)</script></li>
+<li>[0.5, 1] では <script type="math/tex">\frac{\pi}{2} - 2 \arcsin {\sqrt{(1 - x) / 2}}</script></li>
+</ul>
+<p>と書かれている。[0.5, 1.0]の場合の計算式</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\arcsin x = \frac{\pi}{2} - 2 \arcsin {\sqrt{\frac{1 - x}{2}}}
+%]]></script>
+
+<p>という公式がどうやったら導けるのか結局わからなかった…。</p>
+<p>muslはMITライセンスとのことなので、使用する分には問題なさそう。</p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://github.com/tyfkda/xcc/blob/000a14cc62b5205bfc297a5c93936676f45c4770/libsrc/math/asin.c#L4">ソース</a></li>
+<li><a href="https://toy1972.hatenablog.com/entry/2019/11/10/162658">逆正弦関数の級数展開 - 数式で独楽する</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/gauss-rand.html" title="正規分布の乱数の生成方法" rel="bookmark">正規分布の乱数の生成方法</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/07/17/calc-asin.html">arcsinを数値計算する方法を探し求めて彷徨う</a></li><li class="recent_post"><a href="/blog/2023/06/25/10-minute-physics.html">Ten Minute Physicsを動かしてみる</a></li><li class="recent_post"><a href="/blog/2023/06/04/split-by-width.html">【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</a></li><li class="recent_post"><a href="/blog/2023/05/12/pentomino-solver.html">ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</a></li><li class="recent_post"><a href="/blog/2023/04/24/webpack-tree-shaking-ts.html">TypeScriptをWebPackでTreeShakingするにはmoduleをes6にする＋α</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

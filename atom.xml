@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-07-02T12:37:45.732Z</updated>
+  <updated>2023-07-17T06:14:25.049Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,28 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>arcsinを数値計算する方法を探し求めて彷徨う</title>
+    <link href="https://tyfkda.github.io/blog/2023/07/17/calc-asin.html"/>
+    <id>https://tyfkda.github.io/blog/2023/07/17/calc-asin.html</id>
+    <published>2023-07-17T06:00:00.000Z</published>
+    <updated>2023-07-17T06:14:25.049Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以前数学関数を自前で実装する一環で&lt;a href=&quot;/blog/2020/12/30/fp-compiler.html&quot; title=&quot;コンパイラを浮動小数点数に対応させる（それと数学関数を実装）&quot;&gt;atanは実装した&lt;/a&gt;が、欠けていた逆三角関数&lt;code&gt;asin&lt;/code&gt;を実装したかった。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Ten Minute Physicsを動かしてみる</title>
     <link href="https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html"/>
     <id>https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html</id>
     <published>2023-06-25T10:00:00.000Z</published>
-    <updated>2023-07-02T12:37:45.732Z</updated>
+    <updated>2023-07-11T08:00:30.562Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://matthias-research.github.io/pages/tenMinutePhysics/index.html&quot;&gt;Ten Minute Physics&lt;/a&gt;という、スクラッチで物理シミュレーションを作るというページがあったので一通り動かしてみた。&lt;/p&gt;</summary>
@@ -38,7 +55,7 @@
     <link href="https://tyfkda.github.io/blog/2023/06/04/split-by-width.html"/>
     <id>https://tyfkda.github.io/blog/2023/06/04/split-by-width.html</id>
     <published>2023-06-04T08:00:00.000Z</published>
-    <updated>2023-06-19T06:57:46.718Z</updated>
+    <updated>2023-07-11T08:00:30.577Z</updated>
     
     
     <summary type="html">&lt;p&gt;例えば２次元配列を扱う際に計算中は１次元に展開して持っておいて、出力時に戻そうとしたときに、リストを固定の長さで分割して二重（２次元）リストにして返す、ということがしたかった。&lt;/p&gt;</summary>
@@ -55,7 +72,7 @@
     <link href="https://tyfkda.github.io/blog/2023/05/12/pentomino-solver.html"/>
     <id>https://tyfkda.github.io/blog/2023/05/12/pentomino-solver.html</id>
     <published>2023-05-12T10:00:00.000Z</published>
-    <updated>2023-06-01T08:17:25.844Z</updated>
+    <updated>2023-07-11T08:00:30.574Z</updated>
     
     
     <summary type="html">&lt;p&gt;頭の体操と余興として、ペントミノ（５つの四角形）を並べて長方形を作るパズルを解くプログラムを書いてみた。&lt;/p&gt;</summary>
@@ -72,7 +89,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/24/webpack-tree-shaking-ts.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/24/webpack-tree-shaking-ts.html</id>
     <published>2023-04-24T10:00:00.000Z</published>
-    <updated>2023-06-01T08:17:25.849Z</updated>
+    <updated>2023-07-11T08:00:30.580Z</updated>
     
     
     <summary type="html">&lt;p&gt;TypeScriptでコードを書いて、ブラウザで動かすためにWebPackでまとめてるアプリで、Worklet用に別に出力しているソースに不要なコードも含まれてしまってサイズが大きくなってしまっていた。
@@ -90,7 +107,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html</id>
     <published>2023-04-23T08:00:00.000Z</published>
-    <updated>2023-06-01T08:17:25.848Z</updated>
+    <updated>2023-07-11T08:00:30.580Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASI用に出力されたWebAssemblyバイナリをJS上で動かすためのランタイムを探ったが混沌としていた。
@@ -108,7 +125,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/22/nan-boxing.html</id>
     <published>2023-04-22T12:00:00.000Z</published>
-    <updated>2023-06-01T08:17:25.843Z</updated>
+    <updated>2023-07-11T08:00:30.573Z</updated>
     
     
     <summary type="html">&lt;p&gt;動的言語内で扱う値の内部表現に関する最適化で、NaN Boxingという方法を知ったのでメモ。&lt;/p&gt;</summary>
@@ -125,7 +142,7 @@
     <link href="https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html"/>
     <id>https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html</id>
     <published>2023-04-05T15:00:00.000Z</published>
-    <updated>2023-06-01T08:17:25.843Z</updated>
+    <updated>2023-07-11T08:00:30.573Z</updated>
     
     
     <summary type="html">&lt;p&gt;ファミコンは音楽を鳴らす機能として矩形波×2、三角波、ノイズというシンプルな方法に加えて、&lt;strong&gt;DMCというサンプリング音源による方法&lt;/strong&gt;がある。
@@ -145,7 +162,7 @@
     <link href="https://tyfkda.github.io/blog/2023/03/28/winny-movie.html"/>
     <id>https://tyfkda.github.io/blog/2023/03/28/winny-movie.html</id>
     <published>2023-03-28T09:00:00.000Z</published>
-    <updated>2023-04-01T03:30:25.143Z</updated>
+    <updated>2023-07-11T08:00:30.581Z</updated>
     
     
     <summary type="html">&lt;p&gt;Winnyについては特に思い入れはないんだけど、&lt;a href=&quot;https://winny-movie.com/&quot;&gt;映画&lt;/a&gt;の予告編が面白そうだったので見てきた。&lt;/p&gt;</summary>
@@ -160,7 +177,7 @@
     <link href="https://tyfkda.github.io/blog/2023/03/20/ref-to-mut-ref.html"/>
     <id>https://tyfkda.github.io/blog/2023/03/20/ref-to-mut-ref.html</id>
     <published>2023-03-20T09:00:00.000Z</published>
-    <updated>2023-06-01T08:17:25.844Z</updated>
+    <updated>2023-07-11T08:00:30.575Z</updated>
     
     
     <summary type="html">&lt;p&gt;Rustで参照から可変参照を拝借するにはワイルドに &lt;code&gt;unsafe&lt;/code&gt;を使うことになるんだけど（悪かった自慢）、&lt;a href=&quot;https://doc.rust-lang.org/clippy/&quot;&gt;Clippy&lt;/a&gt;にかけたら未定義動作だと言って怒られたので修正する。&lt;/p&gt;</summary>
@@ -169,23 +186,6 @@
     
     
     <category term="rust" scheme="https://tyfkda.github.io/tags/rust/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【JavaScript】switch-caseで「これ以上これ以下」にマッチさせる</title>
-    <link href="https://tyfkda.github.io/blog/2023/03/19/js-case-range.html"/>
-    <id>https://tyfkda.github.io/blog/2023/03/19/js-case-range.html</id>
-    <published>2023-03-19T01:00:00.000Z</published>
-    <updated>2023-06-01T08:17:25.842Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;JavaScriptの&lt;code&gt;case&lt;/code&gt;である範囲の値を指定できないかな〜と思ったらできるらしい。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="javascript" scheme="https://tyfkda.github.io/tags/javascript/"/>
     
   </entry>
   
