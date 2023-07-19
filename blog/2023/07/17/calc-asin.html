@@ -290,7 +290,28 @@ f(x) &= \arcsin x \\
 \arcsin x = \frac{\pi}{2} - 2 \arcsin {\sqrt{\frac{1 - x}{2}}}
 %]]></script>
 
-<p>という公式がどうやったら導けるのか結局わからなかった…。</p>
+<p>という公式 <del>がどうやったら導けるのか結局わからなかった…。</del>
+（これはsinの半角の公式 <script type="math/tex">\sin^2 \frac{\theta}{2} = \frac{1 - \cos \theta}{2}</script> を使うようで、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{aligned}
+\sin^2 \frac{\theta}{2} &= \frac{1 - \cos \theta}{2} \\
+\therefore \theta &= 2 \arcsin \sqrt{\frac{1 - \cos \theta}{2}}
+\end{aligned}
+%]]></script>
+
+<script type="math/tex">\cos \theta = x</script> とおき、 <script type="math/tex">\arccos x = \pi / 2 - \arcsin x</script> を使って
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{aligned}
+\arccos x &= 2 \arcsin \sqrt{\frac{1 - x}{2}} \\
+\frac{\pi}{2} - \arcsin x &= 2 \arcsin \sqrt{\frac{1 - x}{2}} \\
+\arcsin x &= \frac{\pi}{2} - 2 \arcsin \sqrt{\frac{1 - x}{2}}
+\end{aligned}
+%]]></script>
+
+<p>xが0.5より大きければ平方根の値は0.5以下になるのでその範囲の計算で求められる。）</p>
 <p>muslはMITライセンスとのことなので、使用する分には問題なさそう。</p>
 <h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
 <li><a href="https://github.com/tyfkda/xcc/blob/000a14cc62b5205bfc297a5c93936676f45c4770/libsrc/math/asin.c#L4">ソース</a></li>
