@@ -268,7 +268,7 @@ f(x) &= \arcsin x \\
 <code>asin</code>は単調増加なので中点の<code>sin</code>の値を計算してその値より大きいか小さいかで探索していく：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">double</span> <span class="title function_">my_asin_bisect</span><span class="params">(<span class="type">double</span> x)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (x &lt; <span class="number">-1</span> || x &gt; <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> NAN;</span><br><span class="line">  <span class="keyword">if</span> (x &lt; <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> -<span class="built_in">asin</span>(-x);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Binary search</span></span><br><span class="line">  <span class="type">double</span> min = x, max = M_PI_2 * x;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">16</span>; ++i) &#123;</span><br><span class="line">    <span class="type">double</span> m = (min + max) * <span class="number">0.5</span>;</span><br><span class="line">    <span class="type">double</span> y = <span class="built_in">sin</span>(m);</span><br><span class="line">    <span class="keyword">if</span> (x &gt;= y)</span><br><span class="line">      min = m;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      max = m;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> (min + max) * <span class="number">0.5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>計算したところ、16回ループで（標準のライブラリで求めた値との差）は1e-6くらいだった。
+<p>計算したところ、16回ループで誤差（標準のライブラリで求めた値との差）は1e-6くらいだった。
 <code>sin(m)</code>も独自実装ではマクローリン展開なので相当重そうだけど、最悪計算できるだけマシだからこれでもいいか…と一瞬思った。</p>
 <h3 id="Wolfram-Alphaで係数を調べる"><a href="#Wolfram-Alphaで係数を調べる" class="headerlink" title="Wolfram|Alphaで係数を調べる"></a>Wolfram|Alphaで係数を調べる</h3><p>その後ググってるとWolfram|Alphaでもっと項の係数を調べられた：
 <a href="https://www.wolframalpha.com/input?i=taylor+series+arcsin(1-x)&lang=ja">taylor series arcsin(1-x) - Wolfram|Alpha</a>
@@ -316,6 +316,7 @@ f(x) &= \arcsin x \\
 <h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
 <li><a href="https://github.com/tyfkda/xcc/blob/000a14cc62b5205bfc297a5c93936676f45c4770/libsrc/math/asin.c#L4">ソース</a></li>
 <li><a href="https://toy1972.hatenablog.com/entry/2019/11/10/162658">逆正弦関数の級数展開 - 数式で独楽する</a></li>
+<li><a href="http://f4.aaacafe.ne.jp/~pointc/log1312.html">No．１３１２　逆関数（arcsin）</a> <code>atan2</code>から計算することもできたか</li>
 </ul>
 
 
