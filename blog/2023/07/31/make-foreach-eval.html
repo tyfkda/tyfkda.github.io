@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Makefileでビルドを管理する場合にソースディレクトリを分けていると同じ記述を何度もするのが煩わしかったが、
+まとめる方法があることを知った。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/07/31/make-foreach-eval.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-07-31
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Makefileでビルドを管理する場合にソースディレクトリを分けていると同じ記述を何度もするのが煩わしかったが、
+まとめる方法があることを知った。</p>
+<span id="more"></span>
+
+<h3 id="前口上"><a href="#前口上" class="headerlink" title="前口上"></a>前口上</h3><p>自分の好みとしてソースを格納するディレクトリとビルドで生成するオブジェクトファイルは別のディレクトリに入れるのが好きなんだけど、ソースをさらにいくつかのサブディレクトリに分けている場合に<code>%</code>を使った<strong>パターンルール</strong>を内容は同じでもディレクトリごとに書く必要があるのが面倒だった。</p>
+<p>例えば<code>src</code>以下に<code>foo</code>と<code>bar</code>というディレクトリがあったとして：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── Makefile</span><br><span class="line">├── obj        # オブジェクトファイル出力先</span><br><span class="line">└── src</span><br><span class="line">    ├── bar</span><br><span class="line">    │   └── bar.c</span><br><span class="line">    └── foo</span><br><span class="line">        └── foo.c</span><br></pre></td></tr></table></figure>
+
+<p>Makefileで</p>
+<figure class="highlight mak"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 同じ内容でもディレクトリごとにパターンルールを書く必要がある</span></span><br><span class="line"><span class="section">obj/%.o:	src/foo/%.c</span></span><br><span class="line">	mkdir -p obj</span><br><span class="line">	<span class="variable">$(CC)</span> -c -o <span class="variable">$@</span> <span class="variable">$&lt;</span></span><br><span class="line"></span><br><span class="line"><span class="section">obj/%.o:	src/bar/%.c</span></span><br><span class="line">	mkdir -p obj</span><br><span class="line">	<span class="variable">$(CC)</span> -c -o <span class="variable">$@</span> <span class="variable">$&lt;</span></span><br></pre></td></tr></table></figure>
+
+<p>コンパイルしてオブジェクトファイルを生成するルールが「<code>$(SRC_DIR)</code>以下のすべて」とか書ければいいんだけどその方法を知らなくて、ソースディレクトリごとに書く必要があって面倒だった。</p>
+<p>（<code>src/**/%.c</code>で書ける、と一瞬喜んだが第２階層だけだった）。</p>
+<h3 id="define-foreach-call-eval"><a href="#define-foreach-call-eval" class="headerlink" title="define, foreach, call, eval"></a>define, foreach, call, eval</h3><p>Makeにはマクロという機能があるとのことで、<code>define</code>で定義できる：</p>
+<figure class="highlight mak"><table><tr><td class="code"><pre><span class="line"><span class="keyword">define</span> DEFINE_OBJ_TARGET</span><br><span class="line"><span class="variable">$(OBJ_DIR)</span>/%.o:	$(1)/%.c</span><br><span class="line">	mkdir -p <span class="variable">$(OBJ_DIR)</span></span><br><span class="line">	<span class="variable">$(CC)</span> -c -o $<span class="variable">$@</span> $<span class="variable">$&lt;</span></span><br><span class="line"><span class="keyword">endef</span></span><br></pre></td></tr></table></figure>
+
+<p><code>endef</code> までが内容で、パラメータが<code>$1</code>以降に渡される。
+注意点としては<code>$</code>の変数参照がマクロ展開時に行われるので、ルール内で行わせたい場合にはエスケープして二重の<code>$$</code>にする必要がある。</p>
+<p>定義したマクロを使うには<code>eval</code>-<code>call</code>を、そして配列で複数に対して行うために<code>foreach</code>を使う：</p>
+<figure class="highlight mak"><table><tr><td class="code"><pre><span class="line">SRC_DIRS:=<span class="variable">$(foo_DIR)</span> <span class="variable">$(bar_DIR)</span></span><br><span class="line"><span class="variable">$(<span class="built_in">foreach</span> D, <span class="variable">$(SRC_DIRS)</span>, $(<span class="built_in">eval</span> $(<span class="built_in">call</span> DEFINE_OBJ_TARGET,<span class="variable">$(D)</span>)</span>))</span><br></pre></td></tr></table></figure>
+
+<p><code>foreach</code>の第２引数の各要素を第１引数(<code>D</code>)の変数にセットして第３引数の内容が実行される。
+<code>call</code>でマクロを呼び出した結果を<code>eval</code>することで要素ごとのルールが定義される。</p>
+<h3 id="追加の情報で処理したい場合"><a href="#追加の情報で処理したい場合" class="headerlink" title="追加の情報で処理したい場合"></a>追加の情報で処理したい場合</h3><p>ちょっと変えて例えば実行ファイル<code>foo</code>と<code>bar</code>をそれぞれ<code>xxx_OBJS</code>変数のオブジェクトファイル群からビルドしたい、という場合にどうするか。
+<code>foreach</code>に渡す配列をターゲット名とオブジェクトファイル群の二重配列にして、とか文字列を連結しといたものを分割して、とか考えたがうまくいかず。</p>
+<p>がなんのことはない、変数の展開を重ねて、</p>
+<figure class="highlight mak"><table><tr><td class="code"><pre><span class="line"><span class="keyword">define</span> DEFINE_EXE_TARGET</span><br><span class="line"><span class="section">$(1):	＄＄($(1)_OBJS)  # このブログ上で＄＄が勝手に変換されるのを避けるため全角にしているが、実際は半角</span></span><br><span class="line">	...</span><br><span class="line"><span class="keyword">endef</span></span><br></pre></td></tr></table></figure>
+
+<p>とするだけでできる
+（内容としては<code>$(1)</code>がマクロ<code>call</code>時に展開され、<code>＄＄</code>は<code>call</code>で<code>$</code>になったものが<code>eval</code>時に処理される。
+が<code>＄＄</code>を<code>$</code>にしてもちゃんと動く、重ねてもちゃんと展開できる）。
+「このディレクトリには特別にコンパイルオプションを足したい」、とかも変数名で引けるようにしておけばできるでしょう
+（未定義変数の場合は単に空白に置換される）。</p>
+<p>Makefileの関数<code>wildcard</code>や<code>notdir</code>、<code>addprefix</code>などを使えば、ファイル構成と命名に沿ってルールを生成することもできると思う。</p>
+<h3 id="参照"><a href="#参照" class="headerlink" title="参照"></a>参照</h3><ul>
+<li><a href="https://qiita.com/yetnone/items/e2e53b547562bf984aaa#multiple-foreach--multiple-foreach">Makefile で {単数 | 複数} の {依存項目 | ターゲット} を指定するルールの書き方 - Qiita</a></li>
+<li><a href="https://www.gnu.org/software/make/manual/html_node/">GNU make</a> GNU Makeのマニュアル<ul>
+<li><a href="https://www.gnu.org/software/make/manual/html_node/Foreach-Function.html">The foreach Function</a>,
+<a href="https://www.gnu.org/software/make/manual/html_node/Eval-Function.html">The eval Function</a>,
+<a href="https://www.gnu.org/software/make/manual/html_node/Call-Function.html">The call Function</a></li>
+<li>Makeではマクロ・関数といっても変数と同じもので、<code>call</code>で引数が文字列置換されたものを<code>eval</code>で反映するというだけっぽい <a href="https://www.gnu.org/software/make/manual/html_node/Reading-Makefiles.html">3.7 How make Reads a Makefile - Variable Assignment</a></li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li><li class="recent_post"><a href="/blog/2023/07/17/calc-asin.html">arcsinを数値計算する方法を探し求めて彷徨う</a></li><li class="recent_post"><a href="/blog/2023/06/25/10-minute-physics.html">Ten Minute Physicsを動かしてみる</a></li><li class="recent_post"><a href="/blog/2023/06/04/split-by-width.html">【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</a></li><li class="recent_post"><a href="/blog/2023/05/12/pentomino-solver.html">ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
