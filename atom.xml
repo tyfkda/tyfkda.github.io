@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-08-01T06:22:49.629Z</updated>
+  <updated>2023-08-25T23:54:23.800Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>コンパイラでもっとレジスタを活用するために行った対策</title>
+    <link href="https://tyfkda.github.io/blog/2023/08/25/backend-more-registers.html"/>
+    <id>https://tyfkda.github.io/blog/2023/08/25/backend-more-registers.html</id>
+    <published>2023-08-25T10:00:00.000Z</published>
+    <updated>2023-08-25T23:54:23.800Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作のCコンパイラ&lt;/a&gt;ではLLVMなどのバックエンドを使わずにx86-64やaarch64のアセンブリコードを直接出力しているが、
+出力するコードでより多くのCPUレジスタを使えるように改良した。
+他にも不要にメモリ（スタック）操作をしていたのを対策した。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+  </entry>
   
   <entry>
     <title>Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</title>
@@ -170,21 +189,6 @@
     <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
     
     <category term="audio" scheme="https://tyfkda.github.io/tags/audio/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>映画『Winny』に出てくるED法</title>
-    <link href="https://tyfkda.github.io/blog/2023/03/28/winny-movie.html"/>
-    <id>https://tyfkda.github.io/blog/2023/03/28/winny-movie.html</id>
-    <published>2023-03-28T09:00:00.000Z</published>
-    <updated>2023-07-11T08:00:30.581Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;Winnyについては特に思い入れはないんだけど、&lt;a href=&quot;https://winny-movie.com/&quot;&gt;映画&lt;/a&gt;の予告編が面白そうだったので見てきた。&lt;/p&gt;</summary>
-    
-    
-    
     
   </entry>
   

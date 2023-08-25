@@ -12,9 +12,9 @@
     
         <meta name="description" content="低レイヤを知りたい人のためのCコンパイラ作成入門を参考にして作っていたCコンパイラを、
 演算に汎用レジスタも使うコードを生成するように修正した。
-汎用レジスタへの割り付けはリニアスキャンという方法で行った。
+汎用レジスタへの割付はリニアスキャンという方法で行った。
 リポジトリはこちら：https://github.com/tyfkda/xcc
-モチベーショ">
+モチベーション「">
     
 
     <!--Author-->
@@ -24,7 +24,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="自作Cコンパイラでレジスタ割り付け"/>
+        <meta property="og:title" content="自作Cコンパイラでレジスタ割付"/>
     
 
     <!--Open Graph Description-->
@@ -46,7 +46,7 @@
 
     <!-- Title -->
     
-    <title>自作Cコンパイラでレジスタ割り付け - Kludge Factory</title>
+    <title>自作Cコンパイラでレジスタ割付 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -156,7 +156,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>自作Cコンパイラでレジスタ割り付け</h1>
+                    <h1>自作Cコンパイラでレジスタ割付</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
@@ -200,23 +200,23 @@
             <div class="col-lg-9 col-md-9">
                 <a href="/blog/2019/07/14/self-hosting-c.html" title="自作Cコンパイラでセルフホスティングを達成した">低レイヤを知りたい人のためのCコンパイラ作成入門を参考にして作っていた</a>Cコンパイラを、
 <p>演算に汎用レジスタも使うコードを生成するように修正した。
-汎用レジスタへの割り付けはリニアスキャンという方法で行った。</p>
+汎用レジスタへの割付はリニアスキャンという方法で行った。</p>
 <p>リポジトリはこちら：<a href="https://github.com/tyfkda/xcc">https://github.com/tyfkda/xcc</a></p>
 <h3 id="モチベーション"><a href="#モチベーション" class="headerlink" title="モチベーション"></a>モチベーション</h3><p>「低レイヤ」コンパイラで出力するコードはスタックマシン方式という、計算途中の値がスタックに積まれていて、現在の値がスタックトップに格納された状態となるように計算するコードを生成する。
 スタックマシン方式は抽象構文木と非常に相性がよくて、パーサで生成した構文木をたどる順番でコードを生成できるので比較的簡単にコード生成ができる。</p>
 <p>ただそれだとコンパイル先のプロセッサ(x86-64)が汎用レジスタをたくさん持っていてもまるで活かしきれない。
 そして変数や計算途中の値へのアクセスはすべてメモリを通すので遅くなってしまう。
 これでは「Cコンパイラで生成したコードは遅いから使えない、やっぱアセンブリで書かないと」と、性能厨に罵倒されてしまう。</p>
-<p>そこでレジスタ割り付けを実装した。</p>
+<p>そこでレジスタ割付を実装した。</p>
 <h2 id="変更手順"><a href="#変更手順" class="headerlink" title="変更手順"></a>変更手順</h2><p>スタックマシン方式から汎用レジスタを使用するコードを出力するレジスタマシン方式への変更は以下のような段階を踏んで進めた：</p>
 <ul>
 <li>中間表現生成（スタックマシン方式のまま）</li>
 <li>中間表現の命令セットをレジスタを使用する方式に変更（レジスタの確保／解放は逐次）</li>
 <li>基本ブロックへの分割、生存期間の判定</li>
-<li>リニアスキャンレジスタ割り付け実装</li>
+<li>リニアスキャンレジスタ割付実装</li>
 </ul>
 <h3 id="中間表現化"><a href="#中間表現化" class="headerlink" title="中間表現化"></a>中間表現化</h3><p>スタックマシン方式は構文木と相性がいいので、コード生成で構文木をそのまま使って直接アセンブリコードを出力していて、わざわざ中間表現(Intermediate Representation, IR)を生成していなかった。
-しかしレジスタ割り付けを行うには、それぞれの値が使用される期間を調べるために命令列を見る必要がある。
+しかしレジスタ割付を行うには、それぞれの値が使用される期間を調べるために命令列を見る必要がある。
 命令列はターゲットCPUの命令セットそのままではなく、もうちょっと扱いやすい形にしておくとやりやすい。
 なので構文木からいったん中間表現を出力し、それを実際のCPUの命令に変換して出力する、という具合にする。</p>
 <p>前提としてすでにスタックマシン方式を出力する動いているコンパイラがあるため、いきなりレジスタマシン方式の中間表現を生成する方式に変更するのは難しい。
@@ -280,8 +280,8 @@
 条件分岐の場合にはブロックの最後に条件分岐命令がきて条件が成り立てばそちらに、成り立たなければ次のブロックにと、飛び先は高々2つとなる。</p>
 <p>ループで戻る場合や<code>break</code>、<code>continue</code>、<code>return</code>などは基本ブロックの最後での無条件分岐となる。</p>
 <h3 id="仮想レジスタの生存期間を調べる"><a href="#仮想レジスタの生存期間を調べる" class="headerlink" title="仮想レジスタの生存期間を調べる"></a>仮想レジスタの生存期間を調べる</h3><p>式の中間結果だけをレジスタ上で扱えるようにしたが、ローカル変数もできるだけレジスタに配置したい。
-そうすると値の生存期間が１つの式を超えて延びる可能性があって、逐次での物理レジスタへの割り付け／解放では無理がある。
-関数内の命令列で個々の値がどの範囲で使用されているかを調べて、どの値をどの物理レジスタに割り付けるか、というレジスタ割り付けを行う。
+そうすると値の生存期間が１つの式を超えて延びる可能性があって、逐次での物理レジスタへの割付／解放では無理がある。
+関数内の命令列で個々の値がどの範囲で使用されているかを調べて、どの値をどの物理レジスタに割り付けるか、というレジスタ割付を行う。
 それをするためには各レジスタの生存期間を調べる必要がある。</p>
 <p>仮想レジスタの生存期間を調べるにはまず中間表現の命令を順に見ていって、最初と最後の使用位置を調べてやる。
 ただそれだけだとループで戻ってくる場合におかしくなる。
@@ -293,7 +293,7 @@
 出力する必要ができたレジスタは、基本ブロック内で代入されていればそれが出力されるのでよし、
 そうでなければさらに入力として伝播してやって、確定するまで続ける。</p>
 <p>各基本ブロックからの出力となったレジスタは、その基本ブロックの末尾まで生きているものとしてやることで生存期間が決定する。</p>
-<h3 id="レジスタ割り付け（リニアスキャン）"><a href="#レジスタ割り付け（リニアスキャン）" class="headerlink" title="レジスタ割り付け（リニアスキャン）"></a>レジスタ割り付け（リニアスキャン）</h3><p>各レジスタの生存期間を割り出したら、どの仮想レジスタをどの物理レジスタに割り当てるか、という<a href="https://ja.wikipedia.org/wiki/%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E5%89%B2%E3%82%8A%E4%BB%98%E3%81%91">レジスタ割り付け</a>を行う。
+<h3 id="レジスタ割付（リニアスキャン）"><a href="#レジスタ割付（リニアスキャン）" class="headerlink" title="レジスタ割付（リニアスキャン）"></a>レジスタ割付（リニアスキャン）</h3><p>各レジスタの生存期間を割り出したら、どの仮想レジスタをどの物理レジスタに割り当てるか、という<a href="https://ja.wikipedia.org/wiki/%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E5%89%B2%E3%82%8A%E4%BB%98%E3%81%91">レジスタ割り付け</a>を行う。
 レジスタ割り付けのアルゴリズムは、有名なものでは<a href="https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%95%E5%BD%A9%E8%89%B2#%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E5%89%B2%E3%82%8A%E4%BB%98%E3%81%91">グラフ彩色</a>と<a href="https://en.wikipedia.org/wiki/Register_allocation#Linear_Scan">リニアスキャン</a>という方法がある。</p>
 <p>グラフ彩色では仮想レジスタをノードと考える。
 <strong>生存範囲</strong>が重なっているレジスタ同士は干渉といって、ノード同士を結ぶ。
@@ -306,7 +306,7 @@ spillされたレジスタの値はスタックのpush&#x2F;popで一時的に�
 <p>リニアスキャンではレジスタの<strong>生存期間</strong>を調べる。
 生存範囲では間が抜けるケースも扱えるけど、生存期間では抜けている間も構わずに使用しているとみなす。
 で命令を順に見ていって物理レジスタに割り付けていくんだけど、物理レジスタが足りなくなったら今新たに追加しようとしているレジスタか、またはすでに割り付けているレジスタの中で最後まで生存するレジスタのどちらか長く生存する方をspillしてやる。
-これを頭から最後まで命令列を1回たどればレジスタ割り付けが完了する。</p>
+これを頭から最後まで命令列を1回たどればレジスタ割付が完了する。</p>
 <p>論文に示されているリニアスキャンの擬似コード：</p>
 <script src="https://gist.github.com/tyfkda/82eed77d97b80c6a69415a88e3549948.js"></script>
 
@@ -323,9 +323,9 @@ spillされたレジスタの値はスタックのpush&#x2F;popで一時的に�
 ただそうするとspillされたレジスタの読み出し先も管理する必要があって面倒なので、そういう事が起きる可能性がある命令には新規の仮想レジスタに移動させる命令を生成してやることで対処した。
 その仮想レジスタはその命令間でしか使われないので必ず物理レジスタに乗るはずなのでspillは高々1個でおさまるはず、という回避方法。</p>
 <p><a href="https://github.com/rui314/9cc/blob/882e4b2dd827ef4f00f801f45e78d8031641c067/regalloc.c#L15-L17">9ccでは1つしか確保していない</a>が、どうやって回避しているのかよくわからなかった…。</p>
-<h2 id="今後の課題"><a href="#今後の課題" class="headerlink" title="今後の課題"></a>今後の課題</h2><p>以上でレジスタ割り付けを行うCコンパイラが動作するようになった。今後の課題としては、</p>
+<h2 id="今後の課題"><a href="#今後の課題" class="headerlink" title="今後の課題"></a>今後の課題</h2><p>以上でレジスタ割付を行うCコンパイラが動作するようになった。今後の課題としては、</p>
 <ul>
-<li>関数の引数もレジスタ割り付け可能にする</li>
+<li>関数の引数もレジスタ割付可能にする</li>
 <li>呼び出し規約で使用するレジスタや <code>%rax</code> も利用できるようにする</li>
 <li>SSA形式化</li>
 </ul>
@@ -348,14 +348,14 @@ spillされたレジスタの値はスタックのpush&#x2F;popで一時的に�
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li><li class="recent_post"><a href="/blog/2023/07/17/calc-asin.html">arcsinを数値計算する方法を探し求めて彷徨う</a></li><li class="recent_post"><a href="/blog/2023/06/25/10-minute-physics.html">Ten Minute Physicsを動かしてみる</a></li><li class="recent_post"><a href="/blog/2023/06/04/split-by-width.html">【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</a></li><li class="recent_post"><a href="/blog/2023/05/12/pentomino-solver.html">ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li><li class="recent_post"><a href="/blog/2023/07/17/calc-asin.html">arcsinを数値計算する方法を探し求めて彷徨う</a></li><li class="recent_post"><a href="/blog/2023/06/25/10-minute-physics.html">Ten Minute Physicsを動かしてみる</a></li><li class="recent_post"><a href="/blog/2023/06/04/split-by-width.html">【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</a></li></ul>
                 </div>
             </div>
 

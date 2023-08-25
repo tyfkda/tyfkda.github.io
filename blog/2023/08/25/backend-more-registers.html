@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="自作のCコンパイラではLLVMなどのバックエンドを使わずにx86-64やaarch64のアセンブリコードを直接出力しているが、
+出力するコードでより多くのCPUレジスタを使えるように改良した。
+他にも不要にメモリ（スタック）操作をしていたのを対策した。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="コンパイラでもっとレジスタを活用するために行った対策"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>コンパイラでもっとレジスタを活用するために行った対策 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/08/25/backend-more-registers.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>コンパイラでもっとレジスタを活用するために行った対策</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-08-25
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://github.com/tyfkda/xcc">自作のCコンパイラ</a>ではLLVMなどのバックエンドを使わずにx86-64やaarch64のアセンブリコードを直接出力しているが、
+出力するコードでより多くのCPUレジスタを使えるように改良した。
+他にも不要にメモリ（スタック）操作をしていたのを対策した。</p>
+<span id="more"></span>
+
+<p>内容は：</p>
+<ol>
+<li>関数呼出のレジスタ渡し引数をいったんスタックに積んでいたのをやめる</li>
+<li>レジスタ割付の対象とする物理レジスタを増やす</li>
+<li>関数への引数を必ずメモリに割付(Spill)するのをやめて、可能ならレジスタを使用する</li>
+</ol>
+<p>の3つ。</p>
+<h3 id="対策前の状態"><a href="#対策前の状態" class="headerlink" title="対策前の状態"></a>対策前の状態</h3><h4 id="利用できていたレジスタ：7-x2F-16"><a href="#利用できていたレジスタ：7-x2F-16" class="headerlink" title="利用できていたレジスタ：7&#x2F;16"></a>利用できていたレジスタ：7&#x2F;16</h4><p>変数の値や式の途中の計算式をアセンブリで扱う際に<a href="/blog/2019/10/21/regalloc-linearscan.html" title="自作Cコンパイラでレジスタ割付">レジスタ割付</a>によってある程度レジスタに保持するようにしていた。
+ただ汎用レジスタのすべてを使用できてはおらず、一部のみの利用にとどまっていた。</p>
+<p>例えばx86-64では16本の汎用レジスタがあるが9本は使えず7本までしか割付の対象にできていなかった。
+使えていなかったのは：</p>
+<ul>
+<li><code>%rdi</code>, <code>%rsi</code>, <code>%rdx</code>, <code>%rcx</code>, <code>%r8</code>, <code>%r9</code>: 呼出規約でのレジスタ渡し用<ul>
+<li><code>%rdx</code>は乗算や除算でも利用される</li>
+</ul>
+</li>
+<li><code>%rax</code>: 関数の戻り値、また乗算や除算で利用される</li>
+<li><code>%rbp</code>: ベースポインタ</li>
+<li>（<code>%rsp</code>: スタックポインタ）　←汎用には使えないので対象外</li>
+</ul>
+<p>呼出規約で決められているレジスタや、プロセッサの制限で固定されているレジスタを使えていなかった。
+スタックポインタは無理としても、少なくともレジスタ渡しに使うレジスタは使えるようにしたい。</p>
+<h4 id="関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた"><a href="#関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた" class="headerlink" title="関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた"></a>関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた</h4><p>関数呼出がネストされているかもしれないので、レジスタ渡しの引数を呼出規約の引数レジスタに直接格納するのではなく、
+いったんスタックに積んでおいてそれを<code>CALL</code>直前に各レジスタにポップしていた。
+これが無駄なのでやめたい。</p>
+<h4 id="呼び出された関数側で受け取った引数を必ずメモリに割り付けていた"><a href="#呼び出された関数側で受け取った引数を必ずメモリに割り付けていた" class="headerlink" title="呼び出された関数側で受け取った引数を必ずメモリに割り付けていた"></a>呼び出された関数側で受け取った引数を必ずメモリに割り付けていた</h4><p>レジスタで渡された引数は、その関数内でほかの関数呼出を含んでいると破壊される可能性がある。
+そういう場合にそのまま保持しておけないので、常にメモリに逃すようにしていた。
+これもできれば受け取ったレジスタのまま扱えるようにしたい。</p>
+<h3 id="対策"><a href="#対策" class="headerlink" title="対策"></a>対策</h3><h4 id="関数の引数を展開する"><a href="#関数の引数を展開する" class="headerlink" title="関数の引数を展開する"></a>関数の引数を展開する</h4><p>C言語では関数呼出の引数に式を書くことができるので、さらに関数を呼び出してネストさせたり、代入などの副作用や三項演算子の条件分岐などいろいろ複雑なことができてしまう。
+コンパイラの動作として外側の関数呼出用に呼出規約の引数レジスタに値を代入していってる間に、内側の関数呼出で別の値に書き換えられてしまうと困る。</p>
+<p>そこで関数の引数が単純な式ではない場合には事前に計算してテンポラリ変数に格納して、単なる変数参照になるようにする。
+例えば <code>foo(bar())</code> などという式だったら <code>tmp = bar(), foo(tmp)</code> という具合に展開するようにした。</p>
+<p>こうすることで関数呼出がネストしないようになり、呼出規約の引数レジスタに直接代入できるようになる。
+（内部的にテンポラリ変数を追加してもレジスタに割り付けられれば結局はノーペナである。）</p>
+<h4 id="割付対象の物理レジスタを増やす：7→12"><a href="#割付対象の物理レジスタを増やす：7→12" class="headerlink" title="割付対象の物理レジスタを増やす：7→12"></a>割付対象の物理レジスタを増やす：7→12</h4><p>呼出規約のレジスタ渡しで使われる<code>%rdi</code> ~ <code>%r9</code>は <code>CALL</code> 命令が使用されると値が壊される可能性があるため使わないようにしていた。
+しかし<code>CALL</code>命令を含まない場合には問題なく使用できるので対策する。</p>
+<p>レジスタ割付で各仮想レジスタの生存期間を調べるが、その期間内に<code>CALL</code>命令があるかどうかを調べて、ない場合には割付可能とする。</p>
+<p>呼出規約ではそれらのレジスタはCallee SaveでもCaller Saveでもないので、破壊していい（ということだと思う）。
+単純な計算式でもアセンブリでは二項演算ごとにレジスタを使用する必要があるので、
+そういう中間バッファとして最適なので優先的に割り付けてやる。</p>
+<h4 id="関数の引数をレジスタ割付可能にする"><a href="#関数の引数をレジスタ割付可能にする" class="headerlink" title="関数の引数をレジスタ割付可能にする"></a>関数の引数をレジスタ割付可能にする</h4><p>上の対策を関数の引数にも適用してやれば、内部に関数呼出を含まないような末端の関数では引数を渡されたレジスタでそのまま使用すれば効率的
+（上の対策以前ではレジスタ渡し用のレジスタが割付対象外だったのでそもそも利用自体が不可能だった）。
+関数呼出を含んでいたとしても他の仮想レジスタと同様に、別の物理レジスタが割付可能だったらそのレジスタに、それでもダメだった場合にようやくSpillさせてスタックフレーム上に割り付けるようにする。</p>
+<p>そうした上で関数のプロローグで各引数の割付対象によって</p>
+<ul>
+<li>何もしない（受け渡されたレジスタをそのまま使用）</li>
+<li>別のレジスタに<code>MOV</code></li>
+<li>スタックフレームにストア</li>
+</ul>
+<p>のいずれかを行うようにする。</p>
+<h3 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h3><p>上記の対策で不要なメモリ操作を抑えることができるようになった
+（ベンチマークを測ってないので実際の効果は不明だが…）。</p>
+<h4 id="課題"><a href="#課題" class="headerlink" title="課題"></a>課題</h4><ul>
+<li>まだすべてのレジスタを使用できてない(12&#x2F;16)<ul>
+<li><code>%rax</code> と <code>%rdx</code> が未使用。乗除算が使用されているか調べて同様の対策をする</li>
+<li><code>%rbp</code>：スタックフレームが不要な関数ではベースポインタを使ってしまうことができる！？</li>
+</ul>
+</li>
+<li>テンポラリレジスタが使える場合でも見逃す可能性がある<ul>
+<li>関数呼出の引数構築時でもまだ割り付けてないレジスタ渡し用のレジスタは本当なら使えるが、判定の都合で対象外にしてしまっている</li>
+<li>レジスタ引数構築n番目までだったらn以前のレジスタは使用可能、とかしてやる必要がある</li>
+</ul>
+</li>
+</ul>
+<h4 id="与太話"><a href="#与太話" class="headerlink" title="与太話"></a>与太話</h4><ul>
+<li>実装方法を考えていた時には仮想レジスタの用途を調べて制約を課す必要があるんじゃないか、
+とするとリニアスキャンのレジスタ割付で問題起きないだろうかと懸念してた。
+が今のところはせずに済ませている。</li>
+<li>だんだんコンパイラの挙動を把握しきれなくなってきてることもあり実際に動作するようになるまでなかなか大変だった。
+可変長引数を受け取る関数や、構造体を返す関数で問題が出たり。</li>
+<li>関数への引数を展開する処理で<code>&amp;&amp;</code>や<code>||</code>のショートカットが無効になってしまったり。</li>
+<li>引数でインクリメントしてる場合にCaller Saveで巻き戻ってしまったり。</li>
+<li>整数型とともに浮動小数点数もレジスタ渡しで使えてなかったレジスタがあるので対応。</li>
+<li>x86-64以外にaarch64(Arm64)にも対応したが、レジスタも多いし癖がないので比較的簡単だった。</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li>リポジトリ：<a href="https://github.com/tyfkda/xcc">https://github.com/tyfkda/xcc</a></li>
+<li>対象のコミット：<ul>
+<li><a href="https://github.com/tyfkda/xcc/commit/a262770">関数呼出がネストしないように展開する</a></li>
+<li><a href="https://github.com/tyfkda/xcc/commit/dcc5870">関数の引数をいったんスタックに積んでたのをやめる</a></li>
+<li><a href="https://github.com/tyfkda/xcc/commit/79caba6">生存期間にCALL命令が含まれるか調べる</a></li>
+<li><a href="https://github.com/tyfkda/xcc/commit/5720d33">割付対象の物理レジスタを増やす</a></li>
+<li><a href="https://github.com/tyfkda/xcc/commit/e564767">関数の引数をレジスタ割付可能にする</a></li>
+</ul>
+</li>
+<li>過去記事:<ul>
+<li><a href="/blog/2019/10/21/regalloc-linearscan.html" title="自作Cコンパイラでレジスタ割付">自作Cコンパイラでレジスタ割付</a></li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li><li class="recent_post"><a href="/blog/2023/07/17/calc-asin.html">arcsinを数値計算する方法を探し求めて彷徨う</a></li><li class="recent_post"><a href="/blog/2023/06/25/10-minute-physics.html">Ten Minute Physicsを動かしてみる</a></li><li class="recent_post"><a href="/blog/2023/06/04/split-by-width.html">【Haskell】リストをある幅で分割する、そのためにどれほどの夜を重ねただろう</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
