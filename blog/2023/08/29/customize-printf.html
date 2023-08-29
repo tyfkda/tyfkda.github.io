@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="C言語でプログラムを書いているとprintfで文字列を出力する中に自分で定義した構造体の内容を埋め込みたいことがたまにある。
+ふつうにやるにはprintfを途中で分割して間で自前の出力ルーチンを呼び出してやることになるが、見通しが悪くなる。
+しかしカスタマイズする方法があるということで使ってみた。
+注意：gcc拡張で、標準ではない">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【C】printfに独自の表示形式を追加する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【C】printfに独自の表示形式を追加する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/08/29/customize-printf.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【C】printfに独自の表示形式を追加する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-08-29
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/c/">#c</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>C言語でプログラムを書いていると<code>printf</code>で文字列を出力する中に自分で定義した構造体の内容を埋め込みたいことがたまにある。
+ふつうにやるには<code>printf</code>を途中で分割して間で自前の出力ルーチンを呼び出してやることになるが、見通しが悪くなる。
+しかしカスタマイズする方法があるということで使ってみた。</p>
+<p>注意：<strong>gcc拡張で、標準ではない</strong></p>
+<span id="more"></span>
+
+<h3 id="register-printf-specifier-（register-printf-function）"><a href="#register-printf-specifier-（register-printf-function）" class="headerlink" title="register_printf_specifier （register_printf_function）"></a>register_printf_specifier （register_printf_function）</h3><p>「customize printf」とかでググって出てくるページ <a href="https://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html">Customizing Printf (The GNU C Library)</a> を参照して、<code>register_printf_function</code> という関数でできるということを知る。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;printf.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">register_printf_function(spec, render, arginfo);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>spec</code>: <code>printf</code> のフォーマット指定子に使う文字（<code>%d</code>とかのやつ）</li>
+<li><code>render</code>: 出力時に呼び出される関数を指定</li>
+<li><code>arginfo</code>: 引数情報を指定するために呼び出される関数を指定</li>
+</ul>
+<p><a href="https://www.gnu.org/software/libc/manual/html_node/Printf-Extension-Example.html">例が載ったページ</a>があるので参照するとよい。
+登録すると<code>printf</code>で標準のフォーマットに加えて独自の出力を追加できる。</p>
+<p>ただ手元でやったところ <code>register_printf_function</code> はdeprecatedで <code>register_printf_specifier</code> を使えというエラーが出た。
+違いは <code>arginfo</code> にサイズを指定するためのポインタが追加されている
+（<code>PA_POINTER</code>の場合は無視しても大丈夫っぽい）。</p>
+<ul>
+<li>最近のコンパイラでは <code>printf</code> のフォーマットや引数を見てエラーを出すが、
+カスタマイズで追加したことは反映されないのでエラーを抑制してやる必要がある</li>
+</ul>
+<h4 id="Macの場合：register-printf-domain-function"><a href="#Macの場合：register-printf-domain-function" class="headerlink" title="Macの場合：register_printf_domain_function"></a>Macの場合：register_printf_domain_function</h4><p>上記はLinux&#x2F;Ubuntu の場合だが、MacOSでは異なっていた。
+<code>printf</code>の挙動を変えてしまうと影響が大きいとのことで？、「ドメイン」を用いるようになっている。
+ドメインの作成&#x2F;解放を <code>new_printf_domain()</code>, <code>free_printf_domain()</code> で行い、
+登録には <code>register_printf_domain_function</code> 関数を使用する。
+出力には明示的に追加のドメイン情報を渡す <code>xprintf</code> 関数で行う。</p>
+<ul>
+<li>登録関数に渡す関数の型は <code>register_printf_specifier</code> 用とは異なっている
+（<code>register_printf_function</code> と同じ）</li>
+<li><code>fprintf</code> に対応するのは <code>fxprintf</code> 、など</li>
+</ul>
+<h4 id="VisualC-には？"><a href="#VisualC-には？" class="headerlink" title="VisualC には？"></a>VisualC には？</h4><p>ググったがカスタマイズする方法は用意されてないっぽい。</p>
+<h3 id="例"><a href="#例" class="headerlink" title="例"></a>例</h3><p>マクロで辻褄を合わせてLinuxとMacで動かす例：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;printf.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> GCC diagnostic ignored <span class="string">&quot;-Wformat&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> GCC diagnostic ignored <span class="string">&quot;-Wformat-extra-args&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __APPLE__</span></span><br><span class="line"><span class="comment">// MacOS</span></span><br><span class="line"><span class="type">printf_domain_t</span> g_domain;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PRINTF(...)  xprintf(g_domain, NULL, __VA_ARGS__)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REGISTER_PRINTF_SPECIFIER(spec, render, arginfo)  \</span></span><br><span class="line"><span class="meta">    register_printf_domain_function(g_domain, spec, render, arginfo ## _glue, NULL)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> GLUE_PRINTF_ARGINFO_FUNC(specfn)  \</span></span><br><span class="line"><span class="meta">    static int specfn ## _glue(const struct printf_info *info, size_t n, int *argtypes) &#123; \</span></span><br><span class="line"><span class="meta">        int size[n]; return specfn(info, n, argtypes, size); <span class="comment">/* size ignored */</span> &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="comment">// Linux</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PRINTF  printf</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REGISTER_PRINTF_SPECIFIER  register_printf_specifier</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> GLUE_PRINTF_ARGINFO_FUNC(specfn)  <span class="comment">// Nothing</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">char</span> *name;</span><br><span class="line">&#125; Widget;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">print_padding</span><span class="params">(FILE *stream, <span class="type">wchar_t</span> pad, <span class="type">int</span> n)</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (; n &gt; <span class="number">0</span>; --n)</span><br><span class="line">        fputc(pad, stream);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">print_widget</span><span class="params">(FILE *stream, <span class="type">const</span> <span class="keyword">struct</span> printf_info *info, <span class="type">const</span> <span class="type">void</span> *<span class="type">const</span> *args)</span> &#123;</span><br><span class="line">    <span class="type">const</span> Widget *w = *((<span class="type">const</span> Widget**)args[<span class="number">0</span>]);</span><br><span class="line">    <span class="type">int</span> padding = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (info-&gt;left) &#123;</span><br><span class="line">        <span class="type">char</span> buf[<span class="number">16</span>];</span><br><span class="line">        <span class="type">int</span> len = <span class="built_in">snprintf</span>(buf, <span class="keyword">sizeof</span>(buf), <span class="string">&quot;Widget&#123;%s&#125;&quot;</span>, w-&gt;name);</span><br><span class="line">        <span class="keyword">if</span> (len &lt; info-&gt;width) &#123;</span><br><span class="line">            padding = info-&gt;width - len;</span><br><span class="line">            print_padding(stream, info-&gt;pad, padding);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (len &lt; <span class="keyword">sizeof</span>(buf)) &#123;</span><br><span class="line">            <span class="built_in">fputs</span>(buf, stream);</span><br><span class="line">            <span class="keyword">return</span> len + padding;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> len = <span class="built_in">fprintf</span>(stream, <span class="string">&quot;Widget&#123;%s&#125;&quot;</span>, w-&gt;name);</span><br><span class="line">    <span class="keyword">if</span> (!info-&gt;left &amp;&amp; info-&gt;width &gt; len) &#123;</span><br><span class="line">        padding = info-&gt;width - len;</span><br><span class="line">        print_padding(stream, info-&gt;pad, padding);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> len + padding;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">print_single_pointer_arginfo</span><span class="params">(<span class="type">const</span> <span class="keyword">struct</span> printf_info *info, <span class="type">size_t</span> n, <span class="type">int</span> *argtypes, <span class="type">int</span> *psize)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (n &gt; <span class="number">0</span>)</span><br><span class="line">        argtypes[<span class="number">0</span>] = PA_POINTER;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">GLUE_PRINTF_ARGINFO_FUNC(print_single_pointer_arginfo)</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __APPLE__</span></span><br><span class="line">    g_domain = new_printf_domain();</span><br><span class="line">    <span class="keyword">if</span> (g_domain == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;create domain failed\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Register the print function for widgets. */</span></span><br><span class="line">    REGISTER_PRINTF_SPECIFIER(<span class="string">&#x27;W&#x27;</span>, print_widget, print_single_pointer_arginfo);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Make a widget to print. */</span></span><br><span class="line">    Widget mywidget = &#123;.name = <span class="string">&quot;mywidget&quot;</span>&#125;;</span><br><span class="line">    PRINTF(<span class="string">&quot;|%W|\n&quot;</span>, &amp;mywidget);</span><br><span class="line">    PRINTF(<span class="string">&quot;|%35W|\n&quot;</span>, &amp;mywidget);</span><br><span class="line">    PRINTF(<span class="string">&quot;|%-35W|\n&quot;</span>, &amp;mywidget);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __APPLE__</span></span><br><span class="line">    free_printf_domain(g_domain);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>環境の違いを吸収するためにマクロで置換する（<code>REGISTER_PRINTF_SPECIFIER</code>, <code>PRINTF</code>）</li>
+<li>関数の引数の違いを吸収するためにマクロでグルーコードを生成する（<code>GLUE_PRINTF_ARGINFO_FUNC</code>）</li>
+<li>MacOSの場合<ul>
+<li>ドメインをグローバル変数 <code>g_domain</code> に保持して使用</li>
+</ul>
+</li>
+</ul>
+<h3 id="メモ"><a href="#メモ" class="headerlink" title="メモ"></a>メモ</h3><ul>
+<li>幅指定を使わない前提であればもっと楽できる</li>
+<li>標準の機能ではないので、依存するのは避けたほうがよさげ</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://stackoverflow.com/questions/9260170/is-this-possible-to-customize-printf">c - Is this possible to customize printf? - Stack Overflow</a></li>
+<li><code>struct printf_info</code> の説明: <a href="https://www.gnu.org/software/libc/manual/html_node/Conversion-Specifier-Options.html">Conversion Specifier Options (The GNU C Library)</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/08/14/c-const.html" title="【C】constポインタは何が上書き不可なのか" rel="bookmark">【C】constポインタは何が上書き不可なのか</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/23/mark-sweep.html" title="マーク＆スイープ法をテスト実装してみる" rel="bookmark">マーク＆スイープ法をテスト実装してみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/11/23/open-impl.html" title="【C】可変長引数の回避と引数の数による関数の呼び分け" rel="bookmark">【C】可変長引数の回避と引数の数による関数の呼び分け</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/20/parsing-func-returning-func.html" title="関数ポインタを返す関数のパースと型の構築" rel="bookmark">関数ポインタを返す関数のパースと型の構築</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/18/pp-macro-expand.html" title="【C】プリプロセッサのマクロ展開アルゴリズム" rel="bookmark">【C】プリプロセッサのマクロ展開アルゴリズム</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li><li class="recent_post"><a href="/blog/2023/07/17/calc-asin.html">arcsinを数値計算する方法を探し求めて彷徨う</a></li><li class="recent_post"><a href="/blog/2023/06/25/10-minute-physics.html">Ten Minute Physicsを動かしてみる</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

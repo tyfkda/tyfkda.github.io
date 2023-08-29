@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-08-25T23:54:23.800Z</updated>
+  <updated>2023-08-29T06:20:10.877Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,31 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>【C】printfに独自の表示形式を追加する</title>
+    <link href="https://tyfkda.github.io/blog/2023/08/29/customize-printf.html"/>
+    <id>https://tyfkda.github.io/blog/2023/08/29/customize-printf.html</id>
+    <published>2023-08-29T06:00:00.000Z</published>
+    <updated>2023-08-29T06:20:10.877Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;C言語でプログラムを書いていると&lt;code&gt;printf&lt;/code&gt;で文字列を出力する中に自分で定義した構造体の内容を埋め込みたいことがたまにある。
+ふつうにやるには&lt;code&gt;printf&lt;/code&gt;を途中で分割して間で自前の出力ルーチンを呼び出してやることになるが、見通しが悪くなる。
+しかしカスタマイズする方法があるということで使ってみた。&lt;/p&gt;
+&lt;p&gt;注意：&lt;strong&gt;gcc拡張で、標準ではない&lt;/strong&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="c" scheme="https://tyfkda.github.io/tags/c/"/>
+    
+  </entry>
+  
+  <entry>
     <title>コンパイラでもっとレジスタを活用するために行った対策</title>
     <link href="https://tyfkda.github.io/blog/2023/08/25/backend-more-registers.html"/>
     <id>https://tyfkda.github.io/blog/2023/08/25/backend-more-registers.html</id>
     <published>2023-08-25T10:00:00.000Z</published>
-    <updated>2023-08-25T23:54:23.800Z</updated>
+    <updated>2023-08-26T05:57:13.210Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作のCコンパイラ&lt;/a&gt;ではLLVMなどのバックエンドを使わずにx86-64やaarch64のアセンブリコードを直接出力しているが、
@@ -40,7 +60,7 @@
     <link href="https://tyfkda.github.io/blog/2023/07/31/make-foreach-eval.html"/>
     <id>https://tyfkda.github.io/blog/2023/07/31/make-foreach-eval.html</id>
     <published>2023-07-31T09:00:00.000Z</published>
-    <updated>2023-08-01T06:22:49.629Z</updated>
+    <updated>2023-08-26T05:57:13.214Z</updated>
     
     
     <summary type="html">&lt;p&gt;Makefileでビルドを管理する場合にソースディレクトリを分けていると同じ記述を何度もするのが煩わしかったが、
@@ -56,7 +76,7 @@
     <link href="https://tyfkda.github.io/blog/2023/07/17/calc-asin.html"/>
     <id>https://tyfkda.github.io/blog/2023/07/17/calc-asin.html</id>
     <published>2023-07-17T06:00:00.000Z</published>
-    <updated>2023-07-20T00:03:15.897Z</updated>
+    <updated>2023-08-26T05:57:13.211Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前数学関数を自前で実装する一環で&lt;a href=&quot;/blog/2020/12/30/fp-compiler.html&quot; title=&quot;コンパイラを浮動小数点数に対応させる（それと数学関数を実装）&quot;&gt;atanは実装した&lt;/a&gt;が、欠けていた逆三角関数&lt;code&gt;asin&lt;/code&gt;を実装したかった。&lt;/p&gt;</summary>
@@ -73,7 +93,7 @@
     <link href="https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html"/>
     <id>https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html</id>
     <published>2023-06-25T10:00:00.000Z</published>
-    <updated>2023-07-11T08:00:30.562Z</updated>
+    <updated>2023-08-26T05:57:13.208Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://matthias-research.github.io/pages/tenMinutePhysics/index.html&quot;&gt;Ten Minute Physics&lt;/a&gt;という、スクラッチで物理シミュレーションを作るというページがあったので一通り動かしてみた。&lt;/p&gt;</summary>
@@ -90,7 +110,7 @@
     <link href="https://tyfkda.github.io/blog/2023/06/04/split-by-width.html"/>
     <id>https://tyfkda.github.io/blog/2023/06/04/split-by-width.html</id>
     <published>2023-06-04T08:00:00.000Z</published>
-    <updated>2023-07-11T08:00:30.577Z</updated>
+    <updated>2023-08-26T05:57:13.216Z</updated>
     
     
     <summary type="html">&lt;p&gt;例えば２次元配列を扱う際に計算中は１次元に展開して持っておいて、出力時に戻そうとしたときに、リストを固定の長さで分割して二重（２次元）リストにして返す、ということがしたかった。&lt;/p&gt;</summary>
@@ -169,26 +189,6 @@
     
     
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ファミコンのDMCチャンネルの再現方法</title>
-    <link href="https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html"/>
-    <id>https://tyfkda.github.io/blog/2023/04/06/nes-apu-dmc.html</id>
-    <published>2023-04-05T15:00:00.000Z</published>
-    <updated>2023-07-11T08:00:30.573Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;ファミコンは音楽を鳴らす機能として矩形波×2、三角波、ノイズというシンプルな方法に加えて、&lt;strong&gt;DMCというサンプリング音源による方法&lt;/strong&gt;がある。
-そんな機能が搭載されてたこと自体も驚きだが、サンプリング音源なんて容量制限が厳しくて使ってるゲームなんてほとんどないでしょと後回しにしてたんだが、後期の豪華なゲームでは結構使われているので再現する方法を調べた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
-    
-    <category term="audio" scheme="https://tyfkda.github.io/tags/audio/"/>
     
   </entry>
   
