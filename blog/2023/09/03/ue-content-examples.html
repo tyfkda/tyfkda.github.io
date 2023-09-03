@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Unreal Engineの基本的な知識があまりないので、機能紹介も兼ねている機能別サンプルのブループリント通信の中身を見て、複数のブループリント間でどうやってやりとりしたらいいのか見てみた
+（要はカスタムイベント、イベントディスパッチャー、ブループリントインターフェース）。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/09/03/ue-content-examples.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-09-03
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/unreal/">#unreal</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Unreal Engineの基本的な知識があまりないので、機能紹介も兼ねている機能別サンプルの<a href="https://docs.unrealengine.com/4.27/ja/Resources/ContentExamples/Blueprints/">ブループリント通信</a>の中身を見て、複数のブループリント間でどうやってやりとりしたらいいのか見てみた
+（要はカスタムイベント、イベントディスパッチャー、ブループリントインターフェース）。</p>
+<span id="more"></span>
+
+<p><img src="/assets/ue-content-examples.jpg" alt="Blueprint Communication"></p>
+<p>確認したバージョン：UE5.2.1</p>
+<h3 id="ダウンロード・動かし方"><a href="#ダウンロード・動かし方" class="headerlink" title="ダウンロード・動かし方"></a>ダウンロード・動かし方</h3><ul>
+<li>UEマーケットプレイスの<a href="https://www.unrealengine.com/marketplace/en-US/product/content-examples">Content Examples in UE Feature Samples</a>をダウンロードし、UEでプロジェクト作成して起動</li>
+<li>コンテンツブラウザのContent&#x2F;Maps&#x2F;Blueprint_Communicationをダブルクリックで開く</li>
+</ul>
+<h3 id="機能別サンプルのレベルの構造"><a href="#機能別サンプルのレベルの構造" class="headerlink" title="機能別サンプルのレベルの構造"></a>機能別サンプルのレベルの構造</h3><ul>
+<li>部屋全体はレベルのアウトライナーに配置された <code>BP_DemoRoom</code> で構築される<ul>
+<li>ブループリントクラスは <code>Content/Global/DemoRoom/Blueprints/BP_DemoRoom</code> にある</li>
+<li><a href="https://docs.unrealengine.com/4.27/ja/ProgrammingAndScripting/Blueprints/UserGuide/UserConstructionScript/">コンストラクションスクリプト</a> で自分の <code>Redraw</code> 関数を呼び出し、変数に従って部屋を構築する（プロシージャル）</li>
+<li><code>S_RoomSettings</code> 構造体型の配列 <code>Rooms</code> が各部屋の情報（<code>Length</code>, <code>Width</code>, <code>Height</code> など）で、変数が<code>public</code>になっているのでレベルの詳細パネルで変数の値を書き換えるとそれに伴って部屋が再構築される</li>
+<li><code>TestRoom</code> というレベルもあるので、そちらも見てみるとよいかも</li>
+</ul>
+</li>
+<li>機能ごとのブースは <code>BP_DemoDisplay</code> をベースに作成される<ul>
+<li>同じくコンストラクションスクリプトで、<code>Title</code>や<code>Description</code>などが詳細パネルから設定されて反映されるようになっている</li>
+</ul>
+</li>
+<li>ブースで説明する要素はそれとは別にフォルダ分けされずにずらっと並べられている</li>
+</ul>
+<h3 id="動作の調べ方"><a href="#動作の調べ方" class="headerlink" title="動作の調べ方"></a>動作の調べ方</h3><ul>
+<li>レベル上に配置されているアクターから調べたいものを選択し、アウトライナーのTypeにある「Edit BP_～」をクリックでそいつがどのBPクラスかわかるので、そのブループリントクラスのイベントグラフを見てどういう処理が書かれているかを調べる</li>
+<li>他には必要だったらレベルブループリントやポーン側でどう処理してるかを見る</li>
+</ul>
+<h3 id="ブースごとの内容"><a href="#ブースごとの内容" class="headerlink" title="ブースごとの内容"></a>ブースごとの内容</h3><h4 id="1-1-Basic-communication-with-a-target-blueprint"><a href="#1-1-Basic-communication-with-a-target-blueprint" class="headerlink" title="1.1 Basic communication with a target blueprint"></a>1.1 Basic communication with a target blueprint</h4><p>方法：対象アクターの変数を持っておき、<strong>カスタムイベント</strong>を呼び出す</p>
+<p>説明文：「この例には、カスタムイベントを介してライトブループリントのオンとオフを切り替えるボタンブループリントが含まれています。
+プレイ中にボタンに近づくと、有効になります。」
+(This example features a button Blueprint that toggles a light Blueprint on and off via a custom event.
+Approach the button while playing to activate it.)</p>
+<ul>
+<li>ボタンのクラス <code>BP_ButtonLight_Bulb_Basic</code> 側のイベント <code>OnComponentBeginOverlap</code>, <code>OnComponentEndOverlap</code> でプレイヤー（ポーン）とのオーバーラップを検知して、ボタンの発光と電球のオンオフをしている</li>
+<li><code>BP_Light_Bulb_Basic</code> 型の変数 <code>Target light</code> が<code>public</code>になっていて、レベルに配置されたアクター<code>BP_Generic_Button</code>の詳細パネルで対象のアクターが設定されていることで、それに対してカスタムイベントが呼び出される</li>
+</ul>
+<h4 id="1-2-Blueprint-communication-via-actor-casting"><a href="#1-2-Blueprint-communication-via-actor-casting" class="headerlink" title="1.2 Blueprint communication via actor casting"></a>1.2 Blueprint communication via actor casting</h4><p>方法：対象アクターの変数を持っておき、カスタムイベントを呼び出す</p>
+<p>説明文：「この例では、バッテリーを接続することで電球ブループリントのオンとオフが切り替わります。
+電球はオーバーラップイベントを使用してバッテリーブループリントとの接触を検出し、それに応じてオン&#x2F;オフになります。」
+(In this example, a lightbulb Blueprint is toggled on and off by connecting a battery. The lightbulb uses an overlap event to detect contact with the battery Bluerpint and turns on&#x2F;off accordingly.)</p>
+<ul>
+<li><code>BP_Button_Battery</code> クラスがオーバーラップを検知して、<code>BP_Battery</code>型の変数<code>Target battery</code>に設定されたアクターに<code>Move up/down</code>カスタムイベントを送り、上下移動させる</li>
+<li>バッテリーが移動したことにより、電球<code>BP_Light_Bulb_Battery_Powered</code> 側でオーバーラップを検知したら、自分の<code>Toggle Light</code>カスタムイベントを呼び出し、マテリアルの色とライトの<code>Intensity</code>を変更する</li>
+<li><code>BP_Battery</code> の <code>Electricity value</code> 変数を見て明るさを決めている</li>
+</ul>
+<h4 id="1-3-Blueprint-communication-via-actor-casting-to-child-Blueprint"><a href="#1-3-Blueprint-communication-via-actor-casting-to-child-Blueprint" class="headerlink" title="1.3 Blueprint communication via actor casting to child Blueprint"></a>1.3 Blueprint communication via actor casting to child Blueprint</h4><p>方法：対象アクターの変数を持っておき、カスタムイベントを呼び出す</p>
+<p>説明文：「これらの電球ブループリントは、異なる種類のバッテリーが接続することでオン&#x2F;オフになります。
+各バッテリーは同じ親ブループリントから派生していますが、異なるエネルギー値を持っていてライトの明るさに影響を与えます。」
+These lightbulb Blueprints are turned on&#x2F;off by connecting different types of batteries. Each battery is derived from the same parent Blueprint, but has different energy values that affect the brightness of the light.</p>
+<ul>
+<li>1.2と同じだけど、3種類のバッテリーでそれぞれライトの明るさが変わる</li>
+<li><code>BP_Battery</code> を親に持つ <code>BP_Battery_Small_Child</code> と <code>BP_Battery_Big_Child</code> がそれぞれ指定されている<ul>
+<li>タイトルが “casting to child Blueprint” となっているが別に <code>Small_Child</code> や <code>Big_Child</code> にキャストしているわけではなさそう</li>
+</ul>
+</li>
+<li>バッテリーのパワーやメッシュの変更だけだったら <code>BP_Battery</code> に変数が用意されていてレベルのアクターの変数の設定で対応できると思うんだけど、わざわざ子クラスを作るのはなにか意味があるんだろうか？</li>
+</ul>
+<h4 id="1-4-Communicating-with-all-actors-of-a-specific-class"><a href="#1-4-Communicating-with-all-actors-of-a-specific-class" class="headerlink" title="1.4 Communicating with all actors of a specific class"></a>1.4 Communicating with all actors of a specific class</h4><p>方法：レベルに存在する特定クラスのアクターすべてにカスタムイベントを呼び出す</p>
+<p>説明文：「この電球ブループリントたちはすべて、１つのボタンでオンまたはオフになります。
+ボタンブループリントは、電球クラスのすべてのインスタンスを検索し、それぞれのインスタンスで「Toggle light」カスタム イベントを呼び出します。」
+(This collection of lightbulb Blueprints are all turned on and off by one button. The button Blueprint finds all instances of the lightbulb class and calls the “Toggle light” custom event in each of them.)</p>
+<ul>
+<li>ボタンのクラス <code>BP_Button_Light_Bulb_Pulse</code> で <code>Get All Actors Of Class</code> ノードを呼び出して、レベルに存在するすべての <code>BP_Light_Bulb_Pulse</code> 型のインスタンスを列挙して操作対象にする<ul>
+<li>複数の対象に対して <code>ForEachLoop</code>→<code>Cast To</code>→個別にカスタムイベント呼び出し</li>
+<li>後の3.1のように（カスタムイベントとブループリントインターフェースという違いはあるが）、ループせずに一括対象にもできる模様</li>
+</ul>
+</li>
+<li>クラス <code>BP_Light_Bulb_Pulse</code> のカスタムイベント <code>Toggle light</code> で処理</li>
+<li>電球の明るさの時間変化はタイムラインで行っている</li>
+</ul>
+<h4 id="2-1-Using-an-Event-Dispatcher-function-to-call-an-event-in-the-Level-Blueprint"><a href="#2-1-Using-an-Event-Dispatcher-function-to-call-an-event-in-the-Level-Blueprint" class="headerlink" title="2.1 Using an Event Dispatcher function to call an event in the Level Blueprint"></a>2.1 Using an Event Dispatcher function to call an event in the Level Blueprint</h4><p>方法：<strong>イベントディスパッチャー</strong>の呼び出しをレベルブループリント側で処理する</p>
+<p>説明文：「これはイベントディスパッチャー機能を介して電球ブループリントのオンとオフを切り替えるボタンブループリントの例です。
+このボタンはイベントディスパッチャーを呼び出し、レベルブループリントでイベントを起動してライトのオンとオフを切り替えます。」
+(This is an example of a button Blueprint toggling a lightbulb Blueprint on and off via an Event Dispatcher function. The button calls the Event Dispatcher, which fires the event in the Level Blueprint to toggle the light on or off.)</p>
+<ul>
+<li>ボタンのクラス <code>BP_Button_Dispatch</code> でオーバーラップを検知して <code>Button toggled</code> イベントディスパッチャーを呼び出す<ul>
+<li><a href="https://docs.unrealengine.com/5.2/ja/event-dispatchers-in-unreal-engine/">イベントディスパッチャーのドキュメント</a></li>
+</ul>
+</li>
+<li>レベルブループリントのイベントグラフに<code>Button toggled</code>を受け取るノードが設定されていて、対象の電球<code>BP_Light_Bulb_Basic2</code> の <code>Toggle Light</code> カスタムイベントを呼び出して制御する</li>
+<li>イベントディスパッチャーの<code>Variable Type</code>が<code>Multicast Delegate</code>になっていて（固定されている）、レベルブループリントのイベントグラフに直接ノードが追加できている<ul>
+<li>対象のアクターがレベルに配置されてるから？レベルのブループリントのイベントグラフから直接設定できる。レベルブループリントの<code>BeginPlay</code>でバインドする、といったことをする必要はない。</li>
+</ul>
+</li>
+<li>この場合、レベルがお互いの関係を知っていて関連付けている</li>
+</ul>
+<h4 id="2-2-Binding-an-Event-Dispatcher-function-to-a-custom-event"><a href="#2-2-Binding-an-Event-Dispatcher-function-to-a-custom-event" class="headerlink" title="2.2 Binding an Event Dispatcher function to a custom event"></a>2.2 Binding an Event Dispatcher function to a custom event</h4><p>方法：イベントディスパッチャーにバインドして、呼び出しを受け取る</p>
+<p>説明文：「この例では同じボタンブループリントが回転アニメーションを開始および停止します。
+この場合、回転ブループリントは、レベルブループリントを使用する代わりに、ボタンのイベントディスパッチャー機能を内部でカスタムイベントにバインドします。」
+(In this example, the same button Blueprint starts and stops a rotating animation. In this case, the rotating Blueprint binds the button’s Event Dispatcher function to a custom event internally, instead of using the Level Blueprint.)</p>
+<ul>
+<li>2.1と同じ<code>BP_Button_Dispatch</code>クラスだけど、電球（<code>BP_Spinning_Loop_Dispatch</code>）側が <code>BeginPlay</code>イベントでイベントディスパッチャーにカスタムイベントをバインドしている</li>
+<li>この場合、電球側がボタン側を知っていて関連付けている</li>
+</ul>
+<h4 id="2-3-Binding-an-Event-Dispatcher-to-a-custom-event-on-spawn"><a href="#2-3-Binding-an-Event-Dispatcher-to-a-custom-event-on-spawn" class="headerlink" title="2.3 Binding an Event Dispatcher to a custom event on spawn"></a>2.3 Binding an Event Dispatcher to a custom event on spawn</h4><p>方法：イベントディスパッチャーにバインドして、呼び出しを受け取る</p>
+<p>説明文：「このボタンを押すと爆弾のブループリントが生成されます。
+このボタンは爆弾ブループリントが爆発したことを通知するディスパッチイベントを受信するまで、１回だけ押すことができます。」
+(This button will spawn a bomb Blueprint when pressed. The button can only be pressed once, until it received a Dispatch Event notifying it that the bomb Blueprint has exploded.)</p>
+<ul>
+<li>ボタンは<code>BP_Button_Dispatch_Bomb</code>で、オーバーラップで自分の<code>Activate</code>カスタムイベントを呼び出して爆弾をスポーンする。</li>
+<li>スポーンした爆弾（<code>BP_Bomb</code>）のイベントディスパッチャー<code>Bomb Exploded</code>にカスタムイベントをバインドして爆発終了を検知する。爆発するまでの間は２つ目は作られないようにする（<code>Button Enabled</code>変数で管理）。</li>
+<li>イベントディスパッチャーのバインドのやり方自体は2.2と特に変わらない。</li>
+</ul>
+<h4 id="3-1-Basic-communication-using-Blueprint-Interface-function"><a href="#3-1-Basic-communication-using-Blueprint-Interface-function" class="headerlink" title="3.1 Basic communication using  Blueprint Interface function)"></a>3.1 Basic communication using  Blueprint Interface function)</h4><p>方法：アクター配列変数に対して<strong>ブループリントインターフェース</strong>の関数を呼び出す</p>
+<p>説明文：「この例ではブループリントボタンはブループリントインターフェースメッセージを介してさまざまなブループリントの配列をアクティブにします。
+各ブループリントは異なるクラスですが、同じブループリントインターフェース イベントを使用しているため、最初に各クラスにキャストする必要がなく、単一の関数ですべてをアクティブ化することができます。」
+(In this example, a button Blueprint activates an array of different Blueprints via a Blueprint Interface message.
+Although each Blueprint is a different class, the fact that they employ the same Blueprint Interface Event makes it possible to activate them all with a single function, without the need to cast to each class first.)</p>
+<ul>
+<li>ボタン <code>BP_Button_Interface</code> に <code>Actor</code> 配列型の変数 <code>Target Blueprints</code>があり、オーバーラップで <code>BPI_Player_Interactions</code> ブループリントインターフェース（以下BPインターフェース）の <code>Pushed Button</code> 関数を呼び出す<ul>
+<li><code>Actor</code> 配列を <code>ForEachLoop</code> ノードでループして <code>Cast To</code> とかせずに、直接与えられる模様<ul>
+<li>イベントグラフで右クリック＞「Pushed Button」で選択できる</li>
+<li>インターフェースを実装しないアクタークラスの場合は無視されるっぽい</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>Target Blueprints</code> 変数に設定されている３つのBPクラス <code>BP_Light_Bulb_Interface</code>, <code>BP_LED_Inteface</code>, <code>BP_Spinning_Logo</code> はどれも <code>BPI_Player_Interactions</code> を実装している<ul>
+<li>BPクラスがインターフェースを実装しているかどうかは、「⚙️Class Settings」をクリック＞Interfaces＞Implemented Interfaces に登録されていることを調べる。またMy Blueprint＞INTERFACES に所定のインターフェースの関数があることを確認する。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-2-Communication-using-a-Blueprint-Interface-function"><a href="#3-2-Communication-using-a-Blueprint-Interface-function" class="headerlink" title="3.2 Communication using a Blueprint Interface function"></a>3.2 Communication using a Blueprint Interface function</h4><p>方法：オーバーラップしたアクターが特定のBPインターフェースを持っていたら呼び出す</p>
+<p>説明文：「この例ではブループリントボタンは、BPインターフェースメッセージを介してさまざまなブループリントの配列をアクティブにします。
+各ブループリントは異なるクラスですが、同じBPインターフェースイベントを使用しているため、最初に各クラスにキャストする必要がなく、単一の関数ですべてをアクティブ化することができます。」
+(In this example, a button Blueprint activates an array of different Blueprints via a Blueprint Interface Message
+Although each Blueprint is a different class, the fact that they employ the same Blueprint Interface Event makes it possible to activate them all with a single function, without the need to cast to each class first.)</p>
+<ul>
+<li>今までのサンプルと違いオーバーラップで電球がオンオフされるんではなく、オーバーラップでテキスト表示され、対象のレバーをマウス操作で電球がオンオフされる</li>
+<li>ポーン <code>MyCharacter_BP_Comms</code> でマウス左クリック時に <code>Get closest interactive actor</code> 関数でオーバーラップしているアクターの中から <code>Does Implement Interface</code>ノードで <code>BPI_Player_Interfactions</code> を探し、水平距離が一番近いものを <code>Actor To interact With</code> 変数に格納</li>
+<li><code>Tick</code>イベントで <code>interacting</code> だったら <code>BPI_Player_Interactions</code> の <code>Grab Interact</code> 関数を呼び出し、対象の各クラスで処理される（そっちの処理はあまりよく理解できなかった…）</li>
+<li>内容的には3.1 との違いがわからず、<code>Pushed button</code> に比べて <code>Grab Interact</code> は引数や戻り値がある、という程度？</li>
+</ul>
+<h4 id="3-3-Communication-using-a-Blueprint-Interface-function"><a href="#3-3-Communication-using-a-Blueprint-Interface-function" class="headerlink" title="3.3 Communication using a Blueprint Interface function"></a>3.3 Communication using a Blueprint Interface function</h4><p>方法：オーバーラップしたアクターが特定のBPインターフェースを持っていたら呼び出す</p>
+<p>説明文：「この例では発射物の衝突を処理するためのBPインターフェースメッセージの使用を示します。
+発射体ブループリントは衝突時に球体ブループリント上のインターフェース関数を呼び出し、各球体はインターフェースを介して渡された情報に対して異なる反応を示します。」
+(This example demonstrates a Blueprint Interface Message use for handling projectile collisions. The projectile Blueprints call an Interface function on the sphere Blueprints when  they hit, and each sphere responds differently to the information passed through the Interface.)</p>
+<ul>
+<li>近くに来るとマウス左で火、マウス右で水を撃てるようになり、３種類の球に当たるとそれぞれ異なる反応をする<ul>
+<li>範囲かどうかはレベルに配置された <code>TriggerBox</code> とのオーバーラップをレベルブループリントのイベントグラフで取得してポーン（<code>MyCharacter_BP_Comms</code>）の<code>Powers Enabled</code>変数を書き換える</li>
+</ul>
+</li>
+<li><code>MyCharacter_BP_Comms</code> でマウスクリック時に <code>Shoot fireball</code> または <code>Shoot water</code> カスタムイベントで、<code>SpawnActor</code> ノードで <code>BP_Projectile_Fire</code> または <code>BP_Projectile_Water</code> を生成</li>
+<li>どちらも<code>ActorBeginOverlap</code>でオーバーラップしたアクターに対して <code>BPI_Elemental_Projectiles</code> インターフェースの <code>Elemental Damage</code> 関数にパラメータ <code>Heat</code> と <code>Water</code> を渡して呼び出す</li>
+<li>３つの球はそれぞれ <code>BP_Metal_Sphere</code>, <code>BP_WoodSphere</code>, <code>BP_Ice_Sphere</code> クラスで、
+<code>Elemental Damage</code> インターフェース関数を実装、パラメータに従って変数を変更し、
+<code>Tick</code>イベントでマテリアルのパラメータを設定して火や水の影響を表示に反映させている</li>
+</ul>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><ul>
+<li>ブループリント間でやり取りするには <strong>カスタムイベント</strong>、 <strong>イベントディスパッチャー</strong>、 <strong>BPインターフェース</strong> の３通り<ul>
+<li>実際には他にも <strong>関数呼び出し</strong> や変数参照・変更もあるっちゃある</li>
+</ul>
+</li>
+<li>各方法の特徴<ul>
+<li><strong>カスタムイベント</strong>：呼び出し元が呼び出し先のことを知っている（依存関係）</li>
+<li><strong>イベントディスパッチャー</strong>：呼び出し元が呼び出し先のクラスを判定して処理を分ける、ということをしなくて済む<ul>
+<li>呼び出し元と呼び出し先が直接は無関係でいられて、バインドするやつが双方に依存する</li>
+<li>バインドは不特定多数で可能</li>
+</ul>
+</li>
+<li><strong>BPインターフェース</strong>：呼び出し元と呼び出し先がそれぞれBPインターフェースに依存するが、お互いは直接は独立<ul>
+<li>インターフェース（や関数呼び出し）はイベントと違って戻り値を受け取れる、という違いがある</li>
+<li>関数の場合<code>Delay</code>ノードなどの時間経過を含むノードは使えない。インターフェースの場合も戻り値がある場合は使えない？っぽい。戻り値がない場合には歯車が黄色になってイベントグラフ上に置かれる？</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>所感<ul>
+<li>配列に対して一括でカスタムイベントやBPインターフェースの呼び出し、またアクターに対してキャストせずに呼び出せることを知った</li>
+<li>部屋がコンストラクションスクリプトで作られていてサイズなどを変更すれば対応できてすごいんだけど、
+メッシュの構築などをノードで組むのは大変そう…</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/07/29/ue5-cpp.html" title="Unreal EngineのC++プロジェクトを試してみる" rel="bookmark">Unreal EngineのC++プロジェクトを試してみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/07/07/ue5-first-game.html" title="Unreal Engineの入門" rel="bookmark">Unreal Engineの入門</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li><li class="recent_post"><a href="/blog/2023/07/17/calc-asin.html">arcsinを数値計算する方法を探し求めて彷徨う</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
