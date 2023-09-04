@@ -10,7 +10,10 @@
 
     <!--Description-->
     
-        <meta name="description" content="SolokusというパズルゲームをHaskellで解いてみた。">
+        <meta name="description" content="C言語のマクロの引数の最後に ... を指定することで任意個の引数を取り、 __VA_ARGS__ で参照できる：
+#define LOG(fmt, ...)  printf(fmt, __VA_ARGS__)
+
+が、上記のように他の関数に渡す場合、可変部分は１個以上値を渡さないとエラーが出てしまう">
     
 
     <!--Author-->
@@ -20,7 +23,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="SolokusをHaskellで解く"/>
+        <meta property="og:title" content="【C】可変長マクロで引数なしを受け渡すには＃＃__VA_ARGS__ (gcc拡張)"/>
     
 
     <!--Open Graph Description-->
@@ -42,7 +45,7 @@
 
     <!-- Title -->
     
-    <title>SolokusをHaskellで解く - Kludge Factory</title>
+    <title>【C】可変長マクロで引数なしを受け渡すには＃＃__VA_ARGS__ (gcc拡張) - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -67,7 +70,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2017/03/13/solokus-solver.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2015/03/04/va_args.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -152,13 +155,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>SolokusをHaskellで解く</h1>
+                    <h1>【C】可変長マクロで引数なしを受け渡すには＃＃__VA_ARGS__ (gcc拡張)</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2017-03-13
+                            2015-03-04
                         
                     </span>
                 </div>
@@ -179,7 +182,7 @@
                         
 
 
-<a href="/tags/haskell/">#haskell</a> <a href="/tags/puzzle/">#puzzle</a>
+<a href="/tags/c/">#c</a>
 
 
                     
@@ -194,26 +197,24 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p><a href="http://wakeninc.blogspot.jp/2017/01/solokus.html">Solokus</a>というパズルゲームをHaskellで解いてみた。</p>
-<span id="more"></span>
+                <span id="more"></span>
+<p>C言語のマクロの引数の最後に <code>...</code> を指定することで任意個の引数を取り、 <code>__VA_ARGS__</code> で参照できる：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)  printf(fmt, __VA_ARGS__)</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="Solokusは気軽に遊べるパズルゲーム"><a href="#Solokusは気軽に遊べるパズルゲーム" class="headerlink" title="Solokusは気軽に遊べるパズルゲーム"></a>Solokusは気軽に遊べるパズルゲーム</h3><p><img src="/assets/solokus_ss.png" alt="Solokus"></p>
-<p>Solokusはスマホ用のパズルゲームで、複数の正方形が組み合わさったピースを正方形の中に敷き詰めるとステージクリア。
-たぶん<a href="https://ja.wikipedia.org/wiki/%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%82%B9">Blokus</a>から発想を得ていて、同じ色のピースは角を接するように配置する必要がある。</p>
-<p>これが結構楽しい。
-なにがいいかって、あまり難しすぎないので気軽にプレイできて、適当に試行錯誤して解くことができる。
-あまり先読みとか理詰めで考えずにプレーできる（逆にあまりそういう風には解けない）。</p>
-<p>同じようなピースを詰めるパズルの<a href="https://ja.wikipedia.org/wiki/%E3%83%9A%E3%83%B3%E3%83%88%E3%83%9F%E3%83%8E">ペントミノ</a>とかは自由度がありすぎて、適当に詰めていくと終盤どうにもはまらなくなって解けないことが多いんだけど、Solokusは4色がそれぞれ4隅からと決まっていて、また角を接して置かないといけないという制約があるので、試行錯誤できる程よい難易度になっている。
-4x4または5x5と盤面もそれほど広くなく、また前半のステージではピースの回転や反転がない、などととっつきやすくなっている。</p>
-<h3 id="Haskellでパズルを解く"><a href="#Haskellでパズルを解く" class="headerlink" title="Haskellでパズルを解く"></a>Haskellでパズルを解く</h3><p>ちょっと話題は変わって、先日「<a href="http://amzn.to/2nvMioV">Haskellによる関数プログラミングの思考法</a>」という翻訳本が発売されたということらしく、その<a href="https://archive.org/details/pdfy-9mSqnvZwb98w41N8">原作本</a>というものがあったのでちらっと読んでみた。
-その中に数独を解く章があって、それを読んでたらパズルを解いてみたい気持ちになった。</p>
-<p>ということでSolokusソルバを作ってみた。</p>
-<p><a href="https://github.com/tyfkda/SolokusSolver">tyfkda&#x2F;SolokusSolver - GitHub</a></p>
-<p><a href="https://github.com/tyfkda/SolokusSolver"><img src="https://raw.githubusercontent.com/tyfkda/SolokusSolver/master/ss.png" alt="ss.png"></a></p>
-<p>何のひねりもない力技で、置けるパターンを総当りで探す、という方法。
-今のところSolokusの問題は盤面がそんなに広くなく、またピースが4色に分かれているので組み合わせがそれほど膨大にならない、という前提があるのでとっかかりとしてはそれでいいかなと。</p>
-<p>凝ったことをやってないのでアレだけど、Solokusのルールは置ける候補地（斜めに同色がある）の列挙、置けるかどうかの判定（ピースが重ならない、同色と辺を接してない）のどちらも対象のマスだけ調べればいいルールだけで簡単なので、なかなかいい遊びになった。</p>
-<h3 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h3><p>Haskellでパズルを総当りで解く場合、途中まで進行した盤面が複数あって、それぞれに次の手を反映させた次の盤面を複数返す関数を<code>concatMap</code>で適用してフラットにして、それをすべての手について<code>foldr</code>で最後まで行う、というのがイディオムかなぁとなんとなく思った。</p>
+<p>が、上記のように他の関数に渡す場合、可変部分は１個以上値を渡さないとエラーが出てしまう：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">LOG(<span class="string">&quot;FOOBAR\n&quot;</span>);  <span class="comment">// &lt;= コンパイルエラー</span></span><br></pre></td></tr></table></figure>
+
+<p>これは <code>__VA_ARGS__</code> が空になり、マクロが単純に <code>printf(&quot;FOOBAR\n&quot;, );</code> と置換されてしまうためである。</p>
+<h3 id="回避方法"><a href="#回避方法" class="headerlink" title="回避方法"></a>回避方法</h3><p>gccだと <code>##__VA_ARGS__</code> というのを使えば、０個の場合でも受け渡せる：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)  printf(fmt, ##__VA_ARGS__)</span></span><br></pre></td></tr></table></figure>
+
+<p>追記：またはC++20でサポートされた？ <code>__VA_OPT__</code> で可変引数が０の場合に無視するトークンを指定できるとのこと：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> LOG(fmt, ...)  printf(fmt __VA_OPT__(,) __VA_ARGS__)</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><a href="https://ja.wikipedia.org/wiki/%E5%8F%AF%E5%A4%89%E9%95%B7%E5%BC%95%E6%95%B0#C%E3%83%97%E3%83%AA%E3%83%97%E3%83%AD%E3%82%BB%E3%83%83%E3%82%B5%E3%83%BB%E3%83%9E%E3%82%AF%E3%83%AD">可変長引数 - Wikipedia</a></li>
+</ul>
 
 
                 
@@ -225,7 +226,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/18/solve-slither-link.html" title="【Haskell】SATソルバを使ってスリザーリンクを解く" rel="bookmark">【Haskell】SATソルバを使ってスリザーリンクを解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く" rel="bookmark">【Haskell】SATソルバを使って数独を解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/08/14/c-const.html" title="【C】constポインタは何が上書き不可なのか" rel="bookmark">【C】constポインタは何が上書き不可なのか</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/08/29/customize-printf.html" title="【C】printfに独自の表示形式を追加する" rel="bookmark">【C】printfに独自の表示形式を追加する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/23/mark-sweep.html" title="マーク＆スイープ法をテスト実装してみる" rel="bookmark">マーク＆スイープ法をテスト実装してみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/11/23/open-impl.html" title="【C】可変長引数の回避と引数の数による関数の呼び分け" rel="bookmark">【C】可変長引数の回避と引数の数による関数の呼び分け</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/20/parsing-func-returning-func.html" title="関数ポインタを返す関数のパースと型の構築" rel="bookmark">関数ポインタを返す関数のパースと型の構築</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
