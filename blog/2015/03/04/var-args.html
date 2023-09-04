@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
     <head>
+        <meta charset="utf-8">
         <meta http-equiv="refresh" content="0;URL='va_args.html'" />
+
+        <title>【C】可変長マクロで引数なしを受け渡すには ##__VA_ARGS__ (gcc拡張) - Kludge Factory</title>
+        <meta name="description" content="C言語のマクロの引数の最後に ... を指定することで任意個の引数を取り、 __VA_ARGS__ で参照できる：
+        #define LOG(fmt, ...)  printf(fmt, __VA_ARGS__)
+
+        が、上記のように他の関数に渡す場合、可変部分は１個以上値を渡さないとエラーが出てしまう">
     </head>
-    <body>
-    </body>
+    <body></body>
 </html>
