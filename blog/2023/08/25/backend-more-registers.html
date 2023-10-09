@@ -219,20 +219,20 @@
 </li>
 <li><code>%rax</code>: 関数の戻り値、また乗算や除算で利用される</li>
 <li><code>%rbp</code>: ベースポインタ</li>
-<li>（<code>%rsp</code>: スタックポインタ）　←汎用には使えないので対象外</li>
+<li>（<code>%rsp</code>: スタックポインタ）　←常にスタック操作で必要なので対象外</li>
 </ul>
 <p>呼出規約で決められているレジスタや、プロセッサの制限で固定されているレジスタを使えていなかった。
 スタックポインタは無理としても、少なくともレジスタ渡しに使うレジスタは使えるようにしたい。</p>
-<h4 id="関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた"><a href="#関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた" class="headerlink" title="関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた"></a>関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた</h4><p>関数呼出がネストされているかもしれないので、レジスタ渡しの引数を呼出規約の引数レジスタに直接格納するのではなく、
+<h4 id="関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた"><a href="#関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた" class="headerlink" title="関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた"></a>関数呼出の引数をいったんスタックに積んでからレジスタに取り出していた</h4><p>関数呼出の引数でさらに関数呼出をするという具合にネストされているかもしれないので、レジスタ渡しの引数を呼出規約の引数レジスタに直接格納するのではなく、
 いったんスタックに積んでおいてそれを<code>CALL</code>直前に各レジスタにポップしていた。
 これが無駄なのでやめたい。</p>
 <h4 id="呼び出された関数側で受け取った引数を必ずメモリに割り付けていた"><a href="#呼び出された関数側で受け取った引数を必ずメモリに割り付けていた" class="headerlink" title="呼び出された関数側で受け取った引数を必ずメモリに割り付けていた"></a>呼び出された関数側で受け取った引数を必ずメモリに割り付けていた</h4><p>レジスタで渡された引数は、その関数内でほかの関数呼出を含んでいると破壊される可能性がある。
 そういう場合にそのまま保持しておけないので、常にメモリに逃すようにしていた。
 これもできれば受け取ったレジスタのまま扱えるようにしたい。</p>
 <h3 id="対策"><a href="#対策" class="headerlink" title="対策"></a>対策</h3><h4 id="関数の引数を展開する"><a href="#関数の引数を展開する" class="headerlink" title="関数の引数を展開する"></a>関数の引数を展開する</h4><p>C言語では関数呼出の引数に式を書くことができるので、さらに関数を呼び出してネストさせたり、代入などの副作用や三項演算子の条件分岐などいろいろ複雑なことができてしまう。
-コンパイラの動作として外側の関数呼出用に呼出規約の引数レジスタに値を代入していってる間に、内側の関数呼出で別の値に書き換えられてしまうと困る。</p>
+コンパイラの動作として外側の関数呼出用に呼出規約の引数レジスタに値を代入していってる間に、内側の関数呼出で別の値に上書きされてしまったり、また関数呼出後には引数レジスタの値は保持されていないので動作が不定になってしまう。</p>
 <p>そこで関数の引数が単純な式ではない場合には事前に計算してテンポラリ変数に格納して、単なる変数参照になるようにする。
-例えば <code>foo(bar())</code> などという式だったら <code>tmp = bar(), foo(tmp)</code> という具合に展開するようにした。</p>
+例えば <code>foo(bar())</code> などという式だったら <code>tmp = bar(), foo(tmp)</code> という具合に展開してやる。</p>
 <p>こうすることで関数呼出がネストしないようになり、呼出規約の引数レジスタに直接代入できるようになる。
 （内部的にテンポラリ変数を追加してもレジスタに割り付けられれば結局はノーペナである。）</p>
 <h4 id="割付対象の物理レジスタを増やす：7→12"><a href="#割付対象の物理レジスタを増やす：7→12" class="headerlink" title="割付対象の物理レジスタを増やす：7→12"></a>割付対象の物理レジスタを増やす：7→12</h4><p>呼出規約のレジスタ渡しで使われる<code>%rdi</code> ~ <code>%r9</code>は <code>CALL</code> 命令が使用されると値が壊される可能性があるため使わないようにしていた。
@@ -302,7 +302,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
