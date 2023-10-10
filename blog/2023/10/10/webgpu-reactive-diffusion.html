@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ずっと昔にWebGLを触ってみたことがあったのだけど初期化が面倒で放置になってしまった。
+近頃（というか今年の前半に）WebGPUというものが使えるようになったということを聞いたので、再挑戦を込めてようやく触ってみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="WebGPUで反応拡散系"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>WebGPUで反応拡散系 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/10/10/webgpu-reactive-diffusion.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>WebGPUで反応拡散系</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-10-10
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cg/">#cg</a> <a href="/tags/math/">#math</a> <a href="/tags/webgpu/">#webgpu</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ずっと昔に<a href="/tags/webgl/">WebGL</a>を触ってみたことがあったのだけど初期化が面倒で放置になってしまった。
+近頃（というか今年の前半に）WebGPUというものが使えるようになったということを聞いたので、再挑戦を込めてようやく触ってみた。</p>
+<span id="more"></span>
+
+<h3 id="デモ"><a href="#デモ" class="headerlink" title="デモ"></a>デモ</h3><style type="text/css">
+  .applet {
+    transition: box-shadow 0.25s;
+  }
+  .applet:hover {
+    box-shadow:0 0 8px blue;
+  }
+  @media screen and (max-width:768px) {
+    .applet {
+      height: 340px;
+    }
+  }
+  @media screen and (max-width:768px) {
+    .applet2 {
+      transform: scale(0.5);
+      transform-origin: top left;
+    }
+  }
+</style>
+<div class="applet" style="border:1px solid black; border-radius:8px; margin:16px"><iframe class="applet2" src="/assets/webgpu-reactive-diffusion/" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto; width:528px; height:680px"></iframe></div>
+
+<h3 id="WebGPUのざっくり理解"><a href="#WebGPUのざっくり理解" class="headerlink" title="WebGPUのざっくり理解"></a>WebGPUのざっくり理解</h3><p>WebGPUを始めるにあたって、ググって出てきた<a href="https://codelabs.developers.google.com/your-first-webgpu-app">初めての WebGPU アプリ</a>を参考にしてみた。
+内容はライフゲームを作るチュートリアルで、世代更新の処理をコンピュートシェーダーを使ってGPUで並列に計算できるのが利点となっている。
+また頂点・フラグメントシェーダーもモデルを１体描画するだけじゃなくインスタンシングで複数行えたり、
+描画パスを複数設定して１回のコマンドバッファ起動で複数の処理や描画を行わせることができる
+（自分が知らないだけでWebGLでもできたのかもしれない）。</p>
+<h4 id="初期化"><a href="#初期化" class="headerlink" title="初期化"></a>初期化</h4><p>WebGLでもそうだったが、WebGPUもより一層初期化が面倒で多数の要素が必要なのでさらに複雑度が増している：</p>
+<ul>
+<li>アダプターとデバイスをリクエストする</li>
+<li>キャンバスを設定する</li>
+<li>頂点バッファを作成<ul>
+<li>頂点バッファのレイアウトを定義</li>
+</ul>
+</li>
+<li>シェーダーモジュールを作成（コンピュート・頂点・フラグメントシェーダー）</li>
+<li>パイプライン作成：　←シェーダーモジュールを指定<ul>
+<li>パイプラインレイアウト</li>
+</ul>
+</li>
+<li>ユニフォーム用のバッファを作成</li>
+<li>バインドグループ作成<ul>
+<li>バインドグループレイアウト</li>
+</ul>
+</li>
+</ul>
+<p>すでに心折れかかってる…こう実行時に使うためのインスタンスを初期化で事前にあれこれ準備しておく必要があるのって管理が煩雑でわけわからなくなるんだよね…。</p>
+<h4 id="実行時の処理"><a href="#実行時の処理" class="headerlink" title="実行時の処理"></a>実行時の処理</h4><p>実行も手順は多段に渡る：</p>
+<ul>
+<li>コマンドエンコーダーを作成<ul>
+<li>コンピュートパスまたはレンダーパスを開始<ul>
+<li>パイプラインを指定</li>
+<li>（レンダーパスのみ）パスに頂点バッファを設定</li>
+<li>ユニフォームの値を設定</li>
+<li>バインドグループを設定</li>
+<li>（レンダーパス）描画コマンド、（コンピュートパス）ディスパッチワークグループ</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>デバイスキューにコマンドバッファを送る</li>
+</ul>
+<p>「初めての…」のライフゲームでは計算を進める際に<a href="https://codelabs.developers.google.com/your-first-webgpu-app#6">ピンポンバッファパターン</a>を用いるが、ストレージだけじゃなくバインドグループも２つ用意してフレームごとに切り替えて使用する必要がある。</p>
+<h4 id="シェーダー"><a href="#シェーダー" class="headerlink" title="シェーダー"></a>シェーダー</h4><p>シェーダーの文法はWGSLという、WebGLでのものなどとも違う、新たな書式になっている。
+シェーダーではいくつかの種類のデータを扱うことができる：</p>
+<ul>
+<li>ユニフォーム：少量のデータ（行列、マテリアル、など）</li>
+<li>ストレージ：より大型のデータ（ライフゲームでのセル情報を入れる二次元配列など）</li>
+<li>自分のID（インデックス）：コンピュートシェーダーで並列処理させる際に利用できる</li>
+<li>テクスチャ：フラグメントシェーダーでテクスチャサンプラーを使って内容を参照できる</li>
+</ul>
+<h3 id="改変してみる"><a href="#改変してみる" class="headerlink" title="改変してみる"></a>改変してみる</h3><p>じゃあここからなにを作ろうかと思い、アイディアに欠けるが以前もやったことがあったが<a href="/blog/2017/07/01/reaction-diffusion.html" title="反応拡散系">反応拡散系</a>をWebGPU上で動かしてみることにした。
+以前のプログラムではすべての計算をJavaScriptで動かしていたが、今回はWebGPUのシェーダーで並列化できるのが利点。</p>
+<p>実際のところ大枠はライフゲームと同じでセルごとの計算が違うだけなので、最速でやるならコンピュートシェーダーの変更だけで事足りる。
+それだけではなんなので、少しいじってみた：</p>
+<ul>
+<li>ストレージからテクスチャに変換<ul>
+<li>「初めての…」ではコンピュートシェーダーでストレージを更新し、描画時にフラグメントシェーダーからも参照してセル描画していたが、<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToTexture">copyBufferToTexture</a>でテクスチャに変換してUVによるテクスチャサンプルにしてみた</li>
+<li>ただなぜかサンプラーでフィルターを使うとエラーになってしまう、<code>nearest</code>しか使えず補間されないので結果は変わらず</li>
+<li>テクスチャ化によって描画側のバインドグループはダブルバッファにする必要はなくなる</li>
+</ul>
+</li>
+<li>マウスでセルの状態をいじれるようにする<ul>
+<li>インタラクティブに変更するには、ストレージの内容をCPU側に読み出す必要がある</li>
+<li>読み出し用のストレージとして<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createBuffer">device.createBuffer({usage: GPUBufferUsage.MAP_READ})</a>を指定して作成</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUBuffer/mapAsync">buffer.mapAsync(GPUMapMode.READ)</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUBuffer/getMappedRange">buffer.getMappedRange</a>で読み出す</li>
+<li>編集した内容を<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer">device.queue.writeBuffer</a>で書き戻す</li>
+<li>マウスイベント時には処理ができないのと<code>async</code>での非同期も必要なので、変数に保持しておいて<code>draw</code>時に処理する</li>
+</ul>
+</li>
+<li>3D表示<ul>
+<li>テクスチャ化したことにより、3Dモデルに貼り付けることもできる</li>
+<li>JS側での視点などの行列計算は<a href="https://glmatrix.net/">glMatrix</a>を使うものかと思ったが、<a href="https://webgpu.github.io/webgpu-samples/samples/cameras">WebGPU Samplesのcameras</a>で<a href="https://github.com/greggman/wgpu-matrix">wgpu-matrix</a>というのを使っていたのでそれに習ってみた<ul>
+<li><a href="https://wgpu-matrix.org/docs/functions/mat4.perspective.html">perspective</a>や<a href="https://wgpu-matrix.org/docs/functions/mat4.lookAt.html">lookAt</a>などが同じように使える</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><ul>
+<li>コンピュートシェーダーで並列計算できるのがよい</li>
+<li>シェーダー言語の文法をなぜわざわざ微妙に変えるのか…<ul>
+<li><code>fn</code> とか <code>f32</code> とか</li>
+<li><code>switch</code>の<code>case</code>はFallthroughしない</li>
+<li>いわゆる線形補間は <code>lerp</code> じゃなくて <a href="https://www.w3.org/TR/WGSL/#mix-builtin">mix</a></li>
+</ul>
+</li>
+<li>反応拡散系のパラメータを適当にあれこれ探してみた<ul>
+<li>まだシマウマや牛の柄はどうやったら生成できるのかわからない…</li>
+<li>ヒョウみたいに崩れた丸（Cの形）みたいにするには物質が２つではうまくいかないような気がする</li>
+</ul>
+</li>
+<li>WebGPUは現状パソコンのGoogle Chrome系でしか使えないようで、スマホでも動かない…残念<ul>
+<li>状態はわからないけどSafariが期待できないので、一般的に使用できるようになるにはまだ相当遠いことだろう。</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://codelabs.developers.google.com/your-first-webgpu-app">Your first WebGPU app</a>　日本語にするとちょっとおかしい箇所があるので、英語で見るのがいいかも<ul>
+<li><a href="https://glitch.com/edit/#!/your-first-webgpu-app">glitch</a>のプレビューから動作確認できる</li>
+<li>What’s next?<ul>
+<li>Review the <a href="https://webgpu.github.io/webgpu-samples/">WebGPU Samples</a><ul>
+<li>Compute Boids: お互いが影響を及ぼしあうのをどうやっているのか、全部をいったん動かした後に調停者が相互作用を処理するというのではなく、パーティクルごとに総当たりしている</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Further reading<ul>
+<li><a href="https://surma.dev/things/webgpu/">WebGPU — All of the cores, none of the canvas</a><ul>
+<li>コンピュートシェーダーに注力</li>
+<li>ボール同士の衝突は、こちらも上記と同様に個々で衝突判定・処理している</li>
+<li>お互いの以前の状態を参照しているので１対１の衝突ならOK、という判断か（３つ以上だと厳密にはおかしくなるはず）</li>
+</ul>
+</li>
+<li><a href="https://alain.xyz/blog/raw-webgpu">Raw WebGPU</a></li>
+<li><a href="https://webgpufundamentals.org/">WebGPU Fundamentals</a></li>
+<li><a href="https://toji.dev/webgpu-best-practices/">WebGPU Best Practices</a></li>
+</ul>
+</li>
+<li>Reference docs<ul>
+<li><a href="https://gpuweb.github.io/gpuweb">WebGPU Specification</a></li>
+<li><a href="https://gpuweb.github.io/gpuweb/wgsl">WGSL Specification</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="反応拡散系関連"><a href="#反応拡散系関連" class="headerlink" title="反応拡散系関連"></a>反応拡散系関連</h4><ul>
+<li><a href="https://www.ntv.co.jp/megaten/archive/library/date/15/05/0503.html">知識の宝庫！目がテン！ライブラリー</a>　蛇柄<ul>
+<li><a href="https://fermat-federer.com/seibutu-sushiki/">生物の模様を数式で証明したチューリングパターン</a></li>
+</ul>
+</li>
+<li><a href="https://www.fbs.osaka-u.ac.jp/labs/skondo/saibokogaku/categories/scientific%20columns/torahiko.htm">吾輩はキリンである．模様はひび割れている</a>　キリンはチューリングパターンよりもひび割れの方が似てる？</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/03/distributed-pathtracing.html" title="分散レイトレの成果をパストレに組み込んでみる" rel="bookmark">分散レイトレの成果をパストレに組み込んでみる</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reactive-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

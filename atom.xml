@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-09-03T06:26:20.527Z</updated>
+  <updated>2023-10-10T07:00:58.917Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>WebGPUで反応拡散系</title>
+    <link href="https://tyfkda.github.io/blog/2023/10/10/webgpu-reactive-diffusion.html"/>
+    <id>https://tyfkda.github.io/blog/2023/10/10/webgpu-reactive-diffusion.html</id>
+    <published>2023-10-10T07:00:00.000Z</published>
+    <updated>2023-10-10T07:00:58.917Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;ずっと昔に&lt;a href=&quot;/tags/webgl/&quot;&gt;WebGL&lt;/a&gt;を触ってみたことがあったのだけど初期化が面倒で放置になってしまった。
+近頃（というか今年の前半に）WebGPUというものが使えるようになったということを聞いたので、再挑戦を込めてようやく触ってみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="cg" scheme="https://tyfkda.github.io/tags/cg/"/>
+    
+    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
+    
+    <category term="webgpu" scheme="https://tyfkda.github.io/tags/webgpu/"/>
+    
+  </entry>
   
   <entry>
     <title>【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</title>
@@ -172,24 +194,6 @@
     
     
     <category term="typescript" scheme="https://tyfkda.github.io/tags/typescript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【WASM】WASIランタイム（JS用）が混沌としている</title>
-    <link href="https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html"/>
-    <id>https://tyfkda.github.io/blog/2023/04/23/wasi-runtime-js.html</id>
-    <published>2023-04-23T08:00:00.000Z</published>
-    <updated>2023-07-11T08:00:30.580Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;WASI用に出力されたWebAssemblyバイナリをJS上で動かすためのランタイムを探ったが混沌としていた。
-できればコマンドライン(node.js)からとブラウザ上の両方で動くといいんだけど、決定版みたいなものが現状ないように見える。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="wasm" scheme="https://tyfkda.github.io/tags/wasm/"/>
     
   </entry>
   
