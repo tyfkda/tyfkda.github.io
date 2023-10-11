@@ -269,7 +269,7 @@
 <li>自分のID（インデックス）：コンピュートシェーダーで並列処理させる際に利用できる</li>
 <li>テクスチャ：フラグメントシェーダーでテクスチャサンプラーを使って内容を参照できる</li>
 </ul>
-<h3 id="改変してみる"><a href="#改変してみる" class="headerlink" title="改変してみる"></a>改変してみる</h3><p>じゃあここからなにを作ろうかと思い、アイディアに欠けるが以前もやったことがあったが<a href="/blog/2017/07/01/reaction-diffusion.html" title="反応拡散系">反応拡散系</a>をWebGPU上で動かしてみることにした。
+<h3 id="改変してみる"><a href="#改変してみる" class="headerlink" title="改変してみる"></a>改変してみる</h3><p>じゃあここからなにを作ろうかと思い、アイディアに欠けるが以前もやったことがある<a href="/blog/2017/07/01/reaction-diffusion.html" title="反応拡散系">反応拡散系</a>をWebGPU上で動かしてみることにした。
 以前のプログラムではすべての計算をJavaScriptで動かしていたが、今回はWebGPUのシェーダーで並列化できるのが利点。</p>
 <p>実際のところ大枠はライフゲームと同じでセルごとの計算が違うだけなので、最速でやるならコンピュートシェーダーの変更だけで事足りる。
 それだけではなんなので、少しいじってみた：</p>
@@ -320,7 +320,7 @@
 <li><a href="https://glitch.com/edit/#!/your-first-webgpu-app">glitch</a>のプレビューから動作確認できる</li>
 <li>What’s next?<ul>
 <li>Review the <a href="https://webgpu.github.io/webgpu-samples/">WebGPU Samples</a><ul>
-<li>Compute Boids: お互いが影響を及ぼしあうのをどうやっているのか、全部をいったん動かした後に調停者が相互作用を処理するというのではなく、パーティクルごとに総当たりしている</li>
+<li>Compute Boids: お互いが影響を及ぼしあうのは、全部をいったん動かした後に調停者が相互作用を処理するというのではなく、Boidごとに総当たりしている</li>
 </ul>
 </li>
 </ul>
@@ -329,7 +329,7 @@
 <li><a href="https://surma.dev/things/webgpu/">WebGPU — All of the cores, none of the canvas</a><ul>
 <li>コンピュートシェーダーに注力</li>
 <li>ボール同士の衝突は、こちらも上記と同様に個々で衝突判定・処理している</li>
-<li>お互いの以前の状態を参照しているので１対１の衝突ならOK、という判断か（３つ以上だと厳密にはおかしくなるはず）</li>
+<li>お互いの以前の状態を参照しているので１対１の衝突ならOK、という判断か（３つ以上だとおかしくなるはず）</li>
 </ul>
 </li>
 <li><a href="https://alain.xyz/blog/raw-webgpu">Raw WebGPU</a></li>

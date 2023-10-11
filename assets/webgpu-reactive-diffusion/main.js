@@ -29,30 +29,34 @@ const PresetParameterTable = {
 }
 
 class WgslFramework {
-    isSupported() {
-        return !!navigator.gpu
+    checked = false
+
+    async isSupported() {
+        if (!this.checked) {
+            if (navigator.gpu) {
+                const adapter = await navigator.gpu.requestAdapter()
+                if (adapter) {
+                    this.device = await adapter.requestDevice()
+                }
+            }
+            this.checked = true
+        }
+        return this.device != null
     }
 
     async setUpWgsl() {
-        if (!this.isSupported()) {
+        if (!await this.isSupported()) {
             throw new Error('WebGPU not supported on this browser.')
         }
-
-        const adapter = await navigator.gpu.requestAdapter()
-        if (!adapter) {
-            throw new Error('No appropriate GPUAdapter found.')
-        }
-        const device = await adapter.requestDevice()
 
         const canvas = document.querySelector('canvas')
         const context = canvas.getContext('webgpu')
         const canvasFormat = navigator.gpu.getPreferredCanvasFormat()
         context.configure({
-            device: device,
+            device: this.device,
             format: canvasFormat,
         })
 
-        this.device = device
         this.canvas = canvas
         this.context = context
         this.canvasFormat = canvasFormat
@@ -782,10 +786,12 @@ class MyApp extends WgslFramework {
 async function main() {
     const myapp = new MyApp()
 
+    const supported = await myapp.isSupported()
+
     let settingPreset = null
 
     Alpine.data('initialData', () => ({
-        supported: myapp.isSupported(),
+        supported,
         started: false,
 
         preset: PRESET_CORAL,
