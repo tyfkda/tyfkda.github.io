@@ -68,7 +68,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/10/10/webgpu-reactive-diffusion.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/10/10/webgpu-reaction-diffusion.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -218,7 +218,7 @@
     }
   }
 </style>
-<div class="applet" style="border:1px solid black; border-radius:8px; margin:16px"><iframe class="applet2" src="/assets/webgpu-reactive-diffusion/" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto; width:528px; height:680px"></iframe></div>
+<div class="applet" style="border:1px solid black; border-radius:8px; margin:16px"><iframe class="applet2" src="/assets/webgpu-reaction-diffusion/" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto; width:528px; height:680px"></iframe></div>
 
 <h3 id="WebGPUのざっくり理解"><a href="#WebGPUのざっくり理解" class="headerlink" title="WebGPUのざっくり理解"></a>WebGPUのざっくり理解</h3><p>WebGPUを始めるにあたって、ググって出てきた<a href="https://codelabs.developers.google.com/your-first-webgpu-app">初めての WebGPU アプリ</a>を参考にしてみた。
 内容はライフゲームを作るチュートリアルで、世代更新の処理をコンピュートシェーダーを使ってGPUで並列に計算できるのが利点となっている。
@@ -258,7 +258,7 @@
 </li>
 </ul>
 </li>
-<li>デバイスキューにコマンドバッファを送る</li>
+<li>エンコーダーを<code>finish</code>して、デバイスキューにコマンドバッファを送る</li>
 </ul>
 <p>「初めての…」のライフゲームでは計算を進める際に<a href="https://codelabs.developers.google.com/your-first-webgpu-app#6">ピンポンバッファパターン</a>を用いるが、ストレージだけじゃなくバインドグループも２つ用意してフレームごとに切り替えて使用する必要がある。</p>
 <h4 id="シェーダー"><a href="#シェーダー" class="headerlink" title="シェーダー"></a>シェーダー</h4><p>シェーダーの文法はWGSLという、WebGLでのものなどとも違う、新たな書式になっている。
@@ -363,14 +363,14 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/03/distributed-pathtracing.html" title="分散レイトレの成果をパストレに組み込んでみる" rel="bookmark">分散レイトレの成果をパストレに組み込んでみる</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/03/distributed-pathtracing.html" title="分散レイトレの成果をパストレに組み込んでみる" rel="bookmark">分散レイトレの成果をパストレに組み込んでみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reactive-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li></ul>
                 </div>
             </div>
 
