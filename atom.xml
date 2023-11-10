@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-11-10T00:39:38.655Z</updated>
+  <updated>2023-11-10T23:57:37.731Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2023/11/09/deferred-rendering-webgpu-sample.html"/>
     <id>https://tyfkda.github.io/blog/2023/11/09/deferred-rendering-webgpu-sample.html</id>
     <published>2023-11-09T10:00:00.000Z</published>
-    <updated>2023-11-10T00:39:38.655Z</updated>
+    <updated>2023-11-10T23:57:37.731Z</updated>
     
     
     <summary type="html">&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUを触ってみて&lt;/a&gt;、一応Computeシェーダーは使えるようになった。
@@ -41,7 +41,7 @@
     <link href="https://tyfkda.github.io/blog/2023/10/10/webgpu-reaction-diffusion.html"/>
     <id>https://tyfkda.github.io/blog/2023/10/10/webgpu-reaction-diffusion.html</id>
     <published>2023-10-10T07:00:00.000Z</published>
-    <updated>2023-10-24T09:45:48.771Z</updated>
+    <updated>2023-11-10T10:31:21.775Z</updated>
     
     
     <summary type="html">&lt;p&gt;ずっと昔に&lt;a href=&quot;/tags/webgl/&quot;&gt;WebGL&lt;/a&gt;を触ってみたことがあったのだけど初期化が面倒で放置になってしまった。
@@ -49,8 +49,6 @@
     
     
     
-    
-    <category term="cg" scheme="https://tyfkda.github.io/tags/cg/"/>
     
     <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
     
@@ -63,7 +61,7 @@
     <link href="https://tyfkda.github.io/blog/2023/09/03/ue-content-examples.html"/>
     <id>https://tyfkda.github.io/blog/2023/09/03/ue-content-examples.html</id>
     <published>2023-09-03T04:00:00.000Z</published>
-    <updated>2023-10-18T04:55:07.839Z</updated>
+    <updated>2023-11-10T10:31:21.774Z</updated>
     
     
     <summary type="html">&lt;p&gt;Unreal Engineの基本的な知識があまりないので、機能紹介も兼ねている機能別サンプルの&lt;a href=&quot;https://docs.unrealengine.com/4.27/ja/Resources/ContentExamples/Blueprints/&quot;&gt;ブループリント通信&lt;/a&gt;の中身を見て、複数のブループリント間でどうやってやりとりしたらいいのか見てみた
@@ -81,7 +79,7 @@
     <link href="https://tyfkda.github.io/blog/2023/08/29/customize-printf.html"/>
     <id>https://tyfkda.github.io/blog/2023/08/29/customize-printf.html</id>
     <published>2023-08-29T06:00:00.000Z</published>
-    <updated>2023-10-18T04:55:07.835Z</updated>
+    <updated>2023-11-10T10:31:21.771Z</updated>
     
     
     <summary type="html">&lt;p&gt;C言語でプログラムを書いていると&lt;code&gt;printf&lt;/code&gt;で文字列を出力する中に自分で定義した構造体の内容を埋め込みたいことがたまにある。
@@ -101,7 +99,7 @@
     <link href="https://tyfkda.github.io/blog/2023/08/25/backend-more-registers.html"/>
     <id>https://tyfkda.github.io/blog/2023/08/25/backend-more-registers.html</id>
     <published>2023-08-25T10:00:00.000Z</published>
-    <updated>2023-10-24T09:45:24.123Z</updated>
+    <updated>2023-11-10T10:31:21.770Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作のCコンパイラ&lt;/a&gt;ではLLVMなどのバックエンドを使わずにx86-64やaarch64のアセンブリコードを直接出力しているが、
@@ -120,7 +118,7 @@
     <link href="https://tyfkda.github.io/blog/2023/07/31/make-foreach-eval.html"/>
     <id>https://tyfkda.github.io/blog/2023/07/31/make-foreach-eval.html</id>
     <published>2023-07-31T09:00:00.000Z</published>
-    <updated>2023-08-26T05:57:13.214Z</updated>
+    <updated>2023-11-10T10:31:21.772Z</updated>
     
     
     <summary type="html">&lt;p&gt;Makefileでビルドを管理する場合にソースディレクトリを分けていると同じ記述を何度もするのが煩わしかったが、
@@ -136,7 +134,7 @@
     <link href="https://tyfkda.github.io/blog/2023/07/17/calc-asin.html"/>
     <id>https://tyfkda.github.io/blog/2023/07/17/calc-asin.html</id>
     <published>2023-07-17T06:00:00.000Z</published>
-    <updated>2023-10-24T09:45:24.124Z</updated>
+    <updated>2023-11-10T10:31:21.771Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前数学関数を自前で実装する一環で&lt;a href=&quot;/blog/2020/12/30/fp-compiler.html&quot; title=&quot;コンパイラを浮動小数点数に対応させる（それと数学関数を実装）&quot;&gt;atanは実装した&lt;/a&gt;が、欠けていた逆三角関数&lt;code&gt;asin&lt;/code&gt;を実装したかった。&lt;/p&gt;</summary>
@@ -153,7 +151,7 @@
     <link href="https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html"/>
     <id>https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html</id>
     <published>2023-06-25T10:00:00.000Z</published>
-    <updated>2023-08-26T05:57:13.208Z</updated>
+    <updated>2023-11-10T10:31:10.303Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://matthias-research.github.io/pages/tenMinutePhysics/index.html&quot;&gt;Ten Minute Physics&lt;/a&gt;という、スクラッチで物理シミュレーションを作るというページがあったので一通り動かしてみた。&lt;/p&gt;</summary>
@@ -170,7 +168,7 @@
     <link href="https://tyfkda.github.io/blog/2023/06/04/split-by-width.html"/>
     <id>https://tyfkda.github.io/blog/2023/06/04/split-by-width.html</id>
     <published>2023-06-04T08:00:00.000Z</published>
-    <updated>2023-08-26T05:57:13.216Z</updated>
+    <updated>2023-11-10T10:31:10.313Z</updated>
     
     
     <summary type="html">&lt;p&gt;例えば２次元配列を扱う際に計算中は１次元に展開して持っておいて、出力時に戻そうとしたときに、リストを固定の長さで分割して二重（２次元）リストにして返す、ということがしたかった。&lt;/p&gt;</summary>
@@ -187,7 +185,7 @@
     <link href="https://tyfkda.github.io/blog/2023/05/12/pentomino-solver.html"/>
     <id>https://tyfkda.github.io/blog/2023/05/12/pentomino-solver.html</id>
     <published>2023-05-12T10:00:00.000Z</published>
-    <updated>2023-07-11T08:00:30.574Z</updated>
+    <updated>2023-11-10T10:31:10.310Z</updated>
     
     
     <summary type="html">&lt;p&gt;頭の体操と余興として、ペントミノ（５つの四角形）を並べて長方形を作るパズルを解くプログラムを書いてみた。&lt;/p&gt;</summary>

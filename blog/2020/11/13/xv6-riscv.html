@@ -238,6 +238,11 @@ RISCVのCPUをエミュレーションしている？はずなのに普通の速
 考えてみればx86版も実機で動かしたことはなく動作確認はもっぱらqemuの<code>-nographic</code>経由だったので、
 ユーザ側としてみればあまり違いはないかもしれない（そもそもそれがOSの目的だしね…）。</p>
 <p>今後触ってみてx86版との違いや、RISCV版が想定しているハードウェア構成がどうなっているのかなどを見ていきたい。</p>
+<ul>
+<li>リポジトリ内のソースがカーネルとユーザに分かれてわかりやすくなった</li>
+<li>実行すると<a href="https://github.com/mit-pdos/xv6-riscv/blob/231c08dc5e5e39a6fafda832e6935beb38ef3887/kernel/proc.c#L430-L465">ビジーループ</a>で<a href="https://github.com/mit-pdos/xv6-riscv/issues/15">CPUを100%食う</a>のは<a href="https://github.com/mit-pdos/xv6-public/pull/58">相変わらず</a>っぽいね…</li>
+<li>x86版のexitは単にプロセスを終了するだけだったが、<a href="https://github.com/mit-pdos/xv6-riscv/commit/7e6c37e67e6da62e02089fc3292569103b7e94b3">終了コードが渡せる</a>ようになっていた、成長したな…！</li>
+</ul>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><a href="https://pdos.csail.mit.edu/6.828/2020/xv6.html">6.S081 &#x2F; Fall 2020</a> MITのページ</li>
 <li><a href="https://github.com/mit-pdos/xv6-riscv">https://github.com/mit-pdos/xv6-riscv</a> XV6-RISCVのリポジトリ</li>
@@ -258,15 +263,6 @@ Docker for Macがいけないんだろうか？</li>
 <li><a href="/blog/2018/05/28/xv6.html" title="Xv6を試してみた">Xv6を試してみた</a>: x86版を動かす話</li>
 <li><a href="/blog/2019/07/14/self-hosting-c.html" title="自作Cコンパイラでセルフホスティングを達成した">自作Cコンパイラでセルフホスティングを達成した</a>: XV6（とLinux）上で動くCコンパイラを作る話</li>
 <li><a href="/blog/2019/07/24/history-in-shell.html" title="自作シェルでヒストリを扱えるようにする">自作シェルでヒストリを扱えるようにする</a>: XV6シェルにヒストリ機能を足す話</li>
-</ul>
-<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">XV6上でCコンパイラが動き出したぞ！ <a href="https://t.co/VBCuc9mMvB">pic.twitter.com/VBCuc9mMvB</a></p>&mdash; tyfkda (@tyfkda) <a href="https://twitter.com/tyfkda/status/1099164774389043201?ref_src=twsrc%5Etfw">February 23, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">自作OS(XV6改)上でテキストエディタ(Kilo)が動くようになったぞ <a href="https://t.co/psl9v0ZEh0">pic.twitter.com/psl9v0ZEh0</a></p>&mdash; tyfkda (@tyfkda) <a href="https://twitter.com/tyfkda/status/1024643080530456576?ref_src=twsrc%5Etfw">August 1, 2018</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-<ul>
-<li>リポジトリ内のソースがカーネルとユーザに分かれてわかりやすくなった</li>
-<li>実行すると<a href="https://github.com/mit-pdos/xv6-riscv/blob/231c08dc5e5e39a6fafda832e6935beb38ef3887/kernel/proc.c#L430-L465">ビジーループ</a>で<a href="https://github.com/mit-pdos/xv6-riscv/issues/15">CPUを100%食う</a>のは<a href="https://github.com/mit-pdos/xv6-public/pull/58">相変わらず</a>っぽいね…</li>
-<li>x86版のexitは単にプロセスを終了するだけだったが、<a href="https://github.com/mit-pdos/xv6-riscv/commit/7e6c37e67e6da62e02089fc3292569103b7e94b3">終了コードが渡せる</a>ようになっていた、成長したな…！</li>
 </ul>
 
 
