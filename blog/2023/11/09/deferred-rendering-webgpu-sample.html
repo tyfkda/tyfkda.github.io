@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="WebGPUを触ってみて、一応Computeシェーダーは使えるようになった。
+「次のステップ」としてチュートリアルに書かれていたWebGPU Samplesの中で、Deferred Renderingが気になったので、ソースを読んでみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【WebGPU】Deferred RenderingとShadow Mappingと"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【WebGPU】Deferred RenderingとShadow Mappingと - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/11/09/deferred-rendering-webgpu-sample.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【WebGPU】Deferred RenderingとShadow Mappingと</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-11-09
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cg/">#cg</a> <a href="/tags/webgpu/">#webgpu</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2023/10/10/webgpu-reaction-diffusion.html" title="WebGPUで反応拡散系">WebGPUを触ってみて</a>、一応Computeシェーダーは使えるようになった。
+<p>「次のステップ」としてチュートリアルに書かれていた<a href="https://webgpu.github.io/webgpu-samples/">WebGPU Samples</a>の中で、<a href="https://webgpu.github.io/webgpu-samples/samples/deferredRendering">Deferred Rendering</a>が気になったので、ソースを読んでみた。</p>
+<span id="more"></span>
+
+<p><img src="https://raw.githubusercontent.com/tyfkda/deferred_shadow_mapping/main/ss.jpg" alt="Deffered Rendering &amp; Shadow Mapping"></p>
+<h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>いわゆる古典的なリアルタイム3Dグラフィックスではモデル描画時に光源処理（シェーディング）をしていた。
+その場合扱える光源の数に制限があった。</p>
+<p>Deferred Renderingという手法ではその制限を緩和できるのと、出力される中間結果をポストエフェクトに利用したりで豪華な画面が描けるため、最近はほとんどこの手法が使われているっぽい。
+デメリットとしては、アンチエリアシングや半透明と相性が悪いというはなしである。</p>
+<p>正直なところどういう仕組みなのかよく理解していなかったので、ソースを読んでみることにした。
+で影を適用したかったのでシャドウマッピングを組み込んでみた。</p>
+<h3 id="デモ"><a href="#デモ" class="headerlink" title="デモ"></a>デモ</h3><style type="text/css">
+  .applet {
+    transition: box-shadow 0.25s;
+  }
+  .applet:hover {
+    box-shadow:0 0 8px blue;
+  }
+  .applet {
+    height: 680px;
+  }
+  @media screen and (max-width:768px) {
+    .applet {
+      height: 340px;
+    }
+  }
+</style>
+<div class="applet" style="border:1px solid black; border-radius:8px; margin:16px"><iframe class="applet" src="/assets/deferred-shadow-mapping/?wait=1" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto; width:100%"></iframe></div>
+
+<p><a href="/assets/deferred-shadow-mapping/">デモページを開く</a>、
+<a href="https://github.com/tyfkda/deferred_shadow_mapping">ソース</a></p>
+<h3 id="Deferred-Renderingのソースを読む"><a href="#Deferred-Renderingのソースを読む" class="headerlink" title="Deferred Renderingのソースを読む"></a>Deferred Renderingのソースを読む</h3><p>WebGPU SamplesのdeferredRenderingのソースは<a href="https://github.com/webgpu/webgpu-samples/tree/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering">GitHubで公開</a>されている。</p>
+<p>モデル描画時にシェーディング計算したカラーを直接出力するのではなく「Gバッファ」と呼ばれる中間バッファ（テクスチャ）を構築し、
+最後に画面全体を塗りつぶす際に、Gバッファに従って光源計算を行って最終出力を作成する。</p>
+<p>件のソースではGバッファとして <strong>法線(XYZ)</strong> 、 <strong>アルベド(RGB)</strong> 、そして <strong>深度(Z)</strong> を出力する。</p>
+<h4 id="Gバッファの構築（マルチレンダーターゲット）"><a href="#Gバッファの構築（マルチレンダーターゲット）" class="headerlink" title="Gバッファの構築（マルチレンダーターゲット）"></a>Gバッファの構築（マルチレンダーターゲット）</h4><p>Gバッファ構築時にはモデルに対してdrawコールをかけて、法線・アルベド・深度を出力する。
+出力先は複数のテクスチャとなるため、マルチレンダーターゲットを使う必要がある。</p>
+<p>WebGPUでどうやるかというと、</p>
+<ul>
+<li>パイプライン作成時：<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L136-L141"><code>createRenderPipeline</code>の引数の<code>fragment.targets</code></a>にフォーマットを指定</li>
+<li>デスクリプタ作成時： <a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L259-L274"><code>beginRenderPass</code>に渡す<code>GPURenderPassDescriptor</code>の<code>colorAttachments</code></a>にテクスチャビューを指定</li>
+<li>描画時：フラグメントシェーダーからの<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentWriteGBuffers.wgsl#L21">出力</a>の<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentWriteGBuffers.wgsl#L1-L6"><code>@location(0)</code>と<code>@location(1)</code></a>がそれらに書き込まれる</li>
+</ul>
+<p>深度バッファは通常のデプステストに使用するZバッファに出力されたものを後でそのまま利用する。
+指定は同じくデスクリプタの、<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L276"><code>depthStencilAttachment</code>に指定</a>している。</p>
+<h4 id="画面塗りつぶしの際の光源計算-Deferred-Lighting"><a href="#画面塗りつぶしの際の光源計算-Deferred-Lighting" class="headerlink" title="画面塗りつぶしの際の光源計算(Deferred Lighting)"></a>画面塗りつぶしの際の光源計算(Deferred Lighting)</h4><p>光源情報を格納するバッファは<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L376-L380"><code>createBuffer</code>でストレージとして作成</a>する。
+コンピュートシェーダーで位置を更新した後、レンダーパイプラインに渡す。</p>
+<p>画面全体を塗りつぶす際のフラグメントシェーダーで、<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentDeferredRendering.wgsl#L2-L4">Gバッファ</a>と<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentDeferredRendering.wgsl#L14">光源情報</a>を受け取り、
+<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentDeferredRendering.wgsl#L67-L77">光源の数だけループ</a>でシェーディング結果を加算して最終出力を計算する。</p>
+<p>（このサンプルでは単純なランバート・拡散反射しか考慮してないけど、他にRoughnessとか他のマテリアル情報もGバッファに書き込んでおけば豪華なライティングが可能だと思う。）</p>
+<h4 id="ワールド座標の復元"><a href="#ワールド座標の復元" class="headerlink" title="ワールド座標の復元"></a>ワールド座標の復元</h4><p>ひとつ面白いのはフラグメントシェーダー内で各フラグメントに対応するワールド座標を求めるところ。
+件のサンプルでは光源は点光源のようなものになっていてシェーディングには光源までの距離や向きが必要で、それらを求めるためには描画しているフラグメントのワールド座標が必要になる。
+ワールド座標を保持するGバッファを作成すれば直接利用できるが、バッファを削減するためか違う方法で算出している。</p>
+<p>フラグメントに対応する2Dスクリーン座標系XYがそれぞれ-1〜+1で渡ってくる。
+それで<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentDeferredRendering.wgsl#L40-L44">深度バッファから<code>textureLoad</code></a>でそのフラグメントに対応する深度を取得する。
+そして<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentDeferredRendering.wgsl#L26-L32">カメラのビュープロジェクションの逆行列を使って算出</a>している。</p>
+<h3 id="影を適用したい：シャドウマッピングを組み込む"><a href="#影を適用したい：シャドウマッピングを組み込む" class="headerlink" title="影を適用したい：シャドウマッピングを組み込む"></a>影を適用したい：シャドウマッピングを組み込む</h3><p>最大1024個もの光源を使えるのはすごいけど、そういえば遮蔽判定してないので影が出てないなと思った。
+できれば影も出してみたい…どうやるんだろうと考えたところ<a href="https://webgpu.github.io/webgpu-samples/samples/shadowMapping">shadowMapping</a>もサンプルに含まれていた。
+いっちょこれを組み込んでみることにした。</p>
+<p>実装は紆余曲折、いろいろ苦労した。</p>
+<h4 id="光源ごとにシェーディング計算を分割（加算合成）"><a href="#光源ごとにシェーディング計算を分割（加算合成）" class="headerlink" title="光源ごとにシェーディング計算を分割（加算合成）"></a>光源ごとにシェーディング計算を分割（加算合成）</h4><p>元のdeferredRenderingでは複数の光源のシェーディングを一括で行うのが利点だったが、光源の数の分のシャドウマップテクスチャを一度にすべて扱うのはちょっと難しいので、光源ごとに計算するように修正する。</p>
+<p>画面の塗りつぶしを光源の数だけ繰り返し、結果を加算合成でフレームバッファに加えていくようにする。
+WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createRenderPipeline"><code>createRenderPipeline</code></a>の<code>fragments.targets</code>の<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createRenderPipeline#blend"><code>blend.color</code>にあれこれ指定</a>する。
+加算合成なら <code>&#123;srcFactor: &#39;one&#39;, dstFactor: &#39;src-alpha&#39;, operation: &#39;add&#39;&#125;</code> でよい。</p>
+<ul>
+<li><code>dstFactor</code>は<code>&#39;one&#39;</code>とかでもいいんだけど、<code>src-alpha</code>でいじれる道を残してみた</li>
+<li>最初の光源に対する塗りつぶしの際だけカラーバッファのクリアが必要なので、デスクリプタを別途用意するという細かいことも必要だった</li>
+</ul>
+<h4 id="シャドウマップの構築"><a href="#シャドウマップの構築" class="headerlink" title="シャドウマップの構築"></a>シャドウマップの構築</h4><p>シャドウマップを構築するには、光源からの視点でシーンを描画してデプスバッファを更新することでできる。
+サンプルコードでは<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/shadowMapping/main.ts#L399-L407">shadowPass</a>で行っていて、それを使ってレンダーパスを動かしている。</p>
+<p>これを組み込む際には、光源が複数あるのでループで繰り返す。
+光源計算を光源１つずつに変更したので、シャドウパス→画面塗りつぶし、という処理を光源の回数分繰り返してやる。
+シャドウマップは１枚を使いまわせる。</p>
+<ul>
+<li>シーンの描画を光源の回数分繰り返すのはなかなかヘビーだと思う</li>
+</ul>
+<h4 id="ライティングにシャドウマップを適用"><a href="#ライティングにシャドウマップを適用" class="headerlink" title="ライティングにシャドウマップを適用"></a>ライティングにシャドウマップを適用</h4><p>シャドウマップサンプルでは、モデル描画の頂点シェーダーで<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/shadowMapping/vertex.wgsl#L30-L37">ワールド座標を光源のビュープロジェクション行列で光源座標系に変換</a>して、
+フラグメントシェーダーで<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/shadowMapping/fragment.wgsl#L32-L35"><code>textureSampleCompare</code>を使って</a>シャドウマップの値とZ値−オフセットを比較して、遮蔽されてない場合のみ光源の影響を与えている。
+シャドウマップ作成時に通常のZテストで一番近い点のZ値が生き残るので、それより奥の位置は遮蔽されて影になっているということが判定できる、というわけ
+（ハードエッジ回避で近傍3x3領域の割合を考慮している）。</p>
+<p>組み込みには、塗りつぶしのフラグメントシェーダーでワールド座標を逆算できるので、同様に光源座標系に変換してシャドウマップを適用する。</p>
+<h4 id="スポットライト（点光源）に変更したい"><a href="#スポットライト（点光源）に変更したい" class="headerlink" title="スポットライト（点光源）に変更したい"></a>スポットライト（点光源）に変更したい</h4><p>シャドウマップサンプルでは、プロジェクション行列に<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/shadowMapping/main.ts#L304"><code>mat4.orth</code></a>を使用しているので、平行投影＝ディレクショナルライトになっている。
+これをスポットライトに変更したいと思った。
+本当は点光源にしたかったが、全方向に光源を飛ばすにはキューブマップのように６方向に対して行う必要がありそうなので、ひとまず角度を絞ってスポットライトで１方向だけで済むように。</p>
+<p>単にプロジェクション行列に<code>mat4.perspective</code>を使えばよい…と甘く考えていたが、それだけではダメだった。
+ググったところ、<a href="https://stackoverflow.com/a/63758223">wで割る必要がある</a>とか。
+でもそれだけではまだダメだった…
+元の平行投影の場合でもz値に<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/shadowMapping/fragment.wgsl#L34">-0.007</a>というヒューリスティックなオフセットを加えているくらいなので、さらに小手先の対処が必要なのかもしれない。</p>
+<p>シャドウマップに描かれたデプス値と、フラグメントシェーダー内で光源座標系に変換したZ値がどうなってるかを調べることにした。</p>
+<h4 id="パースペクティブ射影行列・同次座標系"><a href="#パースペクティブ射影行列・同次座標系" class="headerlink" title="パースペクティブ射影行列・同次座標系"></a>パースペクティブ射影行列・同次座標系</h4><p>これは射影行列を理解する必要があると思いググって、<a href="https://light11.hatenadiary.com/entry/2018/06/10/233954">【Unity】プロジェクション行列は掛けるだけじゃなくてw除算しなきゃダメだよという話 - LIGHT11</a>からたどって<a href="http://marupeke296.com/DXG_No70_perspective.html">その70 完全ホワイトボックスなパースペクティブ射影変換行列</a>を読んでみた。</p>
+<p>理解したところだとパースペクティブ射影変換後の座標は</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\begin{pmatrix}x^\prime \\ y^\prime \\ z^\prime \\ w^\prime \end{pmatrix} &= ProjMat \times \begin{pmatrix} x \\ y \\ z \\ 1 \end{pmatrix} \\
+ &= \begin{pmatrix} \left( \cot(fov/2) / aspect \right) \cdot x \\ \cot(fov/2) \cdot y \\ fZ \cdot \frac{z - nZ}{fZ - nZ} \\ z \end{pmatrix}
+\end{align}
+%]]></script>
+
+<p>となって、<script type="math/tex">z^\prime</script>を<script type="math/tex">w^\prime</script>で割ると、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+\frac{z^\prime}{w^\prime} &= fZ \cdot \frac{z - nZ}{fZ - nZ} \cdot \frac{1}{z} \\
+ &= \frac{fZ}{fZ - nZ} \cdot \left( 1 -  \frac{nZ}{z} \right)
+\end{align}
+%]]></script>
+
+<p>となって、最終的なデプス値はnearZの時0.0、farZの時に1.0となる。
+この計算はシャドウマップ作成時とDeferred Lighting時が同じ計算なので数値的には問題ないが、
+平行投影の場合は元Zに対して線型だったのに対して、パースペクティブ投影の場合には元Zに反比例した値となっている。
+そうすると遠ざかるに従ってデプス値の精度が落ちる（＝数値の幅が狭くなる）ことになる。
+てことで<code>-0.007</code>のオフセットがそのままではうまくいってない可能性がある。</p>
+<p>場当たり的に数値をいじってみた結果、nearZを小さくしてしまうと反比例度合いがきつくなってZしまうので大きくするとマシで、そうすることでなんとか影が表示されるようになった（付け焼き刃…）。</p>
+<ul>
+<li>シャドウマップに保持するデプス値を線型にできればもっとよさげだが、シャドウマップは通常のデプスバッファ書き込みで行っていてちょっとそのままでは手が出せなそうなので、保留…</li>
+</ul>
+<h4 id="テクスチャ配列を使用する"><a href="#テクスチャ配列を使用する" class="headerlink" title="テクスチャ配列を使用する"></a>テクスチャ配列を使用する</h4><p>シェーダーでテクスチャを配列として受け取る方法を知らなかったので光源ごとに分割したがよくよく調べるとできるとわかったので、書き直すのは大変だけど利用するよう変更してみた。</p>
+<p>JavaScript側：デプステクスチャ作成時の<code>createTexture</code>の<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createTexture#size"><code>size</code>の3番目</a>にレイヤー数を指定、
+テクスチャビューの作成は<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture/createView#basearraylayer"><code>&#123;baseArrayLayer: i, arrayLayerCount: 1&#125;</code></a>で取得する。</p>
+<p>フラグメントシェーダー：デプステクスチャの型を<a href="https://www.w3.org/TR/WGSL/#ref-for-type-texture_depth_2d_array"><code>texture_depth_2d_array</code></a>に変更（<code>array&lt;texture_depth_2d&gt;</code>ではなかった）、
+<a href="https://www.w3.org/TR/WGSL/#texturesamplecompare"><code>textureSampleCompare</code>に追加でレイヤー番号を渡す</a>。</p>
+<p>テクスチャ配列にインデクスでアクセスできるようになるので、光源に対してそれぞれのシャドウマップを使ったシェーディングが複数光源をまとめて１回のdrawコールで実行できる。
+フラグメント内で光源の数でループして光源の影響を足し合わせていく。
+ただし今までは<code>discard</code>で抜けられていたのができなくなる。
+それに対応して<code>if</code>で影響を分岐させようにも、<code>textureSampleCompare</code>などのテクスチャフェッチする関数は分岐内で利用するのはダメとのことで、0.0を乗算で無効にするなどの処理が必要になる。</p>
+<p>こうしてディファードの光源計算はまとめられるが、その代わりに今まで１つのシャドウマップテクスチャを使いまわしてたのが、光源ごとに用意してやる必要がある。</p>
+<ul>
+<li>パイプラインでのブレンド処理は不要になったのでコメントアウトする</li>
+<li>シャドウマップの構築は変わらず光源ごとに行う必要があると思う</li>
+</ul>
+<p>そんなこんなで一旦完成〜。</p>
+<h3 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h3><h4 id="苦労した点"><a href="#苦労した点" class="headerlink" title="苦労した点"></a>苦労した点</h4><ul>
+<li>座標系を取り違えないこと：扱ってる座標がワールド座標系なのかまたは光源座標系なのかなど、
+取り違えると全然計算が合わずに悩むことになってしまう</li>
+<li>同次座標系：w&#x3D;1を追加した４次元ベクトルで扱い、パース変換した後にw’で割った値がどうのとか、
+テクスチャのパース補正でやったような気がするがもうすっかり頭から抜け落ちていた…</li>
+<li>シェーダーの出力結果がおかしい時の対処法：大量に並列に動いて、また変数の値をログを出したりできないのでなにが間違っているのかを探すのが大変</li>
+<li>WebGPU関連：<ul>
+<li>レンダーターゲットやテクスチャを指定するのがデスクリプタで、それを事前に用意しておかなきゃいけないのは辛い、バーテックスバッファを与えるようにその場でできるようにして欲しい</li>
+<li>同様にユニフォームバッファやストレージを指定するバインドグループもあらかじめ生成しておかなきゃいけない</li>
+<li>ブラウザのウィンドウがリサイズされた時に対処するにはテクスチャを作り直す必要があって、そうするとデスクリプタもバインドグループも作り直さなきゃならなくなり、諦めた…</li>
+</ul>
+</li>
+</ul>
+<h4 id="今後の課題・疑問"><a href="#今後の課題・疑問" class="headerlink" title="今後の課題・疑問"></a>今後の課題・疑問</h4><ul>
+<li>点光源で全方位にライティングしたい</li>
+<li>光源を複数あてると結果がおかしい気がする、ガンマ補正をしてないから？</li>
+<li>Deferred Renderingで光源を多数扱えるといっても、シーンを複数回描画するのは厳しくないか？<ul>
+<li>複数のシャドウマップを同時に構築できる方法はあるのか？</li>
+<li>広範囲に影響を及ぼす平行光源となる太陽は１つ、あとは影響範囲を限った点光源にするとか</li>
+<li>最新のゲームエンジンではどうしてるのか、謎は深まった…</li>
+</ul>
+</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://webgpu.github.io/webgpu-samples/">WebGPU Samples</a></li>
+<li><a href="https://stackoverflow.com/a/63758223">opengl - Shadowmap works with ortho projection, but not perspective projection - Stack Overflow</a></li>
+<li><a href="https://light11.hatenadiary.com/entry/2018/06/10/233954">【Unity】プロジェクション行列は掛けるだけじゃなくてw除算しなきゃダメだよという話 - LIGHT11</a></li>
+<li><a href="http://marupeke296.com/DXG_No70_perspective.html">その70 完全ホワイトボックスなパースペクティブ射影変換行列</a></li>
+<li><a href="https://sites.google.com/site/monshonosuana/directx%E3%81%AE%E8%A9%B1/directx%E3%81%AE%E8%A9%B1-%E7%AC%AC104%E5%9B%9E">もんしょの巣穴 - DirectXの話 第104回</a> 全方位シャドウマップでも、双方物曲面(Dual-Paraboloid)を利用すれば２面で済むとか</li>
+<li><a href="https://webgpu.github.io/webgpu-samples/samples/reversedZ">Reversed Z - WebGPU Samples</a> シャドウマップ作成にreverseZを使えば線型に近い形にできるかも？<ul>
+<li><a href="https://developer.nvidia.com/content/depth-precision-visualized">Depth Precision Visualized | NVIDIA Developer</a></li>
+<li><a href="https://iolite-engine.com/blog_posts/reverse_z_cheatsheet">Reverse Z Cheatsheet | IOLITE</a></li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html" title="WebGPUで反応拡散系" rel="bookmark">WebGPUで反応拡散系</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/11/09/deferred-rendering-webgpu-sample.html">【WebGPU】Deferred RenderingとShadow Mappingと</a></li><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

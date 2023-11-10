@@ -254,6 +254,9 @@ Visual Studio Community 2019から、「個別のコンポーネント」の「.
 <li>カテゴリ名： <code>LogTemp</code>, …</li>
 <li>Verbosity： <code>ELogVerbosity::Type</code>: <code>Log</code>, <code>Warning</code>, <code>Error</code>, <code>Fatal</code>, <code>Verbose</code></li>
 </ul>
+<h4 id="FStringからTCHAR-への変換"><a href="#FStringからTCHAR-への変換" class="headerlink" title="FStringからTCHAR*への変換"></a>FStringからTCHAR*への変換</h4><p>デリファレンス(<code>*</code>)する：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">FString s = ...;</span><br><span class="line"><span class="built_in">UE_LOG</span>(LogTemp, Log, <span class="built_in">TEXT</span>(<span class="string">&quot;Hello: %s&quot;</span>), *s);</span><br></pre></td></tr></table></figure>
+
 <h4 id="画面にテスト文字列出力（Blueprintのprint-string相当）"><a href="#画面にテスト文字列出力（Blueprintのprint-string相当）" class="headerlink" title="画面にテスト文字列出力（Blueprintのprint string相当）"></a>画面にテスト文字列出力（Blueprintのprint string相当）</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">GEngine-&gt;<span class="built_in">AddOnScreenDebugMessage</span>(<span class="number">-1</span>, <span class="number">0.5f</span>, FColor::Cyan, FString::<span class="built_in">Printf</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;Tick: %.3f&quot;</span>), DeltaSeconds));</span><br></pre></td></tr></table></figure>
 
 <h4 id="クラスの削除"><a href="#クラスの削除" class="headerlink" title="クラスの削除"></a>クラスの削除</h4><ul>
@@ -268,6 +271,12 @@ Visual Studio Community 2019から、「個別のコンポーネント」の「.
 <li><a href="http://kagring.blog.fc2.com/blog-entry-672.html">UE5&#x2F;UE4 C++でアクター（Actor）をスポーン（Spawn）する（LoadSynchronous、FSoftObjectPath、SpawnActor）</a></li>
 </ul>
 <p>試してみたがどうもうまくいかなかった…。</p>
+<h4 id="新規作成したGameModeBaseを使用しようとするとエラー"><a href="#新規作成したGameModeBaseを使用しようとするとエラー" class="headerlink" title="新規作成したGameModeBaseを使用しようとするとエラー"></a>新規作成したGameModeBaseを使用しようとするとエラー</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">unreal c++ LogSpawn: Warning: Login failed: Failed to spawn player controller, GameSession is null</span><br></pre></td></tr></table></figure>
+
+<p><code>InitGame</code> の頭で親クラスのメソッドを呼び出す必要がある：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">AMyGameModeBase::InitGame</span><span class="params">(<span class="type">const</span> FString&amp; MapName, <span class="type">const</span> FString&amp; Options, FString&amp; ErrorMessage)</span> </span>&#123;</span><br><span class="line">    AGameModeBase::<span class="built_in">InitGame</span>(MapName, Options, ErrorMessage);  <span class="comment">// &lt;= これを追加する</span></span><br></pre></td></tr></table></figure>
+
+
 <h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><ul>
 <li>ちょっと重すぎて開発にはキツい</li>
 <li>なんかの拍子にプロジェクトを開こうとするとエラーが出てしまい、回復できなくなってしまうことがあった、ツラい</li>
@@ -291,7 +300,7 @@ Visual Studio Community 2019から、「個別のコンポーネント」の「.
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li><li class="recent_post"><a href="/blog/2023/07/31/make-foreach-eval.html">Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/11/09/deferred-rendering-webgpu-sample.html">【WebGPU】Deferred RenderingとShadow Mappingと</a></li><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li></ul>
                 </div>
             </div>
 
