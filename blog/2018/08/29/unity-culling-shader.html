@@ -207,7 +207,7 @@
 
 <p>Unityのプロジェクトに突っ込むとマテリアルのShaderから選べるようになっている。</p>
 <div style="text-align: center">
-<img src="/assets/unity-cull-shader/1.png" title="1.png" />
+<img src="/assets/blog/unity-cull-shader/1.png" title="1.png" />
 </div>
 
 <h3 id="シェーダーにカリングを制御するパラメータを追加"><a href="#シェーダーにカリングを制御するパラメータを追加" class="headerlink" title="シェーダーにカリングを制御するパラメータを追加"></a>シェーダーにカリングを制御するパラメータを追加</h3><figure class="highlight diff"><figcaption><span>StandardCull.shader</span></figcaption><table><tr><td class="code"><pre><span class="line"> Shader &quot;Custom/StandardCull&quot;</span><br><span class="line"> &#123;</span><br><span class="line">     Properties</span><br><span class="line">     &#123;</span><br><span class="line">         ...</span><br><span class="line"></span><br><span class="line"><span class="addition">+        [Enum(UnityEngine.Rendering.CullMode)]</span></span><br><span class="line"><span class="addition">+        _Cull(&quot;Cull&quot;, Float) = 0                // 0=Off</span></span><br><span class="line"></span><br><span class="line">     ...</span><br><span class="line"></span><br><span class="line">     SubShader</span><br><span class="line">     &#123;</span><br><span class="line">         Tags &#123; &quot;RenderType&quot;=&quot;Opaque&quot; &quot;PerformanceChecks&quot;=&quot;False&quot; &#125;</span><br><span class="line">         LOD 300</span><br><span class="line"></span><br><span class="line"><span class="addition">+        Cull [_Cull]</span></span><br><span class="line"></span><br><span class="line">     // 念のためLOD 150も同様に</span><br></pre></td></tr></table></figure>
@@ -224,7 +224,7 @@
 
 <p>するとマテリアルを選択するとインスペクタに<code>CullMode</code>というドロップダウンが追加され、変更できるようになる。</p>
 <div style="text-align: center">
-<img src="/assets/unity-cull-shader/2.png" title="2.png" />
+<img src="/assets/blog/unity-cull-shader/2.png" title="2.png" />
 </div>
 
 <h3 id="スクリプトからの変更"><a href="#スクリプトからの変更" class="headerlink" title="スクリプトからの変更"></a>スクリプトからの変更</h3><p>スクリプトからマテリアルのカリングモードをいじるには、</p>

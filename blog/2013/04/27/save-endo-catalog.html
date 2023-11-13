@@ -184,16 +184,16 @@
 <span id="more"></span>
 
 <p>カタログのページを簡単に見れるように、ページ数を与えるとprefixを出力するツールを書いた：</p>
-<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!ruby                                                                          </span></span><br><span class="line">Encode = &#123;<span class="string">&#x27;0&#x27;</span> =&gt; <span class="string">&#x27;C&#x27;</span>, <span class="string">&#x27;1&#x27;</span> =&gt; <span class="string">&#x27;F&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line">page_no = <span class="variable constant_">ARGV</span>.shift.to_i</span><br><span class="line">page_code = sprintf(<span class="string">&quot;%b&quot;</span>, page_no).reverse.gsub(<span class="regexp">/[01]/</span>, Encode)</span><br><span class="line">src = <span class="string">&quot;C&quot;</span> * page_code.length</span><br><span class="line">puts <span class="string">&quot;IIPIFFCPICFPPICIIC<span class="subst">#&#123;src&#125;</span>IICIPPP<span class="subst">#&#123;page_code&#125;</span>IIC&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!ruby</span></span><br><span class="line">Encode = &#123;<span class="string">&#x27;0&#x27;</span> =&gt; <span class="string">&#x27;C&#x27;</span>, <span class="string">&#x27;1&#x27;</span> =&gt; <span class="string">&#x27;F&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line">page_no = <span class="variable constant_">ARGV</span>.shift.to_i</span><br><span class="line">page_code = sprintf(<span class="string">&quot;%b&quot;</span>, page_no).reverse.gsub(<span class="regexp">/[01]/</span>, Encode)</span><br><span class="line">src = <span class="string">&quot;C&quot;</span> * page_code.length</span><br><span class="line">puts <span class="string">&quot;IIPIFFCPICFPPICIIC<span class="subst">#&#123;src&#125;</span>IICIPPP<span class="subst">#&#123;page_code&#125;</span>IIC&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>それでは<a href="/assets/save_endo/catalog_page_index.png">索引</a>に従って、1729ページの”Structure of the Fuun Genome”を見てみる：</p>
-<p><img src="/assets/save_endo/structure_of_the_fuun_genome.png" alt="structure_of_the_fuun_genome"></p>
+<p>それでは<a href="/assets/blog/save_endo/catalog_page_index.png">索引</a>に従って、1729ページの”Structure of the Fuun Genome”を見てみる：</p>
+<p><img src="/assets/blog/save_endo/structure_of_the_fuun_genome.png" alt="structure_of_the_fuun_genome"></p>
 <p>Fuunゲノムは赤・緑・青の3つの部分に分けられて、赤のゾーンは事が起こる部分で緑から作られ、死ぬときに青い部分が次に何をするべきかを教えてくれる。緑のゾーンはサイズが変わらない。赤のゾーンを吐き出す。Fuunを修理したいエンジニアは緑のゾーンを修正できるが、長さを変えるべきではない。青のゾーンは、よくわからん。</p>
 <p>ちなみに、次のページとかあるのかと思って、1730ページを見てみると：</p>
-<p><img src="/assets/save_endo/error.png" alt="error"></p>
+<p><img src="/assets/blog/save_endo/error.png" alt="error"></p>
 <p>エラーページが表示された。</p>
 <p>8ページ、”More notes on Fuun Genomics”：</p>
-<p><img src="/assets/save_endo/more_notes_on_fuun_genomics.png" alt="more_notes_on_fuun_genomics"></p>
+<p><img src="/assets/blog/save_endo/more_notes_on_fuun_genomics.png" alt="more_notes_on_fuun_genomics"></p>
 <p>どういうふうにデータがDNAにエンコードされているかが書かれている。</p>
 <ul>
 <li><code>P</code>が真で<code>F</code>が偽。</li>
@@ -205,27 +205,27 @@
 </ul>
 <p>23ページ、”Activating genes [encrypted]”を見ようとしたが、元の画像が表示されただけだった。暗号化されているのか？</p>
 <p>42ページ、”Gene list”：</p>
-<p><img src="/assets/save_endo/gene_list.png" alt="gene_list"></p>
+<p><img src="/assets/blog/save_endo/gene_list.png" alt="gene_list"></p>
 <p>遺伝子テーブル、<code>IFPICFPPCFFPP</code>から始まる緑ゾーンからの相対距離。残りの13ページはどうやって見るのか？</p>
 <p>112ページ、”Some things to look out for”：</p>
-<p><img src="/assets/save_endo/some_things_to_look_out_for.png" alt="some_things_to_look_out_for"></p>
+<p><img src="/assets/blog/save_endo/some_things_to_look_out_for.png" alt="some_things_to_look_out_for"></p>
 <p><a href="http://www.open.ou.nl/bhr/">Bastiaan Heeren</a>氏、<a href="http://www.haskell.org/ghc/docs/latest/html/libraries/base/System-IO-Unsafe.html#v:unsafePerformIO">unsafePerformIO</a>の乱用罪ｗｗｗ。それにしても、直線を引くことと塗りつぶししかできないRNAで画像を描くのはすごすぎる…。</p>
 <p>10646ページ、”Intergalactic Character Set”：</p>
-<p><img src="/assets/save_endo/intergalactic_character_set.png" alt="intergalactic_character_set"></p>
+<p><img src="/assets/blog/save_endo/intergalactic_character_set.png" alt="intergalactic_character_set"></p>
 <p>壊れてる？</p>
 <p>85ページ、”Field-repairing your Fuun”：</p>
-<p><img src="/assets/save_endo/field_repairing_your_fuun.png" alt="field_repairing_your_fuun"></p>
+<p><img src="/assets/blog/save_endo/field_repairing_your_fuun.png" alt="field_repairing_your_fuun"></p>
 <p>詳しい説明、まだ全体像がわからないので、あとで読む。</p>
 <p>2181889ページ、”Notes on weird RNA”：</p>
-<p><img src="/assets/save_endo/notes_on_weird_rna.png" alt="notes_on_weird_rna"></p>
+<p><img src="/assets/blog/save_endo/notes_on_weird_rna.png" alt="notes_on_weird_rna"></p>
 <p>5ページ、”Synthesis of complex structures”：</p>
-<p><img src="/assets/save_endo/synthesis_of_complex_structures.png" alt="synthesis_of_complex_structures"></p>
+<p><img src="/assets/blog/save_endo/synthesis_of_complex_structures.png" alt="synthesis_of_complex_structures"></p>
 <p>L-systen, The Algorithmic Beauty of Plants。これはなんか関係あるのかな？</p>
 <p>4405829ページ、”Fuun security features”：</p>
-<p><img src="/assets/save_endo/fuun_security_features.png" alt="fuun_security_features"></p>
+<p><img src="/assets/blog/save_endo/fuun_security_features.png" alt="fuun_security_features"></p>
 <p>なんか暗号化されてる？シーザー暗号かなにか？</p>
 <p>123456ページ、”A historical note on RNA compression”：</p>
-<p><img src="/assets/save_endo/a_historical_note_on_rna_compression.png" alt="a_historical_note_on_rna_compression"></p>
+<p><img src="/assets/blog/save_endo/a_historical_note_on_rna_compression.png" alt="a_historical_note_on_rna_compression"></p>
 <p>しかしまあ、元の7MのDNA（さらに1バイトにつき4種類しかない）の中によくこれだけの情報が詰め込んであるもんだ。ようやくここから謎解き。</p>
 
 

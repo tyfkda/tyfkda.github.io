@@ -185,7 +185,7 @@
 <a href="/blog/2012/12/31/save-endo.html" title="ICFPC2007挑戦中">年末年始に挑戦していた</a>ICFP2007は、7Mとかある文字列の切り貼りを大量にする必要があって、最初C++で`std::string`を使って書いたんだけど1枚の絵を出すのに9時間ほどかかっていた。部分文字列を取り出したり文字列の連結を高速に行うデータ形式として[Rope](http://www.kmonos.net/wlog/39.php#_1841040529)というものがあるらしいんだけど、導入方法がよくわからなくて、じゃあっつって自前で実装しようとしたがうまい実装方法がわからなくてそれほど速くならなかった。[HaskellでData.Sequence](http://d.hatena.ne.jp/katona/20070802/p3)というのを使えば速いというのを見たので、Haskellに書き換えてたんだけどどこかにバグがあるのかうまく動かず放置していた。テストコードも書いて試した限りではうまく動いているふうなんだけど…。ふと気が向いて久しぶりにソースを見てみると、DNAからテンプレートの取り出しの部分でDNAを消費してない箇所があってバグっていた。ので修正するとようやく動くようになった。Haskellで[Data.Sequence](http://www.haskell.org/ghc/docs/latest/html/libraries/containers/Data-Sequence.html)を使った版だと、DNAからRNAへの変換が2分ほどで終わるようになった。
 
 <p>prefixを与えずに描画させた時に、rnaの最初の部分で<code>IIPIFFCPICFPPICIICCIICIPPPFIIC</code>というヒントみたいな基が表示されるので、それをprefixとして与えてみると、FUUN FIELD REPAIR GUIDEというのが表示された：</p>
-<p><img src="/assets/save_endo/fuun_field_repair_guide.png" alt="fuun_field_repair_guild"></p>
+<p><img src="/assets/blog/save_endo/fuun_field_repair_guide.png" alt="fuun_field_repair_guild"></p>
 <p>テキスト：</p>
 <pre style="color:white; background-color:black"><center>
 <font color="red">FUUN FIELD REPAIR GUIDE</font>
@@ -221,10 +221,10 @@ NUCLEAR FUSION, PREPEND THE FOLLOWING ACIDS:</font>
 
 <p>2つのprefixが紹介されている。</p>
 <p>下のを見てみると、</p>
-<p><img src="/assets/save_endo/noon.png" alt="noon"></p>
+<p><img src="/assets/blog/save_endo/noon.png" alt="noon"></p>
 <p>昼になった！空が明るくなって地面も照らされて、これだけでグッとそれっぽくなった！</p>
 <p>上のは修理カタログのページで、見てみると</p>
-<p><img src="/assets/save_endo/repair_guide_navigation.png" alt="repair_guide_navigation"></p>
+<p><img src="/assets/blog/save_endo/repair_guide_navigation.png" alt="repair_guide_navigation"></p>
 <p>カタログを見たい場合の説明が書いてあるんだけど、英語がよくわからん…。カタログのページを2進数で下位から上位の順に、0と1を<code>I</code>と<code>C</code>にエンコードして置き換えて長さは変えるな、ということなんだけど、どこにページ数を埋め込めばいいのかわからん…。</p>
 <p>ググったりして調べたところようやくわかった。このページを見るために与えたprefix <code>IIPIFFCPICFPPICIICCCIICIPPPCFIIC</code>は</p>
 <p>パターン：</p>
@@ -287,7 +287,7 @@ NUCLEAR FUSION, PREPEND THE FOLLOWING ACIDS:</font>
 </tbody></table>
 <p>となっていて、<code>matchreplace</code>でパターンの「<code>(?&quot;IFPCFFP&quot;)</code>」でDNAの先頭から<code>IFPCFFP</code>という並びまでを環境0にセット、「<code>I</code>」「<code>I</code>」を消費して終わり。次に<code>replace</code>でテンプレートで、「{0,0}」で環境0をそのまま出力、「<code>I</code>」「<code>C</code>」を出力して終わり、という処理になる。これで元のDNAの、<code>IFPCFFP</code>に続く<code>II</code>を<code>IC</code>に置き換えたことになる。実際に元のDNAを見てみると、<code>IFPCFFP</code>に続いて24個の<code>I</code>が並び、<code>P</code>で数値の終わりを示している。ここがページ数を表しているものと思われる。</p>
 <p>ということで、カタログの索引ページという1337ページを見るには、<code>1337 = 0x539 = 0b10100111001</code> をエンコードして置き換えるコード、<code>IIPIFFCPICFPPICIICCCCCCCCCCCCIICIPPPFCCFFFCCFCFIIC</code>というprefixをつけて変換してみる：</p>
-<p><img src="/assets/save_endo/catalog_page_index.png" alt="catalog_page_index"></p>
+<p><img src="/assets/blog/save_endo/catalog_page_index.png" alt="catalog_page_index"></p>
 <p>おおー、違うページが表示された！「Catalog seems to be damaged」と表示されてるのが気になるが…。</p>
 <p>とりあえずここまで。</p>
 
