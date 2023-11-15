@@ -68,7 +68,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/11/09/deferred-rendering-webgpu-sample.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/11/09/deferred-shadow-mapping.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -228,7 +228,8 @@
 <a href="https://github.com/tyfkda/deferred_shadow_mapping">ソース</a></p>
 <h3 id="Deferred-Renderingのソースを読む"><a href="#Deferred-Renderingのソースを読む" class="headerlink" title="Deferred Renderingのソースを読む"></a>Deferred Renderingのソースを読む</h3><p>WebGPU SamplesのdeferredRenderingのソースは<a href="https://github.com/webgpu/webgpu-samples/tree/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering">GitHubで公開</a>されている。</p>
 <p>モデル描画時にシェーディング計算したカラーを直接出力するのではなく「Gバッファ」と呼ばれる中間バッファ（テクスチャ）を構築し、
-最後に画面全体を塗りつぶす際に、Gバッファに従って光源計算を行って最終出力を作成する。</p>
+最後に画面全体を塗りつぶす際に、Gバッファに従って光源計算を行って最終出力を作成する。
+光源処理をジオメトリ処理と分離できるのが利点となっている。</p>
 <p>件のソースではGバッファとして <strong>法線(XYZ)</strong> 、 <strong>アルベド(RGB)</strong> 、そして <strong>深度(Z)</strong> を出力する。</p>
 <h4 id="Gバッファの構築（マルチレンダーターゲット）"><a href="#Gバッファの構築（マルチレンダーターゲット）" class="headerlink" title="Gバッファの構築（マルチレンダーターゲット）"></a>Gバッファの構築（マルチレンダーターゲット）</h4><p>Gバッファ構築時にはモデルに対してdrawコールをかけて、法線・アルベド・深度を出力する。
 出力先は複数のテクスチャとなるため、マルチレンダーターゲットを使う必要がある。</p>
@@ -314,13 +315,13 @@ WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US
 </ul>
 <h4 id="テクスチャ配列を使用する"><a href="#テクスチャ配列を使用する" class="headerlink" title="テクスチャ配列を使用する"></a>テクスチャ配列を使用する</h4><p>シェーダーでテクスチャを配列として受け取る方法を知らなかったので光源ごとに分割したがよくよく調べるとできるとわかったので、書き直すのは大変だけど利用するよう変更してみた。</p>
 <p>JavaScript側：デプステクスチャ作成時の<code>createTexture</code>の<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createTexture#size"><code>size</code>の3番目</a>にレイヤー数を指定、
-テクスチャビューの作成は<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture/createView#basearraylayer"><code>&#123;baseArrayLayer: i, arrayLayerCount: 1&#125;</code></a>で取得する。</p>
+テクスチャビューは<code>createView</code>に<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture/createView#basearraylayer"><code>&#123;baseArrayLayer: i, arrayLayerCount: 1&#125;</code></a>を与えて取得する。</p>
 <p>フラグメントシェーダー：デプステクスチャの型を<a href="https://www.w3.org/TR/WGSL/#ref-for-type-texture_depth_2d_array"><code>texture_depth_2d_array</code></a>に変更（<code>array&lt;texture_depth_2d&gt;</code>ではなかった）、
 <a href="https://www.w3.org/TR/WGSL/#texturesamplecompare"><code>textureSampleCompare</code>に追加でレイヤー番号を渡す</a>。</p>
 <p>テクスチャ配列にインデクスでアクセスできるようになるので、光源に対してそれぞれのシャドウマップを使ったシェーディングが複数光源をまとめて１回のdrawコールで実行できる。
 フラグメント内で光源の数でループして光源の影響を足し合わせていく。
-ただし今までは<code>discard</code>で抜けられていたのができなくなる。
-それに対応して<code>if</code>で影響を分岐させようにも、<code>textureSampleCompare</code>などのテクスチャフェッチする関数は分岐内で利用するのはダメとのことで、0.0を乗算で無効にするなどの処理が必要になる。</p>
+ただし今までは<a href="https://www.w3.org/TR/WGSL/#discard-statement"><code>discard</code></a>で抜けられていたのができなくなる。
+それに対応して<code>if</code>で影響を分岐させようにも、<code>textureSampleCompare</code>などのテクスチャフェッチする関数は分岐内で利用するのはダメとのことで、0.0の乗算で無効にするなどの処理が必要になる。</p>
 <p>こうしてディファードの光源計算はまとめられるが、その代わりに今まで１つのシャドウマップテクスチャを使いまわしてたのが、光源ごとに用意してやる必要がある。</p>
 <ul>
 <li>パイプラインでのブレンド処理は不要になったのでコメントアウトする</li>
@@ -334,7 +335,10 @@ WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US
 テクスチャのパース補正でやったような気がするがもうすっかり頭から抜け落ちていた…</li>
 <li>シェーダーの出力結果がおかしい時の対処法：大量に並列に動いて、また変数の値をログを出したりできないのでなにが間違っているのかを探すのが大変</li>
 <li>WebGPU関連：<ul>
-<li>レンダーターゲットやテクスチャを指定するのがデスクリプタで、それを事前に用意しておかなきゃいけないのは辛い、バーテックスバッファを与えるようにその場でできるようにして欲しい</li>
+<li>レンダーターゲットやテクスチャを指定するのがデスクリプタで、それを事前に用意しておかなきゃいけないのは辛い、バーテックスバッファを与えるようにその場でできるようにして欲しい<ul>
+<li>デスクリプタは単なるJavaScriptのオブジェクトなので事前に作成しておく必要はないといえばない</li>
+</ul>
+</li>
 <li>同様にユニフォームバッファやストレージを指定するバインドグループもあらかじめ生成しておかなきゃいけない</li>
 <li>ブラウザのウィンドウがリサイズされた時に対処するにはテクスチャを作り直す必要があって、そうするとデスクリプタもバインドグループも作り直さなきゃならなくなり、諦めた…</li>
 </ul>
@@ -380,7 +384,7 @@ WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/11/09/deferred-rendering-webgpu-sample.html">【WebGPU】Deferred RenderingとShadow Mappingと</a></li><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/11/09/deferred-shadow-mapping.html">【WebGPU】Deferred RenderingとShadow Mappingと</a></li><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li><li class="recent_post"><a href="/blog/2023/08/25/backend-more-registers.html">コンパイラでもっとレジスタを活用するために行った対策</a></li></ul>
                 </div>
             </div>
 
