@@ -90,7 +90,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 7.0.0"></head>
 
 
 <body>
@@ -245,14 +245,14 @@ Rubyから関数を返してそれを呼び出してやればできるかと思�
 </ul>
 <h3 id="ファイルシステム"><a href="#ファイルシステム" class="headerlink" title="ファイルシステム"></a>ファイルシステム</h3><p>ファイルの扱いがどうなっているか。</p>
 <h4 id="カレントディレクトリ"><a href="#カレントディレクトリ" class="headerlink" title="カレントディレクトリ"></a>カレントディレクトリ</h4><p>ルートにいる、ファイルは空：</p>
-<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">p Dir.pwd        <span class="comment"># =&gt; &quot;/&quot; ルートディレクトリ</span></span><br><span class="line">p Dir.glob(<span class="string">&#x27;*&#x27;</span>)  <span class="comment"># =&gt; []  ファイルなし</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">p <span class="title class_">Dir</span>.pwd        <span class="comment"># =&gt; &quot;/&quot; ルートディレクトリ</span></span><br><span class="line">p <span class="title class_">Dir</span>.glob(<span class="string">&#x27;*&#x27;</span>)  <span class="comment"># =&gt; []  ファイルなし</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="ファイルの読み書き"><a href="#ファイルの読み書き" class="headerlink" title="ファイルの読み書き"></a>ファイルの読み書き</h4><p>自分の用途としてはブラウザ上で動かすことなので実際のローカルファイルに直接アクセスはできなくていいんだけど、メモリ上でファイルを扱えれば幅が広がると思って試してみたが、<code>Errno::ENOTCAPABLE</code> が出る：</p>
-<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line">File.open(<span class="string">&#x27;foo.txt&#x27;</span>, <span class="string">&#x27;w&#x27;</span>) <span class="keyword">do</span> |<span class="params">f</span>|</span><br><span class="line">  f.puts(<span class="string">&#x27;Hello&#x27;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment"># Uncaught (in promise) Error: eval:10:in `initialize&#x27;: Capabilities insufficient @ rb_sysopen - foo.txt (Errno::ENOTCAPABLE)</span></span><br><span class="line"></span><br><span class="line">Dir.mkdir(<span class="string">&#x27;/foo&#x27;</span>)</span><br><span class="line"><span class="comment"># Uncaught (in promise) Error: eval:13:in `mkdir&#x27;: Capabilities insufficient @ dir_s_mkdir - bar (Errno::ENOTCAPABLE)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="title class_">File</span>.open(<span class="string">&#x27;foo.txt&#x27;</span>, <span class="string">&#x27;w&#x27;</span>) <span class="keyword">do</span> |<span class="params">f</span>|</span><br><span class="line">  f.puts(<span class="string">&#x27;Hello&#x27;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment"># Uncaught (in promise) Error: eval:10:in `initialize&#x27;: Capabilities insufficient @ rb_sysopen - foo.txt (Errno::ENOTCAPABLE)</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Dir</span>.mkdir(<span class="string">&#x27;/foo&#x27;</span>)</span><br><span class="line"><span class="comment"># Uncaught (in promise) Error: eval:13:in `mkdir&#x27;: Capabilities insufficient @ dir_s_mkdir - bar (Errno::ENOTCAPABLE)</span></span><br></pre></td></tr></table></figure>
 
 <p>書き込みができないので、読み込みも対象ファイルがないためできず…。</p>
 <h4 id="ライブラリ読み込み"><a href="#ライブラリ読み込み" class="headerlink" title="ライブラリ読み込み"></a>ライブラリ読み込み</h4><p><code>require &quot;JS&quot;</code>はできるが、他のライブラリは使えないっぽい。</p>
-<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&quot;date&quot;</span></span><br><span class="line">p DateTime.now</span><br><span class="line"><span class="comment"># Uncaught (in promise) Error: eval:1:in `require&#x27;: cannot load such file -- date (LoadError)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&quot;date&quot;</span></span><br><span class="line">p <span class="title class_">DateTime</span>.now</span><br><span class="line"><span class="comment"># Uncaught (in promise) Error: eval:1:in `require&#x27;: cannot load such file -- date (LoadError)</span></span><br></pre></td></tr></table></figure>
 
 <p>CDNから読み込むwasmバイナリを<code>ruby.wasm</code>から<code>ruby+stdlib.wasm</code>に変更すればライブラリは使える。</p>
 <p>ruby.wasmでは内部で <a href="https://github.com/kateinoigakukun/wasi-vfs">wasi-vfs</a> が使われてる（<a href="https://www.ruby-lang.org/ja/news/2022/12/25/ruby-3-2-0-released/">Ruby 3.2.0 リリース</a>）とのこと。

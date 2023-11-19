@@ -89,7 +89,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 7.0.0"></head>
 
 
 <body>
@@ -197,7 +197,7 @@
                 <p>RubyをCGIとして使った時にセッション情報をどのように管理しているか知りたかったのでソースを見てみた：</p>
 <span id="more"></span>
 
-<h2 id="CGI-x2F-Session"><a href="#CGI-x2F-Session" class="headerlink" title="CGI&#x2F;Session"></a>CGI&#x2F;Session</h2><p><a href="https://github.com/ruby/ruby/blob/trunk/lib%2Fcgi%2Fsession.rb">CGI&#x2F;Session</a>はセッションで保存する内容を（デフォルトだと）ファイルに保存していて、クライアントとはセッションIDをやりとりしている</p>
+<h2 id="CGI-Session"><a href="#CGI-Session" class="headerlink" title="CGI&#x2F;Session"></a>CGI&#x2F;Session</h2><p><a href="https://github.com/ruby/ruby/blob/trunk/lib%2Fcgi%2Fsession.rb">CGI&#x2F;Session</a>はセッションで保存する内容を（デフォルトだと）ファイルに保存していて、クライアントとはセッションIDをやりとりしている</p>
 <ul>
 <li>デフォルトで<a href="https://github.com/ruby/ruby/blob/trunk/lib%2Fcgi%2Fsession.rb#L346">CGI::Session::FileStore</a>が使われる<ul>
 <li><code>CGI::Session.new</code>()に渡すハッシュの<code>database_manager</code>にクラスを指定することで任意の方法に切り替えられる</li>

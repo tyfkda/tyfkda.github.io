@@ -89,7 +89,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 7.0.0"></head>
 
 
 <body>
@@ -203,7 +203,7 @@
 
 <p><a href="https://hackage.haskell.org/package/base-4.18.0.0/docs/Prelude.html#v:splitAt"><code>splitAt</code></a>で分割し、残りがあれば再帰させてリストを作成する。</p>
 <p>テスト：</p>
-<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">main</span> :: <span class="type">IO</span> ()</span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">let</span> ss = splitByWidth1 <span class="number">7</span> [&#x27;a&#x27;..&#x27;z&#x27;]</span><br><span class="line">    print ss  <span class="comment">-- [&quot;abcdefg&quot;,&quot;hijklmn&quot;,&quot;opqrstu&quot;,&quot;vwxyz&quot;]</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">main</span> :: <span class="type">IO</span> ()</span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">let</span> ss = splitByWidth1 <span class="number">7</span> [<span class="string">&#x27;a&#x27;</span>..<span class="string">&#x27;z&#x27;</span>]</span><br><span class="line">    print ss  <span class="comment">-- [&quot;abcdefg&quot;,&quot;hijklmn&quot;,&quot;opqrstu&quot;,&quot;vwxyz&quot;]</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="unfoldrを使う"><a href="#unfoldrを使う" class="headerlink" title="unfoldrを使う"></a>unfoldrを使う</h4><p>自分で再帰するのは明らかに面倒なので、<a href="https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-List.html#v:unfoldr"><code>unfoldr</code></a>を使ってみる。
 <code>unfoldr</code>は<code>Maybe</code>を返す関数を渡して、<code>Nothing</code>が返るまでの<code>Just</code>の値をリストに展開してくれる：</p>

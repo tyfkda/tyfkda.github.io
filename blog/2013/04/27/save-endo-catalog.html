@@ -89,7 +89,7 @@
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 7.0.0"></head>
 
 
 <body>
@@ -184,7 +184,7 @@
 <span id="more"></span>
 
 <p>カタログのページを簡単に見れるように、ページ数を与えるとprefixを出力するツールを書いた：</p>
-<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!ruby</span></span><br><span class="line">Encode = &#123;<span class="string">&#x27;0&#x27;</span> =&gt; <span class="string">&#x27;C&#x27;</span>, <span class="string">&#x27;1&#x27;</span> =&gt; <span class="string">&#x27;F&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line">page_no = <span class="variable constant_">ARGV</span>.shift.to_i</span><br><span class="line">page_code = sprintf(<span class="string">&quot;%b&quot;</span>, page_no).reverse.gsub(<span class="regexp">/[01]/</span>, Encode)</span><br><span class="line">src = <span class="string">&quot;C&quot;</span> * page_code.length</span><br><span class="line">puts <span class="string">&quot;IIPIFFCPICFPPICIIC<span class="subst">#&#123;src&#125;</span>IICIPPP<span class="subst">#&#123;page_code&#125;</span>IIC&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!ruby</span></span><br><span class="line"><span class="title class_">Encode</span> = &#123;<span class="string">&#x27;0&#x27;</span> =&gt; <span class="string">&#x27;C&#x27;</span>, <span class="string">&#x27;1&#x27;</span> =&gt; <span class="string">&#x27;F&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line">page_no = <span class="variable constant_">ARGV</span>.shift.to_i</span><br><span class="line">page_code = sprintf(<span class="string">&quot;%b&quot;</span>, page_no).reverse.gsub(<span class="regexp">/[01]/</span>, <span class="title class_">Encode</span>)</span><br><span class="line">src = <span class="string">&quot;C&quot;</span> * page_code.length</span><br><span class="line">puts <span class="string">&quot;IIPIFFCPICFPPICIIC<span class="subst">#&#123;src&#125;</span>IICIPPP<span class="subst">#&#123;page_code&#125;</span>IIC&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>それでは<a href="/assets/blog/save_endo/catalog_page_index.png">索引</a>に従って、1729ページの”Structure of the Fuun Genome”を見てみる：</p>
 <p><img src="/assets/blog/save_endo/structure_of_the_fuun_genome.png" alt="structure_of_the_fuun_genome"></p>

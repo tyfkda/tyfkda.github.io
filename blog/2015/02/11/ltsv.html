@@ -90,7 +90,7 @@ LTSV FAQ - LTSV って何? どういうところが良いの? - naoyaのはて�
     <!-- favicon -->
     
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 7.0.0"></head>
 
 
 <body>
@@ -187,7 +187,7 @@ LTSV FAQ - LTSV って何? どういうところが良いの? - naoyaのはて�
 </ul>
 <span id="more"></span>
 
-<h3 id="パースしてハッシュとして返す"><a href="#パースしてハッシュとして返す" class="headerlink" title="パースしてハッシュとして返す"></a>パースしてハッシュとして返す</h3><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">parse_ltsv</span>(<span class="params">ltsv_string</span>)</span><br><span class="line">  Hash[ltsv_string.split(<span class="string">&quot;\t&quot;</span>).map&#123;|<span class="params">f</span>| f.split(<span class="string">&quot;:&quot;</span>, <span class="number">2</span>)&#125;]</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 例</span></span><br><span class="line">parse_ltsv(<span class="string">&quot;a:123\tb:456&quot;</span>)</span><br><span class="line"><span class="comment"># =&gt; &#123;&quot;a&quot;=&gt;&quot;123&quot;, &quot;b&quot;=&gt;&quot;456&quot;&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="パースしてハッシュとして返す"><a href="#パースしてハッシュとして返す" class="headerlink" title="パースしてハッシュとして返す"></a>パースしてハッシュとして返す</h3><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">parse_ltsv</span>(<span class="params">ltsv_string</span>)</span><br><span class="line">  <span class="title class_">Hash</span>[ltsv_string.split(<span class="string">&quot;\t&quot;</span>).map&#123;|<span class="params">f</span>| f.split(<span class="string">&quot;:&quot;</span>, <span class="number">2</span>)&#125;]</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 例</span></span><br><span class="line">parse_ltsv(<span class="string">&quot;a:123\tb:456&quot;</span>)</span><br><span class="line"><span class="comment"># =&gt; &#123;&quot;a&quot;=&gt;&quot;123&quot;, &quot;b&quot;=&gt;&quot;456&quot;&#125;</span></span><br></pre></td></tr></table></figure>
 
                 
 
