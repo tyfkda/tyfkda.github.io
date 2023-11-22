@@ -235,12 +235,12 @@
 出力先は複数のテクスチャとなるため、マルチレンダーターゲットを使う必要がある。</p>
 <p>WebGPUでどうやるかというと、</p>
 <ul>
-<li>パイプライン作成時：<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L136-L141"><code>createRenderPipeline</code>の引数の<code>fragment.targets</code></a>にフォーマットを指定</li>
-<li>デスクリプタ作成時： <a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L259-L274"><code>beginRenderPass</code>に渡す<code>GPURenderPassDescriptor</code>の<code>colorAttachments</code></a>にテクスチャビューを指定</li>
+<li>パイプライン作成時：<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L136-L141"><code>createRenderPipeline</code>の引数の<code>fragment.targets</code></a>に対象テクスチャのフォーマットを指定</li>
+<li>デスクリプタ作成時： <a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L259-L274"><code>beginRenderPass</code>に渡す<code>GPURenderPassDescriptor</code>の<code>colorAttachments</code></a>に対象のテクスチャビューを指定</li>
 <li>描画時：フラグメントシェーダーからの<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentWriteGBuffers.wgsl#L21">出力</a>の<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentWriteGBuffers.wgsl#L1-L6"><code>@location(0)</code>と<code>@location(1)</code></a>がそれらに書き込まれる</li>
 </ul>
-<p>深度バッファは通常のデプステストに使用するZバッファに出力されたものを後でそのまま利用する。
-指定は同じくデスクリプタの、<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L276"><code>depthStencilAttachment</code>に指定</a>している。</p>
+<p>深度バッファは通常のデプステストに使用するZバッファに出力されたものを後でそのまま利用できるのでレンダーターゲットとして指定するんではなく、
+同じくデスクリプタの<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L276"><code>depthStencilAttachment</code>に指定</a>する。</p>
 <h4 id="画面塗りつぶしの際の光源計算-Deferred-Lighting"><a href="#画面塗りつぶしの際の光源計算-Deferred-Lighting" class="headerlink" title="画面塗りつぶしの際の光源計算(Deferred Lighting)"></a>画面塗りつぶしの際の光源計算(Deferred Lighting)</h4><p>光源情報を格納するバッファは<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/main.ts#L376-L380"><code>createBuffer</code>でストレージとして作成</a>する。
 コンピュートシェーダーで位置を更新した後、レンダーパイプラインに渡す。</p>
 <p>画面全体を塗りつぶす際のフラグメントシェーダーで、<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentDeferredRendering.wgsl#L2-L4">Gバッファ</a>と<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering/fragmentDeferredRendering.wgsl#L14">光源情報</a>を受け取り、
@@ -277,7 +277,7 @@ WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US
 シャドウマップ作成時に通常のZテストで一番近い点のZ値が生き残るので、それより奥の位置は遮蔽されて影になっているということが判定できる、というわけ
 （ハードエッジ回避で近傍3x3領域の割合を考慮している）。</p>
 <p>組み込みには、塗りつぶしのフラグメントシェーダーでワールド座標を逆算できるので、同様に光源座標系に変換してシャドウマップを適用する。</p>
-<h4 id="スポットライト（点光源）に変更したい"><a href="#スポットライト（点光源）に変更したい" class="headerlink" title="スポットライト（点光源）に変更したい"></a>スポットライト（点光源）に変更したい</h4><p>シャドウマップサンプルでは、プロジェクション行列に<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/shadowMapping/main.ts#L304"><code>mat4.orth</code></a>を使用しているので、平行投影＝ディレクショナルライトになっている。
+<h4 id="スポットライト（点光源）に変更したい"><a href="#スポットライト（点光源）に変更したい" class="headerlink" title="スポットライト（点光源）に変更したい"></a>スポットライト（点光源）に変更したい</h4><p>シャドウマップサンプルでは、光源視点用のプロジェクション行列に<a href="https://github.com/webgpu/webgpu-samples/blob/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/shadowMapping/main.ts#L304"><code>mat4.orth</code></a>を使用しているので、平行投影＝ディレクショナルライトになっている。
 これをスポットライトに変更したいと思った。
 本当は点光源にしたかったが、全方向に光源を飛ばすにはキューブマップのように６方向に対して行う必要がありそうなので、ひとまず角度を絞ってスポットライトで１方向だけで済むように。</p>
 <p>単にプロジェクション行列に<code>mat4.perspective</code>を使えばよい…と甘く考えていたが、それだけではダメだった。
@@ -304,7 +304,7 @@ WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US
 \end{align}
 %]]></script>
 
-<p>となって、最終的なデプス値はnearZの時0.0、farZの時に1.0となる。
+<p>となる。最終的なデプス値は意図通りにnearZの時0.0、farZの時に1.0となる。
 この計算はシャドウマップ作成時とDeferred Lighting時が同じ計算なので数値的には問題ないが、
 平行投影の場合は元Zに対して線型だったのに対して、パースペクティブ投影の場合には元Zに反比例した値となっている。
 そうすると遠ざかるに従ってデプス値の精度が落ちる（＝数値の幅が狭くなる）ことになる。
@@ -315,9 +315,10 @@ WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US
 </ul>
 <h4 id="テクスチャ配列を使用する"><a href="#テクスチャ配列を使用する" class="headerlink" title="テクスチャ配列を使用する"></a>テクスチャ配列を使用する</h4><p>シェーダーでテクスチャを配列として受け取る方法を知らなかったので光源ごとに分割したがよくよく調べるとできるとわかったので、書き直すのは大変だけど利用するよう変更してみた。</p>
 <p>JavaScript側：デプステクスチャ作成時の<code>createTexture</code>の<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createTexture#size"><code>size</code>の3番目</a>にレイヤー数を指定、
-テクスチャビューは<code>createView</code>に<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture/createView#basearraylayer"><code>&#123;baseArrayLayer: i, arrayLayerCount: 1&#125;</code></a>を与えて取得する。</p>
+テクスチャビューは<code>createView</code>に<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture/createView#basearraylayer"><code>&#123;baseArrayLayer: i, arrayLayerCount: 1&#125;</code></a>を与えて取得する。
+そしてテクスチャのバインドグループレイアウトに<a href="https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createBindGroupLayout#viewdimension_2"><code>viewDimension: &#39;2d-array&#39;</code></a>を指定する。</p>
 <p>フラグメントシェーダー：デプステクスチャの型を<a href="https://www.w3.org/TR/WGSL/#ref-for-type-texture_depth_2d_array"><code>texture_depth_2d_array</code></a>に変更（<code>array&lt;texture_depth_2d&gt;</code>ではなかった）、
-<a href="https://www.w3.org/TR/WGSL/#texturesamplecompare"><code>textureSampleCompare</code>に追加でレイヤー番号を渡す</a>。</p>
+<a href="https://www.w3.org/TR/WGSL/#texturesamplecompare"><code>textureSampleCompare</code></a>などテクスチャを参照する関数に追加でレイヤー番号を渡す。</p>
 <p>テクスチャ配列にインデクスでアクセスできるようになるので、光源に対してそれぞれのシャドウマップを使ったシェーディングが複数光源をまとめて１回のdrawコールで実行できる。
 フラグメント内で光源の数でループして光源の影響を足し合わせていく。
 ただし今までは<a href="https://www.w3.org/TR/WGSL/#discard-statement"><code>discard</code></a>で抜けられていたのができなくなる。
