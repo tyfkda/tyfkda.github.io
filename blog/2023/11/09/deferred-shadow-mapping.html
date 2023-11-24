@@ -199,14 +199,7 @@
 <p>「次のステップ」としてチュートリアルに書かれていた<a href="https://webgpu.github.io/webgpu-samples/">WebGPU Samples</a>の中で、<a href="https://webgpu.github.io/webgpu-samples/samples/deferredRendering">Deferred Rendering</a>が気になったので、ソースを読んでみた。</p>
 <span id="more"></span>
 
-<p><img src="https://raw.githubusercontent.com/tyfkda/deferred_shadow_mapping/main/ss.jpg" alt="Deffered Rendering &amp; Shadow Mapping"></p>
-<h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>いわゆる古典的なリアルタイム3Dグラフィックスではモデル描画時に光源処理（シェーディング）をしていた。
-その場合扱える光源の数に制限があった。</p>
-<p>Deferred Renderingという手法ではその制限を緩和できるのと、出力される中間結果をポストエフェクトに利用したりで豪華な画面が描けるため、最近はほとんどこの手法が使われているっぽい。
-デメリットとしては、アンチエリアシングや半透明と相性が悪いというはなしである。</p>
-<p>正直なところどういう仕組みなのかよく理解していなかったので、ソースを読んでみることにした。
-で影を適用したかったのでシャドウマッピングを組み込んでみた。</p>
-<h3 id="デモ"><a href="#デモ" class="headerlink" title="デモ"></a>デモ</h3><style type="text/css">
+<style type="text/css">
   .applet {
     transition: box-shadow 0.25s;
   }
@@ -221,11 +214,65 @@
       height: 340px;
     }
   }
+  .full-size {
+    width: 100%;
+    height: 100%;
+  }
+  .centering {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bgthumb {
+    background-image:url('https://raw.githubusercontent.com/tyfkda/deferred_shadow_mapping/main/ss.jpg');
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+  }
+  .video_play {
+    display: inline-block;
+    position: relative;
+    width: 1em;
+    height: 1em;
+    border: 0.05em solid currentColor;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 100px;
+  }
+  .video_play::before {
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translateY(-50%);
+    width: 0px;
+    height: 0px;
+    border: 0.3em solid transparent;
+    border-left: 0.5em solid currentColor;
+    box-sizing: border-box;
+    content: "";
+  }
 </style>
-<div class="applet" style="border:1px solid black; border-radius:8px; margin:16px"><iframe class="applet" src="//tyfkda.github.io/deferred_shadow_mapping/?wait=1" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto; width:100%"></iframe></div>
+<div class="applet" style="border:1px solid black; border-radius:8px; margin:16px"><iframe id="app" class="applet" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:none; margin:0 auto; width:100%"></iframe><div id="button" class="full-size centering bgthumb"><span class="video_play"></span></div></div>
+<script type="text/javascript"><!--
+window.addEventListener('load', () => {
+  const elem = document.getElementById('button')
+  elem.addEventListener('click', event => {
+    elem.parentElement.removeChild(elem)
+    const app = document.getElementById('app')
+    app.style.display = 'block'
+    app.src="//tyfkda.github.io/deferred_shadow_mapping/"
+  })
+})
+--></script>
 
 <p><a href="https://tyfkda.github.io/deferred_shadow_mapping/">デモページを開く</a>、
 <a href="https://github.com/tyfkda/deferred_shadow_mapping">ソース</a></p>
+<h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>いわゆる古典的なリアルタイム3Dグラフィックスではモデル描画時に光源処理（シェーディング）をしていた。
+その場合扱える光源の数に制限があった。</p>
+<p>Deferred Renderingという手法ではその制限を緩和できるのと、出力される中間結果をポストエフェクトに利用したりで豪華な画面が描けるため、最近はほとんどこの手法が使われているっぽい。
+デメリットとしては、アンチエリアシングや半透明と相性が悪いというはなしである。</p>
+<p>正直なところどういう仕組みなのかよく理解していなかったので、ソースを読んでみることにした。
+で影を適用したかったのでシャドウマッピングを組み込んでみた。</p>
 <h3 id="Deferred-Renderingのソースを読む"><a href="#Deferred-Renderingのソースを読む" class="headerlink" title="Deferred Renderingのソースを読む"></a>Deferred Renderingのソースを読む</h3><p>WebGPU SamplesのdeferredRenderingのソースは<a href="https://github.com/webgpu/webgpu-samples/tree/d67ae2acb40bebfa7c7705cd28175b44fbb03b59/src/sample/deferredRendering">GitHubで公開</a>されている。</p>
 <p>モデル描画時にシェーディング計算したカラーを直接出力するのではなく「Gバッファ」と呼ばれる中間バッファ（テクスチャ）を構築し、
 最後に画面全体を塗りつぶす際に、Gバッファに従って光源計算を行って最終出力を作成する。
