@@ -197,7 +197,15 @@
                 <p>“<a href="http://www.cse.yorku.ca/~amana/research/grid.pdf">A Fast Voxel Traversal Algorithm for Ray Tracing</a>“を参考に、2D版でお試し。</p>
 <span id="more"></span>
 
-<iframe src="/assets/ugrid.html" width="300" height="200" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto"></iframe>
+<style type="text/css">
+  .applet {
+    transition: box-shadow 0.25s;
+  }
+  .applet:hover {
+    box-shadow:0 0 8px blue;
+  }
+</style>
+<iframe class="applet" src="/assets/ugrid.html" width="300" height="200" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto"></iframe>
 
 <ul>
 <li>xとyのそれぞれの、次の境界までの距離をあらかじめ計算しておいて、距離が近いほうの隣のセルに移動する</li>
