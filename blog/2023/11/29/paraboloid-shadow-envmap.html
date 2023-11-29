@@ -377,9 +377,8 @@ x^2 = 4pz \\
 
 <p>上に凸にするために負の場合を取って<script type="math/tex">z = -\frac{1}{2} x^2</script>、そして焦点を原点に合わせることで説明通りの式になる。</p>
 <h4 id="放物面の交点座標の導出"><a href="#放物面の交点座標の導出" class="headerlink" title="放物面の交点座標の導出"></a>放物面の交点座標の導出</h4><p>半球をマッピングするために、ワールド座標を放物面にマッピングするための座標変換をする必要がある。
-放物面の反射によって方向ベクトルが放物面の法線に反射して<code>(0, 0, 1)</code>となることから、法線は両者を加算して正規化したものになり、で座標自体もその法線と同じ値になる、という話。
-それがどういう仕組みかよくわからないので追ってみる。</p>
-<p>まず対象の座標への方向<script type="math/tex">\vec{v}</script>と放物面が交差する座標を求めてみる。
+どういう仕組みかよくわからないので追ってみる。</p>
+<p>まず対象の座標への方向<script type="math/tex">\vec{v}</script>と放物面が交差する座標を求める。
 ZX平面で考えて、Z軸からの角度を<script type="math/tex">\theta</script>とすると方向ベクトルは<script type="math/tex">v_z = \cos \theta</script>、<script type="math/tex">v_x = \sin \theta</script>。
 これらの比と放物面の交点座標(z, x)の比は同じになるので、</p>
 <script type="math/tex; mode=display">% <![CDATA[
@@ -480,7 +479,7 @@ T_x \times T_y =
 <ul>
 <li><a href="https://developer.nvidia.com/gpugems/gpugems/part-ii-lighting-and-shadows/chapter-12-omnidirectional-shadow-mapping">Chapter 12. Omnidirectional Shadow Mapping | NVIDIA Developer</a> ６面描画のはなし</li>
 <li><a href="https://www.pauldebevec.com/ReflectionMapping/">Reflection Mapping History</a></li>
-<li>直接関係ないけど： <a href="https://boat-demo.cds.unity3d.com/">Unity Web Player | BoatAttack | WebGPU</a> いいね</li>
+<li>全然関係ないけどWebGPU関連で： <a href="https://boat-demo.cds.unity3d.com/">Unity Web Player | BoatAttack | WebGPU</a> いいね</li>
 </ul>
 
 
@@ -493,7 +492,7 @@ T_x \times T_y =
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/11/09/deferred-shadow-mapping.html" title="【WebGPU】Deferred RenderingとShadow Mappingと" rel="bookmark">【WebGPU】Deferred RenderingとShadow Mappingと</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/28/distributed-raytracing.html" title="分散レイトレ" rel="bookmark">分散レイトレ</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/11/09/deferred-shadow-mapping.html" title="【WebGPU】Deferred RenderingとShadow Mappingと" rel="bookmark">【WebGPU】Deferred RenderingとShadow Mappingと</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
