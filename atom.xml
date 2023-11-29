@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-11-26T05:39:25.678Z</updated>
+  <updated>2023-11-29T06:57:51.301Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,34 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>【WebGPU】全方位影と映り込みと</title>
+    <link href="https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html"/>
+    <id>https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html</id>
+    <published>2023-11-29T09:00:00.000Z</published>
+    <updated>2023-11-29T06:57:51.301Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;WebGPUでレンダリング手法を学習するシリーズ、&lt;a href=&quot;/blog/2023/11/09/deferred-shadow-mapping.html&quot; title=&quot;【WebGPU】Deferred RenderingとShadow Mappingと&quot;&gt;前回ディファードレンダリング&lt;/a&gt;ではスポットライトで特定の方向にのみ影を投影していた。
+それを点光源・全方位に拡張して、また環境マッピングもやってみることにした。&lt;/p&gt;
+&lt;p&gt;点光源で全方位に影を投影しようとした場合、単純に考えると角度が90度の四角錐を上下左右前後の6方向に行えばできるが、
+点光源１つにつきシーンを6回レンダリングする必要があるというのは厳しいように思う。
+しかし&lt;strong&gt;放物面&lt;/strong&gt;の特性を使うと半球をカバーできるため2面でいけるということを知ったので、やってみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="cg" scheme="https://tyfkda.github.io/tags/cg/"/>
+    
+    <category term="webgpu" scheme="https://tyfkda.github.io/tags/webgpu/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【WebGPU】Deferred RenderingとShadow Mappingと</title>
     <link href="https://tyfkda.github.io/blog/2023/11/09/deferred-shadow-mapping.html"/>
     <id>https://tyfkda.github.io/blog/2023/11/09/deferred-shadow-mapping.html</id>
     <published>2023-11-09T10:00:00.000Z</published>
-    <updated>2023-11-26T05:39:25.678Z</updated>
+    <updated>2023-11-29T06:57:51.300Z</updated>
     
     
     <summary type="html">&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUを触ってみて&lt;/a&gt;、一応Computeシェーダーは使えるようになった。
@@ -177,23 +200,6 @@
     
     
     <category term="haskell" scheme="https://tyfkda.github.io/tags/haskell/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</title>
-    <link href="https://tyfkda.github.io/blog/2023/05/12/pentomino-solver.html"/>
-    <id>https://tyfkda.github.io/blog/2023/05/12/pentomino-solver.html</id>
-    <published>2023-05-12T10:00:00.000Z</published>
-    <updated>2023-11-10T10:31:10.310Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;頭の体操と余興として、ペントミノ（５つの四角形）を並べて長方形を作るパズルを解くプログラムを書いてみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
     
   </entry>
   

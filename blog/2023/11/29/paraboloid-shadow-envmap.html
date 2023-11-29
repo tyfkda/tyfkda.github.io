@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="WebGPUでレンダリング手法を学習するシリーズ、前回ディファードレンダリングではスポットライトで特定の方向にのみ影を投影していた。
+それを点光源・全方位に拡張して、また環境マッピングもやってみることにした。
+点光源で全方位に影を投影しようとした場合、単純に考えると角度が90度の四角錐を上下左右前後の6方向に行えばできるが、
+点光源１つにつきシーンを6回レンダリングする必要があるというのは厳しいように思う。
+しかし放物面の特性を使うと半球をカバーできるため2面でいけるということを知ったので、やってみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【WebGPU】全方位影と映り込みと"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【WebGPU】全方位影と映り込みと - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【WebGPU】全方位影と映り込みと</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-11-29
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cg/">#cg</a> <a href="/tags/webgpu/">#webgpu</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>WebGPUでレンダリング手法を学習するシリーズ、<a href="/blog/2023/11/09/deferred-shadow-mapping.html" title="【WebGPU】Deferred RenderingとShadow Mappingと">前回ディファードレンダリング</a>ではスポットライトで特定の方向にのみ影を投影していた。
+それを点光源・全方位に拡張して、また環境マッピングもやってみることにした。</p>
+<p>点光源で全方位に影を投影しようとした場合、単純に考えると角度が90度の四角錐を上下左右前後の6方向に行えばできるが、
+点光源１つにつきシーンを6回レンダリングする必要があるというのは厳しいように思う。
+しかし<strong>放物面</strong>の特性を使うと半球をカバーできるため2面でいけるということを知ったので、やってみた。</p>
+<span id="more"></span>
+
+<style type="text/css">
+  .applet {
+    transition: box-shadow 0.25s;
+  }
+  .applet:hover {
+    box-shadow:0 0 8px blue;
+  }
+  .applet {
+    height: 700px;
+  }
+  @media screen and (max-width:768px) {
+    .applet {
+      height: 350px;
+    }
+  }
+  .full-size {
+    width: 100%;
+    height: 100%;
+  }
+  .centering {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bgthumb {
+    background-image:url('https://raw.githubusercontent.com/tyfkda/paraboloid_shadow_envmap/main/ss.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+  .video_play {
+    display: inline-block;
+    position: relative;
+    width: 1em;
+    height: 1em;
+    border: 0.05em solid currentColor;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 100px;
+    cursor: pointer;
+    transition: 0.25s;
+
+    /* ボタンのスタイルクリア */
+    background-color: transparent;
+    outline: none;
+    padding: 0;
+    appearance: none;
+  }
+  .video_play::before {
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translateY(-50%);
+    width: 0px;
+    height: 0px;
+    border: 0.3em solid transparent;
+    border-left: 0.5em solid currentColor;
+    box-sizing: border-box;
+    content: "";
+  }
+  .video_play:hover, .video_play:focus {
+    transform: scale(1.25);
+  }
+</style>
+<div class="applet" style="border:1px solid black; border-radius:8px; margin:16px"><div class="full-size centering bgthumb"><button id="button" class="video_play"></button></div><iframe id="app" class="applet" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:none; margin:0 auto; width:100%"></iframe></div>
+<script type="text/javascript"><!--
+window.addEventListener('load', () => {
+  const button = document.getElementById('button')
+  function click(event) {
+    const div = button.parentElement
+    div.parentElement.removeChild(div)
+    const app = document.getElementById('app')
+    app.style.display = 'block'
+    app.src='//tyfkda.github.io/paraboloid_shadow_envmap/'
+  }
+  button.addEventListener('click', click)
+})
+--></script>
+
+<p><a href="https://tyfkda.github.io/paraboloid_shadow_envmap/">デモページを開く</a>、
+<a href="https://github.com/tyfkda/paraboloid_shadow_envmap">ソース</a></p>
+<h3 id="双放物面を使った全方位シャドウマッピング"><a href="#双放物面を使った全方位シャドウマッピング" class="headerlink" title="双放物面を使った全方位シャドウマッピング"></a>双放物面を使った全方位シャドウマッピング</h3><p>放物面で半球状をマッピングできるのはなぜかというと、放物面の軸に沿って平行に入射した光が<strong>焦点</strong>の１点に集まる、という特性があるため（そのためパラボラアンテナとして利用されている）。
+これを逆に、焦点からのあらゆる方向は反射されて平行に投影される、ということになる。
+１方向で半球状がカバーできるので、２面で全方位カバーできることになる
+（細かいことは補足に）。</p>
+<p>以下、実装に関して。</p>
+<h4 id="光源座標行列の変更"><a href="#光源座標行列の変更" class="headerlink" title="光源座標行列の変更"></a>光源座標行列の変更</h4><p>スポットライトでは影響範囲を放射状に広げるために、プロジェクション行列としてパースペクティブ変換の行列を与えていた。
+双放物面ではその処理は必要ないので単に光源の座標系の（逆）行列を与えて、頂点シェーダーで放物面に投影する座標変換を行う。</p>
+<p>ただし単に視点行列を与えるのではなく、ちょっと細工をする。
+あらかじめカメラのファーが1.0となるように行列をスケールしてやる。
+それによって頂点座標に行列をかけた結果の距離が自動的にファー以上の距離がクリップされるようになる
+（ニアは特に対処不要じゃない？と思って0.0という想定）。</p>
+<p>また座標系が右手座標系なので、単純なスケール行列ではなく、ZZ成分を反転する必要があった
+（WebGPUは左手座標系とのことなんだけど、使用している行列モジュールwgpu-matrixが右手系として扱ってるから？）</p>
+<p>全方位マッピングするので実際のところ光源の向きはほぼ必要ないんだけど、念のため残している。</p>
+<h4 id="シャドウマップ作成時"><a href="#シャドウマップ作成時" class="headerlink" title="シャドウマップ作成時"></a>シャドウマップ作成時</h4><p>前回のシャドウマップ作成時には頂点シェーダーで出力した座標のデプス値によってデプスマップを更新するだけなので、フラグメントシェーダーはなにもする必要はなかった。
+しかし今回はZクリップの対処が必要になる。</p>
+<p>放物面への投影でZ座標が視点からの距離となって負の値にはならないため、別途変換前の座標をフラグメントシェーダーに渡す。
+フラグメントで線形補間されたZ値がマイナス（視線の後方）なら<code>discard</code>で無効にする
+（単純に<code>0.0</code>未満だと継ぎ目が見えるケースがあったので、適当なマージンを入れる）。</p>
+<p>カリングを行うのであれば前方向と後ろ方向で反転させると思うが、光源が物体内にめり込むことがありうるとするとどちらも<code>none</code>でいいのかもしれない。</p>
+<h4 id="シャドウマップの適用"><a href="#シャドウマップの適用" class="headerlink" title="シャドウマップの適用"></a>シャドウマップの適用</h4><p>Deferred Lightingのフラグメントシェーダー内・ライティングの処理でシャドウマップを参照する処理も対応してやる。
+フラグメントのワールド座標から光源座標系へ行列変換するところは同じ、でそのZ値によって光源向きの前方か後方かが判定できるので、２枚のシャドウマップのどちらを参照するかを選択する。
+さらに座標を放物面変換をかけてやり、あとは同様にシャドウマップを参照して光源からのデプス値を取得して、影かどうかを判定する。</p>
+<h3 id="動的環境マッピング"><a href="#動的環境マッピング" class="headerlink" title="動的環境マッピング"></a>動的環境マッピング</h3><p>上記で点光源・全方位に影を落とせるようになった。
+追加で全方位の動的環境マッピングも試してみる。
+キューブマッピングだと６面の描画が必要なところを、同様に双放物面で２面に抑えられる。</p>
+<h4 id="全体の処理手順"><a href="#全体の処理手順" class="headerlink" title="全体の処理手順"></a>全体の処理手順</h4><p>環境マップはその対象の原点を視点としたレンダリング結果をテクスチャに焼き込む、ということを行うので通常のシェーディングと同様の処理をすることになる。
+なので通常と同様に、環境マップもディファードレンダリングで行う。</p>
+<p>処理手順としては</p>
+<ol>
+<li>光源ごとにシャドウマップを作成</li>
+<li>環境マップ構築（双放物面で、前後２枚）<ol>
+<li>環境マップ用のGバッファ作成</li>
+<li>環境マップ作成（ディファード：シャドウマップを参照して光源処理）</li>
+</ol>
+</li>
+<li>フレームバッファ用のGバッファ作成</li>
+<li>最終的な描画でフレームバッファに反映（ディファード：マテリアルによっては環境マップを参照する）</li>
+</ol>
+<p>となる。</p>
+<ul>
+<li>最終的なディファードライティング後にはガンマ補正を入れるが、環境マップはリニア色空間のまま扱いたいのでかけないようにする</li>
+<li>ディファードライティング時にマテリアルの反射率を得られるようにするために、アルベドマップのa成分に入れておくようにした</li>
+</ul>
+<h4 id="座標系"><a href="#座標系" class="headerlink" title="座標系"></a>座標系</h4><p>環境マッピング用の座標系はどうするか。
+歪みや継ぎ目を気にしてカメラ方向に合わすか、または環境マップの密度を考えて視線と直角にするか、とかセオリーはありそうだが、ライティングをワールド座標系で行なっているのでワールド座標系のまま扱うのが楽そう。</p>
+<h4 id="環境マップのシェーディング時の、ワールド座標復元法"><a href="#環境マップのシェーディング時の、ワールド座標復元法" class="headerlink" title="環境マップのシェーディング時の、ワールド座標復元法"></a>環境マップのシェーディング時の、ワールド座標復元法</h4><p>で環境マップのライティング時に、通常と同様にワールド座標が必要になる。
+しかし放物面反射で座標変換してしまっているので、スクリーン座標系XYと対応する環境マップ用Gバッファからサンプルしたデプス値だけでは復元できない（ハズ…）。</p>
+<p>ワールド座標を格納するためのGバッファを１枚増やすしかないか…とも思ったが元のZ値があれば復元できるので、法線用のGバッファのaに入れておいて利用することで対処した。</p>
+<h3 id="コンピュートシェーダーで光源を更新"><a href="#コンピュートシェーダーで光源を更新" class="headerlink" title="コンピュートシェーダーで光源を更新"></a>コンピュートシェーダーで光源を更新</h3><p>点光源の位置を三角関数で動かすようにしたんだけど、せっかくなので更新処理をコンピュートシェーダーにやらせてみた。
+JavaScriptとから現在時刻をユニフォームで渡して、シェーダー側で位置を計算する。
+行列も更新する必要があるが、<a href="https://github.com/greggman/wgpu-matrix/blob/4e0a639f55dfbfd92cc272ad5ab64abd7741da40/src/mat4-impl.ts#L959-L980">wgpu-matrixの<code>lookAt</code></a>と同じものをシェーダー側で行えばよい。</p>
+<p>現在の秒<code>Date.now() / 1000</code>をそのまま渡そうとすると<code>float</code>範囲を超えてしまっているので注意が必要
+（JavaScriptの数値型は<code>double</code>だけど、シェーダーに渡すには<code>f32</code>なので）。</p>
+<h3 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h3><p>そんなこんなでなんとか動くようになった（実際はもっといろいろつまずきながら）。
+以下、こまごま：</p>
+<ul>
+<li>点光源の位置がわかるようにするため、ディファードレンダリングの後にフォワードで描き込んでいる</li>
+<li>放物面で非線型に変換されるので、モデルの頂点はある程度細かく割る必要がある<ul>
+<li>まだ見た目が変に思える時があるのは、点光源がモデルにめり込むときとかZ値が近くなったとき？</li>
+</ul>
+</li>
+<li>DeferredRendering時にガンマ補正をかけていたが、環境マップにもかかってしまって明るくなってしまっていた</li>
+<li>光源を増やすともろに重くなるので、光源を増やし放題では全然ない。いまどきのエンジンがどうやってるのか、謎は深まった…<ul>
+<li>写実的なシーンでは点光源といっても全方向が必要なケースはほぼないだろうから、円筒マッピングで１面でできないかな？</li>
+</ul>
+</li>
+</ul>
+<p><img src="/assets/paraboloid/gbuf.jpg" alt="Gバッファ、シャドウマップ、環境マップの内容"></p>
+<p>Gバッファ、シャドウマップ、環境マップの内容</p>
+<p>&nbsp;</p>
+<hr>
+<p>&nbsp;</p>
+<h3 id="補足"><a href="#補足" class="headerlink" title="補足"></a>補足</h3><p><a href="http://gamedevelop.eu/en/tutorials/dual-paraboloid-shadow-mapping.htm">Game Programming - Dual Paraboloid Shadow Mapping</a>や”View-independent Environment Maps”などの解説を見てすんなり理解できるほどかしこくないので、式の展開を逐一追う必要がある。</p>
+<h4 id="パラメータの導出"><a href="#パラメータの導出" class="headerlink" title="パラメータの導出"></a>パラメータの導出</h4><p>放物面は <script type="math/tex">f(x, y) = \frac{1}{2} - \frac{1}{2} \left(x^2 + y^2 \right)</script>というパラメータを用いる。
+このパラメータはどうやって求めるのか？</p>
+<p>XZの２次元で考える。
+放物線の定義によって<script type="math/tex">x^2 = 4pz</script>の焦点位置は<script type="math/tex">p</script>となる。</p>
+<script type="math/tex">x = \pm 1</script>で<script type="math/tex">z</script>が焦点と同じ値であれば、焦点を原点に合わせたときにxが-1〜+1で半球状から投影できることになる。
+<p>ということで方程式を解くと、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+x^2 = 4pz \\
+1^2 = 4p \cdot p \\
+\therefore p = \pm \frac{1}{2}
+\end{align}
+%]]></script>
+
+<p>上に凸にするために負の場合を取って<script type="math/tex">z = -\frac{1}{2} x^2</script>、そして焦点を原点に合わせることで説明通りの式になる。</p>
+<h4 id="放物面の交点座標の導出"><a href="#放物面の交点座標の導出" class="headerlink" title="放物面の交点座標の導出"></a>放物面の交点座標の導出</h4><p>半球をマッピングするために、ワールド座標を放物面にマッピングするための座標変換をする必要がある。
+放物面の反射によって方向ベクトルが放物面の法線に反射して<code>(0, 0, 1)</code>となることから、法線は両者を加算して正規化したものになり、で座標自体もその法線と同じ値になる、という話。
+それがどういう仕組みかよくわからないので追ってみる。</p>
+<p>まず対象の座標への方向<script type="math/tex">\vec{v}</script>と放物面が交差する座標を求めてみる。
+ZX平面で考えて、Z軸からの角度を<script type="math/tex">\theta</script>とすると方向ベクトルは<script type="math/tex">v_z = \cos \theta</script>、<script type="math/tex">v_x = \sin \theta</script>。
+これらの比と放物面の交点座標(z, x)の比は同じになるので、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+v_z : v_x &= z : x \\
+\cos \theta : \sin \theta &= \frac{1}{2} - \frac{1}{2} x^2 : x \\
+\cos \theta \cdot x &= \left( \frac{1}{2} - \frac{1}{2} x^2 \right) \cdot \sin \theta \\
+\cos \theta \cdot x &= \frac{1}{2} \sin \theta - \frac{1}{2} \sin \theta \cdot x^2 \\
+2 \cos \theta \cdot x &= \sin \theta - \sin \theta \cdot x^2 \\
+\sin \theta \cdot x^2 + 2 \cos \theta \cdot x - \sin \theta &= 0 \\
+\end{align}
+%]]></script>
+
+<p>２次方程式の解の公式 <script type="math/tex">x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}</script> の、プラスの方を考えて、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+x &= \frac{-2 \cos \theta + \sqrt{(2 \cos \theta)^2 + 4 \cdot \sin \theta \cdot \sin \theta}}{2 \sin \theta} \\
+  &= \frac{-2 \cos \theta + 2 \sqrt{\cos^2 \theta + \sin^2 \theta}}{2 \sin \theta} \\
+  &= \frac{1 - \cos \theta}{\sin \theta} \\
+  &= \frac{1 - \cos \theta}{\sin \theta} \cdot \frac{\sin \theta}{\sin \theta} = \frac{1 - \cos \theta}{\sin^2 \theta} \cdot \sin \theta \\
+  &= \frac{1 - \cos \theta}{1 - \cos^2 \theta} \cdot \sin \theta = \frac{1 - \cos \theta}{(1 + \cos \theta) (1 - \cos \theta)} \cdot \sin \theta \\
+  &= \frac{\sin \theta}{1 + \cos \theta} \\
+\end{align}
+%]]></script>
+
+<script type="math/tex">\theta</script>から元の方向ベクトルに戻すと
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+x = \frac{v_x}{1 + v_z}
+%]]></script>
+
+<p>ZXの２次元で考えていたがY軸も考えるには、<script type="math/tex">v_z</script>と<script type="math/tex">v_{xy}</script>の角度を<script type="math/tex">\theta</script>とすれば、軸の取り方だけでどの向きでも同じなので結局、交点座標のxyは</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\left\{
+\begin{array}{ll}
+x &= \frac{v_x}{1 + v_z} \\
+y &= \frac{v_y}{1 + v_z}
+\end{array}
+\right .
+%]]></script>
+
+<p>となる。</p>
+<h4 id="交点座標の導出方法２"><a href="#交点座標の導出方法２" class="headerlink" title="交点座標の導出方法２"></a>交点座標の導出方法２</h4><p>“Game Programming - Dual Paraboloid Shadow Mapping”ではまたちょっと違う導出をしている。
+放物面で反射したベクトルがZ軸に平行する<code>(0, 0, 1)</code>になることを利用して、法線は方向ベクトルと<code>(0, 0, 1)</code>を加算・正規化した値になる。
+で法線は面の傾きに直角、傾きは偏微分ということから計算する。</p>
+<p>放物面<script type="math/tex">(x, y, 0.5 - 0.5 (x^2 + y^2))^T</script>の傾きは、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+T_x = \begin{pmatrix} 1 \\ 0 \\ -x \end{pmatrix},
+T_y = \begin{pmatrix} 0 \\ 1 \\ -y \end{pmatrix}
+%]]></script>
+
+<p>直角は外積で算出すると</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+T_x \times T_y =
+\begin{pmatrix} 0 \cdot -y - 1 \cdot -x \\ -x \cdot 0 - (-y) \cdot 1 \\ 1 \cdot 1 - 0 \cdot 0 \end{pmatrix} =
+\begin{pmatrix} x \\ y \\ 1 \end{pmatrix}
+%]]></script>
+
+<p>これが方向ベクトル<script type="math/tex">\vec{v}</script>と<code>(0, 0, 1)</code>の加算と同じ方向なので、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{pmatrix} v_x \\ v_y \\ v_z + 1 \end{pmatrix} / \! / \begin{pmatrix} x \\ y \\ 1 \end{pmatrix}
+%]]></script>
+
+<p>z値が1になるよう<script type="math/tex">v_z + 1</script>で割って見比べれば<script type="math/tex">x = v_x / (v_z + 1)</script>、<script type="math/tex">y = v_y / (v_z + 1)</script> が求まる。</p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="http://gamedevelop.eu/en/tutorials/dual-paraboloid-shadow-mapping.htm">Game Programming - Dual Paraboloid Shadow Mapping</a>　反射の法線ベクトルから交点を算出</li>
+<li><a href="https://t-pot.com/program/55_dpem/index.html">t-pot『動的双放物面環境マッピング』</a>　昔はシェーダーもアセンブリだったんだなぁ…</li>
+<li><a href="https://sites.google.com/site/monshonosuana/directx%E3%81%AE%E8%A9%B1/directx%E3%81%AE%E8%A9%B1-%E7%AC%AC104%E5%9B%9E">もんしょの巣穴 - DirectXの話 第104回</a>　全方位シャドウマップ</li>
+<li><a href="https://diglib.eg.org/handle/10.2312/EGGH.EGGH98.039-045">View-independent Environment Maps</a>, Wolfgang Heidrich and Hans-Peter Seidel<ul>
+<li>双放物面を使った環境マッピングの論文、実は環境マップの正面／背面方向が一番解像度（ピクセル密度）が低い</li>
+<li>OpenGLでどうやるかの話、なんかほとんどの部分は行列計算でできるみたいだけど、よく理解してない…</li>
+</ul>
+</li>
+<li>WebGPU、wgsl<ul>
+<li><a href="https://www.w3.org/TR/webgpu/#coordinate-systems">3.3 Coordinate System</a><blockquote>
+<p>NOTE: WebGPU’s coordinate systems match DirectX’s coordinate systems in a graphics pipeline.</p>
+</blockquote>
+<ul>
+<li>WebGPUはDirectXの座標系と同じ</li>
+</ul>
+</li>
+<li><a href="https://www.w3.org/TR/WGSL/#ref-ptr-types">6.4.3. Reference and Pointer Types</a> ポインタが使える（参照は内部扱い）<ul>
+<li>シェーダーで関数呼出やポインタ、構造体の戻り値などを使った場合、どのようにコンパイルされるのか気になる…</li>
+<li><a href="https://google.github.io/tour-of-wgsl/types/pointers/">Pointers | Tour of WGSL</a> エイリアスがどうとか</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>直接は関係ないけど：</p>
+<ul>
+<li><a href="https://developer.nvidia.com/gpugems/gpugems/part-ii-lighting-and-shadows/chapter-12-omnidirectional-shadow-mapping">Chapter 12. Omnidirectional Shadow Mapping | NVIDIA Developer</a> ６面描画のはなし</li>
+<li><a href="https://www.pauldebevec.com/ReflectionMapping/">Reflection Mapping History</a></li>
+<li>直接関係ないけど： <a href="https://boat-demo.cds.unity3d.com/">Unity Web Player | BoatAttack | WebGPU</a> いいね</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/11/09/deferred-shadow-mapping.html" title="【WebGPU】Deferred RenderingとShadow Mappingと" rel="bookmark">【WebGPU】Deferred RenderingとShadow Mappingと</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/07/16/diffuse-shading.html" title="ディフューズシェーディング" rel="bookmark">ディフューズシェーディング</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/11/29/paraboloid-shadow-envmap.html">【WebGPU】全方位影と映り込みと</a></li><li class="recent_post"><a href="/blog/2023/11/09/deferred-shadow-mapping.html">【WebGPU】Deferred RenderingとShadow Mappingと</a></li><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li><li class="recent_post"><a href="/blog/2023/08/29/customize-printf.html">【C】printfに独自の表示形式を追加する</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
