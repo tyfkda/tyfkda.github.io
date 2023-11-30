@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-11-30T00:56:57.598Z</updated>
+  <updated>2023-11-30T05:21:51.959Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html"/>
     <id>https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html</id>
     <published>2023-11-29T09:00:00.000Z</published>
-    <updated>2023-11-30T00:56:57.598Z</updated>
+    <updated>2023-11-30T05:21:51.959Z</updated>
     
     
     <summary type="html">&lt;p&gt;WebGPUでレンダリング手法を学習するシリーズ、&lt;a href=&quot;/blog/2023/11/09/deferred-shadow-mapping.html&quot; title=&quot;【WebGPU】Deferred RenderingとShadow Mappingと&quot;&gt;前回ディファードレンダリング&lt;/a&gt;ではスポットライトで特定の方向にのみ影を投影していた。
@@ -44,7 +44,7 @@
     <link href="https://tyfkda.github.io/blog/2023/11/09/deferred-shadow-mapping.html"/>
     <id>https://tyfkda.github.io/blog/2023/11/09/deferred-shadow-mapping.html</id>
     <published>2023-11-09T10:00:00.000Z</published>
-    <updated>2023-11-29T06:57:51.300Z</updated>
+    <updated>2023-11-30T05:22:16.872Z</updated>
     
     
     <summary type="html">&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUを触ってみて&lt;/a&gt;、一応Computeシェーダーは使えるようになった。
@@ -64,7 +64,7 @@
     <link href="https://tyfkda.github.io/blog/2023/10/10/webgpu-reaction-diffusion.html"/>
     <id>https://tyfkda.github.io/blog/2023/10/10/webgpu-reaction-diffusion.html</id>
     <published>2023-10-10T07:00:00.000Z</published>
-    <updated>2023-11-19T23:45:45.080Z</updated>
+    <updated>2023-11-30T04:59:41.525Z</updated>
     
     
     <summary type="html">&lt;p&gt;ずっと昔に&lt;a href=&quot;/tags/webgl/&quot;&gt;WebGL&lt;/a&gt;を触ってみたことがあったのだけど初期化が面倒で放置になってしまった。
@@ -122,7 +122,7 @@
     <link href="https://tyfkda.github.io/blog/2023/08/25/backend-more-registers.html"/>
     <id>https://tyfkda.github.io/blog/2023/08/25/backend-more-registers.html</id>
     <published>2023-08-25T10:00:00.000Z</published>
-    <updated>2023-11-10T10:31:21.770Z</updated>
+    <updated>2023-11-30T05:22:13.042Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://github.com/tyfkda/xcc&quot;&gt;自作のCコンパイラ&lt;/a&gt;ではLLVMなどのバックエンドを使わずにx86-64やaarch64のアセンブリコードを直接出力しているが、
@@ -133,6 +133,8 @@
     
     
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+    <category term="optimization" scheme="https://tyfkda.github.io/tags/optimization/"/>
     
   </entry>
   
