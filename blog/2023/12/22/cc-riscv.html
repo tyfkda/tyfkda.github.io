@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="RISC-VというCPUはライセンスフリーとのことでどんなもんか興味あって、そんなこともあり自作のCコンパイラをRISC-Vに対応したいと思っていた。
+そのために動かせる環境を用意したくて、最初はQEMUなどのエミュレータでLinuxを動かして…と思っていたが、spikeというシミュレータを使うことで実現した。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="自作CコンパイラをRISC-Vに対応した"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>自作CコンパイラをRISC-Vに対応した - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>自作CコンパイラをRISC-Vに対応した</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2023-12-22
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>RISC-VというCPUはライセンスフリーとのことでどんなもんか興味あって、そんなこともあり自作のCコンパイラをRISC-Vに対応したいと思っていた。
+そのために動かせる環境を用意したくて、最初はQEMUなどのエミュレータでLinuxを動かして…と思っていたが、spikeというシミュレータを使うことで実現した。</p>
+<span id="more"></span>
+
+<h3 id="環境構築編"><a href="#環境構築編" class="headerlink" title="環境構築編"></a>環境構築編</h3><p>以前<a href="/blog/2020/11/13/xv6-riscv.html" title="Xv6-RISCVを試してみた">XV6のRISCV版</a>を動かす際に開発環境をセットアップしたがPCを買い替えてしまって環境は失われてしまっていて、またゼロから環境構築する必要があった。</p>
+<h4 id="RISC-V-Linux-on-QEMU（失敗）"><a href="#RISC-V-Linux-on-QEMU（失敗）" class="headerlink" title="RISC-V Linux on QEMU（失敗）"></a>RISC-V Linux on QEMU（失敗）</h4><p>当初はQEMUを使ってLinuxを動かしたいと思っていたんだけど、どうにもうまくいかなかった。
+公式の<a href="https://risc-v-getting-started-guide.readthedocs.io/en/latest/linux-qemu.html">Running 64- and 32-bit RISC-V Linux on QEMU — RISC-V - Getting Started Guide</a>の手順に沿ってやってみたが、qemu実行の際にbiosを指定しろ、とエラーが出てしまい進めなかった。
+わけも分からず<code>-bios /usr/lib/riscv64-linux-gnu/opensbi/generic/fw_jump.bin</code>というオプションを追加してみても起動しなかった。</p>
+<p>あれこれ自分でビルドせずに、出来合いのイメージバイナリを用意してくれていてダウンロードしてサクッと動かせないもんなんだろうか…。</p>
+<h4 id="シミュレータ環境の構築-spike-pk"><a href="#シミュレータ環境の構築-spike-pk" class="headerlink" title="シミュレータ環境の構築 (spike, pk)"></a>シミュレータ環境の構築 (spike, pk)</h4><p>行き詰まっていたところ、エミュレーション手順の説明ページを見つけた：
+<a href="https://qiita.com/zacky1972/items/6d433bdbef737d1e300f">RISC-V向けの実行ファイルをmacOSとUbuntu22.04それぞれでエミュレーション実行する方法 #homebrew - Qiita</a>
+spikeがシミュレータで、pkがプロキシカーネルとブートローダー、ということらしい。</p>
+<h4 id="pkのビルド（RISC-V64用）"><a href="#pkのビルド（RISC-V64用）" class="headerlink" title="pkのビルド（RISC-V64用）"></a>pkのビルド（RISC-V64用）</h4><p>macOSの場合、<code>brew install riscv-isa-sim</code>でspikeは入るらしく簡単なんだけど、
+自分の環境ではpkのビルドがそのままではいかず<code>make</code>時にエラーが出てしまった。
+<code>../configure ...</code>でMakefileが生成されるが、その中のコンパイラ指定が</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CC := clang</span><br></pre></td></tr></table></figure>
+
+<p>となってしまい、クロスコンパイルにならなくてエラーになっていた。
+これは自分が環境変数 <code>CC</code> を設定してしまっていたからのようで、 <code>CC= ../configure ...</code> と指定する必要があった。</p>
+<p>以上を踏まえて、自分の全手順：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> RISCV=<span class="variable">$HOME</span>/rv64  <span class="comment"># .zshrcにも追加</span></span><br><span class="line"></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/riscv-software-src/riscv-pk.git</span><br><span class="line"><span class="built_in">cd</span> riscv-pk</span><br><span class="line"><span class="built_in">mkdir</span> build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line">CC= ../configure --prefix=<span class="variable">$RISCV</span> --host=riscv64-unknown-elf --with-arch=rv64gc</span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br><span class="line">make install  <span class="comment"># 自分のホーム以下にしているのでsudoは必要ない</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="RISC-V用の実行ファイル作成"><a href="#RISC-V用の実行ファイル作成" class="headerlink" title="RISC-V用の実行ファイル作成"></a>RISC-V用の実行ファイル作成</h4><p>シミュレータの動作確認もかねて、クロスコンパイラでRISC-V64用のバイナリを作成して動かしてみる。
+hello worldなどの適当なCのコードを用意して、</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ riscv64-unknown-elf-gcc -o hello hello.c</span><br></pre></td></tr></table></figure>
+
+<p>とコンパイルできる。</p>
+<ul>
+<li>出力形式は<a href="http://localhost:4000/tags/elf/">ELFファイル</a></li>
+<li>その他、binutilsのツールも使える：<ul>
+<li>出力結果を <code>riscv64-unknown-elf-objdump -S hello</code> などとして逆アセンブルを見たりすることもできる</li>
+</ul>
+</li>
+</ul>
+<h4 id="実行方法"><a href="#実行方法" class="headerlink" title="実行方法"></a>実行方法</h4><p><code>spike pk</code>を使って、</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ spike <span class="variable">$RISCV</span>/riscv64-unknown-elf/bin/pk hello</span><br><span class="line">bbl loader</span><br><span class="line">Hello, world!</span><br></pre></td></tr></table></figure>
+
+<p>実行すると <code>bbl loader</code> とかいう不要なメッセージが出力されてしまうが、オプションで抑制するやり方がわからないので、スクリプトを用意してやる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">spike <span class="variable">$RISCV</span>/riscv64-unknown-elf/bin/pk <span class="variable">$@</span> | <span class="built_in">tail</span> -n +2</span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$&#123;PIPESTATUS[0]&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="コンパイラ作成編"><a href="#コンパイラ作成編" class="headerlink" title="コンパイラ作成編"></a>コンパイラ作成編</h3><p>RISC-V用のバイナリを動かせる環境ができたので、自作のCコンパイラからの出力に挑戦してみる。
+これまではx86-64と<a href="/blog/2022/09/29/cc-aarch64.html" title="M1Mac向けにコンパイルする(aarch64)">aarch64</a>のアセンブリを吐けるようにしていたが、バックエンドを追加して出力できるようにする。
+バックエンドで中間表現から各アーキテクチャ用のアセンブリを出力するようにしているので、そこでRISC-Vの実際の命令を出力することで対応する。</p>
+<h4 id="CPUアーキテクチャの概要"><a href="#CPUアーキテクチャの概要" class="headerlink" title="CPUアーキテクチャの概要"></a>CPUアーキテクチャの概要</h4><p>RISC-Vの仕様をくまなく調べたわけではなく、大雑把に理解したところによると：</p>
+<ul>
+<li>固定長な命令：各4バイト（コンパクト命令で2バイトというのもある）</li>
+<li>汎用レジスタ： <code>x0</code>〜<code>x31</code>の32個で、用途ごとに別名もついている<ul>
+<li>ゼロレジスタがある: <code>zero</code> &#x3D;&#x3D; <code>x0</code></li>
+</ul>
+</li>
+<li>汎用レジスタで扱えるのは64ビットだけ？で、メモリへのストアやロード時に何バイトにするかで処理する？</li>
+<li>アドレッシングモード：レジスタ間接＋オフセットのみ？</li>
+<li>フラグレジスタがない<ul>
+<li>条件分岐はレジスタ同士の比較によって行う</li>
+</ul>
+</li>
+</ul>
+<h4 id="汎用レジスタ"><a href="#汎用レジスタ" class="headerlink" title="汎用レジスタ"></a>汎用レジスタ</h4><table>
+<thead>
+<tr>
+<th>レジスタ</th>
+<th>別名</th>
+<th>用途</th>
+<th>保存</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>x0</code></td>
+<td><code>zero</code></td>
+<td>常にゼロ</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>x1</code></td>
+<td><code>ra</code></td>
+<td><code>call</code>の戻り先</td>
+<td>Caller</td>
+</tr>
+<tr>
+<td><code>x2</code></td>
+<td><code>sp</code></td>
+<td>スタックポインタ</td>
+<td>Callee</td>
+</tr>
+<tr>
+<td><code>x3</code></td>
+<td><code>gp</code></td>
+<td>グローバルポインタ</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>x4</code></td>
+<td><code>tp</code></td>
+<td>スレッドポインタ</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>x5</code>〜<code>x7</code></td>
+<td><code>t0~t2</code></td>
+<td>テンポラリ</td>
+<td>Caller</td>
+</tr>
+<tr>
+<td><code>x8</code></td>
+<td><code>s0/fp</code></td>
+<td>フレームポインタ</td>
+<td>Callee</td>
+</tr>
+<tr>
+<td><code>x9</code></td>
+<td><code>s1</code></td>
+<td>保存</td>
+<td>Callee</td>
+</tr>
+<tr>
+<td><code>x10</code>〜<code>x17</code></td>
+<td><code>a0</code>〜<code>a7</code></td>
+<td>関数パラメータ用</td>
+<td>Caller</td>
+</tr>
+<tr>
+<td><code>x18</code>〜<code>x27</code></td>
+<td><code>s2</code>〜<code>s11</code></td>
+<td>保存</td>
+<td>Callee</td>
+</tr>
+<tr>
+<td><code>x28</code>〜<code>x31</code></td>
+<td><code>t3</code>〜<code>t6</code></td>
+<td>テンポラリ</td>
+<td>Caller</td>
+</tr>
+</tbody></table>
+<p><code>zero</code>, <code>ra</code>, <code>sp</code>, <code>gp</code>, <code>tp</code> の5個は用途が決められているので、残りの27個をレジスタ割付の対象にする
+（<code>fp</code>も用途は決まっているが関数がスタックフレームを使用しない場合は保存・復帰してやれば割付が可能）。</p>
+<h4 id="命令セット"><a href="#命令セット" class="headerlink" title="命令セット"></a>命令セット</h4><p>主に利用する命令たち：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mv</code></td>
+<td>レジスタ間コピー</td>
+</tr>
+<tr>
+<td><code>li</code></td>
+<td>直値ロード（疑似命令、32bitまで）</td>
+</tr>
+<tr>
+<td><code>add</code>, <code>addi</code></td>
+<td>レジスタ間または直値との加算</td>
+</tr>
+<tr>
+<td><code>sub</code></td>
+<td>減算（直値は扱えない）</td>
+</tr>
+<tr>
+<td><code>mul</code>, <code>div</code>, <code>rem</code></td>
+<td>乗除、余り</td>
+</tr>
+<tr>
+<td><code>lb</code>, <code>lh</code>, <code>lw</code>, <code>ld</code></td>
+<td>メモリからのロード（1, 2, 4, 8バイト）</td>
+</tr>
+<tr>
+<td><code>sb</code>, <code>sh</code>, <code>sw</code>, <code>sd</code></td>
+<td>メモリへのストア（同上）</td>
+</tr>
+<tr>
+<td><code>j</code></td>
+<td>無条件ジャンプ</td>
+</tr>
+<tr>
+<td><code>beq</code> など</td>
+<td>条件ジャンプ</td>
+</tr>
+<tr>
+<td><code>call</code>, <code>ret</code></td>
+<td>コール、リターン</td>
+</tr>
+</tbody></table>
+<p>実際には疑似命令も多数あって、直値のロードは<code>lui</code>命令で上位20ビット＋<code>addi</code>で下位12ビットをロード、無条件ジャンプは<code>jal zero, label</code>など、アセンブラで実際の命令に変換される。
+また自動的にコンパクト命令を使ってくれる。</p>
+<ul>
+<li>疑似命令あるんだったら<code>subi</code>も対応してくれてもいいのに…</li>
+</ul>
+<h4 id="浮動小数点数"><a href="#浮動小数点数" class="headerlink" title="浮動小数点数"></a>浮動小数点数</h4><p>RISC-Vでは基本命令セットを小さく抑えていて、浮動小数点数演算やレジスタはオプショナルになっている。
+ハードウェア的にサポートされない場合にはソフトウェア的に処理する必要があるが、それは大変なのでハードウェア的にサポートしてるものとする。
+そうした場合、浮動小数点レジスタ（FPレジスタ）や命令セットがある：</p>
+<ul>
+<li>FPレジスタ：<code>f0</code>〜<code>f31</code>の32個（同じく別名あり）</li>
+</ul>
+<p>主な命令：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fmv.d</code></td>
+<td>レジスタ間コピー</td>
+</tr>
+<tr>
+<td><code>fadd.d</code>, <code>fsub.d</code>, <code>fmul.d</code>, <code>fdiv.d</code></td>
+<td>加減乗除</td>
+</tr>
+<tr>
+<td><code>fld</code>, <code>fsd</code></td>
+<td>ロード、ストア</td>
+</tr>
+<tr>
+<td><code>sb</code>, <code>sh</code>, <code>sw</code>, <code>sd</code></td>
+<td>メモリへのストア（同上）</td>
+</tr>
+<tr>
+<td><code>fcvt</code></td>
+<td>値の変換（<code>double</code>, <code>float</code>, <code>int</code>）</td>
+</tr>
+<tr>
+<td><code>feq</code> など</td>
+<td>比較結果を汎用レジスタに取り出す</td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>.d</code>の代わりに<code>.s</code>で<code>float</code>になる</li>
+</ul>
+<p>以下、コンパイラから出力する際のトピック：</p>
+<h4 id="コンパイラをクロスコンパイルに対応させる"><a href="#コンパイラをクロスコンパイルに対応させる" class="headerlink" title="コンパイラをクロスコンパイルに対応させる"></a>コンパイラをクロスコンパイルに対応させる</h4><p>今まではターゲット環境が開発環境と同じだったので、コンパイラの定義済みラベル<code>__x86_64__</code>やら<code>__aarch64__</code>やらでターゲット環境を選択していた。
+これを明示的に選べるようにコンパイルオプションの<code>-D</code>でターゲットとなるアーキテクチャを指定できるようにして、クロスコンパイルできるようにする。</p>
+<p>Cコンパイラの出力結果をアセンブルやリンクする実行ファイルもプレフィクスをつけて選択できる様にしてやる：<code>riscv64-unknown-elf-as</code>, <code>riscv64-unknown-elf-ld</code>など。</p>
+<h4 id="PUSH-POP"><a href="#PUSH-POP" class="headerlink" title="PUSH&#x2F;POP"></a>PUSH&#x2F;POP</h4><p><code>push</code>や<code>pop</code>のようなプリデクリメントやポストインクリメントのアドレッシングがないので、自分でスタックポインタを操作＋レジスタ間接ロード・ストアする。</p>
+<h4 id="条件分岐"><a href="#条件分岐" class="headerlink" title="条件分岐"></a>条件分岐</h4><p>x86-64やaarch64で条件分岐を行うには<code>cmp</code>で比較して、フラグレジスタの条件によってブランチしていた。
+がRISC-Vではフラグレジスタがなく、<code>beq</code>などの命令がオペランドとしてレジスタを2つ取り、その比較によって行う。
+また比較の条件が<code>eq</code>, <code>ne</code>, <code>lt</code>, <code>ge</code>しかないので、<code>le</code>や<code>gt</code>はオペランドの順を入れ替えてやる。</p>
+<p>FPレジスタはオペランドに与えられないので、<code>feq</code>などのFPレジスタ間の比較命令でGPレジスタに1または0が得られ、それを使って分岐する。
+FP比較命令はnot equalがないので、<code>feq</code>ののちに条件を反転する必要がある。</p>
+<h4 id="標準入出力"><a href="#標準入出力" class="headerlink" title="標準入出力"></a>標準入出力</h4><p>自作コンパイラがちょっと厄介な作りになっていて、ライブラリのヘッダファイルは独自のものを使っているが、x86-64以外ではリンクはシステムのライブラリを利用している。
+なので自作のヘッダでの定義がライブラリと合うようにする必要がある。</p>
+<p>x86-64やaarch64では<code>stdin</code>, <code>stdout</code>, <code>stderr</code>は単純に<code>extern FILE*</code>としてやればよかったが、RISC-Vではどうも違うっぽい。
+単に<code>printf</code>を使う分には問題ないが、<code>fprintf(stderr, ...)</code>などとすると未定義エラーが出てしまう。</p>
+<p>プリプロセスした結果からRISC-Vツールチェインのヘッダを見てみると、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// /opt/homebrew/Cellar/riscv-gnu-toolchain/main/riscv64-unknown-elf/include/stdio.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span>	stderr	(_REENT-&gt;_stderr)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// /opt/homebrew/Cellar/riscv-gnu-toolchain/main/riscv64-unknown-elf/include/sys/reent.h</span></span><br><span class="line"><span class="keyword">extern</span> <span class="class"><span class="keyword">struct</span> _<span class="title">reent</span> *_<span class="title">impure_ptr</span> __<span class="title">ATTRIBUTE_IMPURE_PTR__</span>;</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> _REENT _impure_ptr</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">reent</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="type">int</span> _errno;			<span class="comment">/* local copy of errno */</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/* FILE is a big struct and may change over time.  To try to achieve binary</span></span><br><span class="line"><span class="comment">     compatibility with future versions, put stdin,stdout,stderr here.</span></span><br><span class="line"><span class="comment">     These are pointers into member __sf defined below.  */</span></span><br><span class="line">  __FILE *_stdin, *_stdout, *_stderr;</span><br><span class="line">  ...</span><br><span class="line">  __FILE __sf[<span class="number">3</span>];  		<span class="comment">/* first three file descriptors */</span></span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<p>となっていて、リエントラントに対応するためのコードになってるっぽい。</p>
+<ul>
+<li>これらのコードは<a href="https://github.com/eblot/newlib/blob/2a63fa0fd26ffb6603f69d9e369e944fe449c246/newlib/libc/include/sys/reent.h#L367-L376">newlibと同じ</a>なので、RISC-Vツールチェインはnewlibを使っているっぽい</li>
+</ul>
+<h4 id="呼出規約"><a href="#呼出規約" class="headerlink" title="呼出規約"></a>呼出規約</h4><p>関数の呼出規約はx86-64やaarch64と同様に<code>int</code>や<code>double</code>などのスカラー値はレジスタ渡しで、8個を超えた分や構造体はスタック渡し。
+レジスタによって呼出元保存や呼出先保存となっているのでそれに従う
+（<code>tn</code>レジスタがテンポラリ＝破壊される＝Caller Save、<code>sn</code>は保存される＝Callee Save）。</p>
+<h4 id="任意長引数"><a href="#任意長引数" class="headerlink" title="任意長引数"></a>任意長引数</h4><p>呼出規約だかABIだかの仕様で見つけられなかったんだけど<code>riscv64-unknown-elf-gcc</code>の出力結果を見ると、
+呼び出す関数が任意長引数の場合は<code>double</code>の値でもFPレジスタではなく汎用レジスタで渡すっぽい。
+なんでそうなってるのか推測だけどRISC-Vは構成によってはハードウェアでの浮動小数点演算なしとかもあり得るので、そういうケースを考慮してのことかもしれない。
+FPレジスタからの取り出しは<code>fmv.x.d</code>命令でバイナリ表現そのままGPレジスタに持ってきてやる。</p>
+<p>またx86-64などではGPとFPそれぞれ別に管理が必要なため<code>va_list</code>の実体は構造体が使われているが、
+RISC-Vでは受け渡しが汎用レジスタのみということもあってか古き良き実装でありがちな単なるポインタになっている。</p>
+<p>ただ8個まではレジスタ渡しされるので、スタック渡しの引数と連続になるように関数プロローグで一番最初にスタックに積んで残りのスタック引数と連続させる必要がある。
+<code>call</code>命令でリターンアドレスが<code>ra</code>レジスタに格納されるので、先に任意長引数の可能性のあるレジスタをスタックに積んで、その後リターンアドレスやフレームポインタを積んだりスタックフレームの確保を行う。</p>
+<ul>
+<li>構造体引数と混ぜられたら対処できなそうな気がする…</li>
+<li>ヘッダのパス： &#x2F;opt&#x2F;homebrew&#x2F;Cellar&#x2F;riscv-gnu-toolchain&#x2F;main&#x2F;lib&#x2F;gcc&#x2F;riscv64-unknown-elf&#x2F;12.2.0&#x2F;include&#x2F;stdarg.h</li>
+</ul>
+<h4 id="浮動小数点数の丸めモード"><a href="#浮動小数点数の丸めモード" class="headerlink" title="浮動小数点数の丸めモード"></a>浮動小数点数の丸めモード</h4><p>C言語で<code>double</code>から<code>int</code>へのキャストをすると小数点以下は切り捨てになる。
+これを単に<code>fcvt.w.d</code>命令を使うと四捨五入になってしまうので、アセンブリで丸めモードを指定する必要がある：</p>
+<figure class="highlight as"><table><tr><td class="code"><pre><span class="line">fcvt.w.d a0, fa0, rtz</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>rtz</code> (Round towards Zero)</li>
+<li><code>fcvt</code>だけじゃなく、すべてのFP命令で<code>rm</code>の丸めモードを指定できるらしい</li>
+</ul>
+<h3 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h3><p>ひとまずRISC-Vのアセンブリを出力して、コンパイル結果をspikeシミュレータ上で動作させることができるようになった。</p>
+<ul>
+<li>作ったとはいえまだ命令セットをよく理解してないので、アセンブラやリンカーも対応したい</li>
+<li>できればQEMU&#x2F;Linuxや、実際のハードウェアでも動かしたい</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li>RISC-Vツールチェイン: <a href="https://github.com/riscv-collab/riscv-gnu-toolchain">riscv-collab&#x2F;riscv-gnu-toolchain: GNU toolchain for RISC-V, including GCC</a><blockquote>
+<p>This is the RISC-V C and C++ cross-compiler. It supports two build modes: a generic ELF&#x2F;Newlib toolchain and a more sophisticated Linux-ELF&#x2F;glibc toolchain.</p>
+</blockquote>
+<ul>
+<li>RISC-Vツールチェインは一般ELF&#x2F;newlibと、Linux-ELF&#x2F;glibcの２つのビルドモードがある</li>
+</ul>
+</li>
+<li>spike: <a href="https://github.com/riscv-software-src/riscv-isa-sim">riscv-software-src&#x2F;riscv-isa-sim: Spike, a RISC-V ISA Simulator</a></li>
+<li><a href="https://risc-v-getting-started-guide.readthedocs.io/en/latest/linux-qemu.html">Running 64- and 32-bit RISC-V Linux on QEMU — RISC-V - Getting Started Guide</a></li>
+<li><a href="https://www.dts-insight.co.jp/product/systemlsi/tech-topics/risc-v/blog_no17.html">DTSインサイトのRISC-V技術ブログ(17) QEMUの試行 | DTSインサイト｜技術ブログ</a></li>
+<li><a href="https://qiita.com/rizkubo/items/5ac1f70addc5aad2d500">qemu-system-riscv64でubuntuをbootさせられなかった（失敗編） - Qiita</a></li>
+<li><a href="https://qiita.com/zacky1972/items/6d433bdbef737d1e300f">RISC-V向けの実行ファイルをmacOSとUbuntu22.04それぞれでエミュレーション実行する方法 #homebrew - Qiita</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2023/12/22/cc-riscv.html">自作CコンパイラをRISC-Vに対応した</a></li><li class="recent_post"><a href="/blog/2023/11/29/paraboloid-shadow-envmap.html">【WebGPU】全方位影と映り込みと</a></li><li class="recent_post"><a href="/blog/2023/11/09/deferred-shadow-mapping.html">【WebGPU】Deferred RenderingとShadow Mappingと</a></li><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li><li class="recent_post"><a href="/blog/2023/09/03/ue-content-examples.html">【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
