@@ -414,10 +414,6 @@ hello worldなどの適当なCのコードを用意して、</p>
 <td>ロード、ストア</td>
 </tr>
 <tr>
-<td><code>sb</code>, <code>sh</code>, <code>sw</code>, <code>sd</code></td>
-<td>メモリへのストア（同上）</td>
-</tr>
-<tr>
 <td><code>fcvt</code></td>
 <td>値の変換（<code>double</code>, <code>float</code>, <code>int</code>）</td>
 </tr>
@@ -427,13 +423,14 @@ hello worldなどの適当なCのコードを用意して、</p>
 </tr>
 </tbody></table>
 <ul>
-<li><code>.d</code>の代わりに<code>.s</code>で<code>float</code>になる</li>
+<li><code>.d</code>の代わりに<code>.s</code>で<code>float</code>になる（レジスタ名は変わらず）</li>
 </ul>
 <p>以下、コンパイラから出力する際のトピック：</p>
 <h4 id="コンパイラをクロスコンパイルに対応させる"><a href="#コンパイラをクロスコンパイルに対応させる" class="headerlink" title="コンパイラをクロスコンパイルに対応させる"></a>コンパイラをクロスコンパイルに対応させる</h4><p>今まではターゲット環境が開発環境と同じだったので、コンパイラの定義済みラベル<code>__x86_64__</code>やら<code>__aarch64__</code>やらでターゲット環境を選択していた。
 これを明示的に選べるようにコンパイルオプションの<code>-D</code>でターゲットとなるアーキテクチャを指定できるようにして、クロスコンパイルできるようにする。</p>
 <p>Cコンパイラの出力結果をアセンブルやリンクする実行ファイルもプレフィクスをつけて選択できる様にしてやる：<code>riscv64-unknown-elf-as</code>, <code>riscv64-unknown-elf-ld</code>など。</p>
 <h4 id="PUSH-POP"><a href="#PUSH-POP" class="headerlink" title="PUSH&#x2F;POP"></a>PUSH&#x2F;POP</h4><p><code>push</code>や<code>pop</code>のようなプリデクリメントやポストインクリメントのアドレッシングがないので、自分でスタックポインタを操作＋レジスタ間接ロード・ストアする。</p>
+<p>スタックポインタは16バイトアラインされている必要がある。</p>
 <h4 id="条件分岐"><a href="#条件分岐" class="headerlink" title="条件分岐"></a>条件分岐</h4><p>x86-64やaarch64で条件分岐を行うには<code>cmp</code>で比較して、フラグレジスタの条件によってブランチしていた。
 がRISC-Vではフラグレジスタがなく、<code>beq</code>などの命令がオペランドとしてレジスタを2つ取り、その比較によって行う。
 また比較の条件が<code>eq</code>, <code>ne</code>, <code>lt</code>, <code>ge</code>しかないので、<code>le</code>や<code>gt</code>はオペランドの順を入れ替えてやる。</p>
@@ -453,8 +450,7 @@ FP比較命令はnot equalがないので、<code>feq</code>ののちに条件�
 <h4 id="呼出規約"><a href="#呼出規約" class="headerlink" title="呼出規約"></a>呼出規約</h4><p>関数の呼出規約はx86-64やaarch64と同様に<code>int</code>や<code>double</code>などのスカラー値はレジスタ渡しで、8個を超えた分や構造体はスタック渡し。
 レジスタによって呼出元保存や呼出先保存となっているのでそれに従う
 （<code>tn</code>レジスタがテンポラリ＝破壊される＝Caller Save、<code>sn</code>は保存される＝Callee Save）。</p>
-<h4 id="任意長引数"><a href="#任意長引数" class="headerlink" title="任意長引数"></a>任意長引数</h4><p>呼出規約だかABIだかの仕様で見つけられなかったんだけど<code>riscv64-unknown-elf-gcc</code>の出力結果を見ると、
-呼び出す関数が任意長引数の場合は<code>double</code>の値でもFPレジスタではなく汎用レジスタで渡すっぽい。
+<h4 id="任意長引数"><a href="#任意長引数" class="headerlink" title="任意長引数"></a>任意長引数</h4><p><code>riscv64-unknown-elf-gcc</code>の出力結果を見ると、呼び出す関数が任意長引数の場合は<code>double</code>の値でもFPレジスタではなく汎用レジスタで渡すっぽい。
 なんでそうなってるのか推測だけどRISC-Vは構成によってはハードウェアでの浮動小数点演算なしとかもあり得るので、そういうケースを考慮してのことかもしれない。
 FPレジスタからの取り出しは<code>fmv.x.d</code>命令でバイナリ表現そのままGPレジスタに持ってきてやる。</p>
 <p>またx86-64などではGPとFPそれぞれ別に管理が必要なため<code>va_list</code>の実体は構造体が使われているが、
@@ -479,7 +475,7 @@ RISC-Vでは受け渡しが汎用レジスタのみということもあって�
 <li>できればQEMU&#x2F;Linuxや、実際のハードウェアでも動かしたい</li>
 </ul>
 <h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
-<li>追加のマージコミット：<a href="https://github.com/tyfkda/xcc/commit/1b1b0663732688ab4294f178c9ca10d1be8f29d1">1b1b066</a></li>
+<li><a href="https://github.com/tyfkda/xcc/commit/1b1b0663732688ab4294f178c9ca10d1be8f29d1">対応のマージコミット</a></li>
 <li>RISC-Vツールチェイン: <a href="https://github.com/riscv-collab/riscv-gnu-toolchain">riscv-collab&#x2F;riscv-gnu-toolchain: GNU toolchain for RISC-V, including GCC</a><blockquote>
 <p>This is the RISC-V C and C++ cross-compiler. It supports two build modes: a generic ELF&#x2F;Newlib toolchain and a more sophisticated Linux-ELF&#x2F;glibc toolchain.</p>
 </blockquote>
@@ -488,12 +484,17 @@ RISC-Vでは受け渡しが汎用レジスタのみということもあって�
 </ul>
 </li>
 <li>spike: <a href="https://github.com/riscv-software-src/riscv-isa-sim">riscv-software-src&#x2F;riscv-isa-sim: Spike, a RISC-V ISA Simulator</a></li>
-<li><a href="https://risc-v-getting-started-guide.readthedocs.io/en/latest/linux-qemu.html">Running 64- and 32-bit RISC-V Linux on QEMU — RISC-V - Getting Started Guide</a></li>
-<li>pdf: <a href="https://riscv.org/wp-content/uploads/2015/01/riscv-calling.pdf">Chapter 18. Calling Convention</a></li>
+<li><a href="https://risc-v-getting-started-guide.readthedocs.io/en/latest/linux-qemu.html">Running 64- and 32-bit RISC-V Linux on QEMU — RISC-V - Getting Started Guide</a> 自分は動かせなかった…</li>
+<li>RISC-Vの命令セット：<a href="https://riscv.org/technical/specifications/">Specifications – RISC-V International</a></li>
+<li>呼出規約(pdf): <a href="https://riscv.org/wp-content/uploads/2015/01/riscv-calling.pdf">Chapter 18. Calling Convention</a><ul>
+<li>任意長引数の場合浮動小数点数をGPレジスタ経由で渡すことも書いてあった汗</li>
+</ul>
+</li>
+<li><a href="https://five-embeddev.com/riscv-isa-manual/latest/instr-table.html">RISC-V Instruction Set Manual, Volume I: RISC-V User-Level ISA | Five EmbedDev</a></li>
 <li><a href="https://www.dts-insight.co.jp/product/systemlsi/tech-topics/risc-v/blog_no17.html">DTSインサイトのRISC-V技術ブログ(17) QEMUの試行 | DTSインサイト｜技術ブログ</a></li>
 <li><a href="https://qiita.com/rizkubo/items/5ac1f70addc5aad2d500">qemu-system-riscv64でubuntuをbootさせられなかった（失敗編） - Qiita</a></li>
 <li><a href="https://qiita.com/zacky1972/items/6d433bdbef737d1e300f">RISC-V向けの実行ファイルをmacOSとUbuntu22.04それぞれでエミュレーション実行する方法 #homebrew - Qiita</a></li>
-<li><a href="https://msyksphinz-self.github.io/riscv-isadoc/html/index.html">RISC-V Instruction Set Specifications</a> RISC-Vの命令と簡単な説明と、マシン語を見ることができる</li>
+<li><a href="https://msyksphinz-self.github.io/riscv-isadoc/html/index.html">RISC-V Instruction Set Specifications</a> RISC-Vの命令と簡単な説明と、対応するマシン語のビット構成が見れる</li>
 <li><a href="https://stackoverflow.com/a/65008687">bitwise operators - How do I write NOT Operation for the Risc-V (Assembly Language)? - Stack Overflow</a> 疑似命令について説明されている</li>
 </ul>
 
@@ -507,7 +508,7 @@ RISC-Vでは受け渡しが汎用レジスタのみということもあって�
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
