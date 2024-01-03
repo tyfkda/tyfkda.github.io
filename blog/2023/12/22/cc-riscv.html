@@ -469,6 +469,9 @@ RISC-Vでは受け渡しが汎用レジスタのみということもあって�
 <li><code>rtz</code> (Round towards Zero)</li>
 <li><code>fcvt</code>だけじゃなく、すべてのFP命令で<code>rm</code>の丸めモードを指定できるらしい</li>
 </ul>
+<h4 id="レジスタ割付"><a href="#レジスタ割付" class="headerlink" title="レジスタ割付"></a>レジスタ割付</h4><a href="/blog/2019/10/21/regalloc-linearscan.html" title="自作Cコンパイラでレジスタ割付">レジスタ割付</a>は、レジスタ構成がaarch64と大差ないので特に問題はなかった。
+
+
 <h3 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h3><p>ひとまずRISC-Vのアセンブリを出力して、コンパイル結果をspikeシミュレータ上で動作させることができるようになった。</p>
 <ul>
 <li>作ったとはいえまだ命令セットをよく理解してないので、アセンブラやリンカーも対応したい</li>
@@ -508,7 +511,7 @@ RISC-Vでは受け渡しが汎用レジスタのみということもあって�
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
@@ -562,7 +565,7 @@ RISC-Vでは受け渡しが汎用レジスタのみということもあって�
 
                     
                 </ul>
-                <p class="copyright text-muted">&copy; 2023 tyfkda<br></p>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
                 <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
                 <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
             </div>
