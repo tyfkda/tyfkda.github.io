@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="以前ペントミノパズルを解くプログラムを書いたことでいろいろ学ぶことがあったので、今度は箱入り娘を解くプログラムを書いてみた。
+
+
+※画像はイメージです（ソルバーは単にコマンドラインで動くだけ）">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="箱入り娘パズルを解く（幅優先探索）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>箱入り娘パズルを解く（幅優先探索） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>箱入り娘パズルを解く（幅優先探索）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2024-01-09
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/puzzle/">#puzzle</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>以前<a href="/blog/2023/05/12/pentomino-solver.html" title="ペントミノパズルを解く（深さ優先探索法、Dancing Links法）">ペントミノパズルを解くプログラムを書いた</a>ことでいろいろ学ぶことがあったので、今度は箱入り娘を解くプログラムを書いてみた。</p>
+<img src="/assets/hakoiri.png" alt="箱入り娘の想像図" style="filter:drop-shadow(0 0 8px black)">
+
+<p><small style="color:gray">※画像はイメージです（ソルバーは単にコマンドラインで動くだけ）</small></p>
+<span id="more"></span>
+
+<h3 id="箱入り娘"><a href="#箱入り娘" class="headerlink" title="箱入り娘"></a>箱入り娘</h3><p>箱入り娘はスライドパズルの一種で、空いているマスにピースをスライドで移動させて2x2という大きなピースを外に出すのが目的。
+ピースの幅が2マスあるのに空きマスも同じく2マスしかないという、かなり自由度が制限されているのが面白い。
+ピースの構成にもよるけど縦長4＋横長1を含む配置だと<strong>81手</strong>になる（同じピースを連続で動かすのは1手と数える）。</p>
+<h3 id="ソルバーの方針"><a href="#ソルバーの方針" class="headerlink" title="ソルバーの方針"></a>ソルバーの方針</h3><p>ペントミノの場合には12種類のピースをいろいろな順や向きで置いてみて全てが配置できたら解が求まる。
+行き詰まったら少し戻して別の配置を調べるという、<strong>深さ優先探索</strong>を行なっていた。
+しかし箱入り娘の場合は最短手順を探したいので、そのようにして解を見つけても最短かどうかはわからないので探索を打ち切ることができずにすべての局面を調べなければいけなくなってしまう。</p>
+<p>そこで最初の状態から可能な手（複数ありえる）をそれぞれ一手進めて、さらにそれぞれに…という具合に「<strong>幅優先探索</strong>」で調べる。
+それによって最初に解を見つけた時点でそれが最短手順なので、打ち切ることができる。</p>
+<p>アルゴリズムの違いとしては、深さ優先探索の場合は保持しておくべき状態は最大の深さ程度で済むが、幅優先探索の場合は各局面から進められる手の数だけ状態が増えていくので、メモリを多く指数関数的に必要とする。</p>
+<p>ただ箱入り娘の場合には空きが2マスだけで可能な手がそれほど多くないので、特に気にする必要はない。</p>
+<h3 id="ソルバーの実装"><a href="#ソルバーの実装" class="headerlink" title="ソルバーの実装"></a>ソルバーの実装</h3><p>深さ優先探索では状態を辿るごとに再帰呼び出しをして、行き詰まったら関数から抜けて１つ前の状態に戻る、という方法で実装した。
+幅優先探索では状態が分岐していくので違う方法を取る必要があって、キューを使う
+（<a href="https://ja.wikipedia.org/wiki/%E5%B9%85%E5%84%AA%E5%85%88%E6%8E%A2%E7%B4%A2">Wikipedia</a>にも書いてある）：</p>
+<ol>
+<li>初期化時：キューに盤面の初期状態を入れる</li>
+<li>探索時：キューから取り出して、その状態から可能な手を列挙して、それぞれの手を反映した状態をキューに積む</li>
+<li>終了判定：解となる状態に達する、またはキューが空になる（すべての状態を調べ尽くした：解なし）</li>
+</ol>
+<p>手を進めた状態がすでに登場した局面と同じだったら、そこから進める局面はすでにキューに登録済みなので除外する。
+箱入り娘の場合、動かしたピースを逆に戻したり空きマスを一周させたりした場合などに相当する。</p>
+<p>同じピースを連続で動かす場合は一手と数えるので、その場合はキューの先頭に積んで次に即調べるようにして、そうでなければキューの後ろに積むようにすることで最短の手順を優先で調べることができる。
+またそれに関連して同じ局面でも同じ手数だけど違う手順で到達する場合があって、その最後の手と次の手が連続する可能性があるのでそれも考慮する必要がある。</p>
+<p>重複判定はピースそのものは違っても形が一緒であれば同じと判定したり、左右対称の盤面を除外してやることで調べる局面を減らすことができる。</p>
+<h3 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h3><p>かかった速度（環境:Macbook Air 2020）：</p>
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th align="right">秒</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ピースの違いを考慮してしまっている場合</td>
+<td align="right">20.46秒</td>
+</tr>
+<tr>
+<td>ピースの違いを無視する場合</td>
+<td align="right">0.08秒</td>
+</tr>
+<tr>
+<td>盤面の左右対称を判定する場合</td>
+<td align="right">0.07秒</td>
+</tr>
+</tbody></table>
+<ul>
+<li>箱入り娘は自由度が高くないので、一瞬で解が求まってしまう</li>
+<li>可能な手の最大は7、平均は3.3程度</li>
+<li>チェックした局面は15,360<ul>
+<li>万単位、なので全然大したことない（ピースの違いを無視することで相当絞り込める）</li>
+<li>そうしないと一千万単位になってしまいだいぶ辛い</li>
+</ul>
+</li>
+</ul>
+<h4 id="最高難易度の配置"><a href="#最高難易度の配置" class="headerlink" title="最高難易度の配置"></a>最高難易度の配置</h4><p>一番手数がかかるのは、横長3＋縦長2のケース？（103手）</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">$ cargo run --release -- --interactive --board=10021002334465578..9</span><br><span class="line">1━━┓0━━━━━━┓2━━┓</span><br><span class="line">┃&lt;&gt;┃┃&lt;&gt;&lt;&gt;&lt;&gt;┃┃&lt;&gt;┃</span><br><span class="line">┃&lt;&gt;┃┃&lt;&gt;&lt;&gt;&lt;&gt;┃┃&lt;&gt;┃</span><br><span class="line">┗━━┛┗━━━━━━┛┗━━┛</span><br><span class="line">3━━━━━━┓4━━━━━━┓</span><br><span class="line">┗━━━━━━┛┗━━━━━━┛</span><br><span class="line">6━━┓5━━━━━━┓7━━┓</span><br><span class="line">┗━━┛┗━━━━━━┛┗━━┛</span><br><span class="line">8━━┓   ↓↓   9━━┓</span><br><span class="line">┗━━┛        ┗━━┛</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>--board</code>で初期状態を指定、<code>--interactive</code>オプションでエスケープシーケンスを使ってターミナル上で一手ずつ確認できるようにした
+（近頃身につけた罫線キャラを使って）</li>
+</ul>
+<p>ソース：<a href="https://github.com/tyfkda/Hakoiri">https://github.com/tyfkda/Hakoiri</a></p>
+<h3 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h3><ul>
+<li>箱入り娘はそんなに局面が多くないので</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く" rel="bookmark">カックロをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/04/numberlink-solver.html" title="ナンバーリンクをSATソルバーで解く" rel="bookmark">ナンバーリンクをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/05/12/pentomino-solver.html" title="ペントミノパズルを解く（深さ優先探索法、Dancing Links法）" rel="bookmark">ペントミノパズルを解く（深さ優先探索法、Dancing Links法）</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/01/09/hakoiri-solver.html">箱入り娘パズルを解く（幅優先探索）</a></li><li class="recent_post"><a href="/blog/2023/12/22/cc-riscv.html">自作CコンパイラをRISC-Vに対応した</a></li><li class="recent_post"><a href="/blog/2023/11/29/paraboloid-shadow-envmap.html">【WebGPU】全方位影と映り込みと</a></li><li class="recent_post"><a href="/blog/2023/11/09/deferred-shadow-mapping.html">【WebGPU】Deferred RenderingとShadow Mappingと</a></li><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

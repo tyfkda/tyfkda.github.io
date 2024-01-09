@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2023-12-30T01:21:28.558Z</updated>
+  <updated>2024-01-09T09:26:07.511Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,31 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>箱入り娘パズルを解く（幅優先探索）</title>
+    <link href="https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html"/>
+    <id>https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html</id>
+    <published>2024-01-09T09:00:00.000Z</published>
+    <updated>2024-01-09T09:26:07.511Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/05/12/pentomino-solver.html&quot; title=&quot;ペントミノパズルを解く（深さ優先探索法、Dancing Links法）&quot;&gt;ペントミノパズルを解くプログラムを書いた&lt;/a&gt;ことでいろいろ学ぶことがあったので、今度は箱入り娘を解くプログラムを書いてみた。&lt;/p&gt;
+&lt;img src=&quot;/assets/hakoiri.png&quot; alt=&quot;箱入り娘の想像図&quot; style=&quot;filter:drop-shadow(0 0 8px black)&quot;&gt;
+
+&lt;p&gt;&lt;small style=&quot;color:gray&quot;&gt;※画像はイメージです（ソルバーは単にコマンドラインで動くだけ）&lt;/small&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
+    
+  </entry>
+  
+  <entry>
     <title>自作CコンパイラをRISC-Vに対応した</title>
     <link href="https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html"/>
     <id>https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html</id>
     <published>2023-12-22T10:00:00.000Z</published>
-    <updated>2023-12-30T01:21:28.558Z</updated>
+    <updated>2024-01-09T09:26:07.510Z</updated>
     
     
     <summary type="html">&lt;p&gt;RISC-VというCPUはライセンスフリーとのことでどんなもんか興味あって、そんなこともあり自作のCコンパイラをRISC-Vに対応したいと思っていた。
@@ -39,7 +59,7 @@
     <link href="https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html"/>
     <id>https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html</id>
     <published>2023-11-29T09:00:00.000Z</published>
-    <updated>2023-12-30T00:51:22.650Z</updated>
+    <updated>2024-01-09T09:26:07.512Z</updated>
     
     
     <summary type="html">&lt;p&gt;WebGPUでレンダリング手法を学習するシリーズ、&lt;a href=&quot;/blog/2023/11/09/deferred-shadow-mapping.html&quot; title=&quot;【WebGPU】Deferred RenderingとShadow Mappingと&quot;&gt;前回ディファードレンダリング&lt;/a&gt;ではスポットライトで特定の方向にのみ影を投影していた。
@@ -186,23 +206,6 @@
     
     
     <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ten Minute Physicsを動かしてみる</title>
-    <link href="https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html"/>
-    <id>https://tyfkda.github.io/blog/2023/06/25/10-minute-physics.html</id>
-    <published>2023-06-25T10:00:00.000Z</published>
-    <updated>2023-11-10T10:31:10.303Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://matthias-research.github.io/pages/tenMinutePhysics/index.html&quot;&gt;Ten Minute Physics&lt;/a&gt;という、スクラッチで物理シミュレーションを作るというページがあったので一通り動かしてみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="physics" scheme="https://tyfkda.github.io/tags/physics/"/>
     
   </entry>
   
