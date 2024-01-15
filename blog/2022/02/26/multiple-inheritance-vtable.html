@@ -204,7 +204,7 @@
 <p>それを読んでCで再現してみた：</p>
 <h4 id="A部"><a href="#A部" class="headerlink" title="A部"></a>A部</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stddef.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">VTableForA</span> *<span class="title">vtable</span>;</span></span><br><span class="line">  <span class="type">char</span> a;</span><br><span class="line">&#125; A;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">VTableForA</span> &#123;</span></span><br><span class="line">  <span class="type">void</span> (*f)(A*);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">a_ctor</span><span class="params">(A* this_)</span> &#123;</span><br><span class="line">  <span class="type">void</span> <span class="title function_">a_f</span><span class="params">(A* this_)</span>;</span><br><span class="line">  <span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">VTableForA</span> <span class="title">vtableForA</span> =</span> &#123;</span><br><span class="line">    a_f,</span><br><span class="line">  &#125;;</span><br><span class="line">  this_-&gt;vtable = &amp;vtableForA;</span><br><span class="line">  this_-&gt;a = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">a_f</span><span class="params">(A* this_)</span> &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;A::f, a=%d\n&quot;</span>, this_-&gt;a);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">afunc</span><span class="params">(A* this_)</span> &#123;</span><br><span class="line">  (*this_-&gt;vtable-&gt;f)(this_);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>C++で仮装関数を持つクラスには仮装関数テーブル <code>vtable</code> がメンバ変数として挿入される。
+<p>C++で仮想関数を持つクラスには仮想関数テーブル <code>vtable</code> がメンバ変数として挿入される。
 コンストラクタに対応する <code>a_ctor</code> ではコードに記述された処理以外に、<code>vtable</code> の初期化も行われる。</p>
 <p><code>afunc</code> からは <code>vtable</code> 経由でメソッド <code>f</code> を取り出して呼び出しが行われることで、
 継承したクラスであればオーバーライドされたメソッドが呼び出される。</p>
@@ -215,14 +215,14 @@
 
 <p><code>C</code> クラスに対応する構造体のレイアウトは <code>A</code> のメンバ、<code>B</code> のメンバに続けて、自分自身のメンバが並ぶ。
 <code>vtable</code> は最初の親クラス <code>A</code> のものに追加される形になる。
-<code>B</code> 側の仮装関数テーブル <code>vtable2</code> は別に配置される。</p>
+<code>B</code> 側の仮想関数テーブル <code>vtable2</code> は別に配置される。</p>
 <p>コンストラクタ <code>c_ctor</code> では <code>A</code> と <code>B</code> のコンストラクタ呼び出しが行われる。
 メソッド呼び出し時にはポインタの変換が必要になる。
 第一の親 <code>A</code> への変換 <code>C_TO_A</code> は型の変換のみなので実質元の値のままになるが、 <code>C_TO_B</code> では <code>B</code> メンバの先頭 <code>vtable2</code> までのオフセットを加算してやる必要がある。</p>
-<p>親クラスの初期化後に、 <code>C</code> クラス自身の仮装関数テーブルで上書きする。
+<p>親クラスの初期化後に、 <code>C</code> クラス自身の仮想関数テーブルで上書きする。
 <code>B</code> 側のテーブルに与える <code>f</code> は <code>A</code> 側のもの <code>c_f</code> とは異なり、別の <code>c_f_thunk</code> となる。</p>
 <p>サンクではなにをしているか？
-<code>B</code> 側の仮装関数テーブルから <code>f</code> が呼び出された場合に渡ってくる <code>this_</code> は <code>B</code> なので、 <code>C</code> 内の <code>B</code> のメンバ開始位置 <code>vtable2</code> を指している。
+<code>B</code> 側の仮想関数テーブルから <code>f</code> が呼び出された場合に渡ってくる <code>this_</code> は <code>B</code> なので、 <code>C</code> 内の <code>B</code> のメンバ開始位置 <code>vtable2</code> を指している。
 なので <code>B_TO_C</code> でポインタを戻す処理を挟んでから <code>c_f</code> に渡してやる
 （Compiler Explorerでは <code>jmp .LTHUNK0</code> となっていて、どこに飛んでいるのかは不明だが多分…）。</p>
 <h4 id="メイン部"><a href="#メイン部" class="headerlink" title="メイン部"></a>メイン部</h4><pre><code class="c">int main() &#123;
@@ -252,14 +252,14 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/10/05/cpp-cast.html" title="【C++】static_castとreinterpret_cast、またdynamic_castの違い" rel="bookmark">【C++】static_castとreinterpret_cast、またdynamic_castの違い</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/08/cpp-lambda.html" title="【C++】ラムダ関数" rel="bookmark">【C++】ラムダ関数</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/26/cpp-multi-value.html" title="【C++】関数から多値を返す" rel="bookmark">【C++】関数から多値を返す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/12/lambda-is-a-functor.html" title="【C++】C++のラムダ式はファンクタだったのか…" rel="bookmark">【C++】C++のラムダ式はファンクタだったのか…</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/08/cpp-lambda.html" title="【C++】ラムダ関数" rel="bookmark">【C++】ラムダ関数</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/10/05/cpp-cast.html" title="【C++】static_castとreinterpret_cast、またdynamic_castの違い" rel="bookmark">【C++】static_castとreinterpret_cast、またdynamic_castの違い</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/26/cpp-multi-value.html" title="【C++】関数から多値を返す" rel="bookmark">【C++】関数から多値を返す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/12/lambda-is-a-functor.html" title="【C++】C++のラムダ式はファンクタだったのか…" rel="bookmark">【C++】C++のラムダ式はファンクタだったのか…</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/01/09/hakoiri-solver.html">箱入り娘パズルを解く（幅優先探索）</a></li><li class="recent_post"><a href="/blog/2023/12/22/cc-riscv.html">自作CコンパイラをRISC-Vに対応した</a></li><li class="recent_post"><a href="/blog/2023/11/29/paraboloid-shadow-envmap.html">【WebGPU】全方位影と映り込みと</a></li><li class="recent_post"><a href="/blog/2023/11/09/deferred-shadow-mapping.html">【WebGPU】Deferred RenderingとShadow Mappingと</a></li><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/01/15/monaco-editor-is-modified.html">Monacoエディタで内容が変更されたかどうか調べる</a></li><li class="recent_post"><a href="/blog/2024/01/14/monaco-editor-intro.html">Monacoエディタを組み込んでみる</a></li><li class="recent_post"><a href="/blog/2024/01/09/hakoiri-solver.html">箱入り娘パズルを解く（幅優先探索）</a></li><li class="recent_post"><a href="/blog/2023/12/22/cc-riscv.html">自作CコンパイラをRISC-Vに対応した</a></li><li class="recent_post"><a href="/blog/2023/11/29/paraboloid-shadow-envmap.html">【WebGPU】全方位影と映り込みと</a></li></ul>
                 </div>
             </div>
 

@@ -227,7 +227,7 @@
 <p>関数が可変長引数の場合ははまだ対応してない。
 <code>va_arg</code> で取り出す際に浮動小数点数型かどうかによって処理を分ける必要があり、単純なマクロでは済まないのでどうしたものか…。
 （gccでは <code>__builtin_va_XXXX</code> と置換されて組込みの動作で処理している模様）</p>
-<h3 id="レジスタ割付"><a href="#レジスタ割付" class="headerlink" title="レジスタ割付"></a>レジスタ割付</h3><p>整数型の仮想レジスタを物理レジスタに割り付けるのと同じように、浮動小数点数用の仮装レジスタも物理レジスタに割り付ける必要がある。
+<h3 id="レジスタ割付"><a href="#レジスタ割付" class="headerlink" title="レジスタ割付"></a>レジスタ割付</h3><p>整数型の仮想レジスタを物理レジスタに割り付けるのと同じように、浮動小数点数用の仮想レジスタも物理レジスタに割り付ける必要がある。
 が処理的にはまったく同じ操作で割付できるので、流用で解決できる。</p>
 <h3 id="数学関数ライブラリ"><a href="#数学関数ライブラリ" class="headerlink" title="数学関数ライブラリ"></a>数学関数ライブラリ</h3><p>自作Cコンパイラではリンクを行わずに直接実行ファイルを生成してしまい、gccなどのホスト開発環境のライブラリを利用できないので、数学関数も自作する必要がある。
 これが結構大変だし地味だしうまい方法がわからずに苦労する。</p>
@@ -372,14 +372,14 @@ x \cdot (y + 1) &= y - 1 \\
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/08/25/backend-more-registers.html" title="コンパイラでもっとレジスタを活用するために行った対策" rel="bookmark">コンパイラでもっとレジスタを活用するために行った対策</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/01/09/hakoiri-solver.html">箱入り娘パズルを解く（幅優先探索）</a></li><li class="recent_post"><a href="/blog/2023/12/22/cc-riscv.html">自作CコンパイラをRISC-Vに対応した</a></li><li class="recent_post"><a href="/blog/2023/11/29/paraboloid-shadow-envmap.html">【WebGPU】全方位影と映り込みと</a></li><li class="recent_post"><a href="/blog/2023/11/09/deferred-shadow-mapping.html">【WebGPU】Deferred RenderingとShadow Mappingと</a></li><li class="recent_post"><a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">WebGPUで反応拡散系</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/01/15/monaco-editor-is-modified.html">Monacoエディタで内容が変更されたかどうか調べる</a></li><li class="recent_post"><a href="/blog/2024/01/14/monaco-editor-intro.html">Monacoエディタを組み込んでみる</a></li><li class="recent_post"><a href="/blog/2024/01/09/hakoiri-solver.html">箱入り娘パズルを解く（幅優先探索）</a></li><li class="recent_post"><a href="/blog/2023/12/22/cc-riscv.html">自作CコンパイラをRISC-Vに対応した</a></li><li class="recent_post"><a href="/blog/2023/11/29/paraboloid-shadow-envmap.html">【WebGPU】全方位影と映り込みと</a></li></ul>
                 </div>
             </div>
 

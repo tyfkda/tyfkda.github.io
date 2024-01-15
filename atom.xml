@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-01-09T09:42:18.261Z</updated>
+  <updated>2024-01-15T05:56:56.120Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,46 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Monacoエディタで内容が変更されたかどうか調べる</title>
+    <link href="https://tyfkda.github.io/blog/2024/01/15/monaco-editor-is-modified.html"/>
+    <id>https://tyfkda.github.io/blog/2024/01/15/monaco-editor-is-modified.html</id>
+    <published>2024-01-15T09:00:00.000Z</published>
+    <updated>2024-01-15T05:56:56.120Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;結論：&lt;a href=&quot;https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.ITextModel.html#getAlternativeVersionId&quot;&gt;getAlternativeVersionId()&lt;/a&gt;で判定できる。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="texteditor" scheme="https://tyfkda.github.io/tags/texteditor/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Monacoエディタを組み込んでみる</title>
+    <link href="https://tyfkda.github.io/blog/2024/01/14/monaco-editor-intro.html"/>
+    <id>https://tyfkda.github.io/blog/2024/01/14/monaco-editor-intro.html</id>
+    <published>2024-01-14T09:00:00.000Z</published>
+    <updated>2024-01-15T09:25:08.072Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以前はブラウザ上で動くテキストエディタとして&lt;a href=&quot;https://ace.c9.io/&quot;&gt;Aceエディタ&lt;/a&gt;を使ってみたが、自分が普段使うエディタはほぼVSCodeになってしまったので、ブラウザでも同じ方が自分にとって望ましい。
+VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Monaco&lt;/a&gt;というオープンソースで公開されているので、使い方を調べてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="texteditor" scheme="https://tyfkda.github.io/tags/texteditor/"/>
+    
+  </entry>
+  
+  <entry>
     <title>箱入り娘パズルを解く（幅優先探索）</title>
     <link href="https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html"/>
     <id>https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html</id>
     <published>2024-01-09T09:00:00.000Z</published>
-    <updated>2024-01-09T09:42:18.261Z</updated>
+    <updated>2024-01-15T05:02:35.799Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/05/12/pentomino-solver.html&quot; title=&quot;ペントミノパズルを解く（深さ優先探索法、Dancing Links法）&quot;&gt;ペントミノパズルを解くプログラムを書いた&lt;/a&gt;ことでいろいろ学ぶことがあったので、今度は箱入り娘を解くプログラムを書いてみた。&lt;/p&gt;
@@ -41,7 +76,7 @@
     <link href="https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html"/>
     <id>https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html</id>
     <published>2023-12-22T10:00:00.000Z</published>
-    <updated>2024-01-09T09:42:18.257Z</updated>
+    <updated>2024-01-15T05:02:35.794Z</updated>
     
     
     <summary type="html">&lt;p&gt;RISC-VというCPUはライセンスフリーとのことでどんなもんか興味あって、そんなこともあり自作のCコンパイラをRISC-Vに対応したいと思っていた。
@@ -59,7 +94,7 @@
     <link href="https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html"/>
     <id>https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html</id>
     <published>2023-11-29T09:00:00.000Z</published>
-    <updated>2024-01-09T09:28:06.683Z</updated>
+    <updated>2024-01-13T05:55:16.524Z</updated>
     
     
     <summary type="html">&lt;p&gt;WebGPUでレンダリング手法を学習するシリーズ、&lt;a href=&quot;/blog/2023/11/09/deferred-shadow-mapping.html&quot; title=&quot;【WebGPU】Deferred RenderingとShadow Mappingと&quot;&gt;前回ディファードレンダリング&lt;/a&gt;ではスポットライトで特定の方向にのみ影を投影していた。
@@ -173,39 +208,6 @@
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
     
     <category term="optimization" scheme="https://tyfkda.github.io/tags/optimization/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Makefileでソースディレクトリを分けてる場合のターゲットの記述方法（foreach, eval）</title>
-    <link href="https://tyfkda.github.io/blog/2023/07/31/make-foreach-eval.html"/>
-    <id>https://tyfkda.github.io/blog/2023/07/31/make-foreach-eval.html</id>
-    <published>2023-07-31T09:00:00.000Z</published>
-    <updated>2023-11-10T10:31:21.772Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;Makefileでビルドを管理する場合にソースディレクトリを分けていると同じ記述を何度もするのが煩わしかったが、
-まとめる方法があることを知った。&lt;/p&gt;</summary>
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>arcsinを数値計算する方法を探し求めて彷徨う</title>
-    <link href="https://tyfkda.github.io/blog/2023/07/17/calc-asin.html"/>
-    <id>https://tyfkda.github.io/blog/2023/07/17/calc-asin.html</id>
-    <published>2023-07-17T06:00:00.000Z</published>
-    <updated>2023-11-10T10:31:21.771Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;以前数学関数を自前で実装する一環で&lt;a href=&quot;/blog/2020/12/30/fp-compiler.html&quot; title=&quot;コンパイラを浮動小数点数に対応させる（それと数学関数を実装）&quot;&gt;atanは実装した&lt;/a&gt;が、欠けていた逆三角関数&lt;code&gt;asin&lt;/code&gt;を実装したかった。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
     
   </entry>
   
