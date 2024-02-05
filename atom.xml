@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-01-28T00:07:38.168Z</updated>
+  <updated>2024-02-05T12:52:06.989Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【WASM】オブジェクトフォーマットとその実装方法</title>
+    <link href="https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html"/>
+    <id>https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html</id>
+    <published>2024-02-05T12:00:00.000Z</published>
+    <updated>2024-02-05T12:52:06.989Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;WASMのバイナリフォーマットは実行用の情報しかないのでコンパイルの中間ファイル・リンク用には別途独自のファイル形式が必要かと思ってたんだけど、どうやら追加の情報を加えることで対応してるらしい。
+そこで使い方を探った。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+    <category term="binary" scheme="https://tyfkda.github.io/tags/binary/"/>
+    
+  </entry>
   
   <entry>
     <title>Roseスクリーンセーバーを再現</title>
@@ -197,26 +217,6 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     
     
     <category term="unreal" scheme="https://tyfkda.github.io/tags/unreal/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【C】printfに独自の表示形式を追加する</title>
-    <link href="https://tyfkda.github.io/blog/2023/08/29/customize-printf.html"/>
-    <id>https://tyfkda.github.io/blog/2023/08/29/customize-printf.html</id>
-    <published>2023-08-29T06:00:00.000Z</published>
-    <updated>2024-01-15T09:27:15.028Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;C言語でプログラムを書いていると&lt;code&gt;printf&lt;/code&gt;で文字列を出力する中に自分で定義した構造体の内容を埋め込みたいことがたまにある。
-ふつうにやるには&lt;code&gt;printf&lt;/code&gt;を途中で分割して間で自前の出力ルーチンを呼び出してやることになるが、見通しが悪くなる。
-しかしカスタマイズする方法があるということで使ってみた。&lt;/p&gt;
-&lt;p&gt;注意：&lt;strong&gt;gcc拡張で、標準ではない&lt;/strong&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="c" scheme="https://tyfkda.github.io/tags/c/"/>
     
   </entry>
   

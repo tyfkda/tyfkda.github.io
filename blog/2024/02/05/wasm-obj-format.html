@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="WASMのバイナリフォーマットは実行用の情報しかないのでコンパイルの中間ファイル・リンク用には別途独自のファイル形式が必要かと思ってたんだけど、どうやら追加の情報を加えることで対応してるらしい。
+そこで使い方を探った。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【WASM】オブジェクトフォーマットとその実装方法"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【WASM】オブジェクトフォーマットとその実装方法 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【WASM】オブジェクトフォーマットとその実装方法</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2024-02-05
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/binary/">#binary</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>WASMのバイナリフォーマットは実行用の情報しかないのでコンパイルの中間ファイル・リンク用には別途独自のファイル形式が必要かと思ってたんだけど、どうやら追加の情報を加えることで対応してるらしい。
+そこで使い方を探った。</p>
+<span id="more"></span>
+
+<h3 id="前口上"><a href="#前口上" class="headerlink" title="前口上"></a>前口上</h3><p>自作のCコンパイラからWASMを出力する際には、与えられたソース以外にもライブラリもソースコードの状態で読み込んで全体をコンパイルして直接バイナリ出力していた。
+これを分割コンパイルやリンクできるようにすることを考えたが、関数はインポートやエクスポートから繋げられるかもしれないが、グローバル変数を線形メモリ上のどこに配置してるかの情報は失われてしまっているので難しいと思っていた。</p>
+<p>ただEmscriptenとかClangとかではできるので、重い腰を上げてググったらドキュメントにちゃんと書かれていた。</p>
+<h2 id="既存のコンパイラから生成する"><a href="#既存のコンパイラから生成する" class="headerlink" title="既存のコンパイラから生成する"></a>既存のコンパイラから生成する</h2><h3 id="オブジェクトファイルを作ってみる"><a href="#オブジェクトファイルを作ってみる" class="headerlink" title="オブジェクトファイルを作ってみる"></a>オブジェクトファイルを作ってみる</h3><p>仕様は<a href="https://github.com/WebAssembly/tool-conventions/blob/main/Linking.md">ドキュメント</a>に書かれていても、実際に生成されるファイル自体を調べた方が理解が進むので使い方をメモ。
+C言語やRustなど、LLVMを利用しているコンパイラではWASM形式出力もサポートされている：</p>
+<ul>
+<li>C: <code>clang --target=wasm32 -c foo.c</code> または <code>emcc -c foo.c</code><ul>
+<li><code>clang</code>はそのままでは標準ライブラリを使えない（<code>--sysroot</code>を指定する必要がある）ので、その場合は<code>emcc</code>を使う</li>
+</ul>
+</li>
+<li>Rust: <code>rustc --target wasm32-wasi --emit=obj foo.rs</code></li>
+</ul>
+<p>生成された内容はバイナリダンプしたり、<a href="https://github.com/WebAssembly/wabt">wabt</a>のobjdumpで確認できる：<code>wasm-objdump -x foo.o</code>。
+再配置情報を見るには <code>-r -d</code> オプションで、逆アセンブルしたコードの間に挟まれて見ることができる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ emcc -c -O2 examples/hello.c</span><br><span class="line"></span><br><span class="line">$ wasm-objdump -x hello.o</span><br><span class="line"></span><br><span class="line">hello.o:        file format wasm 0x1</span><br><span class="line"></span><br><span class="line">Section Details:</span><br><span class="line"></span><br><span class="line">Type[2]:</span><br><span class="line"> - <span class="built_in">type</span>[0] (i32, i32) -&gt; i32</span><br><span class="line"> - <span class="built_in">type</span>[1] (i32) -&gt; i32</span><br><span class="line">Import[2]:</span><br><span class="line"> - memory[0] pages: initial=1 &lt;- env.__linear_memory</span><br><span class="line"> - func[0] sig=1 &lt;env.puts&gt; &lt;- env.puts</span><br><span class="line">Function[1]:</span><br><span class="line"> - func[1] sig=0 &lt;__main_argc_argv&gt;</span><br><span class="line">DataCount:</span><br><span class="line"> - data count: 1</span><br><span class="line">Code[1]:</span><br><span class="line"> - func[1] size=17 &lt;__main_argc_argv&gt;</span><br><span class="line">Data[1]:</span><br><span class="line"> - segment[0] &lt;.rodata..Lstr&gt; memory=0 size=14 - init i32=0</span><br><span class="line">  - 0000000: 4865 6c6c 6f2c 2077 6f72 6c64 2100       Hello, world!.</span><br><span class="line">Custom:</span><br><span class="line"> - name: <span class="string">&quot;linking&quot;</span></span><br><span class="line">  - symbol table [count=3]</span><br><span class="line">   - 0: F &lt;__main_argc_argv&gt; func=1 [ binding=global vis=default ]</span><br><span class="line">   - 1: D &lt;.Lstr&gt; segment=0 offset=0 size=14 [ binding=<span class="built_in">local</span> vis=default ]</span><br><span class="line">   - 2: F &lt;env.puts&gt; func=0 [ undefined binding=global vis=default ]</span><br><span class="line">  - segment info [count=1]</span><br><span class="line">   - 0: .rodata..Lstr p2align=0 [ STRINGS ]</span><br><span class="line">Custom:</span><br><span class="line"> - name: <span class="string">&quot;reloc.CODE&quot;</span></span><br><span class="line">  - relocations <span class="keyword">for</span> section: 4 (Code) [2]</span><br><span class="line">   - R_WASM_MEMORY_ADDR_SLEB offset=0x000004(file=0x00005c) symbol=1 &lt;.Lstr&gt;</span><br><span class="line">   - R_WASM_FUNCTION_INDEX_LEB offset=0x00000a(file=0x000062) symbol=2 &lt;env.puts&gt;</span><br><span class="line">Custom:</span><br><span class="line"> - name: <span class="string">&quot;producers&quot;</span></span><br><span class="line">Custom:</span><br><span class="line"> - name: <span class="string">&quot;target_features&quot;</span></span><br><span class="line">  - [+] mutable-globals</span><br><span class="line">  - [+] sign-ext</span><br><span class="line"></span><br><span class="line">$ wasm-objdump -r -d hello.o</span><br><span class="line"></span><br><span class="line">hello.o:	file format wasm 0x1</span><br><span class="line"></span><br><span class="line">Code Disassembly:</span><br><span class="line"></span><br><span class="line">00005a func[1] &lt;__main_argc_argv&gt;:</span><br><span class="line"> 00005b: 41 80 80 80 80 00          | i32.const 0</span><br><span class="line">           00005c: R_WASM_MEMORY_ADDR_SLEB 1 &lt;.Lstr&gt;</span><br><span class="line"> 000061: 10 80 80 80 80 00          | call 0 &lt;env.puts&gt;</span><br><span class="line">           000062: R_WASM_FUNCTION_INDEX_LEB 2 &lt;env.puts&gt;</span><br><span class="line"> 000067: 1a                         | drop</span><br><span class="line"> 000068: 41 00                      | i32.const 0</span><br><span class="line"> 00006a: 0b                         | end</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>linking</code>, <code>reloc.CODE</code>, <code>reloc.DATA</code>の3つのカスタムセクションが作られる：<ul>
+<li><code>linking</code>: シンボルテーブルなど</li>
+<li><code>reloc.CODE</code>: コードセクションの再配置情報</li>
+<li><code>reloc.DATA</code>: データセクションの再配置情報</li>
+</ul>
+</li>
+</ul>
+<h3 id="リンクしてみる"><a href="#リンクしてみる" class="headerlink" title="リンクしてみる"></a>リンクしてみる</h3><p>自分でオブジェクトファイルを生成した場合に内容が正しいかどうか試せるように、リンク方法も調べる：</p>
+<ul>
+<li><code>emcc -o a.wasm hello.o</code></li>
+<li><code>wasm-ld -o a.wasm hello.o</code></li>
+</ul>
+<p>emccも内部ではwasm-ldを使用してるようで、Emscriptenが用意したライブラリなどを用いずに素の状態で確認したい場合にはwasm-ldを使うとよい。</p>
+<h2 id="自作コンパイラを対応させる"><a href="#自作コンパイラを対応させる" class="headerlink" title="自作コンパイラを対応させる"></a>自作コンパイラを対応させる</h2><p>概要がわかったところで、自作のコンパイラから出力できるようにすることにした。
+対応させるには結構変更が必要になる。
+以下対処が必要な項目：</p>
+<h3 id="シンボルテーブルと再配置情報"><a href="#シンボルテーブルと再配置情報" class="headerlink" title="シンボルテーブルと再配置情報"></a>シンボルテーブルと再配置情報</h3><p>シンボルテーブルの各シンボルは、種類、フラグが共通で、それに加えて種類によって追加情報が規定されている：</p>
+<ul>
+<li>関数やグローバルの場合はインデックスに加えて、このコンパイルユニットで定義してるの場合（またはフラグの<code>WASM_SYM_EXPLICIT_NAME</code>が有効な場合）名前を出力する<ul>
+<li>未定義の場合インポートセクションで名前を定義しているので、省略できる</li>
+</ul>
+</li>
+<li>データの場合は名前に加えて、定義されている場合のみインデックス、オフセット、サイズを出力する</li>
+</ul>
+<p>「インデックス」というのは、関数セクションorグローバルセクションorデータセクションの何番目か、という順番を指す値になる。</p>
+<p>再配置情報は「コードまたはデータ中の何バイト目からどのシンボルに対応する値に置き換える」という情報になる。
+どのシンボルか、というのは<strong>シンボルテーブル中のインデックスで指定する</strong>ので、関数もグローバルもデータも混ぜた通しの番号なので注意が必要。</p>
+<h3 id="線形メモリをインポート"><a href="#線形メモリをインポート" class="headerlink" title="線形メモリをインポート"></a>線形メモリをインポート</h3><p>実行ファイルの生成ではメモリセクションに定義したが、オブジェクト形式では<code>env.__linear_memory</code>という名前でインポートしてやる。</p>
+<h3 id="再配置の値を埋め込める余地を作る"><a href="#再配置の値を埋め込める余地を作る" class="headerlink" title="再配置の値を埋め込める余地を作る"></a>再配置の値を埋め込める余地を作る</h3><p>WASMではグローバル変数や関数呼出などどれもアドレスじゃなくて番号でアクセスするという命令体系で、
+数値はLEB128という可変長でエンコードされている。
+これが再配置によって番号がずれて拡げる必要が出たらどうするのか？
+アドレスや相対オフセットの命令はないからずらすことはできるかもしれないが面倒。</p>
+<p>でどうするかと思ったら可変長でも最短のバイト列ではなくて上限を格納できる分で表現する。
+例えば<code>0</code>という値はLEB128で<code>0x00</code>だけで表せるが、32ビット格納できる5バイト<code>0x80, 0x80, 0x80, 0x80, 0x00</code>とも表せて、再配置用にはこの形で出力しておく。</p>
+<p>バイトコードが可変長の意味とは…と思わないこともないが影響受けるのはパース時だけだろうし特に問題はなさげ
+（気になって夜も眠れないという人には<a href="https://lld.llvm.org/WebAssembly.html#cmdoption-compress-relocations">リンカーのオプションで切り詰める</a>こともできるぽい）。</p>
+<h3 id="グローバル変数をデータセクションに配置する"><a href="#グローバル変数をデータセクションに配置する" class="headerlink" title="グローバル変数をデータセクションに配置する"></a>グローバル変数をデータセクションに配置する</h3><p>WASMにはグローバルセクションで<code>i32</code>などの数値型が扱えるのでそうしてたが、<code>emcc</code>で確認すると数値型でもデータセクションに配置されるようだった。
+なぜかと考えると、C言語でグローバル変数を別のソースから<code>extern</code>して<code>&amp;</code>でアドレス参照された場合はポインタ経由でアクセスできるようにするためにグローバルセクションには配置できなくなるが、それを知るすべはないのでそうしてるんだと思う。</p>
+<ul>
+<li>静的変数でアドレス参照されてなければグローバルセクションに配置することもできるはずだけど、そうはしてない模様</li>
+</ul>
+<h3 id="「スタックポインタ」はグローバルセクションに"><a href="#「スタックポインタ」はグローバルセクションに" class="headerlink" title="「スタックポインタ」はグローバルセクションに"></a>「スタックポインタ」はグローバルセクションに</h3><p>WASMではローカル変数の配列や構造体などは線形メモリ上に配置することになるが、命令セットとしては「スタックポインタ」というものがないので、自前で管理する必要がある。</p>
+<p><code>emcc</code>でコンパイル結果を見るとインポートセクションでグローバルの<code>env.__stack_pointer</code>という名前でインポートして、
+各関数の頭で必要なサイズ分マイナスしてその領域を利用し、関数を抜ける前に戻してやることで対応する。</p>
+<ul>
+<li>内部的にはこのスタックポインタもC言語上のグローバル変数として扱っているため、
+グローバル変数でもグローバルセクションかデータセクションの2通りがありうることになってしまった</li>
+</ul>
+<h3 id="初期化子がない変数も出力する"><a href="#初期化子がない変数も出力する" class="headerlink" title="初期化子がない変数も出力する"></a>初期化子がない変数も出力する</h3><p>グローバルまたは静的変数で初期化子がない変数はデータのBSS領域に配置されるものとして、実行ファイル生成時にはファイルサイズを節約するため出力せずに済ませられた。
+がオブジェクト形式では、データとして出力しないとシンボルテーブルだけでは（仮の）開始アドレスやサイズが指定できないので、出力する必要がある。</p>
+<p>データにもサイズ自体の指定はなくて、実際のデータによって決定されるため、0埋めしたデータを出力する。
+無駄ではあるがリンク時に判定されるのか、取り除かれる模様。</p>
+<h3 id="関数やグローバル変数の出力順に注意する"><a href="#関数やグローバル変数の出力順に注意する" class="headerlink" title="関数やグローバル変数の出力順に注意する"></a>関数やグローバル変数の出力順に注意する</h3><p>実行形式でもそうだけど、オブジェクト形式でも関数や変数の出力順に従って割り振られる番号で指定する。
+なのでコード生成や再配置情報生成時とリンク情報の並び順が合うようにする必要がある：</p>
+<ul>
+<li>関数はインポートしたもの→ファイル内で定義したもの、の順</li>
+<li>グローバル変数をすべてデータセクションに出力するのであればデータはインポートというものがないのでどういう順序にしてもいいのかもしれないが、
+グローバルセクションに配置するよう切り替えるオプションを残しておきたかったのと、
+初期化子がない変数は後方にまとめて配置したいこともあり、それらの条件によって並び順を決める必要がある</li>
+</ul>
+<h3 id="関数ポインタ"><a href="#関数ポインタ" class="headerlink" title="関数ポインタ"></a>関数ポインタ</h3><p>関数ポインタを使って間接呼び出しを使用する場合、WASMではテーブルを利用する。
+オブジェクト形式の場合、テーブルセクションに定義する代わりに<code>env.__indirect_function_table</code>という名前のテーブルをインポートしてやる。</p>
+<p>間接呼び出しで利用する関数は<code>elems</code>セクションに出力して、その何番目かというのをWASMの<code>CALL_INDIRECT</code>命令で指定するが、それを再配置情報にも追加する。
+<code>CALL_INDIRECT</code>は呼び出す関数が「どういう型か？」というのも指定する必要があるので、その型情報も再配置対象になる（<code>R_WASM_TYPE_INDEX_LEB</code>）。</p>
+<h3 id="main関数のリネーム"><a href="#main関数のリネーム" class="headerlink" title="main関数のリネーム"></a>main関数のリネーム</h3><p>いわゆる実行開始は<code>main</code>関数だけど、実際にはライブラリ内の<code>_start</code>があれこれ初期化や後始末をしている。
+そしてC言語上では<code>main</code>はコマンドライン引数を受け取るには2引数だが、コマンドライン引数を処理しない場合には0引数ということも可能、という自由度がある。</p>
+<p>WASMでも2引数だと想定して<code>main</code>関数を呼び出せば問題なく動くし、0引数だったとしても積んだ引数が関数呼出では取り除かれないが呼び出し元の関数終了時点で処理系が処理スタックに残る値はクリアするっぽいので動作としては問題ない。
+が、LLVMでは念の為かわからないがリネームされる：</p>
+<ul>
+<li>0個の場合：<code>__main_void</code>, <code>__original_main</code>（どちらも元の関数を指す）</li>
+<li>2個の場合：<code>__main_argc_argv</code></li>
+</ul>
+<p>wasi-libcの<code>_start</code>関数から<a href="https://github.com/WebAssembly/wasi-libc/blob/main/libc-bottom-half/crt/crt1-command.c#L43"><code>__main_void</code>が呼び出され</a>、
+その中でコマンドライン引数を取得して<a href="https://github.com/WebAssembly/wasi-libc/blob/main/libc-bottom-half/sources/__main_void.c#L64"><code>__main_argc_argv</code>に渡される</a>ということで動作している
+（ユーザが0引数の<code>main</code>を定義した場合はそれが<code>__main_void</code>として呼び出される）。</p>
+<p>なのでこれに合うようにリネームしてやる。</p>
+<h3 id="setjmp-longjmp"><a href="#setjmp-longjmp" class="headerlink" title="setjmp, longjmp"></a>setjmp, longjmp</h3><p>WASMで大域ジャンプを実現するには例外を使う。
+例外はタグを定義して、その番号を指定する。
+こいつも再配置対象なので考慮する。</p>
+<ul>
+<li>ドキュメントではタグじゃなくて「イベント」となっている</li>
+<li>emccでは<code>-fwasm-exceptions</code>オプションを渡してコンパイルするできるが、オプションを渡さなくてもできる、謎</li>
+</ul>
+<h2 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h2><p>そんなこんなでなんとか自作のコンパイラからWASMオブジェクトファイルを出力して、<code>emcc</code>でリンクして実行できるようになった。
+対応にはかなり苦労した。
+出力順の値とズレると動かないし、再配置のオフセット位置がおかしいともちろんダメだし。
+進め方として行き当たりばったりというか、先に全体を計画してみたいなやり方が苦手なためなのか余計に時間がかかってしまった。</p>
+<p>にしてもWASMのバイナリフォーマットに無理やりリンクに必要な情報を埋め込んでしまうなんて、執念だね…。</p>
+<h2 id="参考・リンク"><a href="#参考・リンク" class="headerlink" title="参考・リンク"></a>参考・リンク</h2><ul>
+<li><a href="https://github.com/tyfkda/xcc/commit/c18e037004ac10cb6dea3a40dd21cee98075ec04">該当のマージコミット</a></li>
+<li>WebAssembly&#x2F;tool-conventions: <a href="https://github.com/WebAssembly/tool-conventions/blob/main/Linking.md">WebAssembly Object File Linking</a></li>
+<li><a href="https://lld.llvm.org/WebAssembly.html">WebAssembly lld port — lld 19.0.0git documentation</a>　これがwasm-ld？</li>
+<li><a href="https://mike.zwobble.org/2021/04/adventures-in-webassembly-object-files-and-linking/">Adventures in WebAssembly object files and linking – Mike’s corner of the web</a> 独自コンパイラからオブジェクトファイルを出力するようにした際の話<ul>
+<li>「グローバルセクションのリロケーションはできない」と書かれている、がそんなことはない？</li>
+</ul>
+</li>
+<li><a href="https://zenn.dev/okuoku/scraps/bf51251c43fdcc">WasmLinux: “普通の” Hello, Worldに対応する</a> <code>main</code>関数をリネームする件</li>
+<li><a href="https://llvm.org/doxygen/WebAssemblyLowerEmscriptenEHSjLj_8cpp.html">WebAssemblyLowerEmscriptenEHSjLj.cpp File Reference</a><ul>
+<li><code>setjmp</code>, <code>longjmp</code>に使われるタグ名は<code>__c_longjmp</code></li>
+</ul>
+</li>
+</ul>
+<p>過去記事：</p>
+<ul>
+<li><a href="/blog/2020/11/22/wasm-bin-format.html" title="【WASM】WASMのバイナリフォーマット">【WASM】WASMのバイナリフォーマット</a></li>
+<li><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす">【WASM】Cコンパイラをブラウザ上で動かす</a></li>
+<li><a href="/blog/2023/02/10/wasm-try-catch.html" title="【WASM】例外を扱う">【WASM】例外を扱う</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/29/cc-aarch64.html" title="M1Mac向けにコンパイルする(aarch64)" rel="bookmark">M1Mac向けにコンパイルする(aarch64)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/12/22/cc-riscv.html" title="自作CコンパイラをRISC-Vに対応した" rel="bookmark">自作CコンパイラをRISC-Vに対応した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/03/13/elf-linker.html" title="リンカーを自作した" rel="bookmark">リンカーを自作した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/02/05/wasm-obj-format.html">【WASM】オブジェクトフォーマットとその実装方法</a></li><li class="recent_post"><a href="/blog/2024/01/27/rose-screen-saver.html">Roseスクリーンセーバーを再現</a></li><li class="recent_post"><a href="/blog/2024/01/15/monaco-editor-is-modified.html">Monacoエディタで内容が変更されたかどうか調べる</a></li><li class="recent_post"><a href="/blog/2024/01/14/monaco-editor-intro.html">Monacoエディタを組み込んでみる</a></li><li class="recent_post"><a href="/blog/2024/01/09/hakoiri-solver.html">箱入り娘パズルを解く（幅優先探索）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
