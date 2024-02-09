@@ -301,7 +301,10 @@ C言語やRustなど、LLVMを利用しているコンパイラではWASM形式�
 <p>にしてもWASMのバイナリフォーマットに無理やりリンクに必要な情報を埋め込んでしまうなんて、執念だね…。</p>
 <h2 id="参考・リンク"><a href="#参考・リンク" class="headerlink" title="参考・リンク"></a>参考・リンク</h2><ul>
 <li><a href="https://github.com/tyfkda/xcc/commit/c18e037004ac10cb6dea3a40dd21cee98075ec04">該当のマージコミット</a></li>
-<li>WebAssembly&#x2F;tool-conventions: <a href="https://github.com/WebAssembly/tool-conventions/blob/main/Linking.md">WebAssembly Object File Linking</a></li>
+<li>WebAssembly&#x2F;tool-conventions: <a href="https://github.com/WebAssembly/tool-conventions/blob/main/Linking.md">WebAssembly Object File Linking</a><ul>
+<li><a href="https://github.com/WebAssembly/tool-conventions/blob/main/BasicCABI.md#user-entrypoint">User entrypoint</a> <code>main</code>のこととかが書いてある</li>
+</ul>
+</li>
 <li><a href="https://lld.llvm.org/WebAssembly.html">WebAssembly lld port — lld 19.0.0git documentation</a>　これがwasm-ld？</li>
 <li><a href="https://mike.zwobble.org/2021/04/adventures-in-webassembly-object-files-and-linking/">Adventures in WebAssembly object files and linking – Mike’s corner of the web</a> 独自コンパイラからオブジェクトファイルを出力するようにした際の話<ul>
 <li>「グローバルセクションのリロケーションはできない」と書かれている、がそんなことはない？</li>
