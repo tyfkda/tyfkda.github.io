@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-02-09T02:08:33.634Z</updated>
+  <updated>2024-02-20T06:35:53.051Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html"/>
     <id>https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html</id>
     <published>2024-02-05T12:00:00.000Z</published>
-    <updated>2024-02-09T02:08:33.634Z</updated>
+    <updated>2024-02-20T06:35:53.051Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASMのバイナリフォーマットは実行用の情報しかないのでコンパイルの中間ファイル・リンク用には別途独自のファイル形式が必要かと思ってたんだけど、どうやら追加の情報を加えることで対応してるらしい。

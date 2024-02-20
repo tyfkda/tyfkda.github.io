@@ -228,7 +228,7 @@ C言語やRustなど、LLVMを利用しているコンパイラではWASM形式�
 以下対処が必要な項目：</p>
 <h3 id="シンボルテーブルと再配置情報"><a href="#シンボルテーブルと再配置情報" class="headerlink" title="シンボルテーブルと再配置情報"></a>シンボルテーブルと再配置情報</h3><p>シンボルテーブルの各シンボルは、種類、フラグが共通で、それに加えて種類によって追加情報が規定されている：</p>
 <ul>
-<li>関数やグローバルの場合はインデックスに加えて、このコンパイルユニットで定義してるの場合（またはフラグの<code>WASM_SYM_EXPLICIT_NAME</code>が有効な場合）名前を出力する<ul>
+<li>関数やグローバルの場合はインデックスに加えて、このコンパイルユニットで定義している場合（またはフラグの<code>WASM_SYM_EXPLICIT_NAME</code>が有効な場合）名前を出力する<ul>
 <li>未定義の場合インポートセクションで名前を定義しているので、省略できる</li>
 </ul>
 </li>
@@ -307,7 +307,7 @@ C言語やRustなど、LLVMを利用しているコンパイラではWASM形式�
 </li>
 <li><a href="https://lld.llvm.org/WebAssembly.html">WebAssembly lld port — lld 19.0.0git documentation</a>　これがwasm-ld？</li>
 <li><a href="https://mike.zwobble.org/2021/04/adventures-in-webassembly-object-files-and-linking/">Adventures in WebAssembly object files and linking – Mike’s corner of the web</a> 独自コンパイラからオブジェクトファイルを出力するようにした際の話<ul>
-<li>「グローバルセクションのリロケーションはできない」と書かれている、がそんなことはない？</li>
+<li><del>「グローバルセクションのリロケーションはできない」と書かれている、がそんなことはない？</del> <a href="https://github.com/WebAssembly/wabt/issues/1658#issuecomment-817891669">できない、コードとデータのみ</a></li>
 </ul>
 </li>
 <li><a href="https://zenn.dev/okuoku/scraps/bf51251c43fdcc">WasmLinux: “普通の” Hello, Worldに対応する</a> <code>main</code>関数をリネームする件</li>
@@ -333,7 +333,7 @@ C言語やRustなど、LLVMを利用しているコンパイラではWASM形式�
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/29/cc-aarch64.html" title="M1Mac向けにコンパイルする(aarch64)" rel="bookmark">M1Mac向けにコンパイルする(aarch64)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/12/22/cc-riscv.html" title="自作CコンパイラをRISC-Vに対応した" rel="bookmark">自作CコンパイラをRISC-Vに対応した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/03/13/elf-linker.html" title="リンカーを自作した" rel="bookmark">リンカーを自作した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/12/22/cc-riscv.html" title="自作CコンパイラをRISC-Vに対応した" rel="bookmark">自作CコンパイラをRISC-Vに対応した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/29/cc-aarch64.html" title="M1Mac向けにコンパイルする(aarch64)" rel="bookmark">M1Mac向けにコンパイルする(aarch64)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/03/13/elf-linker.html" title="リンカーを自作した" rel="bookmark">リンカーを自作した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
