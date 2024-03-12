@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-02-20T06:35:53.051Z</updated>
+  <updated>2024-03-12T09:00:32.824Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>折れ線にフィットするベジェ曲線を求める方法</title>
+    <link href="https://tyfkda.github.io/blog/2024/03/12/fit-curve.html"/>
+    <id>https://tyfkda.github.io/blog/2024/03/12/fit-curve.html</id>
+    <published>2024-03-12T09:00:00.000Z</published>
+    <updated>2024-03-12T09:00:32.824Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以前に調べた&lt;a href=&quot;/blog/2020/10/26/simplify-line-segments.html&quot; title=&quot;折れ線を簡略化する方法(Ramer-Douglas-Peucker法)&quot;&gt;折れ線を簡略化する方法&lt;/a&gt;は線分の途中の点を省いて軽量化する方法だった。
+それとは違い、曲線を当てはめるアルゴリズムを調べた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
+    
+  </entry>
   
   <entry>
     <title>【WASM】オブジェクトフォーマットとその実装方法</title>
@@ -199,24 +217,6 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
     
     <category term="webgpu" scheme="https://tyfkda.github.io/tags/webgpu/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Unreal Engine】機能別サンプルでブループリント間でやりとりする方法を見てみる</title>
-    <link href="https://tyfkda.github.io/blog/2023/09/03/ue-content-examples.html"/>
-    <id>https://tyfkda.github.io/blog/2023/09/03/ue-content-examples.html</id>
-    <published>2023-09-03T04:00:00.000Z</published>
-    <updated>2024-01-15T09:27:15.036Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;Unreal Engineの基本的な知識があまりないので、機能紹介も兼ねている機能別サンプルの&lt;a href=&quot;https://docs.unrealengine.com/4.27/ja/Resources/ContentExamples/Blueprints/&quot;&gt;ブループリント通信&lt;/a&gt;の中身を見て、複数のブループリント間でどうやってやりとりしたらいいのか見てみた
-（要はカスタムイベント、イベントディスパッチャー、ブループリントインターフェース）。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="unreal" scheme="https://tyfkda.github.io/tags/unreal/"/>
     
   </entry>
   

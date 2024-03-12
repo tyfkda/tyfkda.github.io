@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="以前に調べた折れ線を簡略化する方法は線分の途中の点を省いて軽量化する方法だった。
+それとは違い、曲線を当てはめるアルゴリズムを調べた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="折れ線にフィットするベジェ曲線を求める方法"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>折れ線にフィットするベジェ曲線を求める方法 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2024/03/12/fit-curve.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>折れ線にフィットするベジェ曲線を求める方法</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2024-03-12
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/algorithm/">#algorithm</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>以前に調べた<a href="/blog/2020/10/26/simplify-line-segments.html" title="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)">折れ線を簡略化する方法</a>は線分の途中の点を省いて軽量化する方法だった。
+それとは違い、曲線を当てはめるアルゴリズムを調べた。</p>
+<span id="more"></span>
+
+<style type="text/css">
+  @media screen and (min-width:768px) {
+    .applet {
+      width: 600px;
+      height: 600px;
+    }
+  }
+  @media screen and (max-width:768px) {
+    .applet {
+      width: 400px;
+      height: 400px;
+    }
+  }
+</style>
+<iframe class="applet" src="//tyfkda.github.io/simplify_line_segments/fit_curve.html" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto; border:1px solid black"></iframe>
+
+
+<h3 id="ベジェ曲線フィットを動かしてみる"><a href="#ベジェ曲線フィットを動かしてみる" class="headerlink" title="ベジェ曲線フィットを動かしてみる"></a>ベジェ曲線フィットを動かしてみる</h3><p>ブックマークを掘り返してたらpaper.jsの<a href="http://paperjs.org/examples/path-simplification/">Path Simplification</a>というマウスで描いた軌跡を曲線化するサンプルがあった。
+どういう仕組みなんだろうと思ってソースを見てみると、<code>path.simplify()</code>から呼び出している<code>PathFitter</code>クラスの<a href="https://github.com/paperjs/paper.js/blob/f1f02cc6630cc109a79c77c1b3680338536cf055/src/path/PathFitter.js#L13-L16">コメント</a>に</p>
+<pre><code>// An Algorithm for Automatically Fitting Digitized Curves
+// by Philip J. Schneider
+// from &quot;Graphics Gems&quot;, Academic Press, 1990
+// Modifications and optimizations of original algorithm by Jürg Lehni.
+</code></pre>
+<p>と書かれていた。
+Graphics Gemsは過去に出版された本で、関する情報は<a href="https://www.realtimerendering.com/resources/GraphicsGems/">Realtime Renderingのサイト</a>で管理されている。
+オリジナルのソースはGithubで公開されている：<a href="https://github.com/erich666/GraphicsGems/blob/master/gems/FitCurves.c">FitCurve.c</a></p>
+<p>Paper.jsは指定のキャンバスに自動的に描画されてしまうので自分で使うために<code>PathFitter</code>を抜き出そうとしたが依存するクラスが多くて難しかった。
+他のソースを探したところ
+<a href="https://scrapbox.io/odiak/%E7%82%B9%E5%88%97%E3%82%92%E3%83%99%E3%82%B8%E3%82%A7%E6%9B%B2%E7%B7%9A%E3%81%A7%E3%83%95%E3%82%A3%E3%83%83%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%99%E3%82%8B%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%82%92%E3%83%95%E3%82%A9%E3%83%BC%E3%82%AF%E3%81%97%E3%81%A6TypeScript%E3%81%A7%E6%9B%B8%E3%81%8D%E7%9B%B4%E3%81%97%E3%81%A6%E3%81%BF%E3%81%9F">点列をベジェ曲線でフィッティングするライブラリをフォークしてTypeScriptで書き直してみた - イワモト・カイドウ</a>から<a href="https://github.com/odiak/fit-curve">fit-curve</a>の型情報を省いてJavaScriptに変更した。</p>
+<p>動かしてみると、だいぶうまくフィットさせるベジェ曲線を生成できることがわかる。
+許容できる誤差を調整すればほぼ元の線にマッチさせられるので都合がいい。</p>
+<p>うまく使えば点群の削減にもなると思うが「折れ線の簡略化」とは少し用途が違うというか、フォントデータなどを綺麗な曲線に変換する用途に使用するのがよさげ（当然ながら…）。</p>
+<ul>
+<li><code>fitCurve</code>で求めたベジェ曲線を自分で描画するのはなかなか難しそうだけど、CanvasのAPIがあった：
+<a href="https://www.htmq.com/canvas/bezierCurveTo.shtml">bezierCurveTo</a></li>
+<li>与える許容誤差は距離の二乗と比較するので、例えば100なら10ピクセルということになる</li>
+</ul>
+<h3 id="An-Algorithm-for-Automatically-Fitting-Digitized-Curves"><a href="#An-Algorithm-for-Automatically-Fitting-Digitized-Curves" class="headerlink" title="An Algorithm for Automatically Fitting Digitized Curves"></a>An Algorithm for Automatically Fitting Digitized Curves</h3><p>件のアルゴリズムを完全に理解はしてないんだけど、大まかには</p>
+<ul>
+<li>全体に対して３次ベジェ曲線の当てはめを考える</li>
+<li>実際の点とのずれが許容内だったら終了</li>
+<li>誤差が最大の点で分割し、前半と後半で再帰</li>
+</ul>
+<p>ということらしい。
+３次ベジェ曲線をどうやって当てはめるかは、</p>
+<ul>
+<li>折れ線の長さから各点の割合(0.0~1.0)を求める(Chord-length parameterization)</li>
+<li>ベジェ曲線の制御点は先頭と末尾の点の接線上におく</li>
+<li>接線上のどこにおくかは、すべての点の二乗誤差を微分して0と置いて解くと求まるらしい</li>
+<li>さらにニュートン・ラフソン法で反復して精度を高めるとか</li>
+</ul>
+<p>詳しくは理解してない。</p>
+<ul>
+<li>区間を区切るにしても向きは連続させてるはずなのに、急な角も再現できるのはどうなってるんだろうか？
+縮退されたベジェ区間ができてるんだろうか？</li>
+<li>３次ベジェ曲線同士が滑らかにつながるかどうかで、<script type="math/tex">C^1</script>連続ではなく<script type="math/tex">G^1</script>連続にすることにより自由度がどうとか…</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="/blog/2020/10/26/simplify-line-segments.html" title="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)">折れ線を簡略化する方法(Ramer-Douglas-Peucker法)</a></li>
+</ul>
+<h4 id="他"><a href="#他" class="headerlink" title="他"></a>他</h4><iframe width="560" height="315" src="https://www.youtube.com/embed/jvPPXbo87ds?si=rCuqfYwMA7hsupg1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<ul>
+<li>スプライン、ベジェ曲線の連続に関してなど、すごい</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/03/12/fit-curve.html">折れ線にフィットするベジェ曲線を求める方法</a></li><li class="recent_post"><a href="/blog/2024/02/05/wasm-obj-format.html">【WASM】オブジェクトフォーマットとその実装方法</a></li><li class="recent_post"><a href="/blog/2024/01/27/rose-screen-saver.html">Roseスクリーンセーバーを再現</a></li><li class="recent_post"><a href="/blog/2024/01/15/monaco-editor-is-modified.html">Monacoエディタで内容が変更されたかどうか調べる</a></li><li class="recent_post"><a href="/blog/2024/01/14/monaco-editor-intro.html">Monacoエディタを組み込んでみる</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
