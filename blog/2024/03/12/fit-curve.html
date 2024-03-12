@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="以前に調べた折れ線を簡略化する方法は線分の途中の点を省いて軽量化する方法だった。
+        <meta name="description" content="以前に調べた折れ線を簡略化する方法は線分の途中の点を省いて軽量化する方法で、線分のままだった。
 それとは違い、曲線を当てはめるアルゴリズムを調べた。">
     
 
@@ -189,11 +189,17 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>以前に調べた<a href="/blog/2020/10/26/simplify-line-segments.html" title="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)">折れ線を簡略化する方法</a>は線分の途中の点を省いて軽量化する方法だった。
+                <p>以前に調べた<a href="/blog/2020/10/26/simplify-line-segments.html" title="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)">折れ線を簡略化する方法</a>は線分の途中の点を省いて軽量化する方法で、線分のままだった。
 それとは違い、曲線を当てはめるアルゴリズムを調べた。</p>
 <span id="more"></span>
 
 <style type="text/css">
+  .applet {
+    transition: box-shadow 0.25s;
+  }
+  .applet:hover {
+    box-shadow:0 0 8px blue;
+  }
   @media screen and (min-width:768px) {
     .applet {
       width: 600px;
@@ -223,9 +229,9 @@ Graphics Gemsは過去に出版された本で、関する情報は<a href="http
 <p>Paper.jsは指定のキャンバスに自動的に描画されてしまうので自分で使うために<code>PathFitter</code>を抜き出そうとしたが依存するクラスが多くて難しかった。
 他のソースを探したところ
 <a href="https://scrapbox.io/odiak/%E7%82%B9%E5%88%97%E3%82%92%E3%83%99%E3%82%B8%E3%82%A7%E6%9B%B2%E7%B7%9A%E3%81%A7%E3%83%95%E3%82%A3%E3%83%83%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%99%E3%82%8B%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%82%92%E3%83%95%E3%82%A9%E3%83%BC%E3%82%AF%E3%81%97%E3%81%A6TypeScript%E3%81%A7%E6%9B%B8%E3%81%8D%E7%9B%B4%E3%81%97%E3%81%A6%E3%81%BF%E3%81%9F">点列をベジェ曲線でフィッティングするライブラリをフォークしてTypeScriptで書き直してみた - イワモト・カイドウ</a>から<a href="https://github.com/odiak/fit-curve">fit-curve</a>の型情報を省いてJavaScriptに変更した。</p>
-<p>動かしてみると、だいぶうまくフィットさせるベジェ曲線を生成できることがわかる。
-許容できる誤差を調整すればほぼ元の線にマッチさせられるので都合がいい。</p>
-<p>うまく使えば点群の削減にもなると思うが「折れ線の簡略化」とは少し用途が違うというか、フォントデータなどを綺麗な曲線に変換する用途に使用するのがよさげ（当然ながら…）。</p>
+<p>動かしてみると、だいぶうまくフィットするベジェ曲線を生成できることがわかる。
+許容できる誤差で精度を調整できるので都合がいい。</p>
+<p>うまく使えば点群の削減にもなると思うが「折れ線の簡略化」とは少し用途が違うというか（当然ながら…）、フォントデータなどを曲線に変換して拡大しても綺麗という用途に使用するのがよさげ。</p>
 <ul>
 <li><code>fitCurve</code>で求めたベジェ曲線を自分で描画するのはなかなか難しそうだけど、CanvasのAPIがあった：
 <a href="https://www.htmq.com/canvas/bezierCurveTo.shtml">bezierCurveTo</a></li>
@@ -249,7 +255,7 @@ Graphics Gemsは過去に出版された本で、関する情報は<a href="http
 <ul>
 <li>区間を区切るにしても向きは連続させてるはずなのに、急な角も再現できるのはどうなってるんだろうか？
 縮退されたベジェ区間ができてるんだろうか？</li>
-<li>３次ベジェ曲線同士が滑らかにつながるかどうかで、<script type="math/tex">C^1</script>連続ではなく<script type="math/tex">G^1</script>連続にすることにより自由度がどうとか…</li>
+<li>３次ベジェ曲線同士が滑らかにつながるかどうかで<script type="math/tex">C^1</script>連続ではなく<script type="math/tex">G^1</script>連続、隣あう制御点同士の長さが異なることを許容することで自由度がどうとか…</li>
 </ul>
 <h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
 <li><a href="/blog/2020/10/26/simplify-line-segments.html" title="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)">折れ線を簡略化する方法(Ramer-Douglas-Peucker法)</a></li>
@@ -261,7 +267,7 @@ Graphics Gemsは過去に出版された本で、関する情報は<a href="http
 <h4 id="他"><a href="#他" class="headerlink" title="他"></a>他</h4><iframe width="560" height="315" src="https://www.youtube.com/embed/jvPPXbo87ds?si=rCuqfYwMA7hsupg1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 <ul>
-<li>スプライン、ベジェ曲線の連続に関してなど、すごい</li>
+<li>スプライン、ベジェ曲線の連続に関してなど、反射が不連続になるから車体の曲面で重要とかおもろい</li>
 </ul>
 
 
@@ -274,7 +280,7 @@ Graphics Gemsは過去に出版された本で、関する情報は<a href="http
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
