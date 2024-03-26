@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-03-12T23:48:53.591Z</updated>
+  <updated>2024-03-25T10:04:04.401Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2024/03/12/fit-curve.html"/>
     <id>https://tyfkda.github.io/blog/2024/03/12/fit-curve.html</id>
     <published>2024-03-12T09:00:00.000Z</published>
-    <updated>2024-03-12T23:48:53.591Z</updated>
+    <updated>2024-03-25T10:04:04.401Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前に調べた&lt;a href=&quot;/blog/2020/10/26/simplify-line-segments.html&quot; title=&quot;折れ線を簡略化する方法(Ramer-Douglas-Peucker法)&quot;&gt;折れ線を簡略化する方法&lt;/a&gt;は線分の途中の点を省いて軽量化する方法で、線分のままだった。
@@ -39,7 +39,7 @@
     <link href="https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html"/>
     <id>https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html</id>
     <published>2024-02-05T12:00:00.000Z</published>
-    <updated>2024-02-20T06:35:53.051Z</updated>
+    <updated>2024-03-25T10:04:04.406Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASMのバイナリフォーマットは実行用の情報しかないのでコンパイルの中間ファイル・リンク用には別途独自のファイル形式が必要かと思ってたんだけど、どうやら追加の情報を加えることで対応してるらしい。
@@ -76,9 +76,9 @@
     
     <category term="cg" scheme="https://tyfkda.github.io/tags/cg/"/>
     
-    <category term="processing" scheme="https://tyfkda.github.io/tags/processing/"/>
-    
     <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
+    
+    <category term="processing" scheme="https://tyfkda.github.io/tags/processing/"/>
     
   </entry>
   
@@ -122,7 +122,7 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     <link href="https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html"/>
     <id>https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html</id>
     <published>2024-01-09T09:00:00.000Z</published>
-    <updated>2024-03-21T01:13:37.976Z</updated>
+    <updated>2024-03-25T10:04:04.402Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/05/12/pentomino-solver.html&quot; title=&quot;ペントミノパズルを解く（深さ優先探索法、Dancing Links法）&quot;&gt;ペントミノパズルを解くプログラムを書いた&lt;/a&gt;ことでいろいろ学ぶことがあったので、今度は箱入り娘を解くプログラムを書いてみた。&lt;/p&gt;
@@ -142,7 +142,7 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     <link href="https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html"/>
     <id>https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html</id>
     <published>2023-12-22T10:00:00.000Z</published>
-    <updated>2024-02-09T02:08:18.473Z</updated>
+    <updated>2024-03-25T10:04:04.398Z</updated>
     
     
     <summary type="html">&lt;p&gt;RISC-VというCPUはライセンスフリーとのことでどんなもんか興味あって、そんなこともあり自作のCコンパイラをRISC-Vに対応したいと思っていた。
