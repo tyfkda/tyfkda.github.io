@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-03-25T10:04:04.401Z</updated>
+  <updated>2024-04-09T13:00:16.901Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</title>
+    <link href="https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html"/>
+    <id>https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html</id>
+    <published>2024-04-09T12:00:00.000Z</published>
+    <updated>2024-04-09T13:00:16.901Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://gihyo.jp/book/2023/978-4-297-13360-3&quot;&gt;ゲームで学ぶ探索アルゴリズム実践入門
+～木探索とメタヒューリスティクス&lt;/a&gt;という本の中でコネクトフォーの試行ルーチンをモンテカルロ木探索で実装するサンプルがあったので動かしてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
+    
+  </entry>
   
   <entry>
     <title>折れ線にフィットするベジェ曲線を求める方法</title>
@@ -76,9 +94,9 @@
     
     <category term="cg" scheme="https://tyfkda.github.io/tags/cg/"/>
     
-    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
-    
     <category term="processing" scheme="https://tyfkda.github.io/tags/processing/"/>
+    
+    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
     
   </entry>
   
@@ -195,26 +213,6 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     
     
     <category term="cg" scheme="https://tyfkda.github.io/tags/cg/"/>
-    
-    <category term="webgpu" scheme="https://tyfkda.github.io/tags/webgpu/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>WebGPUで反応拡散系</title>
-    <link href="https://tyfkda.github.io/blog/2023/10/10/webgpu-reaction-diffusion.html"/>
-    <id>https://tyfkda.github.io/blog/2023/10/10/webgpu-reaction-diffusion.html</id>
-    <published>2023-10-10T07:00:00.000Z</published>
-    <updated>2024-01-15T09:27:15.038Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;ずっと昔に&lt;a href=&quot;/tags/webgl/&quot;&gt;WebGL&lt;/a&gt;を触ってみたことがあったのだけど初期化が面倒で放置になってしまった。
-近頃（というか今年の前半に）WebGPUというものが使えるようになったということを聞いたので、再挑戦を込めてようやく触ってみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
     
     <category term="webgpu" scheme="https://tyfkda.github.io/tags/webgpu/"/>
     

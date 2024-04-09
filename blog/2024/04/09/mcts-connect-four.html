@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ゲームで学ぶ探索アルゴリズム実践入門
+～木探索とメタヒューリスティクスという本の中でコネクトフォーの試行ルーチンをモンテカルロ木探索で実装するサンプルがあったので動かしてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2024-04-09
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/algorithm/">#algorithm</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://gihyo.jp/book/2023/978-4-297-13360-3">ゲームで学ぶ探索アルゴリズム実践入門
+～木探索とメタヒューリスティクス</a>という本の中でコネクトフォーの試行ルーチンをモンテカルロ木探索で実装するサンプルがあったので動かしてみた。</p>
+<span id="more"></span>
+
+<p><a href="https://tyfkda.github.io/connect4/">デモ</a></p>
+<h3 id="本の概要"><a href="#本の概要" class="headerlink" title="本の概要"></a>本の概要</h3><p>上の本は<a href="https://qiita.com/thun-c/items/058743a25c37c87b8aa4">世界四連覇AIエンジニアがゼロから教えるゲーム木探索入門 #AI - Qiita</a>を元に加筆して書籍化されたとのことで、競技プログラミングのマラソンマッチや対戦ボードゲームの思考AIなどの局面探索に用いることができる手法が解説されている。
+<strong>探索</strong>という主題を軸にして、貪欲法、ビームサーチ、Chokudaiサーチ、山登り法、焼きなまし法、Thunderサーチなど、統一感を持たせてうまく解説されていると思う。</p>
+<p>二人零和有限確定完全情報ゲームに関する手法として古典的なMinMax法、AlphaBeta法に続いて原始モンテカルロ法、そして<strong>モンテカルロ木探索(MCTS)</strong> が説明される。
+そして実際のサンプルとしてコネクトフォーのAIをMCTSで実装したサンプルコードが付属している。
+盤面の表現でビットボードによる高速化も書かれていて実用的。</p>
+<h3 id="コネクトフォーの概要"><a href="#コネクトフォーの概要" class="headerlink" title="コネクトフォーの概要"></a>コネクトフォーの概要</h3><p>コネクトフォーはひとことで言えば「重力付き四目並べ」で、横7マス✖️縦6マスの盤面に縦・横・斜めいずれかに4マス並べた方の勝ちという対戦ゲーム。</p>
+<p>思考AIの学習教材として見たときにコネクトフォーの利点として、</p>
+<ul>
+<li>マルバツゲームほど単純じゃなく、なかなかの複雑度がある</li>
+<li>局面が進むだけで戻らず、最長手数が限られてる（最長42）</li>
+<li>局面に対して取れる行動が多くない（最大7）</li>
+</ul>
+<p>てきとうに局面の数を計算すると、１マスごとに自分・敵・空の3通りで、空じゃない場合のみ上に積めて最大６行なので<code>1 + 2 * (1 + 2 * (...以上6回)) = 127</code>、それが７列。
+実際には自分と敵の駒が同数である必要があるので組み合わせはもっと少なくてすむ。</p>
+<h3 id="モンテカルロ木探索の概要"><a href="#モンテカルロ木探索の概要" class="headerlink" title="モンテカルロ木探索の概要"></a>モンテカルロ木探索の概要</h3><p>ゲームのAIでMinMax法やAlphaBeta法を適用する場合、ゲームの勝敗がつくまで先読みできればいいがそうじゃない場合には途中で打ち切って局面の評価が必要になる。
+しかし局面の良し悪しを判定するのは難しい。</p>
+<p>そこで（原始）モンテカルロ法では勝敗がつくまで合法手の中から<strong>ランダム</strong>に手を打ち合って（プレイアウト）、それを何度も行うことで勝ちやすい手を計算する。
+ただまったく思考せずにランダムに打つだけなのでそのままでは全然弱い。</p>
+<p>そこで<strong>モンテカルロ木探索</strong>ではランダムではなくUCB1という計算式で子ノードそれぞれの値を計算して、一番高い手（行動）を選択する。
+直下の子より下層では初めはプレイアウトで求めておき、試行回数がしきい値（本では<code>10</code>）を超えたら展開して同じくUCB1で選択するようにする。
+こうすることで重要な手を深掘りして読むことができ、より勝ちにつながる手を見つけることができるようである。</p>
+<p>本に書かれていた注意点として最終的に選ぶ行動は、勝率が高い手ではなく<strong>「試行回数が一番多い」手を選ぶ</strong>とのこと
+（詳しい理由はわからなかった…）。</p>
+<ul>
+<li>木構造でたぐるにはメモリを大量に消費するんじゃないかというのが疑問だったけど、
+プレイアウトで調べるノードは状態を保持・展開せず回数や結果の値もカウントしないので、
+実際に展開されるノードはそう多くなくてすむっぽい（多分）</li>
+<li>展開された子ノードは合法手の何番目かというのと対応しているので、
+UCB1でたぐる際に現在の状態（のコピー）に行動を適用していけばノード自体に持たずに済むと思うが、
+そうはしてない（メモリ消費と実行速度とのバランスかもしれない）</li>
+<li>手順の前後が異なっても同一の局面に合流することがあるが、そういう判定はしてない
+（またコネクトフォーでは左右の鏡像も共有できるがそういうこともしない）。
+合流させたほうが探索的には有利だと思うが、複雑化との兼ね合いかもしれない。</li>
+</ul>
+<h3 id="動かしてみる"><a href="#動かしてみる" class="headerlink" title="動かしてみる"></a>動かしてみる</h3><p>本のサンプルはC++で実装されていて、2つのAI同士を対戦させて勝率を表示するようになっている。
+これを対戦できるようにしたかったのでEmscriptenを使ってウェブページから呼び出せるようにしてみた。</p>
+<p>自分のような素人には、ふつうに対戦すると十分強い。
+なのでよいと思われる手を示したり、思考時間を選べるようにしてみた。</p>
+<ul>
+<li>MCTSの動作として勝ちやすい手が順に深掘りされるものかと推測していたが、アシストの動作を見ると結構一番の手が入れ替わる。
+それもシーソーみたいに拮抗するのではなく、圧倒的に伸びていたのが急に落ちてきて別の候補が上がってくるという感じ。</li>
+<li>たかがコネクトフォーといえどもたどる局面は指数的に増えていくので、短時間にすべての探索はできないということかもしれない</li>
+</ul>
+<h3 id="引き分けを狙わせてみる（失敗）"><a href="#引き分けを狙わせてみる（失敗）" class="headerlink" title="引き分けを狙わせてみる（失敗）"></a>引き分けを狙わせてみる（失敗）</h3><p>ちゃんと勝ちにくるAIだけだと面白味がなかったので、引き分けを目指すよう改造してみた。
+探索で返す値を変更すればできるんじゃないかと思ってたが、あまりうまくいかなかなった。
+スコアを単に負けも勝ちも0.0にして引き分けを1.0にしてやればいいのかと思ったが、
+対戦者は勝ちにくることを想定しないといけないので返す値は正しいものである必要がある。
+それを直してもなかなか引き分けに持ち込むようにはできず、アシストに頼らずとも簡単に勝ててしまう。</p>
+<ul>
+<li>もうどうやっても引き分けじゃなく勝ちか負けになるといった場合にはゲーム終了までの手数は考慮されてないので、できるだけゲームを引き伸ばそうとしてくれずに適当に打たれてしまう？</li>
+<li>人間側は最適な手を打つとは限らないが外れた手があまり深掘りされてない？<ul>
+<li>UCB1のCの値を増やして探索を分散させてみたが効果はわからず…</li>
+</ul>
+</li>
+</ul>
+<p>結局ノードの探索がうまくできてないっぽいが、動作確認をしようにも再帰呼び出しが深くて森に迷い込んで抜け出せなかった…
+いつかもっとマシにできるようなら直したい。</p>
+<h3 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h3><ul>
+<li>コネクトフォーの可能なゲーム状態の総数は約4.5兆（具体的には4,531,985,219,092）？</li>
+<li>完全解析済みで、41手で先手必勝、らしい？</li>
+</ul>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://qiita.com/thun-c/items/058743a25c37c87b8aa4">世界四連覇AIエンジニアがゼロから教えるゲーム木探索入門 #AI - Qiita</a></li>
+<li><a href="https://gihyo.jp/book/2023/978-4-297-13360-3">ゲームで学ぶ探索アルゴリズム実践入門
+～木探索とメタヒューリスティクス</a></li>
+<li><a href="http://blog.gamesolver.org/">Solving Connect 4: how to build a perfect AI</a><ul>
+<li><a href="https://connect4.gamesolver.org/">Connect 4 Solver</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="過去記事"><a href="#過去記事" class="headerlink" title="過去記事"></a>過去記事</h4><ul>
+<li><a href="/blog/2008/11/28/mcgo.html" title="「囲碁ＡＩにおける革命「モンテカルロ木探索」とは何か？」に参加した">「囲碁ＡＩにおける革命「モンテカルロ木探索」とは何か？」に参加した</a> MCTSを聞いたことはあったがそれだけで終わってた</li>
+<li><a href="/blog/2008/12/02/ucb1.html" title="Multi-Armed Bandit 問題のテスト">Multi-Armed Bandit 問題のテスト</a> UCB1のテストをしたことはあった</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/04/09/mcts-connect-four.html">モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</a></li><li class="recent_post"><a href="/blog/2024/03/12/fit-curve.html">折れ線にフィットするベジェ曲線を求める方法</a></li><li class="recent_post"><a href="/blog/2024/02/05/wasm-obj-format.html">【WASM】オブジェクトフォーマットとその実装方法</a></li><li class="recent_post"><a href="/blog/2024/01/27/rose-screen-saver.html">Roseスクリーンセーバーを再現</a></li><li class="recent_post"><a href="/blog/2024/01/15/monaco-editor-is-modified.html">Monacoエディタで内容が変更されたかどうか調べる</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
