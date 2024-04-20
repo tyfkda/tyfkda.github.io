@@ -339,7 +339,7 @@ hello worldなどの適当なCのコードを用意して、</p>
 </tr>
 <tr>
 <td><code>li</code></td>
-<td>直値ロード（疑似命令、32bitまで）</td>
+<td>直値ロード（疑似命令）</td>
 </tr>
 <tr>
 <td><code>add</code>, <code>addi</code></td>
@@ -374,7 +374,7 @@ hello worldなどの適当なCのコードを用意して、</p>
 <td>コール、リターン</td>
 </tr>
 </tbody></table>
-<p>実際には疑似命令も多数あって、直値のロードは<code>lui</code>命令で上位20ビット＋<code>addi</code>で下位12ビットをロード、無条件ジャンプは<code>jal zero, label</code>など、アセンブラで実際の命令に変換される。
+<p>実際には疑似命令も多数あって、直値のロードは<code>lui</code>命令で上位20ビット＋<code>addi</code>で下位12ビットをロード（それ以上の場合シフトも組み合わせる）、無条件ジャンプは<code>jal zero, label</code>など、アセンブラで実際の命令に変換される。
 また自動的にコンパクト命令を使ってくれる。</p>
 <ul>
 <li>疑似命令あるんだったら<code>subi</code>も対応してくれてもいいのに…</li>
