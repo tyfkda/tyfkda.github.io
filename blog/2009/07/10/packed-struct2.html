@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="バイナリファイルの読み書きが簡単にできるPackedStructを拡張した：
+
+配列が使えるように
+PackedStructで作った型も使えるように
+DWORDなど型のエイリアス名を外から追加できるように
+これをするために、
+クラス変数に型を登録
+フィールド名をPackedPrototypeじゃなく">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="PackedStructの拡張"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>PackedStructの拡張 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/07/10/packed-struct2.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>PackedStructの拡張</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-07-10
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/ruby/">#ruby</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>バイナリファイルの読み書きが簡単にできる<a href="http://jp.rubyist.net/magazine/?0013-CodeReview">PackedStruct</a>を拡張した：</p>
+<ul>
+<li>配列が使えるように</li>
+<li>PackedStructで作った型も使えるように</li>
+<li>DWORDなど型のエイリアス名を外から追加できるように
+これをするために、</li>
+<li>クラス変数に型を登録</li>
+<li>フィールド名をPackedPrototypeじゃなくて別に持つように</li>
+<li>メンバ関数で型を登録するんじゃなくて、<code>method_missing</code>で型名を拾って登録する
+ようにした。</li>
+</ul>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PackedStruct</span></span><br><span class="line">  <span class="keyword">class</span> &lt;&lt; <span class="title class_">PackedStruct</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">define</span>(<span class="params">&amp;block</span>)</span><br><span class="line">      c = <span class="title class_">Class</span>.new(<span class="variable language_">self</span>)</span><br><span class="line">      <span class="keyword">def</span> <span class="title function_">c</span>.inherited(subclass)</span><br><span class="line">        proto = <span class="variable">@prototypes</span></span><br><span class="line">        subclass.instance_eval &#123;</span><br><span class="line">          <span class="variable">@prototypes</span> = proto</span><br><span class="line">        &#125;</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">      c.module_eval(&amp;block)</span><br><span class="line">      c</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">string</span>(<span class="params">n, name</span>)</span><br><span class="line">      define_field name, <span class="string">&quot;Z<span class="subst">#&#123;n&#125;</span>&quot;</span>, n</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">array</span>(<span class="params">type, name, num</span>)</span><br><span class="line">      <span class="keyword">case</span> type</span><br><span class="line">      <span class="keyword">when</span> <span class="title class_">Symbol</span>, <span class="title class_">String</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable">@@types</span>.has_key?(type.to_sym)</span><br><span class="line">          e = <span class="variable">@@types</span>[type.to_sym]</span><br><span class="line">          type = <span class="title class_">FieldPrototype</span>.new(<span class="symbol">:dmy</span>, e[<span class="number">0</span>], e[<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">          <span class="keyword">raise</span> <span class="string">&quot;type not defined: <span class="subst">#&#123;type&#125;</span>&quot;</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">      klass = <span class="title class_">FieldArray</span>.new(type, num)</span><br><span class="line"></span><br><span class="line">      (<span class="variable">@prototypes</span> |<span class="params"></span>|= []).push klass</span><br><span class="line">      (<span class="variable">@names</span> |<span class="params"></span>|= []).push name</span><br><span class="line">      define_accessor name</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">serialize</span>(<span class="params">v</span>)</span><br><span class="line">      v.serialize</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">define_type</span>(<span class="params">typename, template_string, bytesize</span>)</span><br><span class="line">      <span class="variable">@@types</span>[typename.to_sym] = [template_string, bytesize]</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span></span><br><span class="line"></span><br><span class="line">    <span class="variable">@@types</span> = &#123;</span><br><span class="line">      <span class="symbol">:char</span>    =&gt; [<span class="string">&#x27;A&#x27;</span>, <span class="number">1</span>],</span><br><span class="line">      <span class="symbol">:byte</span>    =&gt; [<span class="string">&#x27;C&#x27;</span>, <span class="number">1</span>],</span><br><span class="line">      <span class="symbol">:int16LE</span> =&gt; [<span class="string">&#x27;v&#x27;</span>, <span class="number">2</span>],</span><br><span class="line">      <span class="symbol">:int32LE</span> =&gt; [<span class="string">&#x27;V&#x27;</span>, <span class="number">4</span>],</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">define_field</span>(<span class="params">name, template, size</span>)</span><br><span class="line">      (<span class="variable">@prototypes</span> |<span class="params"></span>|= []).push <span class="title class_">FieldPrototype</span>.new(name, template, size)</span><br><span class="line">      (<span class="variable">@names</span> |<span class="params"></span>|= []).push name</span><br><span class="line">      define_accessor name</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">define_accessor</span>(<span class="params">name</span>)</span><br><span class="line">      module_eval(<span class="string">&lt;&lt;-End, __FILE__, __LINE__ + 1)</span></span><br><span class="line"><span class="string">        def <span class="subst">#&#123;name&#125;</span></span></span><br><span class="line"><span class="string">          self[&#x27;<span class="subst">#&#123;name&#125;</span>&#x27;]</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        def <span class="subst">#&#123;name&#125;</span>=(val)</span></span><br><span class="line"><span class="string">          self[&#x27;<span class="subst">#&#123;name&#125;</span>&#x27;] = val</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string">      End</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">method_missing</span>(<span class="params">type, name, *args</span>)</span><br><span class="line">      <span class="keyword">if</span> <span class="variable">@@types</span>.has_key?(type)</span><br><span class="line">        <span class="keyword">if</span> name.kind_of?(<span class="title class_">Array</span>)</span><br><span class="line">          array(type, name[<span class="number">0</span>], name[<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">          e = <span class="variable">@@types</span>[type]</span><br><span class="line">          define_field name, e[<span class="number">0</span>], e[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">        <span class="comment"># 文字列からグローバルに定義されてるクラスを探したい</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">          klass = eval(type.to_s)</span><br><span class="line">        <span class="keyword">rescue</span></span><br><span class="line">          <span class="keyword">raise</span> <span class="string">&quot;no type: <span class="subst">#&#123;type&#125;</span>&quot;</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">if</span> klass.kind_of?(<span class="title class_">Class</span>) &amp;&amp; klass.new.kind_of?(<span class="title class_">PackedStruct</span>)</span><br><span class="line">          <span class="keyword">if</span> name.kind_of?(<span class="title class_">Array</span>)</span><br><span class="line">            array(klass, name[<span class="number">0</span>], name[<span class="number">1</span>])</span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">            (<span class="variable">@prototypes</span> |<span class="params"></span>|= []).push klass</span><br><span class="line">            (<span class="variable">@names</span> |<span class="params"></span>|= []).push name</span><br><span class="line">            define_accessor name</span><br><span class="line">          <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">          <span class="keyword">raise</span> <span class="string">&quot;not type name: <span class="subst">#&#123;type&#125;</span>&quot;</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">FieldPrototype</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">initialize</span>(<span class="params">name, template, size</span>)</span><br><span class="line">      <span class="variable">@name</span> = name</span><br><span class="line">      <span class="variable">@template</span> = template</span><br><span class="line">      <span class="variable">@size</span> = size</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">attr_reader</span> <span class="symbol">:name</span></span><br><span class="line">    <span class="built_in">attr_reader</span> <span class="symbol">:size</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">read</span>(<span class="params">f</span>)</span><br><span class="line">      parse(f.read(<span class="variable">@size</span>))</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">parse</span>(<span class="params">s</span>)</span><br><span class="line">      s.unpack(<span class="variable">@template</span>)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">serialize</span>(<span class="params">val</span>)</span><br><span class="line">      [val].pack(<span class="variable">@template</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">FieldArray</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">initialize</span>(<span class="params">type, num</span>)</span><br><span class="line">      <span class="variable">@type</span> = type</span><br><span class="line">      <span class="variable">@num</span> = num</span><br><span class="line">      <span class="variable">@size</span> = type.size * num</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">attr_reader</span> <span class="symbol">:size</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">read</span>(<span class="params">f</span>)</span><br><span class="line">      parse(f.read(<span class="variable">@size</span>))</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">parse</span>(<span class="params">s</span>)</span><br><span class="line">      elemsize = <span class="variable">@type</span>.size</span><br><span class="line">      (<span class="number">0</span>...<span class="variable">@num</span>).map <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">        <span class="variable">@type</span>.parse(s[i * elemsize, elemsize])</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">serialize</span>(<span class="params">vals</span>)</span><br><span class="line">       vals.map &#123;|<span class="params">val</span>| <span class="variable">@type</span>.serialize(val)&#125;.join(<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">PackedStruct</span>.size</span><br><span class="line">    <span class="variable">@prototypes</span>.map &#123;|<span class="params">proto</span>| proto.size &#125;.inject(<span class="number">0</span>) &#123;|<span class="params">sum, s</span>| sum + s &#125;</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">PackedStruct</span>.names</span><br><span class="line">    <span class="variable">@names</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">PackedStruct</span>.prototypes</span><br><span class="line">    <span class="variable">@prototypes</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">PackedStruct</span>.read(f)</span><br><span class="line">    new(* <span class="variable">@prototypes</span>.map &#123;|<span class="params">proto</span>| proto.read(f) &#125;)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">initialize</span>(<span class="params">*vals</span>)</span><br><span class="line">    <span class="variable">@alist</span> = <span class="variable language_">self</span>.<span class="keyword">class</span>.names.zip(vals)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">inspect</span></span><br><span class="line">    <span class="string">&quot;\#&lt;<span class="subst">#&#123;<span class="variable language_">self</span>.<span class="keyword">class</span>&#125;</span> <span class="subst">#&#123;<span class="variable">@alist</span>.map &#123;|<span class="params">n,v</span>| <span class="string">&quot;<span class="subst">#&#123;n&#125;</span>=<span class="subst">#&#123;v.inspect&#125;</span>&quot;</span> &#125;</span>.join(&#x27; &#x27;)&#125;&gt;&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">[]</span>(<span class="params">name</span>)</span><br><span class="line">    k, v = <span class="variable">@alist</span>.assoc(name.to_s.intern)</span><br><span class="line">    <span class="keyword">raise</span> <span class="title class_">ArgumentError</span>, <span class="string">&quot;no such field: <span class="subst">#&#123;name&#125;</span>&quot;</span> <span class="keyword">unless</span> k</span><br><span class="line">    v</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">[]=</span>(<span class="params">name, val</span>)</span><br><span class="line">    a = <span class="variable">@alist</span>.assoc(name.to_s.intern)</span><br><span class="line">    <span class="keyword">raise</span> <span class="title class_">ArgumentError</span>, <span class="string">&quot;no such field: <span class="subst">#&#123;name&#125;</span>&quot;</span> <span class="keyword">unless</span> a</span><br><span class="line">    a[<span class="number">1</span>] = val</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">serialize</span></span><br><span class="line">    <span class="variable language_">self</span>.<span class="keyword">class</span>.prototypes.zip(<span class="variable">@alist</span>.map &#123;|<span class="params">_, val</span>| val &#125;)\</span><br><span class="line">        .map &#123;|<span class="params">proto, val</span>| proto.serialize(val) &#125;.join(<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="variable">$0</span> == <span class="variable constant_">__FILE__</span></span><br><span class="line">  <span class="title class_">Test</span> = <span class="title class_">PackedStruct</span>.define &#123;</span><br><span class="line">    int32LE <span class="symbol">:hoge</span></span><br><span class="line">    byte [<span class="symbol">:fuga</span>, <span class="number">4</span>]</span><br><span class="line">  &#125;</span><br><span class="line">  test = <span class="title class_">Test</span>.new(<span class="number">0x12345678</span>, [<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>])</span><br><span class="line">  p test</span><br><span class="line">  p test.serialize</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>これを使ってのDDSファイルの読み込み：</p>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;packedstruct&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="variable constant_">DDS_MAGIC</span> = <span class="string">&#x27;DDS &#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">PackedStruct</span>.define_type(<span class="symbol">:DWORD</span>, <span class="string">&#x27;V&#x27;</span>, <span class="number">4</span>)</span><br><span class="line"><span class="title class_">PackedStruct</span>.define_type(<span class="symbol">:FOURCC</span>, <span class="string">&#x27;a4&#x27;</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="variable constant_">DDPIXELFORMAT</span> = <span class="title class_">PackedStruct</span>.define &#123;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwSize</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwFlags</span>;</span><br><span class="line">  <span class="variable constant_">FOURCC</span> <span class="symbol">:dwFourCC</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwRGBBitCount</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwRBitMask</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwGBitMask</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwBBitMask</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwRGBAlphaBitMask</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="variable constant_">DDCAPS2</span> = <span class="title class_">PackedStruct</span>.define &#123;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwCaps1</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwCaps2</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> [<span class="symbol">:Reserved</span>, <span class="number">2</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="variable constant_">DDSURFACEDESC2</span> = <span class="title class_">PackedStruct</span>.define &#123;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwSize</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwFlags</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwHeight</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwWidth</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwPitchOrLinearSize</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwDepth</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwMipMapCount</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> [<span class="symbol">:dwReserved1</span>, <span class="number">11</span>];</span><br><span class="line">  <span class="variable constant_">DDPIXELFORMAT</span> <span class="symbol">:ddpfPixelFormat</span>;</span><br><span class="line">  <span class="variable constant_">DDCAPS2</span> <span class="symbol">:ddsCaps</span>;</span><br><span class="line">  <span class="variable constant_">DWORD</span> <span class="symbol">:dwReserved2</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="title class_">DDSFileHeader</span> = <span class="title class_">PackedStruct</span>.define &#123;</span><br><span class="line">  <span class="variable constant_">FOURCC</span> <span class="symbol">:dwMagic</span>;</span><br><span class="line">  <span class="variable constant_">DDSURFACEDESC2</span> <span class="symbol">:ddsd</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="variable constant_">DDS</span></span><br><span class="line">  <span class="built_in">attr_accessor</span> <span class="symbol">:header</span>, <span class="symbol">:body</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">initialize</span>(<span class="params">header, body</span>)</span><br><span class="line">    <span class="variable">@header</span> = header</span><br><span class="line">    <span class="variable">@body</span> = body</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">save</span>(<span class="params">fn</span>)</span><br><span class="line">    <span class="title class_">File</span>.open(fn, <span class="string">&quot;wb&quot;</span>) <span class="keyword">do</span> |<span class="params">f</span>|</span><br><span class="line">      f.write(<span class="variable">@header</span>.serialize)</span><br><span class="line">      f.write(<span class="variable">@body</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">self</span>.load(fn)</span><br><span class="line">    <span class="title class_">File</span>.open(fn, <span class="string">&quot;rb&quot;</span>) <span class="keyword">do</span> |<span class="params">f</span>|</span><br><span class="line">      header = <span class="title class_">DDSFileHeader</span>.read(f)</span><br><span class="line">      <span class="keyword">if</span> header.dwMagic == <span class="variable constant_">DDS_MAGIC</span></span><br><span class="line">        body = f.read</span><br><span class="line">        <span class="variable constant_">DDS</span>.new(header, body)</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="variable">$0</span> == <span class="variable constant_">__FILE__</span></span><br><span class="line">  fn = <span class="variable constant_">ARGV</span>.shift |<span class="params"></span>| (<span class="keyword">raise</span> <span class="string">&quot;no filename&quot;</span>)</span><br><span class="line">  dds = <span class="variable constant_">DDS</span>.load(fn)</span><br><span class="line">  p dds</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ヘッダ部の解説：<a href="http://msdn.microsoft.com/ja-jp/library/cc372287.aspx">DDS ファイル リファレンス | Microsoft Learn</a></li>
+<li>ピクセル部の処理は全然<ul>
+<li><a href="http://ja.wikipedia.org/wiki/DXTC">DXTC - Wikipedia</a>を見ればなんとなくわかるかも</li>
+</ul>
+</li>
+<li><a href="/blog/2007/11/25/packed-struct.html" title="PackedStruct">PackedStruct</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2011/08/15/bayesian-filter.html" title="「ベイジアンフィルタを実装してみよう」をRubyで" rel="bookmark">「ベイジアンフィルタを実装してみよう」をRubyで</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/03/21/easy-dsl.html" title="Rubyで簡単DSL" rel="bookmark">Rubyで簡単DSL</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/06/01/ga-helloworld.html" title="GAで"Hello, world!"" rel="bookmark">GAで"Hello, world!"</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/04/09/mcts-connect-four.html">モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</a></li><li class="recent_post"><a href="/blog/2024/03/12/fit-curve.html">折れ線にフィットするベジェ曲線を求める方法</a></li><li class="recent_post"><a href="/blog/2024/02/05/wasm-obj-format.html">【WASM】オブジェクトフォーマットとその実装方法</a></li><li class="recent_post"><a href="/blog/2024/01/27/rose-screen-saver.html">Roseスクリーンセーバーを再現</a></li><li class="recent_post"><a href="/blog/2024/01/15/monaco-editor-is-modified.html">Monacoエディタで内容が変更されたかどうか調べる</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

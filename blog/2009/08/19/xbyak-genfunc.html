@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="XBYAKは演算子オーバーロードなどを使ってC++のコード中にx86のニーモニックとほとんど同じものを直接記述し、動的に実行コードを生成できるようにするライブラリ。その辺もすごそうだけど、それとは別にどうやって動的にコードを実行できるようにしているのか見てみた。
+protectという関数：
+/**	">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="実行時に関数を生成する方法(Xbyak)"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>実行時に関数を生成する方法(Xbyak) - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/08/19/xbyak-genfunc.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>実行時に関数を生成する方法(Xbyak)</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-08-19
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/jit/">#jit</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://homepage1.nifty.com/herumi/soft/xbyak.html">XBYAK</a>は演算子オーバーロードなどを使ってC++のコード中にx86のニーモニックとほとんど同じものを直接記述し、動的に実行コードを生成できるようにするライブラリ。その辺もすごそうだけど、それとは別にどうやって動的にコードを実行できるようにしているのか見てみた。
+protectという関数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">	change exec permission of memory</span></span><br><span class="line"><span class="comment">	@param addr [in] buffer address</span></span><br><span class="line"><span class="comment">	@param size [in] buffer size</span></span><br><span class="line"><span class="comment">	@param canExec [in] true(enable to exec), false(disable to exec)</span></span><br><span class="line"><span class="comment">	@return true(success), false(failure)</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">bool</span> <span class="title function_">protect</span><span class="params">(<span class="type">const</span> <span class="type">void</span> *addr, <span class="type">size_t</span> size, <span class="type">bool</span> canExec)</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __GNUC__</span></span><br><span class="line">	<span class="type">size_t</span> pageSize = sysconf(_SC_PAGESIZE);</span><br><span class="line">	<span class="type">size_t</span> iaddr = reinterpret_cast&lt;<span class="type">size_t</span>&gt;(addr);</span><br><span class="line">	<span class="type">size_t</span> roundAddr = iaddr &amp; ~(pageSize - static_cast&lt;<span class="type">size_t</span>&gt;(<span class="number">1</span>));</span><br><span class="line">	<span class="type">int</span> mode = PROT_READ | PROT_WRITE | (canExec ? PROT_EXEC : <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> mprotect(reinterpret_cast&lt;<span class="type">void</span>*&gt;(roundAddr), size + (iaddr - roundAddr), mode) == <span class="number">0</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(_WIN32)</span></span><br><span class="line">	DWORD oldProtect;</span><br><span class="line">	<span class="keyword">return</span> VirtualProtect(const_cast&lt;<span class="type">void</span>*&gt;(addr), size, canExec ? PAGE_EXECUTE_READWRITE : PAGE_READWRITE, &amp;oldProtect) != <span class="number">0</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>の中で、Windowsでは<a href="http://msdn.microsoft.com/ja-jp/library/cc430214.aspx">VirtualProtect</a>関数、Unix系では<a href="http://www.linux.or.jp/JM/html/LDP_man-pages/man2/mprotect.2.html">mprotect</a>を使って、メモリ領域の実行可能属性をセットしている。
+この関数を使って、ヒープだかスタック領域だかに実行可能属性をつけると実行時に関数が作れる：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span>* <span class="title function_">make_adder</span><span class="params">(<span class="type">int</span> y)</span> &#123;</span><br><span class="line">	<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> tbl[] = &#123;</span><br><span class="line">		<span class="number">0x8b</span>, <span class="number">0x44</span>, <span class="number">0x24</span>, <span class="number">0x04</span>,		<span class="comment">// mov(eax, ptr[esp+4]);</span></span><br><span class="line">		<span class="number">0x83</span>, <span class="number">0xc0</span>, y,			<span class="comment">// add(eax, y);</span></span><br><span class="line">		<span class="number">0xc3</span>,				<span class="comment">// ret();</span></span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="type">size_t</span> size = <span class="keyword">sizeof</span>(tbl)/<span class="keyword">sizeof</span>(*tbl);</span><br><span class="line">	<span class="type">void</span>* buf = new <span class="type">char</span>[size];</span><br><span class="line">	<span class="built_in">memcpy</span>(buf, tbl, size);</span><br><span class="line">	protect(buf, size, <span class="literal">true</span>);</span><br><span class="line">	<span class="keyword">return</span> buf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> (*add3)(<span class="type">int</span>) = (<span class="type">int</span> (*)(<span class="type">int</span>))make_adder(<span class="number">3</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, add3(<span class="number">2</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>もちろん、protect 関数を呼び出さないとヒープ領域のコードは実行できない…のかと思ったらそんなことはなくできてしまった…（WindowsXP）。Linuxでは試してない。</p>
+<ul>
+<li>これがちゃんと効いてれば、バッファオーバーランもそんなに怖くない気がする</li>
+<li>CPUのメモリマネージャって仕組みよく知らないんだけど、そんなに細かい単位でメモリの領域に対して実行可能属性とか設定できるのかな？<ul>
+<li>__GNUC__の場合はページ単位で設定するようになってる</li>
+</ul>
+</li>
+<li>x86のマシンコードを調べるのにてこずった…<ul>
+<li>gccだけでリストファイルを出力するオプションがわからず</li>
+<li>「gcc -S hoge.c」して「as -a hoge.s」</li>
+</ul>
+</li>
+<li>XBYAKを使えば、<a href="http://cadr.g.hatena.ne.jp/mokehehe/?word=*%5Bb2f%5D">Compilers: Backend to Frontend and Back to Front Again</a>を動的にできるかなぁ、などと妄想</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/21/adv-in-jit-compilation.html" title="「JITコンパイルでの冒険」を読んだ" rel="bookmark">「JITコンパイルでの冒険」を読んだ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/10/10/calling-convension-64.html" title="Xbyakで動的に生成するコードからCの関数を呼び出す" rel="bookmark">Xbyakで動的に生成するコードからCの関数を呼び出す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/22/dt-jit-comparison.html" title="Direct Threaded版とJITの速度比較" rel="bookmark">Direct Threaded版とJITの速度比較</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/05/jit.html" title="JITについてお勉強" rel="bookmark">JITについてお勉強</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/20/pypy-bf.html" title="PyPyでBrainf*ck" rel="bookmark">PyPyでBrainf*ck</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/04/09/mcts-connect-four.html">モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</a></li><li class="recent_post"><a href="/blog/2024/03/12/fit-curve.html">折れ線にフィットするベジェ曲線を求める方法</a></li><li class="recent_post"><a href="/blog/2024/02/05/wasm-obj-format.html">【WASM】オブジェクトフォーマットとその実装方法</a></li><li class="recent_post"><a href="/blog/2024/01/27/rose-screen-saver.html">Roseスクリーンセーバーを再現</a></li><li class="recent_post"><a href="/blog/2024/01/15/monaco-editor-is-modified.html">Monacoエディタで内容が変更されたかどうか調べる</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

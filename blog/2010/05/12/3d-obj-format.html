@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content=".plyファイルはマテリアルとかなくて残念。てことで.objファイル。
+Crytek Sponzaとか。
+// .objファイルローダーclass OBJLoader &amp;#123;  class Material &amp;#123;    float[] ambient, diffuse, specula">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Processing(Java)で.objファイル読み込み"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Processing(Java)で.objファイル読み込み - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2010/05/12/3d-obj-format.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Processing(Java)で.objファイル読み込み</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2010-05-12
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cg/">#cg</a> <a href="/tags/processing/">#processing</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み">.plyファイル</a>はマテリアルとかなくて残念。てことで.objファイル。
+<p><a href="http://www.crytek.com/downloads/technology/">Crytek Sponza</a>とか。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// .objファイルローダー</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">OBJLoader</span> &#123;</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">Material</span> &#123;</span><br><span class="line">    <span class="type">float</span>[] ambient, diffuse, specular, emissive;</span><br><span class="line">    <span class="type">float</span> shininess;</span><br><span class="line">    String diffusemap;</span><br><span class="line">    String bumpmap;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">Mesh</span> &#123;</span><br><span class="line">    <span class="type">ArrayList</span> <span class="variable">faces</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">    Material material;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">ArrayList</span> <span class="variable">m_vertices</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">  <span class="type">ArrayList</span> <span class="variable">m_normals</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">  <span class="type">ArrayList</span> <span class="variable">m_uvs</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">  <span class="type">ArrayList</span> <span class="variable">m_mesh</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">  <span class="type">HashMap</span> <span class="variable">m_mtllib</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line"></span><br><span class="line">  <span class="type">boolean</span> <span class="title function_">load</span><span class="params">(String fn)</span> &#123;</span><br><span class="line">    <span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> createReader(fn);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (reader == <span class="literal">null</span>)  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      <span class="keyword">if</span> (!read_data(reader, fn))  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">      e.printStackTrace();</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">boolean</span> <span class="title function_">read_data</span><span class="params">(BufferedReader reader, String fn)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">objname</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="type">Mesh</span> <span class="variable">mesh</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Mesh</span>();</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">      <span class="type">String</span> <span class="variable">line</span> <span class="operator">=</span> reader.readLine();</span><br><span class="line">      <span class="keyword">if</span> (line == <span class="literal">null</span>)  <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">      String[] m = line.trim().split(<span class="string">&quot;\\s+&quot;</span>, <span class="number">0</span>);</span><br><span class="line">      <span class="keyword">if</span> (m == <span class="literal">null</span>)  <span class="keyword">continue</span>;</span><br><span class="line">      <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;v&quot;</span>)) &#123;  <span class="comment">// 頂点座標</span></span><br><span class="line">        <span class="type">float</span>[] vtx = str2floats(m);</span><br><span class="line">        m_vertices.add(vtx);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;vn&quot;</span>)) &#123;  <span class="comment">// 法線</span></span><br><span class="line">        <span class="type">float</span>[] nrm = str2floats(m);</span><br><span class="line">        <span class="type">float</span> <span class="variable">rr</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nrm.length; ++i)  rr += sq(nrm[i]);</span><br><span class="line">        <span class="type">float</span> <span class="variable">invr</span> <span class="operator">=</span> <span class="number">1.0</span> / sqrt(rr);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nrm.length; ++i)  nrm[i] *= invr;</span><br><span class="line">        m_normals.add(nrm);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;vt&quot;</span>)) &#123;  <span class="comment">// UV座標</span></span><br><span class="line">        <span class="type">float</span>[] uv = str2floats(m);</span><br><span class="line">        m_uvs.add(uv);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;f&quot;</span>)) &#123;  <span class="comment">// フェース</span></span><br><span class="line">        <span class="type">int</span>[][] face = <span class="keyword">new</span> <span class="title class_">int</span>[m.length - <span class="number">1</span>][];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; m.length; ++i) &#123;</span><br><span class="line">          String[] idxs = m[i].split(<span class="string">&quot;/&quot;</span>, <span class="number">0</span>);</span><br><span class="line">          <span class="type">int</span>[] iii = <span class="keyword">new</span> <span class="title class_">int</span>[idxs.length];</span><br><span class="line">          <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; idxs.length; ++j) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="type">int</span>(idxs[j]);</span><br><span class="line">            <span class="keyword">if</span> (x &gt; <span class="number">0</span>)       x = x - <span class="number">1</span>;                  <span class="comment">// 絶対指定</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (x &lt; <span class="number">0</span>)  x = m_vertices.size() + x;  <span class="comment">// 相対指定</span></span><br><span class="line">            <span class="keyword">else</span>             x = -<span class="number">1</span>;                     <span class="comment">// 0: 無効</span></span><br><span class="line">            iii[j] = x;</span><br><span class="line">          &#125;</span><br><span class="line">          face[i - <span class="number">1</span>] = iii;</span><br><span class="line">        &#125;</span><br><span class="line">        mesh.faces.add(face);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;mtllib&quot;</span>)) &#123;  <span class="comment">// マテリアルライブラリ</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">dir</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(fn).getParent();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; m.length; ++i) &#123;</span><br><span class="line">          <span class="type">String</span> <span class="variable">mfn</span> <span class="operator">=</span> m[i];</span><br><span class="line">          <span class="keyword">if</span> (!load_mtllib(dir + <span class="string">&quot;/&quot;</span> + mfn)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;usemtl&quot;</span>)) &#123;  <span class="comment">// マテリアル</span></span><br><span class="line">        add_mesh(mesh);</span><br><span class="line">        mesh = <span class="keyword">new</span> <span class="title class_">Mesh</span>();</span><br><span class="line">        <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> m[<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">if</span> (m_mtllib.containsKey(name)) &#123;</span><br><span class="line">          mesh.material = (Material)m_mtllib.get(name);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// skip</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    add_mesh(mesh);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">load_mtllib</span><span class="params">(String fn)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> createReader(fn);</span><br><span class="line">    <span class="keyword">if</span> (reader == <span class="literal">null</span>)  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">String</span> <span class="variable">mtlname</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="type">Material</span> <span class="variable">material</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">      <span class="type">String</span> <span class="variable">line</span> <span class="operator">=</span> reader.readLine();</span><br><span class="line">      <span class="keyword">if</span> (line == <span class="literal">null</span>)  <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">      String[] m = line.trim().split(<span class="string">&quot;\\s+&quot;</span>, <span class="number">0</span>);</span><br><span class="line">      <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;newmtl&quot;</span>)) &#123;  <span class="comment">// 頂点座標</span></span><br><span class="line">        <span class="keyword">if</span> (material != <span class="literal">null</span>)  add_material(mtlname, material);</span><br><span class="line">        mtlname = m[<span class="number">1</span>];</span><br><span class="line">        material = <span class="keyword">new</span> <span class="title class_">Material</span>();</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;Ka&quot;</span>)) &#123;  <span class="comment">// アンビエント</span></span><br><span class="line">        material.ambient = str2floats(m);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;Kd&quot;</span>)) &#123;  <span class="comment">// ディフューズ</span></span><br><span class="line">        material.diffuse = str2floats(m);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;Ks&quot;</span>)) &#123;  <span class="comment">// スペキュラー</span></span><br><span class="line">        material.specular = str2floats(m);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;Ke&quot;</span>)) &#123;  <span class="comment">// エミッシブ</span></span><br><span class="line">        material.emissive = str2floats(m);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;map_Ka&quot;</span>)) &#123;  <span class="comment">// ディフューズマップ</span></span><br><span class="line">        material.diffusemap = m[<span class="number">1</span>];</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m[<span class="number">0</span>].equals(<span class="string">&quot;map_bump&quot;</span>)) &#123;  <span class="comment">// バンプマップ</span></span><br><span class="line">        material.bumpmap = m[<span class="number">1</span>];</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// なし</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (material != <span class="literal">null</span>)  add_material(mtlname, material);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">add_material</span><span class="params">(String name, Material material)</span> &#123;</span><br><span class="line">    m_mtllib.put(name, material);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">add_mesh</span><span class="params">(Mesh mesh)</span> &#123;</span><br><span class="line">    m_mesh.add(mesh);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="type">float</span>[] str2floats(String words[]) &#123;</span><br><span class="line">    <span class="type">float</span>[] a = <span class="keyword">new</span> <span class="title class_">float</span>[words.length - <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; words.length; ++i)  a[i - <span class="number">1</span>] = <span class="type">float</span>(words[i]);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>これを使って、ProcessingのOpenGLで表示するテスト：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> processing.opengl.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Model</span> <span class="keyword">extends</span> <span class="title class_">OBJLoader</span> &#123;</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">Texture</span> &#123;</span><br><span class="line">    PImage img;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">bind</span><span class="params">()</span> &#123;</span><br><span class="line">      texture(img);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">float</span> <span class="title function_">s</span><span class="params">(<span class="type">float</span> u)</span>  &#123; <span class="keyword">return</span> u * img.width; &#125;</span><br><span class="line">    <span class="type">float</span> <span class="title function_">t</span><span class="params">(<span class="type">float</span> v)</span>  &#123; <span class="keyword">return</span> v * img.height; &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">HashMap</span> <span class="variable">m_textures</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line"></span><br><span class="line">  <span class="type">boolean</span> <span class="title function_">load</span><span class="params">(String fn)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">super</span>.load(fn))  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">Iterator</span> <span class="variable">it</span> <span class="operator">=</span> m_mtllib.values().iterator(); it.hasNext(); ) &#123;</span><br><span class="line">      <span class="type">Material</span> <span class="variable">material</span> <span class="operator">=</span> (Material)it.next();</span><br><span class="line">      <span class="keyword">if</span> (material.diffusemap != <span class="literal">null</span>)</span><br><span class="line">        load_texture(material.diffusemap, fn);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">draw</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">Iterator</span> <span class="variable">it</span> <span class="operator">=</span> m_mesh.iterator(); it.hasNext(); ) &#123;</span><br><span class="line">      OBJLoader.<span class="type">Mesh</span> <span class="variable">mesh</span> <span class="operator">=</span> (OBJLoader.Mesh)it.next();</span><br><span class="line">      beginShape(TRIANGLES);</span><br><span class="line">      Model.<span class="type">Texture</span> <span class="variable">tex</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">      <span class="keyword">if</span> (mesh.material != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> constrain(floor(mesh.material.diffuse[<span class="number">0</span>] * <span class="number">255</span>), <span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line">        <span class="type">int</span> <span class="variable">g</span> <span class="operator">=</span> constrain(floor(mesh.material.diffuse[<span class="number">1</span>] * <span class="number">255</span>), <span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line">        <span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> constrain(floor(mesh.material.diffuse[<span class="number">2</span>] * <span class="number">255</span>), <span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line">        fill(r, g, b);</span><br><span class="line"></span><br><span class="line">        tex = get_texture(mesh.material.diffusemap);</span><br><span class="line">        <span class="keyword">if</span> (tex != <span class="literal">null</span>) &#123;</span><br><span class="line">          tex.bind();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;mesh.faces.size(); ++i) &#123;</span><br><span class="line">        <span class="type">int</span>[][] face = (<span class="type">int</span>[][])mesh.faces.get(i);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">2</span>; j&lt;face.length; ++j) &#123;</span><br><span class="line">          drawvertex(face[<span class="number">0</span>],   tex);</span><br><span class="line">          drawvertex(face[j-<span class="number">1</span>], tex);</span><br><span class="line">          drawvertex(face[j],   tex);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      endShape();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">drawvertex</span><span class="params">(<span class="type">int</span>[] vinfo, Model.Texture tex)</span> &#123;</span><br><span class="line">    <span class="type">float</span>[] vtx = (<span class="type">float</span>[])m_vertices.get(vinfo[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">if</span> (vinfo.length &gt; <span class="number">2</span> &amp;&amp; vinfo[<span class="number">2</span>] &gt;= <span class="number">0</span>) &#123;  <span class="comment">// 法線がある</span></span><br><span class="line">      <span class="type">float</span>[] nrm = (<span class="type">float</span>[])m_normals.get(vinfo[<span class="number">2</span>]);</span><br><span class="line">      normal(nrm[<span class="number">0</span>], nrm[<span class="number">1</span>], nrm[<span class="number">2</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (vinfo.length &gt; <span class="number">1</span> &amp;&amp; vinfo[<span class="number">1</span>] &gt;= <span class="number">0</span> &amp;&amp; tex != <span class="literal">null</span>) &#123;  <span class="comment">// UVがある</span></span><br><span class="line">      <span class="type">float</span>[] uv = (<span class="type">float</span>[])m_uvs.get(vinfo[<span class="number">1</span>]);</span><br><span class="line">      vertex(vtx[<span class="number">0</span>], vtx[<span class="number">1</span>], vtx[<span class="number">2</span>], tex.s(uv[<span class="number">0</span>]), tex.t(uv[<span class="number">1</span>]));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      vertex(vtx[<span class="number">0</span>], vtx[<span class="number">1</span>], vtx[<span class="number">2</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Texture <span class="title function_">get_texture</span><span class="params">(String name)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_textures.containsKey(name)) &#123;</span><br><span class="line">      <span class="keyword">return</span> (Texture)m_textures.get(name);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">load_texture</span><span class="params">(String mtlfn, String mdlfn)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!m_textures.containsKey(mtlfn)) &#123;</span><br><span class="line">      <span class="type">String</span> <span class="variable">dir</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(mdlfn).getParent();</span><br><span class="line">      <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(mtlfn).getName();</span><br><span class="line">      <span class="type">PImage</span> <span class="variable">img</span> <span class="operator">=</span> loadImage(dir + <span class="string">&quot;/&quot;</span> + name);</span><br><span class="line">      <span class="keyword">if</span> (img != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="type">Texture</span> <span class="variable">tex</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Texture</span>();</span><br><span class="line">        tex.img = img;</span><br><span class="line">        m_textures.put(mtlfn, tex);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Model model;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">setup</span><span class="params">()</span> &#123;</span><br><span class="line">  size(<span class="number">640</span>, <span class="number">480</span>, OPENGL);</span><br><span class="line"></span><br><span class="line">  model = <span class="keyword">new</span> <span class="title class_">Model</span>();</span><br><span class="line">  <span class="type">boolean</span> <span class="variable">r</span> <span class="operator">=</span> model.load(<span class="string">&quot;sponza/Sponza.obj&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> (r) &#123;</span><br><span class="line">    println(<span class="string">&quot;model load succeeded&quot;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    println(<span class="string">&quot;model load failed&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> <span class="variable">rotx</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="type">float</span> <span class="variable">roty</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="type">float</span> <span class="variable">dist</span> <span class="operator">=</span> <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">mouseDragged</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="keyword">switch</span> (mouseButton) &#123;</span><br><span class="line">  <span class="keyword">case</span> LEFT:</span><br><span class="line">    <span class="type">float</span> <span class="variable">rate</span> <span class="operator">=</span> <span class="number">0.01</span>;</span><br><span class="line">    rotx += (pmouseY - mouseY) * rate;</span><br><span class="line">    roty += (pmouseX - mouseX) * rate;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> RIGHT:</span><br><span class="line">    dist += dist * (pmouseY - mouseY) * <span class="number">4</span> / height;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">draw</span><span class="params">()</span> &#123;</span><br><span class="line">  lights();</span><br><span class="line">  background(color(<span class="number">0</span>, <span class="number">0</span>, <span class="number">128</span>));</span><br><span class="line"></span><br><span class="line">  <span class="type">float</span> <span class="variable">cameraY</span> <span class="operator">=</span> height/<span class="number">2.0</span>;</span><br><span class="line">  <span class="type">float</span> <span class="variable">fov</span> <span class="operator">=</span> radians(<span class="number">60</span>);</span><br><span class="line">  <span class="type">float</span> <span class="variable">cameraZ</span> <span class="operator">=</span> cameraY / tan(fov / <span class="number">2.0</span>);</span><br><span class="line">  <span class="type">float</span> <span class="variable">aspect</span> <span class="operator">=</span> <span class="type">float</span>(width)/<span class="type">float</span>(height);</span><br><span class="line">  perspective(fov, aspect, cameraZ/<span class="number">10.0</span>, cameraZ*<span class="number">10.0</span>);</span><br><span class="line"></span><br><span class="line">  translate(width/<span class="number">2</span>, height/<span class="number">2</span>, cameraZ - dist);</span><br><span class="line">  rotateX(PI);</span><br><span class="line">  rotateX(rotx);</span><br><span class="line">  rotateY(roty);</span><br><span class="line"></span><br><span class="line">  noStroke();</span><br><span class="line">  model.draw();</span><br><span class="line">  stroke(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>);  line(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>, <span class="number">100</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">  stroke(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>);  line(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>, <span class="number">0</span>,<span class="number">100</span>,<span class="number">0</span>);</span><br><span class="line">  stroke(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);  line(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>, <span class="number">0</span>,<span class="number">0</span>,<span class="number">100</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="http://www.martinreddy.net/gfx/3d/OBJ.spec">objファイルフォーマットはこのへん</a>、でもあまり見てない</li>
+<li>Processingの<code>loadImage()</code>はjpegやpngだけじゃなく、tgaやbmpも対応してる、すげぇ！</li>
+<li>CrytekのSponzaのスクリーンショットでは青や緑の布もかかってるのに、データでは赤しかない、クソッ！</li>
+<li>真ん中の布が邪魔</li>
+<li>UVが狂ってるのかクランプされてるのかよくわからない</li>
+<li>ノーマルマップは試してない</li>
+<li>.objファイルフォーマットは行単位で、先頭の文字列で区別できるとか、シンプルでいいな<ul>
+<li>簡潔なファイルフォーマットは生き残るね</li>
+<li>階層構造やモーションにもこういう、テキスト形式でシンプルなファイルフォーマットがあるといいな</li>
+</ul>
+</li>
+<li>これでメタセコで作られたデータとか出せるんじゃ…と思ったら、フリー版では.objに出力できなかった、残念…</li>
+<li>Processingは、テクスチャがない状態で vertex() でUVを設定するとエラーが出て止まってしまう、うっとおしい</li>
+<li>しかしJava、というかGCのある言語は後始末書かなくていいのは滅茶苦茶楽だな</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/01/10/error-diffusion-gamma.html" title="誤差拡散法にガンマ補正を施す" rel="bookmark">誤差拡散法にガンマ補正を施す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/01/27/rose-screen-saver.html" title="Roseスクリーンセーバーを再現" rel="bookmark">Roseスクリーンセーバーを再現</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/04/09/mcts-connect-four.html">モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</a></li><li class="recent_post"><a href="/blog/2024/03/12/fit-curve.html">折れ線にフィットするベジェ曲線を求める方法</a></li><li class="recent_post"><a href="/blog/2024/02/05/wasm-obj-format.html">【WASM】オブジェクトフォーマットとその実装方法</a></li><li class="recent_post"><a href="/blog/2024/01/27/rose-screen-saver.html">Roseスクリーンセーバーを再現</a></li><li class="recent_post"><a href="/blog/2024/01/15/monaco-editor-is-modified.html">Monacoエディタで内容が変更されたかどうか調べる</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-04-24T00:55:16.787Z</updated>
+  <updated>2024-04-24T02:00:18.073Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html"/>
     <id>https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html</id>
     <published>2024-04-09T12:00:00.000Z</published>
-    <updated>2024-04-24T00:55:16.787Z</updated>
+    <updated>2024-04-24T02:00:18.073Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://gihyo.jp/book/2023/978-4-297-13360-3&quot;&gt;ゲームで学ぶ探索アルゴリズム実践入門
@@ -39,7 +39,7 @@
     <link href="https://tyfkda.github.io/blog/2024/03/12/fit-curve.html"/>
     <id>https://tyfkda.github.io/blog/2024/03/12/fit-curve.html</id>
     <published>2024-03-12T09:00:00.000Z</published>
-    <updated>2024-03-25T10:04:04.401Z</updated>
+    <updated>2024-04-24T02:00:18.065Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前に調べた&lt;a href=&quot;/blog/2020/10/26/simplify-line-segments.html&quot; title=&quot;折れ線を簡略化する方法(Ramer-Douglas-Peucker法)&quot;&gt;折れ線を簡略化する方法&lt;/a&gt;は線分の途中の点を省いて軽量化する方法で、線分のままだった。
@@ -57,7 +57,7 @@
     <link href="https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html"/>
     <id>https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html</id>
     <published>2024-02-05T12:00:00.000Z</published>
-    <updated>2024-03-25T10:04:04.406Z</updated>
+    <updated>2024-04-24T02:00:18.086Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASMのバイナリフォーマットは実行用の情報しかないのでコンパイルの中間ファイル・リンク用には別途独自のファイル形式が必要かと思ってたんだけど、どうやら追加の情報を加えることで対応してるらしい。
@@ -77,7 +77,7 @@
     <link href="https://tyfkda.github.io/blog/2024/01/27/rose-screen-saver.html"/>
     <id>https://tyfkda.github.io/blog/2024/01/27/rose-screen-saver.html</id>
     <published>2024-01-27T10:00:00.000Z</published>
-    <updated>2024-02-05T12:56:17.825Z</updated>
+    <updated>2024-04-24T02:00:18.078Z</updated>
     
     
       
@@ -105,7 +105,7 @@
     <link href="https://tyfkda.github.io/blog/2024/01/15/monaco-editor-is-modified.html"/>
     <id>https://tyfkda.github.io/blog/2024/01/15/monaco-editor-is-modified.html</id>
     <published>2024-01-15T09:00:00.000Z</published>
-    <updated>2024-01-15T09:27:15.033Z</updated>
+    <updated>2024-04-24T02:00:18.074Z</updated>
     
     
     <summary type="html">&lt;p&gt;結論：&lt;a href=&quot;https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.ITextModel.html#getAlternativeVersionId&quot;&gt;getAlternativeVersionId()&lt;/a&gt;で判定できる。&lt;/p&gt;</summary>
@@ -122,7 +122,7 @@
     <link href="https://tyfkda.github.io/blog/2024/01/14/monaco-editor-intro.html"/>
     <id>https://tyfkda.github.io/blog/2024/01/14/monaco-editor-intro.html</id>
     <published>2024-01-14T09:00:00.000Z</published>
-    <updated>2024-01-15T09:27:15.033Z</updated>
+    <updated>2024-04-24T02:00:18.074Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前はブラウザ上で動くテキストエディタとして&lt;a href=&quot;https://ace.c9.io/&quot;&gt;Aceエディタ&lt;/a&gt;を使ってみたが、自分が普段使うエディタはほぼVSCodeになってしまったので、ブラウザでも同じ方が自分にとって望ましい。
@@ -140,7 +140,7 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     <link href="https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html"/>
     <id>https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html</id>
     <published>2024-01-09T09:00:00.000Z</published>
-    <updated>2024-03-25T10:04:04.402Z</updated>
+    <updated>2024-04-24T02:00:18.069Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/05/12/pentomino-solver.html&quot; title=&quot;ペントミノパズルを解く（深さ優先探索法、Dancing Links法）&quot;&gt;ペントミノパズルを解くプログラムを書いた&lt;/a&gt;ことでいろいろ学ぶことがあったので、今度は箱入り娘を解くプログラムを書いてみた。&lt;/p&gt;
@@ -160,7 +160,7 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     <link href="https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html"/>
     <id>https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html</id>
     <published>2023-12-22T10:00:00.000Z</published>
-    <updated>2024-04-20T03:18:49.302Z</updated>
+    <updated>2024-04-24T02:00:18.060Z</updated>
     
     
     <summary type="html">&lt;p&gt;RISC-VというCPUはライセンスフリーとのことでどんなもんか興味あって、そんなこともあり自作のCコンパイラをRISC-Vに対応したいと思っていた。
@@ -180,7 +180,7 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     <link href="https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html"/>
     <id>https://tyfkda.github.io/blog/2023/11/29/paraboloid-shadow-envmap.html</id>
     <published>2023-11-29T09:00:00.000Z</published>
-    <updated>2024-01-15T09:27:15.034Z</updated>
+    <updated>2024-04-24T02:00:18.075Z</updated>
     
     
     <summary type="html">&lt;p&gt;WebGPUでレンダリング手法を学習するシリーズ、&lt;a href=&quot;/blog/2023/11/09/deferred-shadow-mapping.html&quot; title=&quot;【WebGPU】Deferred RenderingとShadow Mappingと&quot;&gt;前回ディファードレンダリング&lt;/a&gt;ではスポットライトで特定の方向にのみ影を投影していた。
@@ -203,7 +203,7 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     <link href="https://tyfkda.github.io/blog/2023/11/09/deferred-shadow-mapping.html"/>
     <id>https://tyfkda.github.io/blog/2023/11/09/deferred-shadow-mapping.html</id>
     <published>2023-11-09T10:00:00.000Z</published>
-    <updated>2024-01-15T09:27:15.028Z</updated>
+    <updated>2024-04-24T02:00:18.062Z</updated>
     
     
     <summary type="html">&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUを触ってみて&lt;/a&gt;、一応Computeシェーダーは使えるようになった。
