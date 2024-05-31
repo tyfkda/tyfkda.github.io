@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="流行りの機械学習でなにか動かしたいなぁとチュートリアルを動かそうとするも大抵エラーで動かない、動いたとしてもちょっと経つとライブラリの更新だか環境の変化でエラーになってしまい、その依存関係も解決できない。
+ローカルで動かそうとするが環境構築でつまずく。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="強化学習に再挑戦（二重倒立振子）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>強化学習に再挑戦（二重倒立振子） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>強化学習に再挑戦（二重倒立振子）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2024-05-31
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/python/">#python</a> <a href="/tags/reinforcement-learning/">#reinforcement learning</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>流行りの機械学習でなにか動かしたいなぁとチュートリアルを動かそうとするも大抵エラーで動かない、動いたとしてもちょっと経つとライブラリの更新だか環境の変化でエラーになってしまい、その依存関係も解決できない。
+ローカルで動かそうとするが環境構築でつまずく。</p>
+<span id="more"></span>
+
+<p>そんな感じで挫折を繰り返してるので、ちゃんと環境構築できるようにやってみた。</p>
+<h2 id="環境構築編"><a href="#環境構築編" class="headerlink" title="環境構築編"></a>環境構築編</h2><p>強化学習や機械学習のチュートリアルといえばPython、なのでその環境をある程度固定して、安心して動かせる環境を用意できるようにしたい。</p>
+<h3 id="Python：pyenv"><a href="#Python：pyenv" class="headerlink" title="Python：pyenv"></a>Python：pyenv</h3><p>Python自体のインストール、バージョン更新・変更はpyenvでできる。
+詳細なインストール・使用方法は略。</p>
+<ul>
+<li><code>pyenv local &lt;バージョン番号&gt;</code>を実行すると<code>.python-version</code>というファイルに保存され、そのフォルダ以下にいると<code>python</code>としたときに自動的にそのバージョンが使われる</li>
+<li>その状態で<code>pip install</code>してもローカルフォルダ以下ではなく、pyenvのバージョン&#x2F;lib以下にインストールされる
+（なので他のフォルダで同じPythonバージョンを使うとバッティングする可能性があると思う）</li>
+</ul>
+<h3 id="Python仮想環境：venv"><a href="#Python仮想環境：venv" class="headerlink" title="Python仮想環境：venv"></a>Python仮想環境：venv</h3><p>Pythonで仮想環境を作る方法が何種類かあるみたいで歴史的経緯・使用感などは自分では把握してないのだけど、venvを使うことにした。</p>
+<ul>
+<li>初期設定：<code>python -m venv .venv</code>とすると<code>.venv</code>というフォルダが生成される</li>
+<li>仮想環境を有効化：<code>source .venv/bin/activate</code><ul>
+<li>有効化すると、<code>pip install</code>したものが<code>.venv/lib</code>以下にインストールされる</li>
+</ul>
+</li>
+</ul>
+<p>仮想環境を有効化した状態でPythonスクリプトを実行することで、想定している環境上で動作させることができる。</p>
+<ul>
+<li>仮想環境を無効化：<code>deactivate</code></li>
+</ul>
+<h3 id="モジュールのリスト化：pip-freeze"><a href="#モジュールのリスト化：pip-freeze" class="headerlink" title="モジュールのリスト化：pip freeze"></a>モジュールのリスト化：pip freeze</h3><p>venvでローカルに作成された依存関係はリポジトリにコミットしないので、別のマシンで動かそうとした時に困る。
+そこでインストールしたモジュールを書き出し、再利用できるようにする：</p>
+<ul>
+<li>インストールしたモジュールの書き出し：<code>pip freeze &gt; requirements.txt</code><ul>
+<li>自分でインストールしたモジュール以外にも、依存するモジュールも書き出される</li>
+</ul>
+</li>
+<li>復元：<code>pip install -r requirements.txt</code></li>
+</ul>
+<p>以上で環境を固定できるようになったので、安心してスクリプトを動作させることができる（たぶん…）。</p>
+<h2 id="強化学習を動かしてみる"><a href="#強化学習を動かしてみる" class="headerlink" title="強化学習を動かしてみる"></a>強化学習を動かしてみる</h2><p>機械学習（教師あり学習）はデータを用意する必要があって、なかなか好き勝手なことをするには難しい。
+なので強化学習が動かせると楽しめそう。</p>
+<h3 id="OpenAI-Gymはdeprecated"><a href="#OpenAI-Gymはdeprecated" class="headerlink" title="OpenAI Gymはdeprecated"></a>OpenAI Gymはdeprecated</h3><p>強化学習の手始めといえばOpenAI Gymという感じでさすがに動かせるものかと思ってたんだが、少し古いコードだと<code>env.step</code>の戻り値が違うというエラーが出てしまう。
+バージョン0.26.0で変更されてしまったらしい。</p>
+<p>で対応して動かそうとしてたんだけど<a href="https://github.com/openai/gym?tab=readme-ov-file#important-notice">Gym自体がすでにdepreatedになってた</a>らしく、
+<a href="https://github.com/Farama-Foundation/Gymnasium">Gymnasium</a>に引き継がれたとのこと。</p>
+<ul>
+<li><code>pip install gymnasium</code></li>
+<li><code>import gymnasium as gym</code>とすれば、一応互換で使えるらしい</li>
+</ul>
+<h3 id="倒立振子を動かしてみる"><a href="#倒立振子を動かしてみる" class="headerlink" title="倒立振子を動かしてみる"></a>倒立振子を動かしてみる</h3><p>Gymnasiumで強化学習の環境は用意できるけど、強化学習のコード自体はまた別に用意する必要がある。
+自分で組むだけの知識も理解も足りないのでなにかサンプルを参考にしたい、と思ったらドキュメントにいろいろ紹介されていた。
+その中で倒立振子：</p>
+<ul>
+<li><a href="https://gymnasium.farama.org/tutorials/training_agents/reinforce_invpend_gym_v26/">Training using REINFORCE for Mujoco - Gymnasium Documentation</a></li>
+<li>環境の説明は<a href="https://gymnasium.farama.org/environments/mujoco/inverted_pendulum/">Inverted Pendulum - Gymnasium Documentation</a><ul>
+<li><strong>行動空間</strong>：カートにどのくらいの力を与えるかの連続値</li>
+<li><strong>観測空間</strong>：カートの位置、ポールの角度、カートの速度、ポールの角速度</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://mujoco.org/">Mujoco</a>という物理エンジンを使った倒立振子の環境を「<strong>REINFORCE</strong>」という方法（紛らわしい）で学習するサンプルとなっている。
+ソースコードが添付されているのでダウンロードして必要なモジュールをインストールすることで動かすことができる。</p>
+<ul>
+<li>方策ネットワーク：状態を入力、行動を正規分布の平均と標準偏差を出力とするニューラルネットワーク。共有部分として活性化関数がtanhの全結合層を２段（次元は16と32）、平均と標準偏差にそれぞれ全結合層、という構成。</li>
+<li>最適化は<a href="https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html">AdamW</a></li>
+<li><code>sample_action</code>関数内の正規分布作成時に平均値にも<code>eps</code>を足しているのは間違いじゃないか？</li>
+</ul>
+<h4 id="学習結果の動作を再生させる"><a href="#学習結果の動作を再生させる" class="headerlink" title="学習結果の動作を再生させる"></a>学習結果の動作を再生させる</h4><p>上で公開されているコードは学習を5回行ってエピソード数に従った報酬の推移のグラフが表示されるだけで、実際にどのような動作になるのか自分にとってはイメージしづらい。
+なので実際に再生・表示させたい：</p>
+<ul>
+<li>動作をリアルタイムに描画：<code>gym.make(&quot;InvertedPendulum-v4&quot;)</code>にキーワード引数<code>render_mode=&#39;human&#39;</code>を追加<ul>
+<li>表示内容やキー操作をいじりたかったがやり方わからず…</li>
+</ul>
+</li>
+<li>学習結果の保存：<code>torch.save(agent.net.state_dict(), &#39;ファイル名.pt&#39;)</code></li>
+<li>学習結果の読込：<code>agent.net.load_state_dict(torch.load(&#39;ファイル名.pt&#39;))</code></li>
+<li>行動の選択：学習時に使われる<code>agent.sample_action</code>では正規分布からサンプルするため乱数要素が含まれてしまうので、
+ベストな行動（平均の値そのもの）を取り出すには、<code>action_means[0].detach().numpy()</code>とする</li>
+</ul>
+<h3 id="二重倒立振子を動かしてみる"><a href="#二重倒立振子を動かしてみる" class="headerlink" title="二重倒立振子を動かしてみる"></a>二重倒立振子を動かしてみる</h3><p>読み込む環境を<a href="https://gymnasium.farama.org/environments/mujoco/inverted_double_pendulum/">二重倒立振子</a>に変えて遊んでみた。</p>
+<ul>
+<li>観測できる状態は11</li>
+<li>得られる報酬は距離ペナルティと速度ペナルティが入っている。1タイムステップごとに、<ul>
+<li>生存ボーナス：10</li>
+<li>距離ペナルティ：<script type="math/tex">0.01 * x^2 + (y - 2)^2</script> （x,yは第2ポール先端の座標）</li>
+<li>速度ペナルティ：<script type="math/tex">0.001 * v_1^2 + 0.005 * v_2^2</script></li>
+</ul>
+</li>
+<li>最大タイムステップは最大1,000なので、最大の累積報酬は1万になる</li>
+</ul>
+<h4 id="ネットワーク構成をいじってみる"><a href="#ネットワーク構成をいじってみる" class="headerlink" title="ネットワーク構成をいじってみる"></a>ネットワーク構成をいじってみる</h4><p>逆振子が二重になっている分元の構成より複雑になっているだろうはずなので、方策のネットワーク構造をあれこれいじってみる：</p>
+<ul>
+<li>活性化関数をtanhからReLUなど他のものに変えてみたが性能は劣化した</li>
+<li>隠れ層の段数を増やすと良くなる（3段：32-16-32にしてみた）</li>
+<li>3万〜5万エピソードくらい学習をさせると、倒立できるようになることもある（かなりムラがある）</li>
+</ul>
+<style type="text/css">
+.app-movie {
+  width: 100%;
+  aspect-ratio: 1;
+}
+</style>
+
+<iframe class="app-movie" src="https://www.youtube.com/embed/zp8N4i0wk7s" title="二重倒立振子(REINFORCE)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+<h2 id="雑多メモ"><a href="#雑多メモ" class="headerlink" title="雑多メモ"></a>雑多メモ</h2><ul>
+<li><code>pip freeze</code>で生成されるリストが冗長なのをなんとかしたい：<a href="https://github.com/damnever/pigar">Pigar</a>を使うと良さげ<ul>
+<li><a href="https://vallme2003.medium.com/how-to-generate-requirements-txt-automatically-for-your-python-project-using-pigar-82797864ff52">How to generate requirements.txt automatically for your python project using Pigar | by Valliappan Thenappan | Medium</a></li>
+</ul>
+</li>
+<li>“<em><a href="https://link.springer.com/article/10.1007/BF00992696">Simple Statistical Gradient-Following Algorithms for Connectionist Reinforcement Learning</a></em>“, Ronald J. Williams, 1992<ul>
+<li><strong>REINFORCE</strong>(REward Increment &#x3D; Non-negative Factor × Offset Reinforcement × Characteristic Eligibility) の論文</li>
+<li>方策勾配法：価値関数を扱わず、観測の状態に対する行動の確率分布（方策：ポリシー）を直接学習する、らしい（読んではいない）</li>
+</ul>
+</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/20/pypy-bf.html" title="PyPyでBrainf*ck" rel="bookmark">PyPyでBrainf*ck</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/09/07/run-shell-on-python.html" title="Pythonで外部コマンドを実行する" rel="bookmark">Pythonで外部コマンドを実行する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/06/29/tic-tac-toe-qlearning.html" title="強化学習でマルバツゲームAI（Q学習）" rel="bookmark">強化学習でマルバツゲームAI（Q学習）</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/05/31/reinforce-invert-double-pendulum.html">強化学習に再挑戦（二重倒立振子）</a></li><li class="recent_post"><a href="/blog/2024/04/09/mcts-connect-four.html">モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</a></li><li class="recent_post"><a href="/blog/2024/03/12/fit-curve.html">折れ線にフィットするベジェ曲線を求める方法</a></li><li class="recent_post"><a href="/blog/2024/02/05/wasm-obj-format.html">【WASM】オブジェクトフォーマットとその実装方法</a></li><li class="recent_post"><a href="/blog/2024/01/27/rose-screen-saver.html">Roseスクリーンセーバーを再現</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-04-29T03:12:51.404Z</updated>
+  <updated>2024-05-31T09:59:23.119Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>強化学習に再挑戦（二重倒立振子）</title>
+    <link href="https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html"/>
+    <id>https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html</id>
+    <published>2024-05-31T09:00:00.000Z</published>
+    <updated>2024-05-31T09:59:23.119Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;流行りの機械学習でなにか動かしたいなぁとチュートリアルを動かそうとするも大抵エラーで動かない、動いたとしてもちょっと経つとライブラリの更新だか環境の変化でエラーになってしまい、その依存関係も解決できない。
+ローカルで動かそうとするが環境構築でつまずく。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="python" scheme="https://tyfkda.github.io/tags/python/"/>
+    
+    <category term="reinforcement learning" scheme="https://tyfkda.github.io/tags/reinforcement-learning/"/>
+    
+  </entry>
   
   <entry>
     <title>モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</title>
@@ -188,26 +208,6 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
 &lt;p&gt;点光源で全方位に影を投影しようとした場合、単純に考えると角度が90度の四角錐を上下左右前後の6方向に行えばできるが、
 点光源１つにつきシーンを6回レンダリングする必要があるというのは厳しいように思う。
 しかし&lt;strong&gt;放物面&lt;/strong&gt;の特性を使うと半球をカバーできるため2面でいけるということを知ったので、やってみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="cg" scheme="https://tyfkda.github.io/tags/cg/"/>
-    
-    <category term="webgpu" scheme="https://tyfkda.github.io/tags/webgpu/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【WebGPU】Deferred RenderingとShadow Mappingと</title>
-    <link href="https://tyfkda.github.io/blog/2023/11/09/deferred-shadow-mapping.html"/>
-    <id>https://tyfkda.github.io/blog/2023/11/09/deferred-shadow-mapping.html</id>
-    <published>2023-11-09T10:00:00.000Z</published>
-    <updated>2024-04-24T02:00:18.062Z</updated>
-    
-    
-    <summary type="html">&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUを触ってみて&lt;/a&gt;、一応Computeシェーダーは使えるようになった。
-&lt;p&gt;「次のステップ」としてチュートリアルに書かれていた&lt;a href=&quot;https://webgpu.github.io/webgpu-samples/&quot;&gt;WebGPU Samples&lt;/a&gt;の中で、&lt;a href=&quot;https://webgpu.github.io/webgpu-samples/samples/deferredRendering&quot;&gt;Deferred Rendering&lt;/a&gt;が気になったので、ソースを読んでみた。&lt;/p&gt;</summary>
     
     
     
