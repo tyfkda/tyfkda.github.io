@@ -10,7 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="自由変数への代入の続きで、末尾呼び出しの実装方法。今回も[Three implementation models for Scheme](http://www.cs.indiana.edu/~dyb/papers/3imp.pdf)の、4.6節を参考にする。">
+        <meta name="description" content="自由変数への代入の続きで、末尾呼び出しの実装方法。
+今回もThree implementation models for Schemeの、4.6節を参考にする。">
     
 
     <!--Author-->
@@ -188,14 +189,22 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法">自由変数への代入</a>の続きで、末尾呼び出しの実装方法。今回も[Three implementation models for Scheme](http://www.cs.indiana.edu/~dyb/papers/3imp.pdf)の、4.6節を参考にする。
-
+                <a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法">自由変数への代入</a>の続きで、末尾呼び出しの実装方法。
+<p>今回も<a href="http://www.cs.indiana.edu/~dyb/papers/3imp.pdf">Three implementation models for Scheme</a>の、4.6節を参考にする。</p>
 <span id="more"></span>
 
-<p>VMをスタックベースにした場合、末尾呼び出しのときにその呼び出された関数への変数バインディングをスタックから取り除かなければいけないが、参照が生き残る可能性があるので簡単にはいかない？ちょっと英文がよくわからなかった。結局のところ、末尾呼び出しの場合は新しいコールフレームの作成をせずに、呼び出す関数への引数をスタックに積むコードを通常の関数呼び出しと同じように出力して、実際に<code>apply</code>（関数の命令の先頭にジャンプ）する前に自分自身に渡された引数を取り除いてやればいい。この論文のVMでは、戻り先の命令やフレームポインタは関数への引数より前に積まれているので、簡単にシフトできる。</p>
-<p>どの式が末尾呼び出しかという判定は、論文ではコンパイルの関数が次に実行すべき命令を常に持っていて、それが<code>return</code>だったら、というように判定している。自作のスクリプト言語で構文木を構築した場合はどうしたらいいかとちょっと悩んだが、なんのことはない、再帰で伝搬していけばいいだけだった。</p>
-<p>関数定義の場合は、関数本体の最後の式に「末尾だよ」、という設定を行う。または<code>return</code>式だったら戻す値に末尾設定を行う。</p>
-<p>末尾だと指定されたノードは、自分の種類によってそれをどう伝搬させるかを定義する。ノードが関数呼び出しだったら、めでたくそいつは末尾呼び出しと判定される。if式だったらthenノードとelseノードの両方に伝搬させる。他のノードの場合は伝搬させない。例えば二項演算とかであればその左右のノードは末尾とはならないので、伝搬を打ち切る。</p>
+<p>VMをスタックベースにした場合、末尾呼び出しのときにその呼び出された関数への変数バインディングをスタックから取り除かなければいけないが、参照が生き残る可能性があるので簡単にはいかない？ちょっと英文がよくわからなかった。
+結局のところ、末尾呼び出しの場合は新しいコールフレームの作成をせずに、呼び出す関数への引数をスタックに積むコードを通常の関数呼び出しと同じように出力して、実際に<code>apply</code>（関数の命令の先頭にジャンプ）する前に自分自身に渡された引数を取り除いてやればいい。
+この論文のVMでは、戻り先の命令やフレームポインタは関数への引数より前に積まれているので、簡単にシフトできる。</p>
+<p>どの式が末尾呼び出しかという判定は、論文ではコンパイルの関数が次に実行すべき命令を常に持っていて、それが<code>return</code>だったら、というように判定している。
+自作のスクリプト言語で構文木を構築した場合はどうしたらいいかとちょっと悩んだが、なんのことはない、再帰で伝搬していけばいいだけだった。</p>
+<p>関数定義の場合は、関数本体の最後の式に「末尾だよ」、という設定を行う。
+または<code>return</code>式だったら戻す値に末尾設定を行う。</p>
+<p>末尾だと指定されたノードは、自分の種類によってそれをどう伝搬させるかを定義する。
+ノードが関数呼び出しだったら、めでたくそいつは末尾呼び出しと判定される。
+if式だったらthenノードとelseノードの両方に伝搬させる。
+他のノードの場合は伝搬させない。
+例えば二項演算とかであればその左右のノードは末尾とはならないので、伝搬を打ち切る。</p>
 
 
                 
@@ -207,7 +216,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->

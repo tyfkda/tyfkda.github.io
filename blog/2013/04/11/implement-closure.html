@@ -192,21 +192,32 @@
 <span id="more"></span>
 
 <p>参考にしたのは <a href="http://www.cs.indiana.edu/~dyb/papers/3imp.pdf">Three Implementation Models for Scheme</a> の４章スタックベースモデルの4.4節ディスプレイクロージャ。</p>
-<p>論文の３章ではヒープベースモデルという、スタティックスコープのチェーンをヒープ上に持つ方式の説明があって、その方式だとクロージャが生成されたスコープを抜けてもそのクロージャが参照する環境がヒープ上にあるので特に問題なく変数バインディングを保持できる。しかしこの方式だと関数呼び出しごとにヒープ確保が必要になってしまい実行速度が犠牲になってしまう。そこで４章でスタックベースモデルという、スタティックチェーン（関数への引数）などをスタックに配置する実装が説明される。</p>
+<p>論文の３章ではヒープベースモデルという、スタティックスコープのチェーンをヒープ上に持つ方式の説明があって、その方式だとクロージャが生成されたスコープを抜けてもそのクロージャが参照する環境がヒープ上にあるので特に問題なく変数バインディングを保持できる。
+しかしこの方式だと関数呼び出しごとにヒープ確保が必要になってしまい実行速度が犠牲になってしまう。
+そこで４章でスタックベースモデルという、スタティックチェーン（関数への引数）などをスタックに配置する実装が説明される。</p>
 <p>しかし関数への引数をスタック上に持つようにすると、クロージャを生成したスコープを抜けた時点でコールフレームが削除されてしまうので変数バインディングが破壊されてしまう問題がある。</p>
-<p>4.4節での解決方法は、クロージャを生成するときに、内部で使われる自由変数を調べて、そのコピーをヒープ上に確保してクロージャに保持する、というもの。代入がなければ値は変更されないのでこの方法で解決できる（代入がある場合の変更は4.5節でなされる）。</p>
+<p>4.4節での解決方法は、クロージャを生成するときに、内部で使われる自由変数を調べて、そのコピーをヒープ上に確保してクロージャに保持する、というもの。
+代入がなければ値は変更されないのでこの方法で解決できる（代入がある場合の変更は4.5節でなされる）。</p>
 <p>論文ではSchemeを使っていてLisp系だとパースはすでに完了しているので、コンパイルの段階で内部で使われる自由変数を走査して調べているが、Lisp系じゃない自前のスクリプト言語を作るときにはどうせパースを行う必要があるので、そのときに変数の参照を調べることにする。</p>
 <p>例えば次のようなコードがあった場合、</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>(<span class="params">f</span>) &#123;  <span class="comment">// (A) 束縛:f</span></span><br><span class="line">  <span class="keyword">function</span>(<span class="params">x</span>) &#123;  <span class="comment">// (B) 束縛:x</span></span><br><span class="line">    <span class="keyword">function</span>(<span class="params">y</span>) &#123;  <span class="comment">// (C) 束縛:y</span></span><br><span class="line">      <span class="title function_">f</span>(y)</span><br><span class="line">    &#125;  <span class="comment">// 参照:f,y =&gt; 自由:f</span></span><br><span class="line">  &#125;  <span class="comment">// 参照:f =&gt; 自由:f</span></span><br><span class="line">&#125;  <span class="comment">// 参照:f =&gt; 自由:なし</span></span><br></pre></td></tr></table></figure>
 
-<p>パースは外側のfunction→内側のfunctionと進むが、パースが進んで最も内部のfunction (C)にきたとする。functionの本体をパースして、参照された変数すべてをその関数が参照しているということを記録していく(f, y)。その中で自分のパラメータ(y)じゃないものを(C)のlambda式の自由変数とする(f)。</p>
-<p>functionのパースを抜けるときに、自由変数は外側のfunctionから参照する、ということを伝えるため、上のブロックに参照を伝搬させる。ここでは関数(B)にfへの参照を追加する。そして同様に(B)のfunctionのパースを抜けるときに、参照がfで束縛変数がxなので自由変数がfとなる。</p>
+<p>パースは外側のfunction→内側のfunctionと進むが、パースが進んで最も内部のfunction (C)にきたとする。
+functionの本体をパースして、参照された変数すべてをその関数が参照しているということを記録していく(f, y)。
+その中で自分のパラメータ(y)じゃないものを(C)のlambda式の自由変数とする(f)。</p>
+<p>functionのパースを抜けるときに、自由変数は外側のfunctionから参照する、ということを伝えるため、上のブロックに参照を伝搬させる。
+ここでは関数(B)にfへの参照を追加する。
+そして同様に(B)のfunctionのパースを抜けるときに、参照がfで束縛変数がxなので自由変数がfとなる。</p>
 <p>一番外側のfunctionの(A)も同様に行われ、ここでfは束縛されているため、自由変数はなしとなる。</p>
-<p>コード生成時には、関数で使われる自由変数をコピーするコードを生成する。実際にはクロージャの自由変数となる値をスタックに積んでいき、クロージャの生成時にそれらをヒープから確保したバッファにコピーする。(A)は自由変数がないので特に何もなし、(B)はローカル変数fをコピーしてクロージャを生成する。(C)はクロージャ(B)に閉じ込められたfをさらにコピーしてクロージャが生成される。</p>
+<p>コード生成時には、関数で使われる自由変数をコピーするコードを生成する。
+実際にはクロージャの自由変数となる値をスタックに積んでいき、クロージャの生成時にそれらをヒープから確保したバッファにコピーする。
+(A)は自由変数がないので特に何もなし、(B)はローカル変数fをコピーしてクロージャを生成する。
+(C)はクロージャ(B)に閉じ込められたfをさらにコピーしてクロージャが生成される。</p>
 <p>生成されるバーチャルコードは次のようになる：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># クロージャ(A)の生成                                                           </span><br><span class="line">close 0        # 自由変数なしでクロージャ(A)を生成                              </span><br><span class="line"># クロージャ(A)の本体コード                                                     </span><br><span class="line">refer-local 0  # fを参照                                                        </span><br><span class="line">argument       # スタックに積む                                                 </span><br><span class="line">close 1        # 自由変数1つでクロージャ(B)を生成                               </span><br><span class="line"># クロージャ(B)の本体コード                                                     </span><br><span class="line">refer-free 1   # (B)に保持された自由変数fを参照                                 </span><br><span class="line">argument       # スタックに積む                                                 </span><br><span class="line">close 1        # 自由変数1つ                                                    </span><br><span class="line"># クロージャ(C)の本体コード                                                     </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># クロージャ(A)の生成</span><br><span class="line">close 0        # 自由変数なしでクロージャ(A)を生成</span><br><span class="line"># クロージャ(A)の本体コード</span><br><span class="line">refer-local 0  # fを参照</span><br><span class="line">argument       # スタックに積む</span><br><span class="line">close 1        # 自由変数1つでクロージャ(B)を生成</span><br><span class="line"># クロージャ(B)の本体コード</span><br><span class="line">refer-free 1   # (B)に保持された自由変数fを参照</span><br><span class="line">argument       # スタックに積む</span><br><span class="line">close 1        # 自由変数1つ</span><br><span class="line"># クロージャ(C)の本体コード</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<p>VMの実行時には現在実行中のクロージャを保持しておき、refer-freeでクロージャから値を取り出すようにする。関数呼び出し時にはリターンアドレス、フレームポインタとともにクロージャもスタックに積み、リターン時に復帰させるようにする。</p>
+<p>VMの実行時には現在実行中のクロージャを保持しておき、refer-freeでクロージャから値を取り出すようにする。
+関数呼び出し時にはリターンアドレス、フレームポインタとともにクロージャもスタックに積み、リターン時に復帰させるようにする。</p>
 
 
                 
@@ -218,7 +229,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->

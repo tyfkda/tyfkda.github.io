@@ -10,7 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="クロージャの実装の続きで、代入もサポートする方法を調べた。今回も[Three implementation models for Scheme](http://www.cs.indiana.edu/~dyb/papers/3imp.pdf)の、4.5節を参考にする。">
+        <meta name="description" content="クロージャの実装の続きで、代入もサポートする方法を調べた。
+今回もThree implementation models for Schemeの、4.5節を参考にする。">
     
 
     <!--Author-->
@@ -188,21 +189,29 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <a href="/blog/2013/04/11/implement-closure.html" title="スクリプト言語でのクロージャの実装方法">クロージャの実装</a>の続きで、代入もサポートする方法を調べた。今回も[Three implementation models for Scheme](http://www.cs.indiana.edu/~dyb/papers/3imp.pdf)の、4.5節を参考にする。
-
+                <a href="/blog/2013/04/11/implement-closure.html" title="スクリプト言語でのクロージャの実装方法">クロージャの実装</a>の続きで、代入もサポートする方法を調べた。
+<p>今回も<a href="http://www.cs.indiana.edu/~dyb/papers/3imp.pdf">Three implementation models for Scheme</a>の、4.5節を参考にする。</p>
 <span id="more"></span>
 
-<p>4.4節で、自由変数の参照だけで代入がない場合について、値のコピーをクロージャに持たせてやることで実現していた。代入が含まれる場合にはどうするかとういうと、ボックス化ということをする。ボックス化というのは、ヒープ上に値を保持して、そのヒープへのポインタを変数として持つという方法。ポインタの指している先の中身を書き換えれば、参照しているすべての箇所でその変更が反映されることになる。</p>
-<p>論文では、例によってSchemeなのでパースが終了しているのでlambda式の本体を見ていって代入があるかどうか調べているが、自作スクリプト言語でパースを自ら行う場合にはパースを行なっている時に自由変数への代入が検出できるので、それをスコープの情報として記録しておく。パースがすんで関数のコンパイルの段階で、下のスコープで自分のローカル変数への代入がある変数についてボックス化を行うコードを入れる。</p>
+<p>4.4節で、自由変数の参照だけで代入がない場合について、値のコピーをクロージャに持たせてやることで実現していた。
+代入が含まれる場合にはどうするかとういうと、ボックス化ということをする。
+ボックス化というのは、ヒープ上に値を保持して、そのヒープへのポインタを変数として持つという方法。
+ポインタの指している先の中身を書き換えれば、参照しているすべての箇所でその変更が反映されることになる。</p>
+<p>論文では、例によってSchemeなのでパースが終了しているのでlambda式の本体を見ていって代入があるかどうか調べているが、自作スクリプト言語でパースを自ら行う場合にはパースを行なっている時に自由変数への代入が検出できるので、それをスコープの情報として記録しておく。
+パースがすんで関数のコンパイルの段階で、下のスコープで自分のローカル変数への代入がある変数についてボックス化を行うコードを入れる。</p>
 <p>変数を参照する箇所でもその変数がボックス化されているかどうかがコンパイル時にわかっているので、そうであればボックスから取り出す命令を入れるようにする。</p>
-<p>ひとつ注意する必要があるのは、Schemeだとローカル変数というのは関数のパラメータだけだけど、一般のスクリプト言語などではスコープにローカル変数が定義できる。そしてそういうローカル変数は必ず代入文がある（そうじゃないと未定義の初期値が使われることになってしまう）。そのような、スコープで宣言されたローカル変数への代入は、別にボックス化する必要はない。</p>
-<p>しかし注意しなければいけないのは、下のスコープでは参照だけで代入していなくても、クロージャを作ったあとにその変数への代入がある場合にはやっぱりボックス化する必要がある。例えば</p>
+<p>ひとつ注意する必要があるのは、Schemeだとローカル変数というのは関数のパラメータだけだけど、一般のスクリプト言語などではスコープにローカル変数が定義できる。
+そしてそういうローカル変数は必ず代入文がある（そうじゃないと未定義の初期値が使われることになってしまう）。
+そのような、スコープで宣言されたローカル変数への代入は、別にボックス化する必要はない。</p>
+<p>しかし注意しなければいけないのは、下のスコープでは参照だけで代入していなくても、クロージャを作ったあとにその変数への代入がある場合にはやっぱりボックス化する必要がある。
+例えば</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> i = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">var</span> f = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">window</span>.<span class="property">console</span>.<span class="title function_">log</span>(i);</span><br><span class="line">  &#125;;</span><br><span class="line">  i = <span class="number">1234</span>;</span><br><span class="line">  <span class="title function_">f</span>();  <span class="comment">//=&gt; 1234</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>クロージャ<code>f</code>では自由変数iへの参照しかしてないけど、クロージャが作られたあとで<code>i</code>への代入があるので、ボックス化する必要がある。</p>
 <p>論文の4.5節の改善案はまさにこういうことで、変数に対する代入があるけど、継続がない言語でクロージャに閉じ込められない変数はボックス化する必要がなくて省ける、ということが書いてある。</p>
 <p>論文では追加する命令コードは、<code>indirect</code>（ボックス化された変数からの値の取り出し）、<code>box n</code>（n番目の引数をボックス化）、<code>assign-local n</code>（ローカル変数への代入、変数は必ずボックス化されている）、<code>assign-free n</code>（自由変数への代入、同様にボックス化されている）、となっている。</p>
-<p>改善案を適用する場合には、代入のあるローカル変数でもボックス化されない変数の可能性があるので、<code>assign-local</code>命令はボックス化されているもの用とされてないもの用の2種類用意する必要がある。自由変数への代入は常にボックス化されるので1種類で問題ない。</p>
+<p>改善案を適用する場合には、代入のあるローカル変数でもボックス化されない変数の可能性があるので、<code>assign-local</code>命令はボックス化されているもの用とされてないもの用の2種類用意する必要がある。
+自由変数への代入は常にボックス化されるので1種類で問題ない。</p>
 
 
                 
@@ -214,7 +223,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
