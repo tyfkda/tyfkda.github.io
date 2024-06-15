@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-06-15T06:42:50.787Z</updated>
+  <updated>2024-06-15T12:08:37.484Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,13 +21,13 @@
     <link href="https://tyfkda.github.io/blog/2024/06/15/mach-o.html"/>
     <id>https://tyfkda.github.io/blog/2024/06/15/mach-o.html</id>
     <published>2024-06-15T09:00:00.000Z</published>
-    <updated>2024-06-15T06:42:50.787Z</updated>
+    <updated>2024-06-15T12:08:37.484Z</updated>
     
     
     <summary type="html">&lt;p&gt;Linuxなどの実行ファイルやコンパイラから出力されるオブジェクトファイルはELFという形式だが、
 macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマットが使われている。
-このフォーマットを学んでみる。
-要するに&lt;a href=&quot;/blog/2020/04/20/elf-obj.html&quot; title=&quot;ELFのオブジェクトファイル形式を生成する&quot;&gt;ELFのオブジェクトファイル形式を生成する&lt;/a&gt;をMach-O&amp;#x2F;aarch64に対してやってみる。&lt;/p&gt;</summary>
+このフォーマットを学んでみる、
+要するに&lt;a href=&quot;/blog/2020/04/20/elf-obj.html&quot; title=&quot;ELFのオブジェクトファイル形式を生成する&quot;&gt;ELFのオブジェクトファイル形式を生成する&lt;/a&gt;をMach-O&amp;#x2F;aarch64上でやってみる。&lt;/p&gt;</summary>
     
     
     
