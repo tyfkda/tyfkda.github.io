@@ -214,7 +214,7 @@
 <ul>
 <li>仮想環境を無効化：<code>deactivate</code></li>
 </ul>
-<h3 id="モジュールのリスト化：pip-freeze"><a href="#モジュールのリスト化：pip-freeze" class="headerlink" title="モジュールのリスト化：pip freeze"></a>モジュールのリスト化：pip freeze</h3><p>venvでローカルに作成された依存関係はリポジトリにコミットしないので、別のマシンで動かそうとした時に困る。
+<h3 id="モジュールのリスト化：pip-freeze"><a href="#モジュールのリスト化：pip-freeze" class="headerlink" title="モジュールのリスト化：pip freeze"></a>モジュールのリスト化：pip freeze</h3><p>venvでローカルに作成された依存ライブラリ自体はリポジトリにコミットしないので、別のマシンで動かそうとした時に困る。
 そこでインストールしたモジュールを書き出し、再利用できるようにする：</p>
 <ul>
 <li>インストールしたモジュールの書き出し：<code>pip freeze &gt; requirements.txt</code><ul>
@@ -266,8 +266,8 @@
 </ul>
 <h3 id="二重倒立振子を動かしてみる"><a href="#二重倒立振子を動かしてみる" class="headerlink" title="二重倒立振子を動かしてみる"></a>二重倒立振子を動かしてみる</h3><p>読み込む環境を<a href="https://gymnasium.farama.org/environments/mujoco/inverted_double_pendulum/">二重倒立振子</a>に変えて遊んでみた。</p>
 <ul>
-<li>観測できる状態は11</li>
-<li>得られる報酬は距離ペナルティと速度ペナルティが入っている。1タイムステップごとに、<ul>
+<li>観測できる状態は11個</li>
+<li>得られる報酬には距離ペナルティと速度ペナルティが入っている。1タイムステップごとに、<ul>
 <li>生存ボーナス：10</li>
 <li>距離ペナルティ：<script type="math/tex">0.01 * x^2 + (y - 2)^2</script> （x,yは第2ポール先端の座標）</li>
 <li>速度ペナルティ：<script type="math/tex">0.001 * v_1^2 + 0.005 * v_2^2</script></li>
@@ -322,7 +322,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/05/31/reinforce-invert-double-pendulum.html">強化学習に再挑戦（二重倒立振子）</a></li><li class="recent_post"><a href="/blog/2024/04/09/mcts-connect-four.html">モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</a></li><li class="recent_post"><a href="/blog/2024/03/12/fit-curve.html">折れ線にフィットするベジェ曲線を求める方法</a></li><li class="recent_post"><a href="/blog/2024/02/05/wasm-obj-format.html">【WASM】オブジェクトフォーマットとその実装方法</a></li><li class="recent_post"><a href="/blog/2024/01/27/rose-screen-saver.html">Roseスクリーンセーバーを再現</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/06/15/mach-o.html">Mach-Oオブジェクト形式を生成してみる</a></li><li class="recent_post"><a href="/blog/2024/05/31/reinforce-invert-double-pendulum.html">強化学習に再挑戦（二重倒立振子）</a></li><li class="recent_post"><a href="/blog/2024/04/09/mcts-connect-four.html">モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</a></li><li class="recent_post"><a href="/blog/2024/03/12/fit-curve.html">折れ線にフィットするベジェ曲線を求める方法</a></li><li class="recent_post"><a href="/blog/2024/02/05/wasm-obj-format.html">【WASM】オブジェクトフォーマットとその実装方法</a></li></ul>
                 </div>
             </div>
 
