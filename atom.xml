@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-07-10T05:06:54.528Z</updated>
+  <updated>2024-08-09T03:20:20.496Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>スーパーマリオの強化学習を動かす（Stable Baselines 3）</title>
+    <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
+    <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
+    <published>2024-08-07T03:00:00.000Z</published>
+    <updated>2024-08-09T03:20:20.496Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
+今ではライブラリのインストールで競合してバージョンの不整合でエラーが出たりして動かせない。
+なんとか動かしたかったのでローカルで起動できるようやってみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
+    
+    <category term="reinforcement learning" scheme="https://tyfkda.github.io/tags/reinforcement-learning/"/>
+    
+  </entry>
   
   <entry>
     <title>Mach-Oオブジェクト形式を生成してみる</title>
@@ -63,7 +84,7 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html"/>
     <id>https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html</id>
     <published>2024-04-09T12:00:00.000Z</published>
-    <updated>2024-04-29T03:12:51.404Z</updated>
+    <updated>2024-08-04T12:21:36.645Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://gihyo.jp/book/2023/978-4-297-13360-3&quot;&gt;ゲームで学ぶ探索アルゴリズム実践入門
@@ -194,26 +215,6 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     
     
     <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>自作CコンパイラをRISC-Vに対応した</title>
-    <link href="https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html"/>
-    <id>https://tyfkda.github.io/blog/2023/12/22/cc-riscv.html</id>
-    <published>2023-12-22T10:00:00.000Z</published>
-    <updated>2024-04-29T03:12:51.385Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;RISC-VというCPUはライセンスフリーとのことでどんなもんか興味あって、そんなこともあり自作のCコンパイラをRISC-Vに対応したいと思っていた。
-そのために動かせる環境を用意したくて、最初はQEMUなどのエミュレータでLinuxを動かして…と思っていたが、spikeというシミュレータを使うことで実現した。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-    <category term="binary" scheme="https://tyfkda.github.io/tags/binary/"/>
     
   </entry>
   

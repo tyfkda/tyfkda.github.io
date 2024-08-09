@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
+今ではライブラリのインストールで競合してバージョンの不整合でエラーが出たりして動かせない。
+なんとか動かしたかったのでローカルで起動できるようやってみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="スーパーマリオの強化学習を動かす（Stable Baselines 3）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>スーパーマリオの強化学習を動かす（Stable Baselines 3） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>スーパーマリオの強化学習を動かす（Stable Baselines 3）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2024-08-07
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/nes/">#nes</a> <a href="/tags/reinforcement-learning/">#reinforcement learning</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
+今ではライブラリのインストールで競合してバージョンの不整合でエラーが出たりして動かせない。
+なんとか動かしたかったのでローカルで起動できるようやってみた。</p>
+<span id="more"></span>
+
+<div style="text-align:center"><img src="/assets/smb-rl-sb3/smb-rl-sb3.png" width="512" height="480" style="image-rendering:pixelated; border-radius:8px; box-shadow:0 0 10px" alt="スーパーマリオの強化学習"></div>
+
+<h2 id="チュートリアルと修正方法"><a href="#チュートリアルと修正方法" class="headerlink" title="チュートリアルと修正方法"></a>チュートリアルと修正方法</h2><h3 id="モジュール構成"><a href="#モジュール構成" class="headerlink" title="モジュール構成"></a>モジュール構成</h3><p>件のチュートリアルがどういう構成になっているのか：</p>
+<ul>
+<li><a href="https://pypi.org/project/gym-super-mario-bros/">gym-super-mario-bros</a>：スーパーマリオをGymのAPIに載せたもの</li>
+<li><a href="https://pypi.org/project/nes-py/">nes-py</a>：ファミコンのエミュレータと、Gym用の環境や行動</li>
+<li><a href="https://pypi.org/project/gym/">gym</a>：強化学習プラットフォーム</li>
+</ul>
+<p>上記をモジュールとしてインストールした上で、強化学習のコードをColab上で動かしている。</p>
+<h4 id="gym"><a href="#gym" class="headerlink" title="gym"></a>gym</h4><p>強化学習に必要な要素は環境とエージェントで、エージェントの行動によって得られる報酬をいかに増やすかという学習を行う。
+Gymは環境のAPIを用意することで強化学習のプラットフォームの体制を整えている。
+Gymの環境<a href="https://www.gymlibrary.dev/api/core/"><code>gym.Env</code></a>クラスを継承して必要なメソッドを実装することで自作の環境を用意できる。
+<code>Env</code>は重ねることができる。</p>
+<h4 id="nes-py"><a href="#nes-py" class="headerlink" title="nes-py"></a>nes-py</h4><p>C言語で書かれたファミコンエミュレータをPythonから呼び出せるようにして、その画面をGymの環境として強化学習に利用できるようにしている。
+<code>gym.Env</code>を継承した<a href="https://github.com/Kautenja/nes-py/blob/b6f4e26a96cf1dc2329b3b45b9f785dd7dbb30c6/nes_py/nes_env.py#L83"><code>NESEnv</code></a>が用意されている：</p>
+<ul>
+<li>観測空間：240x256x3</li>
+<li>行動空間：256（パッド入力各ビット：上下左右ABスタートセレクト）<ul>
+<li>ラッパーの<a href="https://github.com/Kautenja/nes-py/blob/b6f4e26a96cf1dc2329b3b45b9f785dd7dbb30c6/nes_py/wrappers/joypad_space.py#L7"><code>JoypadSpace</code></a>で、ボタン名で簡単に指定できるようになっている</li>
+</ul>
+</li>
+<li><code>step</code>：ファミコンエミュレータを１フレーム進める</li>
+<li><code>render</code>：<code>human</code>の場合、<a href="https://pyglet.org/">pyglet</a>で描画</li>
+</ul>
+<h4 id="gym-super-mario-bros"><a href="#gym-super-mario-bros" class="headerlink" title="gym-super-mario-bros"></a>gym-super-mario-bros</h4><p>スーパーマリオの強化学習用環境：<a href="https://github.com/tyfkda/gym-super-mario-bros/blob/master/gym_super_mario_bros/smb_env.py#L29"><code>SuperMarioBrosEnv</code></a></p>
+<ul>
+<li>観測空間：<code>NESEnv</code>のまま</li>
+<li>行動：<ul>
+<li><a href="https://github.com/Kautenja/gym-super-mario-bros/blob/bcb8f10c3e3676118a7364a68f5c0eb287116d7a/gym_super_mario_bros/actions.py#L15">シンプル</a>：7種類（右とABの組み合わせ、単独A、左）</li>
+<li><a href="https://github.com/Kautenja/gym-super-mario-bros/blob/bcb8f10c3e3676118a7364a68f5c0eb287116d7a/gym_super_mario_bros/actions.py#L27">コンプレックス</a>：12種類（右だけじゃなく左もAB組み合わせ、＋上または下）</li>
+</ul>
+</li>
+<li>報酬：<ul>
+<li><a href="https://github.com/Kautenja/gym-super-mario-bros/blob/bcb8f10c3e3676118a7364a68f5c0eb287116d7a/gym_super_mario_bros/smb_env.py#L324-L335">移動ボーナス</a>：前回の位置との差分（右＝プラス）</li>
+<li><a href="https://github.com/Kautenja/gym-super-mario-bros/blob/bcb8f10c3e3676118a7364a68f5c0eb287116d7a/gym_super_mario_bros/smb_env.py#L337-L347">時間ペナルティ</a>：ゲーム時間が進むたびに-1</li>
+<li><a href="https://github.com/Kautenja/gym-super-mario-bros/blob/bcb8f10c3e3676118a7364a68f5c0eb287116d7a/gym_super_mario_bros/smb_env.py#L349-L355">死亡ペナルティ</a>：死ぬと-25</li>
+</ul>
+</li>
+</ul>
+<h3 id="問題点"><a href="#問題点" class="headerlink" title="問題点"></a>問題点</h3><p>チュートリアルが公開されてからだいぶ年月が経過していることもあって、色々問題がある：</p>
+<ul>
+<li>OpenAI GymのBreaking Change：<code>env.step</code>からの戻り値が4タプルから5に変更されたことでエラーが出る</li>
+<li>OpenAI Gymがdeprecated：後継<a href="https://pypi.org/project/gymnasium/">gymnasium</a>に載せ替えたい<ul>
+<li>gym-super-mario-brosとnes-pyどちらも</li>
+</ul>
+</li>
+<li><code>np.uint8</code>の演算：<code>np.uint8</code>に対して<code>int</code>の加減算でもオーバーフロー・アンダーフローで<code>0~255</code>の範囲にされる</li>
+</ul>
+<h3 id="修正方法"><a href="#修正方法" class="headerlink" title="修正方法"></a>修正方法</h3><p>pipでモジュールをインストールしてしまってはコードが修正できないので、Github上にフォークして修正することにした。</p>
+<p>でメインで動かすコードもGoogle ColabやJupyter Notebookではなく、単なるPythonスクリプトにした。
+pipでのGithubのアドレスを指定してのインストールもできるっぽいが、
+<code>nes-py</code>はエミュレータがC言語で書かれていてコンパイルが必要なので、
+gitのサブモジュールとして取り込んでビルドするようにした。</p>
+<h2 id="強化学習にStable-Baselines-3を使ってみる"><a href="#強化学習にStable-Baselines-3を使ってみる" class="headerlink" title="強化学習にStable Baselines 3を使ってみる"></a>強化学習にStable Baselines 3を使ってみる</h2><p>チュートリアルでは強化学習のアルゴリズムとして<a href="https://arxiv.org/abs/1509.06461">DDQN</a>をPyTorchを使って実際に実装している。
+実装することでアルゴリズムを理解したりいじったりできるのは理想ではあるが実際のところ自分には難しいので、ありものを利用したい。
+<strong>Stable Baselines 3</strong>（以下SB3）というライブラリがあるそうなのでそれを使うことにした。</p>
+<h3 id="Stable-Baselines-3"><a href="#Stable-Baselines-3" class="headerlink" title="Stable Baselines 3"></a>Stable Baselines 3</h3><p>SB3では強化学習の様々なアルゴリズムが実装されていて、簡単に利用できるようになっている。
+エージェントの行動が離散的か連続的かによって使えるアルゴリズムが制限される
+（<a href="https://stable-baselines3.readthedocs.io/en/master/guide/algos.html">表</a>を参照のこと）</p>
+<ul>
+<li>SB3は<code>gym</code>じゃなくて<code>gymnasium</code>を使用している。</li>
+</ul>
+<h4 id="方策ネットワークの指定方法"><a href="#方策ネットワークの指定方法" class="headerlink" title="方策ネットワークの指定方法"></a>方策ネットワークの指定方法</h4><p>SB3で方策ネットワークを指定するには、各アルゴリズムのコンストラクタの<code>policy_kwargs</code>で<code>features_extractor_class</code>として指定することでできる
+（<a href="https://stable-baselines3.readthedocs.io/en/master/guide/custom_policy.html#custom-network-architecture">Custom Feature Extractor</a>）。</p>
+<p><a href="https://github.com/DLR-RM/stable-baselines3/blob/1a69fc831414626cbbcf13343c6e78d9accb9104/stable_baselines3/common/torch_layers.py#L13"><code>BaseFeaturesExtractor</code></a>を継承したクラスの<code>forward</code>メソッドで任意の特徴量を返せるよう、
+コンストラクタでネットワークを構築しておく。</p>
+<ul>
+<li>この辺、Gymの環境を重ねて状態を加工してもいいんじゃないかと思うが、なぜExtractorという仕組みを用いるのかは不明</li>
+</ul>
+<h2 id="学習結果"><a href="#学習結果" class="headerlink" title="学習結果"></a>学習結果</h2><p>各アルゴリズムを使って学習させてみた。</p>
+<ul>
+<li>学習を簡単にするため、取れる行動を右ダッシュ・右ダッシュ＋ジャンプ・左の3つに限定してみた<ul>
+<li>1-1ならクリア可能なはず…</li>
+</ul>
+</li>
+<li>NESの画素(256x240xRGB)をそのまま使うんじゃなく、縮小や畳み込みを行う：元のチュートリアルと同様に<ul>
+<li>スキップフレーム：4フレームごとに行動させる</li>
+<li>グレイスケール化</li>
+<li>84x84に画像縮小(CNNではなく単なる画像縮小)</li>
+<li>フレームスタック：4フレーム重ねて時間経過がわかるようにする</li>
+<li>CNN：84x84x4 → 20x20x32 → 9x9x64 → 7x7x64</li>
+<li>フラット化：特徴数3,136</li>
+<li>全結合：3,136 → 512 → 行動数</li>
+</ul>
+</li>
+<li>モデルの<code>train</code>メソッドの<code>total_timesteps</code>で<code>5,000,000</code>（エピソード数とは違う）</li>
+</ul>
+<p>これをSB3の各種アルゴリズムで動かしてみた：PPO, TRPO, A2C, QRDQN, DQN。
+学習には自分のマシンで各１日程度かかった。</p>
+<style type="text/css">
+  .applet {
+    transition: box-shadow 0.25s;
+    overflow-x: scroll;
+    white-space: nowrap;
+    padding: 16px;
+  }
+  .applet:hover {
+    box-shadow:0 0 8px blue;
+  }
+</style>
+<div class="applet">
+<div style="display:inline-block; text-align:center">
+<a href="/assets/smb-rl-sb3/reward_log-ppo.svg"><img src="/assets/smb-rl-sb3/reward_log-ppo.svg" width="360" alt="PPO" title="PPO"></a><br>
+PPO
+</div>
+<div style="display:inline-block; text-align:center">
+<a href="/assets/smb-rl-sb3/reward_log-trpo.svg"><img src="/assets/smb-rl-sb3/reward_log-trpo.svg" width="360" alt="TRPO" title="TRPO"></a><br>
+TRPO
+</div>
+<div style="display:inline-block; text-align:center">
+<a href="/assets/smb-rl-sb3/reward_log-a2c.svg"><img src="/assets/smb-rl-sb3/reward_log-a2c.svg" width="360" alt="A2C" title="A2C"></a><br>
+A2C
+</div>
+<div style="display:inline-block; text-align:center">
+<a href="/assets/smb-rl-sb3/reward_log-qrdqn.svg"><img src="/assets/smb-rl-sb3/reward_log-qrdqn.svg" width="360" alt="QRDQN" title="QRDQN"></a><br>
+QRDQN
+</div>
+<div style="display:inline-block; text-align:center">
+<a href="/assets/smb-rl-sb3/reward_log-dqn.svg"><img src="/assets/smb-rl-sb3/reward_log-dqn.svg" width="360" alt="DQN" title="DQN"></a><br>
+DQN
+</div>
+</div>
+
+<h2 id="考察"><a href="#考察" class="headerlink" title="考察"></a>考察</h2><ul>
+<li>1-1かつ行動が3通りとそんなに難しくなさそうに思うけど、全然学習が安定しない</li>
+<li>PPOだけ性能がよくて他は全然、ハイパーパラメータが悪いとか？</li>
+<li>学習結果をリプレイさせるために<code>model.predict</code>で行動を選んでもランダムに左右される</li>
+<li>モデルに渡す画像は84x84のグレイスケール化しているが、人間的にはこんな画像で学習できる気がしない</li>
+</ul>
+<div style="text-align:center"><img src="/assets/smb-rl-sb3/gray84x84.png" width="512" height="480" style="image-rendering:pixelated"></div>
+
+<h3 id="クッパ面に挑戦"><a href="#クッパ面に挑戦" class="headerlink" title="クッパ面に挑戦"></a>クッパ面に挑戦</h3><p>試した中ではPPOが一番よかったので、より難しそうなクッパ面で試してみた。</p>
+<ul>
+<li>行動：<code>complex</code></li>
+<li>グレイスケール化をやめてRGBのままに</li>
+<li>CNNの特徴数：64-64-64</li>
+<li>スキップフレーム：4から2に</li>
+</ul>
+<p>1,000万ステップほど学習させたところ<strong>運がよければ</strong>クリアできるようになった：<a href="https://youtu.be/mlSjsejrrZY">https://youtu.be/mlSjsejrrZY</a></p>
+<style type="text/css">
+@media screen and (max-width:768px) {
+  .app-movie {
+    width: 90vw;
+    height: calc(90vw * 0.9375);
+  }
+}
+</style>
+
+<iframe class="app-movie" width="512" height="480" style="display:block; margin:0 auto" src="https://www.youtube.com/embed/mlSjsejrrZY?si=USSXkNVLEiWOoTpN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<ul>
+<li>行動を<code>complex</code>にしたのにちゃんとBダッシュメインで、穴やファイアを飛び越え、ファイアの前では減速、長ジャンプするの偉い</li>
+</ul>
+<h2 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h2><ul>
+<li><a href="https://github.com/tyfkda/smb-rl-sb3">smb-rl-sb3</a></li>
+<li><a href="https://github.com/tyfkda/gym-super-mario-bros/">gym-super-mario-bros</a></li>
+<li><a href="https://github.com/tyfkda/nes-py/">nes-py</a></li>
+</ul>
+<h2 id="参考・リンク"><a href="#参考・リンク" class="headerlink" title="参考・リンク"></a>参考・リンク</h2><ul>
+<li><a href="https://stable-baselines3.readthedocs.io/en/master/index.html">Stable Baselines 3</a>　メインドキュメント</li>
+<li><a href="https://yutaroogawa.github.io/pytorch_tutorials_jp/">PyTorchチュートリアル（日本語翻訳版）</a> 4. 深層強化学習に「強化学習を用いたマリオの訓練」のノートがある</li>
+<li><a href="https://qiita.com/hrs1985/items/871ca5d037d73558bfca">Stable Baselinesを使ってスーパーマリオブラザーズ1-1をクリアするまで #Python - Qiita</a></li>
+<li><a href="https://www.kaggle.com/code/deeplyai/super-mario-bros-with-stable-baseline3-ppo">Super Mario Bros. with Stable-Baseline3 PPO</a> SB3&#x2F;PPOとGymnasiumを使ってマリオ<ul>
+<li>結構ちゃんと学習している、画像を<code>Rectangle</code>に、行動を<code>SIMPLE</code>より絞ってるから？</li>
+</ul>
+</li>
+<li>uvipen&#x2F;Super-mario-bros-A3C-pytorch: <a href="https://github.com/uvipen/Super-mario-bros-A3C-pytorch">Asynchronous Advantage Actor-Critic (A3C) algorithm for Super Mario Bros</a><ul>
+<li>gifを見ると完璧と言っていいくらいちゃんと学習できてるんだけどそんなに上手くいくのか？</li>
+</ul>
+</li>
+<li>動画：<a href="https://www.youtube.com/watch?v=2AFl-iWGQzc">Stable Baselines3 Tutorial: Beginner’s Guide to Choosing Reinforcement Learning Algorithms - YouTube</a> SB3とその使い方の説明</li>
+</ul>
+<h2 id="付録"><a href="#付録" class="headerlink" title="付録"></a>付録</h2><h3 id="Stable-Baselines-3の各種アルゴリズム"><a href="#Stable-Baselines-3の各種アルゴリズム" class="headerlink" title="Stable Baselines 3の各種アルゴリズム"></a>Stable Baselines 3の各種アルゴリズム</h3><p>SB3に実装されているアルゴリズムがどんなものかググってみた：</p>
+<ul>
+<li><a href="https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html">PPO</a>：A2CとTRPOのアイディアを組み合わせ、更新後のポリシーが前のポリシーから乖離しすぎないようクリップする</li>
+<li><a href="https://sb3-contrib.readthedocs.io/en/master/modules/ppo_mask.html">Maskable PPO</a>：無効な行動をマスク</li>
+<li><a href="https://github.com/Stable-Baselines-Team/stable-baselines3-contrib/blob/5c81398ef854dde4eeaed51e0715c5de18a9d344/sb3_contrib/trpo/trpo.py">TRPO</a>：方策更新を大きくしすぎないようにして学習を安定化</li>
+<li><a href="https://stable-baselines3.readthedocs.io/en/master/modules/a2c.html">A2C</a> ：A3Cの「同期」版で、A3Cは非同期に複数のエージェントを用いて学習する</li>
+<li><a href="https://github.com/Stable-Baselines-Team/stable-baselines3-contrib/blob/5c81398ef854dde4eeaed51e0715c5de18a9d344/sb3_contrib/qrdqn/qrdqn.py">QRDQN</a>：カテゴリカルDQNの分布を分位点から求めることで改良</li>
+<li><a href="https://stable-baselines3.readthedocs.io/en/master/modules/dqn.html">DQN</a>：Q学習をDNNで、リプレイ、ターゲットネットワークの固定化、勾配クリッピング</li>
+</ul>
+<p>ハイパーパラメータ：</p>
+<ul>
+<li>DQN: learning_rate: 1e-4, gamma: 0.99</li>
+<li>QRDQN: learning_rate: 5e-4, gamma: 0.99</li>
+<li>A2C: learning_rate: 7e-4, gamma: 0.99</li>
+<li>TRPO: learning_rate: 1e-3, gamma: 0.99</li>
+<li>PPO: learning_rate: 3e-4, gamma: 0.99</li>
+</ul>
+<p>動かせなかったアルゴリズム：</p>
+<ul>
+<li>ARS：<code>ValueError: Policy CnnPolicy unknown</code></li>
+<li>HER：<code>ImportError: Since Stable Baselines 2.1.0, HER is now a replay buffer class HerReplayBuffer</code>
+単独で使えなくなり、他のアルゴリズムのリプレイバッファとして指定する</li>
+<li>RecurrentPPO：<code>CnnPolicy</code>を受け付けない</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/04/06/nes-apu-dmc.html" title="ファミコンのDMCチャンネルの再現方法" rel="bookmark">ファミコンのDMCチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/07/07/nes-scrolling.html" title="ファミコンでのBGスクロール" rel="bookmark">ファミコンでのBGスクロール</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2024/08/07/smb-rl-sb3.html">スーパーマリオの強化学習を動かす（Stable Baselines 3）</a></li><li class="recent_post"><a href="/blog/2024/06/15/mach-o.html">Mach-Oオブジェクト形式を生成してみる</a></li><li class="recent_post"><a href="/blog/2024/05/31/reinforce-invert-double-pendulum.html">強化学習に再挑戦（二重倒立振子）</a></li><li class="recent_post"><a href="/blog/2024/04/09/mcts-connect-four.html">モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</a></li><li class="recent_post"><a href="/blog/2024/03/12/fit-curve.html">折れ線にフィットするベジェ曲線を求める方法</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2024 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
