@@ -241,7 +241,7 @@ Gymの環境<a href="https://www.gymlibrary.dev/api/core/"><code>gym.Env</code><
 <li>gym-super-mario-brosとnes-pyどちらも</li>
 </ul>
 </li>
-<li><code>np.uint8</code>の演算：<code>np.uint8</code>に対して<code>int</code>の加減算でもオーバーフロー・アンダーフローで<code>0~255</code>の範囲にされる</li>
+<li><code>np.uint8</code>の演算：<code>np.uint8</code>に対して<code>int</code>の加減算でも自動的に拡張してくれず<code>0~255</code>の範囲にクランプされる</li>
 </ul>
 <h3 id="修正方法"><a href="#修正方法" class="headerlink" title="修正方法"></a>修正方法</h3><p>pipでモジュールをインストールしてしまってはコードが修正できないので、Github上にフォークして修正することにした。</p>
 <p>でメインで動かすコードもGoogle ColabやJupyter Notebookではなく、単なるPythonスクリプトにした。
@@ -261,9 +261,6 @@ gitのサブモジュールとして取り込んでビルドするようにし�
 （<a href="https://stable-baselines3.readthedocs.io/en/master/guide/custom_policy.html#custom-network-architecture">Custom Feature Extractor</a>）。</p>
 <p><a href="https://github.com/DLR-RM/stable-baselines3/blob/1a69fc831414626cbbcf13343c6e78d9accb9104/stable_baselines3/common/torch_layers.py#L13"><code>BaseFeaturesExtractor</code></a>を継承したクラスの<code>forward</code>メソッドで任意の特徴量を返せるよう、
 コンストラクタでネットワークを構築しておく。</p>
-<ul>
-<li>この辺、Gymの環境を重ねて状態を加工してもいいんじゃないかと思うが、なぜExtractorという仕組みを用いるのかは不明</li>
-</ul>
 <h2 id="学習結果"><a href="#学習結果" class="headerlink" title="学習結果"></a>学習結果</h2><p>各アルゴリズムを使って学習させてみた。</p>
 <ul>
 <li>学習を簡単にするため、取れる行動を右ダッシュ・右ダッシュ＋ジャンプ・左の3つに限定してみた<ul>
