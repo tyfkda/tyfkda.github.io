@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-08-09T12:53:56.309Z</updated>
+  <updated>2024-08-18T05:13:23.920Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
     <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2024-08-09T12:53:56.309Z</updated>
+    <updated>2024-08-18T05:13:23.920Z</updated>
     
     
     <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
@@ -42,7 +42,7 @@
     <link href="https://tyfkda.github.io/blog/2024/06/15/mach-o.html"/>
     <id>https://tyfkda.github.io/blog/2024/06/15/mach-o.html</id>
     <published>2024-06-15T09:00:00.000Z</published>
-    <updated>2024-07-10T05:06:54.528Z</updated>
+    <updated>2024-08-18T05:13:23.907Z</updated>
     
     
     <summary type="html">&lt;p&gt;Linuxなどの実行ファイルやコンパイラから出力されるオブジェクトファイルはELFという形式だが、
@@ -64,7 +64,7 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html"/>
     <id>https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html</id>
     <published>2024-05-31T09:00:00.000Z</published>
-    <updated>2024-07-10T05:06:54.519Z</updated>
+    <updated>2024-08-18T05:13:23.896Z</updated>
     
     
     <summary type="html">&lt;p&gt;流行りの機械学習でなにか動かしたいなぁとチュートリアルを動かそうとするも大抵エラーで動かない、動いたとしてもちょっと経つとライブラリの更新だか環境の変化でエラーになってしまい、その依存関係も解決できない。
@@ -84,11 +84,11 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html"/>
     <id>https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html</id>
     <published>2024-04-09T12:00:00.000Z</published>
-    <updated>2024-08-04T12:21:36.645Z</updated>
+    <updated>2024-08-18T05:13:08.953Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://gihyo.jp/book/2023/978-4-297-13360-3&quot;&gt;ゲームで学ぶ探索アルゴリズム実践入門
-～木探索とメタヒューリスティクス&lt;/a&gt;という本の中でコネクトフォーの試行ルーチンをモンテカルロ木探索で実装するサンプルがあったので動かしてみた。&lt;/p&gt;</summary>
+～木探索とメタヒューリスティクス&lt;/a&gt;という本の中でコネクトフォーの思考ルーチンをモンテカルロ木探索で実装するサンプルがあったので動かしてみた。&lt;/p&gt;</summary>
     
     
     
@@ -102,7 +102,7 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/03/12/fit-curve.html"/>
     <id>https://tyfkda.github.io/blog/2024/03/12/fit-curve.html</id>
     <published>2024-03-12T09:00:00.000Z</published>
-    <updated>2024-05-02T02:41:06.825Z</updated>
+    <updated>2024-08-18T05:13:02.910Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前に調べた&lt;a href=&quot;/blog/2020/10/26/simplify-line-segments.html&quot; title=&quot;折れ線を簡略化する方法(Ramer-Douglas-Peucker法)&quot;&gt;折れ線を簡略化する方法&lt;/a&gt;は線分の途中の点を省いて軽量化する方法で、線分のままだった。
@@ -120,7 +120,7 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html"/>
     <id>https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html</id>
     <published>2024-02-05T12:00:00.000Z</published>
-    <updated>2024-05-03T10:48:14.822Z</updated>
+    <updated>2024-08-18T05:13:02.917Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASMのバイナリフォーマットは実行用の情報しかないのでコンパイルの中間ファイル・リンク用には別途独自のファイル形式が必要かと思ってたんだけど、どうやら追加の情報を加えることで対応してるらしい。
