@@ -242,16 +242,16 @@ Prattパーシングも実装言語上で再帰はするんだけど演算子の
 <h4 id="ハッシュテーブル"><a href="#ハッシュテーブル" class="headerlink" title="ハッシュテーブル"></a>ハッシュテーブル</h4><p>Java版では <code>HashMap</code> を使ったが、C版では自前で実装する必要がある。</p>
 <p>キーを計算するハッシュ関数には<a href="http://www.isthe.com/chongo/tech/comp/fnv/">FNV-1a</a>、
 衝突した場合には次のスロットをたどるlinear probing、
-エントリの削除には墓石（門番）を置く、</p>
+エントリの削除には墓石（門番）を置く。</p>
 <p>キーとなる文字列に対するハッシュ値の計算を毎回行わないようにするため、文字列はすべてインターンしてあらかじめハッシュ値を計算しておく。</p>
 <h4 id="制御構造"><a href="#制御構造" class="headerlink" title="制御構造"></a>制御構造</h4><p>飛び先をバイトコードのオフセットで持つようにする。
-さすがにオフセットが1バイトだけだと厳しいのか、2バイト固定となっている。</p>
+さすがにオフセットが1バイトでは厳しいと思ったのか、2バイト固定となっている。</p>
 <p>命令セットとしてちょっと面白いのは、条件分岐は前方へのジャンプだけしか用意してなくて、後方に戻る場合には無条件ジャンプだけになっている。
 <code>do-while</code> 文がないのでそれで十分かもしれない。</p>
 <p>ひとつトリッキーなのはfor構文で <code>for (初期化; 条件式; 継続処理) 本体</code> とあるが、loxは１パスコンパイラでループ本体を処理する前に継続処理のコード生成をする必要がある。
 しかし実行処理的には本文を済ませた後に継続処理、そして再び条件式の順に実行する必要がある。
-これを処理するために、<code>for</code> 文1回のループで本体末尾から継続処理に、継続処理末尾から条件式部に2度ジャンプを行うコードを生成する。
-いいのか悪いのか…。</p>
+これを処理するために、<code>for</code> 文1回のループで本体末尾から継続処理に、継続処理末尾から条件式部にと2度の無条件ジャンプを行うコードを生成する。
+コード直生成の制約、く、苦しい…。</p>
 <h4 id="関数呼び出し：スタックフレーム"><a href="#関数呼び出し：スタックフレーム" class="headerlink" title="関数呼び出し：スタックフレーム"></a>関数呼び出し：スタックフレーム</h4><p>関数呼び出し時の引数はスタックに格納して受け渡す。
 メモリの動的確保がいらないので効率がよい。</p>
 <h4 id="クロージャ：Upvalue"><a href="#クロージャ：Upvalue" class="headerlink" title="クロージャ：Upvalue"></a>クロージャ：Upvalue</h4><p>環境をスタックフレームとしてスタック上に割り付ける方式の場合に、クロージャで束縛される変数をどうするか。
@@ -327,7 +327,7 @@ mrubyのようにアリーナで管理とかできないものか。</li>
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
