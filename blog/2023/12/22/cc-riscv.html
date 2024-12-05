@@ -469,6 +469,12 @@ RISC-Vでは受け渡しが汎用レジスタのみということもあって�
 <li>作ったとはいえまだ命令セットをよく理解してないので、アセンブラやリンカーも対応したい</li>
 <li>できればQEMU&#x2F;Linuxや、実際のハードウェアでも動かしたい</li>
 </ul>
+<h3 id="追記"><a href="#追記" class="headerlink" title="追記"></a>追記</h3><ul>
+<li>“bbl loader”表示は<a href="https://github.com/riscv-software-src/riscv-pk/issues/312">解消された</a></li>
+<li>WSL2&#x2F;Ubuntuでは<code>configure</code>の<code>host</code>に<code>riscv64-unknown-linux-gnu</code>を指定する、
+がそれだけではダメで、<code>--with-abi=lp64d</code>も必要だった：<a href="https://blog.csdn.net/weixin_43283275/article/details/133465072">https://blog.csdn.net/weixin_43283275/article/details/133465072</a></li>
+<li><code>spike</code>での<code>pk</code>指定をフルパスにしなきゃ動かないのは<code>spike</code>が想定しているパスと異なるからっぽい。spikeを自前でビルドする場合<code>configure</code>時に<code>--with-target=riscv64-unknown-XXX</code>で指定する。</li>
+</ul>
 <h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
 <li><a href="https://github.com/tyfkda/xcc/commit/1b1b0663732688ab4294f178c9ca10d1be8f29d1">対応のマージコミット</a></li>
 <li>RISC-Vツールチェイン: <a href="https://github.com/riscv-collab/riscv-gnu-toolchain">riscv-collab&#x2F;riscv-gnu-toolchain: GNU toolchain for RISC-V, including GCC</a><blockquote>
