@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-12-05T10:14:51.345Z</updated>
+  <updated>2024-12-11T13:19:55.223Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【WebGPU】floatテクスチャにフィルタを使用したい場合</title>
+    <link href="https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html"/>
+    <id>https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html</id>
+    <published>2024-12-11T13:00:00.000Z</published>
+    <updated>2024-12-11T13:19:55.223Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUで反応拡散系&lt;/a&gt;を動かした時にテクスチャのサンプルにフィルタが使えなかった理由がわかった。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="webgpu" scheme="https://tyfkda.github.io/tags/webgpu/"/>
+    
+  </entry>
   
   <entry>
     <title>スーパーマリオの強化学習を動かす（Stable Baselines 3）</title>
@@ -195,26 +212,6 @@ VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Mo
     
     
     <category term="texteditor" scheme="https://tyfkda.github.io/tags/texteditor/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>箱入り娘パズルを解く（幅優先探索）</title>
-    <link href="https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html"/>
-    <id>https://tyfkda.github.io/blog/2024/01/09/hakoiri-solver.html</id>
-    <published>2024-01-09T09:00:00.000Z</published>
-    <updated>2024-09-02T01:47:27.576Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/05/12/pentomino-solver.html&quot; title=&quot;ペントミノパズルを解く（深さ優先探索法、Dancing Links法）&quot;&gt;ペントミノパズルを解くプログラムを書いた&lt;/a&gt;ことでいろいろ学ぶことがあったので、今度は箱入り娘を解くプログラムを書いてみた。&lt;/p&gt;
-&lt;img src=&quot;/assets/hakoiri.png&quot; alt=&quot;箱入り娘の想像図&quot; style=&quot;filter:drop-shadow(0 0 8px black)&quot;&gt;
-
-&lt;p&gt;&lt;small style=&quot;color:gray&quot;&gt;※画像はイメージです（ソルバーは単にコマンドラインで動くだけ）&lt;/small&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
     
   </entry>
   
