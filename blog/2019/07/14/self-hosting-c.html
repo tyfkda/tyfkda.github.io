@@ -208,7 +208,7 @@
 <p>LinuxではELF形式というものが使われている。
 XV6も同じくELFなのでどちらでも動かせて都合がよいため、ELFを吐くようにした。</p>
 <p>ELFはエルフヘッダとプログラムヘッダに加えてマシン語バイナリを出力すればよい。
-ELF64形式に関しては <a href="/blog/2019/01/28/hello-elf-world.html" title="ELF64を動的に生成してHello World">ELF64を動的に生成してHello World</a> や <a href="/blog/2019/03/06/elf-quine.html" title="ELF64でQuine">ELF64でQuine</a> で試した。</p>
+ELF64形式に関しては <a href="/blog/2019/01/28/hello-elf-world.html" title="ELF64ファイルを生成してHello World">ELF64を動的に生成してHello World</a> や <a href="/blog/2019/03/06/elf-quine.html" title="ELF64でQuine">ELF64でQuine</a> で試した。</p>
 <p>C言語に対応するアセンブリを確認するには <code>gcc -S</code> で（<code>gcc -S -fomit-frame-pointer -fno-asynchronous-unwind-tables ,foo/foo.c</code>）や<a href="https://godbolt.org/">Compiler Explorer</a>が便利。
 アセンブリに対応するバイナリは、<code>gcc -c foo.s &amp;&amp; objdump -S foo.o</code> で調べられる。</p>
 <p>バイナリの出力はx86の命令ごとにベタにマクロを定義してやった。
@@ -353,7 +353,7 @@ gccみたいにアセンブリで書けるのでなく、単にバイナリを�
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/29/cc-aarch64.html" title="M1Mac向けにコンパイルする(aarch64)" rel="bookmark">M1Mac向けにコンパイルする(aarch64)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/12/22/cc-riscv.html" title="自作CコンパイラをRISC-Vに対応した" rel="bookmark">自作CコンパイラをRISC-Vに対応した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/03/13/elf-linker.html" title="リンカーを自作した" rel="bookmark">リンカーを自作した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/12/22/cc-riscv.html" title="自作CコンパイラをRISC-Vに対応した" rel="bookmark">自作CコンパイラをRISC-Vに対応した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/29/cc-aarch64.html" title="M1Mac向けにコンパイルする(aarch64)" rel="bookmark">M1Mac向けにコンパイルする(aarch64)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/03/13/elf-linker.html" title="リンカーを自作した" rel="bookmark">リンカーを自作した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
