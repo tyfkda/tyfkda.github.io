@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="「ゼリーのパズル」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
+それだけに解けたときの満足感は半端ない。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="「ゼリーのパズル」ソルバーを作る（A＊）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>「ゼリーのパズル」ソルバーを作る（A＊） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>「ゼリーのパズル」ソルバーを作る（A＊）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-01-13
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/algorithm/">#algorithm</a> <a href="/tags/puzzle/">#puzzle</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>「<strong>ゼリーのパズル</strong>」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
+それだけに解けたときの満足感は半端ない。</p>
+<span id="more"></span>
+
+<p>しかしながら純粋な<a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム">思考型パズルゲーム</a>は時間をかけて考えれば解けるというものでもなく、詰まるとまったく先に進めなくなってしまい辛い。
+てなことでプログラムで解いてみることにした。</p>
+<h2 id="ゼリーのパズルについて"><a href="#ゼリーのパズルについて" class="headerlink" title="ゼリーのパズルについて"></a>ゼリーのパズルについて</h2><p><a href="http://qrostar.skr.jp/index.cgi?page=jelly">ゼリーのパズル</a>は<a href="https://qrostar.jp/">たつなみ氏</a>が作ったパズルゲームで、
+かわいい・とぼけた見た目に反してものすごく難しいのが特徴だと思う。</p>
+<p><img src="/assets/jelly-solver-ss.png" alt="ゼリーのパズル"></p>
+<p>といってもステージがあからさまに難しそうってんじゃなく一見簡単そうに見えて
+「こうすれば解けるだろう」と進めると罠が用意されている、という具合でどのステージも凝っている。</p>
+<p>またシンプルなルールで、やみくもにギミックを増やすわけじゃなく少ない構成要素のままなところがすごい。</p>
+<h3 id="ゲームのルール"><a href="#ゲームのルール" class="headerlink" title="ゲームのルール"></a>ゲームのルール</h3><ul>
+<li>目的：<ul>
+<li>同じ色のゼリー同士をすべてくっつけるとステージクリア</li>
+</ul>
+</li>
+<li>メカニクス：<ul>
+<li>同じ色のゼリーが隣り合うとくっついて一体になり、形状はそのまま維持される</li>
+<li>ゼリーは左右にのみ動かせる</li>
+<li>上に乗ってるゼリーは一緒に移動されない</li>
+<li>動かしたゼリーの先に他のゼリーがある場合、押すことができる</li>
+<li>下に床がないと落下する</li>
+</ul>
+</li>
+<li>ギミック：<ul>
+<li>壁に固定されて動かせないゼリー</li>
+<li>黒いブロック：持ち運び用、黒ブロック同士はくっつかずクリア条件にも関わらない</li>
+<li>ゼリーが黒いブロックにリンクされて、一緒に動く</li>
+<li>壁や黒ブロックにゼリーが埋め込まれいて、接すると出現する<ul>
+<li>それを利用して、持ち上げることが可能</li>
+<li>すべて出現させて回収する必要がある</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="パズル解法アルゴリズム"><a href="#パズル解法アルゴリズム" class="headerlink" title="パズル解法アルゴリズム"></a>パズル解法アルゴリズム</h2><p>プログラムでパズルを解くには開始の状態から可能な手を愚直にすべて調べ上げるという方法で行う。
+具体的には<a href="/blog/2024/01/09/hakoiri-solver.html" title="箱入り娘パズルを解く（幅優先探索）">箱入り娘を解く</a>ときにやったように幅優先探索(BFS)を用いる。
+BFSはキューから取り出した局面に対して可能な手を列挙して、それらを次の局面としてキューに積むということを繰り返して、解けた局面に到達したら終了となる。</p>
+<p>ゼリーのパズルで可能な手はゼリーを左か右に動かすことだけなので、それほど手が広いわけではない。
+また重力があるため下に床がなければ落下してしまい盤面全体で自由に動かせるわけではなく持ち上げることも（自由には）できないので、そこまでべらぼうに探索すべき局面が広いわけではない。
+とはいえクリアまでの手数が長かったりゼリーや黒ブロックの数が多い面ではかなり時間がかかってしまうので対策が必要。</p>
+<h3 id="A＊を適用する"><a href="#A＊を適用する" class="headerlink" title="A＊を適用する"></a>A＊を適用する</h3><p>対策として<strong>A＊</strong>を適用してみることにした。
+A＊は迷路探索やゲーム内の敵がプレイヤーを追うときとかによく使われて、目的位置がなんとなくわかる場合に使える。
+局面を探索する順を単なるBFS・キューに積んだ順ではなく、目的地に近いと思われる局面を優先的に探索する。
+これまでの距離とゴールまでの残り推定距離を加えたものが小さい局面を優先して探索することで、早期に発見できるものと期待できる。</p>
+<p>A＊の注意点としては残りの推定距離は<strong>実際のゴールまでの距離かそれ未満</strong>にする必要がある。
+理由は実際より長い距離になる場合があると最初に見つかった解が最短経路とはならない可能性があるため。</p>
+<p>ゼリーのパズルでいえば各色のゼリーがすべてくっついた状態がステージクリアなので、その状態に近づく手が優先されるようにすればいいんじゃないかということで、
+ゼリーの色ごとに横方向に一番離れた距離を合計したものを残り距離としてみた
+（途中のものは最善で道中に回収できるものとして）。
+縦方向には自由に動かせないので考慮外。
+また埋め込まれたゼリーがある場合にはそれらを回収する距離も考慮する。</p>
+<p>パズルゲームでは闇雲にゴールに向かえばステージクリアに近づくということはまずないが、それなりに効果があるっぽい。</p>
+<p>例）<a href="https://github.com/tyfkda/JellySolver/blob/main/doc/%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E7%B4%B9%E4%BB%8B.md#%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B88">ステージ8</a>：BFSの場合局面数93,679、11.8秒　→ A＊の場合局面数74,489、10.4秒</p>
+<h4 id="優先度付きキュー"><a href="#優先度付きキュー" class="headerlink" title="優先度付きキュー"></a>優先度付きキュー</h4><p>A＊を実装する場合には<strong>優先度付きキュー</strong>というデータ構造が使える。
+実体は<strong>二分ヒープ</strong>で、要素の追加や先頭要素の取り出しが計算量O(log n)で行える
+（<a href="https://ja.wikipedia.org/wiki/%E4%BA%8C%E5%88%86%E3%83%92%E3%83%BC%E3%83%97">Wikipedia</a>
+には追加の計算量は「上向きに2, 3レベル動かすくらいですむ」から平均O(1)と書かれているがこの用途では追加される優先度がランダムではないのでその限りではないと思う。
+実測したところ0.1〜0.3log nくらいはあった。
+<a href="https://en.wikipedia.org/wiki/Binary_heap#Summary_of_running_times">英語版</a>ではθ(log n)となっていた）。</p>
+<h3 id="枝刈り"><a href="#枝刈り" class="headerlink" title="枝刈り"></a>枝刈り</h3><p>他に高速化の手段として、もうどうやってもクリアできない「詰んだ」状態になったらその局面以降の探索を打ち切れる。</p>
+<p>ゼリーのパズルの場合、ゼリーを持ち上げることが（上に飛び出すゼリーがない限り）できないので、
+例えば壁に固定されたゼリーの高さに届かない位置に落ちてしまったらクリア不可になる。</p>
+<p>他にも頑張って、左右断絶されて渡れないとか判定できればいいんだけど、手付かず…。</p>
+<p>例）<a href="https://github.com/tyfkda/JellySolver/blob/main/doc/%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E7%B4%B9%E4%BB%8B.md#%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B815">ステージ15</a>：枝刈りなしの場合局面数95,024、15.6秒　→ 枝刈りありの場合局面数28,180、2.1秒</p>
+<h3 id="実装に関して"><a href="#実装に関して" class="headerlink" title="実装に関して"></a>実装に関して</h3><h4 id="優先度付きキューの実装"><a href="#優先度付きキューの実装" class="headerlink" title="優先度付きキューの実装"></a>優先度付きキューの実装</h4><p>Rubyは標準で優先度付きキューが用意されてないので、はじめはRubyGemsで探してダウンロード数の多い <a href="https://rubygems.org/gems/pqueue?locale=ja">pqueue</a>
+を使ってみた。
+BFSに比べて探索する局面数は減るがかかる時間は増えてしまうこともあってそういうもんかとも思ったがどうもおかしいので実装を見てみると、
+二分ヒープではなくソート済み配列に挿入する方式で、それだと数が増えると結構重くなるようだった。</p>
+<p>他のもいろいろ問題で、</p>
+<ul>
+<li><a href="https://rubygems.org/gems/PriorityQueue?locale=ja">PriorityQueue</a> Macではインストールに失敗する</li>
+<li><a href="https://rubygems.org/gems/priority_queue?locale=ja">priority_queue</a> 優先度ごとに別の配列</li>
+<li><a href="https://rubygems.org/gems/priority_queue_cxx/versions/0.3.4?locale=ja">priority_queue_cxx</a>
+速度は申し分ないが、キューへの追加時に優先度を指定する方式で通常のキューと使用法が異なってしまうので断念</li>
+</ul>
+<p>あれこれ探し回った結果、「<a href="https://gengogo5.com/posts/33">Rubyで優先度付きキューを実装した</a>」のものを利用させてもらった。</p>
+<h4 id="状態更新処理"><a href="#状態更新処理" class="headerlink" title="状態更新処理"></a>状態更新処理</h4><p>ステージから手を進める状態更新の処理に手こずった。
+ゼリーやブロックなどをクラスのインスタンスとして保持しているが、手を進めるときに分岐させるためにインスタンスを複製する必要がある。
+状態のオブジェクトすべて複製するとメモリ消費量が不安なので更新が必要なインスタンスだけを複製したかった。
+しかしそうしたことで書き換えていいのか複製すべきか判定して、複製が必要だったら他の参照も書き換える処理が必要になってしまい、抜けてるとバグるという問題が出た。</p>
+<h4 id="計算時間"><a href="#計算時間" class="headerlink" title="計算時間"></a>計算時間</h4><p>ステージによってまちまちで、数秒〜数分〜数十分〜数時間かかるものも。
+唯一ステージ50が解くまで待ちきれず、断念…。
+探索する局面が増えるに従ってGCで固まる時間が増えていき、プロファイラで測ってみると20~30%までにも達していて、どうしたもんか。</p>
+<h2 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h2><ul>
+<li>複雑な面以外はそこそこ解けて満足</li>
+<li>ゲームルールの実装が思ったよりもだいぶ苦労した…単純な矩形じゃない可能性があるので押す処理や落下処理が案外難しかった</li>
+<li>埋め込まれたゼリーが出現する処理も相手を動かすだけじゃなく自分が動く場合もあり得る</li>
+<li>状態の複製が混乱を極めた<ul>
+<li>下手に書き換えないようにRubyの<code>freeze</code>が使えたのはよかった</li>
+</ul>
+</li>
+<li>場合によってはA＊だと最短手順になってないかも？（距離推定が手抜きなので多くなる可能性があるかも）</li>
+<li>BFSとA＊の切り替えがキューのオブジェクト変更だけでできるの素敵</li>
+<li>局面を上下とか左右のくびれ部分で分割して、状態数が乗算じゃなく加算にして減らせたりしないか？</li>
+<li>Rubyから別言語にしたら2,3~10倍くらい速くなるだろうか？</li>
+</ul>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li>リポジトリ：<a href="https://github.com/tyfkda/JellySolver">JellySolver</a><ul>
+<li><a href="https://github.com/tyfkda/JellySolver/blob/main/doc/%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E7%B4%B9%E4%BB%8B.md">ステージ紹介</a>
+一言ヒント書いた</li>
+</ul>
+</li>
+<li><a href="http://qrostar.skr.jp/index.cgi?page=jelly">ゼリーのパズル - たつなみウェブサイト</a> 本家Windows版<ul>
+<li><a href="https://play.google.com/store/apps/details?id=com.jellycrew.jellynopuzzle&hl=ja">ゼリーのパズル - Google Play のアプリ</a> Android版</li>
+</ul>
+</li>
+<li>Wikipedia：<a href="https://ja.wikipedia.org/wiki/%E5%B9%85%E5%84%AA%E5%85%88%E6%8E%A2%E7%B4%A2">幅優先探索</a>、
+<a href="https://ja.wikipedia.org/wiki/A*">A*</a>、
+<a href="https://ja.wikipedia.org/wiki/%E4%BA%8C%E5%88%86%E3%83%92%E3%83%BC%E3%83%97">二分ヒープ</a></li>
+<li><a href="https://gengogo5.com/posts/33">Rubyで優先度付きキューを実装した</a> 二分ヒープによる実装</li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/01/09/hakoiri-solver.html" title="箱入り娘パズルを解く（幅優先探索）" rel="bookmark">箱入り娘パズルを解く（幅優先探索）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">「ゼリーのパズル」ソルバーを作る（A＊）</a></li><li class="recent_post"><a href="/blog/2024/12/11/webgpu-f32tex-filter.html">【WebGPU】floatテクスチャにフィルタを使用したい場合</a></li><li class="recent_post"><a href="/blog/2024/08/07/smb-rl-sb3.html">スーパーマリオの強化学習を動かす（Stable Baselines 3）</a></li><li class="recent_post"><a href="/blog/2024/06/15/mach-o.html">Mach-Oオブジェクト形式を生成してみる</a></li><li class="recent_post"><a href="/blog/2024/05/31/reinforce-invert-double-pendulum.html">強化学習に再挑戦（二重倒立振子）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

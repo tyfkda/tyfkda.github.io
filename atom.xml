@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2024-12-11T13:19:55.223Z</updated>
+  <updated>2025-01-14T00:43:56.909Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,31 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>「ゼリーのパズル」ソルバーを作る（A＊）</title>
+    <link href="https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html"/>
+    <id>https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html</id>
+    <published>2025-01-13T10:00:00.000Z</published>
+    <updated>2025-01-14T00:43:56.909Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;「&lt;strong&gt;ゼリーのパズル&lt;/strong&gt;」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
+それだけに解けたときの満足感は半端ない。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
+    
+    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【WebGPU】floatテクスチャにフィルタを使用したい場合</title>
     <link href="https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html"/>
     <id>https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html</id>
     <published>2024-12-11T13:00:00.000Z</published>
-    <updated>2024-12-11T13:19:55.223Z</updated>
+    <updated>2024-12-16T02:54:41.090Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUで反応拡散系&lt;/a&gt;を動かした時にテクスチャのサンプルにフィルタが使えなかった理由がわかった。&lt;/p&gt;</summary>
@@ -38,7 +58,7 @@
     <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
     <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2024-12-05T10:14:51.345Z</updated>
+    <updated>2024-12-16T02:54:43.502Z</updated>
     
     
     <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
@@ -185,28 +205,10 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/01/15/monaco-editor-is-modified.html"/>
     <id>https://tyfkda.github.io/blog/2024/01/15/monaco-editor-is-modified.html</id>
     <published>2024-01-15T09:00:00.000Z</published>
-    <updated>2024-12-05T10:14:21.444Z</updated>
+    <updated>2024-12-11T23:45:32.265Z</updated>
     
     
     <summary type="html">&lt;p&gt;結論：&lt;a href=&quot;https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.ITextModel.html#getAlternativeVersionId&quot;&gt;getAlternativeVersionId()&lt;/a&gt;で判定できる。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="texteditor" scheme="https://tyfkda.github.io/tags/texteditor/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Monacoエディタを組み込んでみる</title>
-    <link href="https://tyfkda.github.io/blog/2024/01/14/monaco-editor-intro.html"/>
-    <id>https://tyfkda.github.io/blog/2024/01/14/monaco-editor-intro.html</id>
-    <published>2024-01-14T09:00:00.000Z</published>
-    <updated>2024-12-05T10:14:21.443Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;以前はブラウザ上で動くテキストエディタとして&lt;a href=&quot;https://ace.c9.io/&quot;&gt;Aceエディタ&lt;/a&gt;を使ってみたが、自分が普段使うエディタはほぼVSCodeになってしまったので、ブラウザでも同じ方が自分にとって望ましい。
-VSCodeは&lt;a href=&quot;https://microsoft.github.io/monaco-editor/&quot;&gt;Monaco&lt;/a&gt;というオープンソースで公開されているので、使い方を調べてみた。&lt;/p&gt;</summary>
     
     
     
