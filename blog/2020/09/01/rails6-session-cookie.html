@@ -198,7 +198,7 @@
 <h3 id="先にまとめ"><a href="#先にまとめ" class="headerlink" title="先にまとめ"></a>先にまとめ</h3><ul>
 <li>Railsではセッションの内容がクッキーでやりとりされる（デフォルトの場合）</li>
 <li>Rails6 ではクッキーが暗号化されているので、クライアント側で改ざんはできない</li>
-<li>クッキーには <code>httpOnly</code> が指定されているので、サーバに送られるだけでJavaScriptから読み出されることはない</li>
+<li>クッキーには <code>httpOnly</code> が指定されているので、ブラウザによってサーバに送られるだけでJavaScriptから読み出されることはない</li>
 </ul>
 <h3 id="Railsでのセッションの使用方法"><a href="#Railsでのセッションの使用方法" class="headerlink" title="Railsでのセッションの使用方法"></a>Railsでのセッションの使用方法</h3><p>例えばユーザにログインさせる場合に、なんらかの認証をした後にコントローラでセッションにユーザIDをセット：</p>
 <figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SessionsController</span> &lt; <span class="title class_ inherited__">ApplicationController</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">login</span></span><br><span class="line">    <span class="comment"># user = ...</span></span><br><span class="line">    reset_session</span><br><span class="line">    session[<span class="symbol">:user_id</span>] = user.id  <span class="comment"># これ</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>

@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-01-14T05:56:11.963Z</updated>
+  <updated>2025-01-24T06:55:21.885Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html"/>
     <id>https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html</id>
     <published>2025-01-13T10:00:00.000Z</published>
-    <updated>2025-01-14T05:56:11.963Z</updated>
+    <updated>2025-01-24T06:55:21.885Z</updated>
     
     
     <summary type="html">&lt;p&gt;「&lt;strong&gt;ゼリーのパズル&lt;/strong&gt;」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
@@ -41,7 +41,7 @@
     <link href="https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html"/>
     <id>https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html</id>
     <published>2024-12-11T13:00:00.000Z</published>
-    <updated>2024-12-16T02:54:41.090Z</updated>
+    <updated>2025-01-24T06:55:21.877Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUで反応拡散系&lt;/a&gt;を動かした時にテクスチャのサンプルにフィルタが使えなかった理由がわかった。&lt;/p&gt;</summary>
@@ -58,7 +58,7 @@
     <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
     <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2025-01-14T05:56:10.938Z</updated>
+    <updated>2025-01-24T06:55:30.057Z</updated>
     
     
     <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
@@ -157,7 +157,7 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html"/>
     <id>https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html</id>
     <published>2024-02-05T12:00:00.000Z</published>
-    <updated>2024-09-02T01:47:27.585Z</updated>
+    <updated>2025-01-22T03:03:32.359Z</updated>
     
     
     <summary type="html">&lt;p&gt;WASMのバイナリフォーマットは実行用の情報しかないのでコンパイルの中間ファイル・リンク用には別途独自のファイル形式が必要かと思ってたんだけど、どうやら追加の情報を加えることで対応してるらしい。
