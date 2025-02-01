@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="今までコンパイラでの式のパーサーに再帰下降法を使ってたが、Crafting Interpretersという本（以降CI本）でPrattパーサーという手法があることを知った。
+本では加えて直接バイトコードを生成しているため「文法に制限がある」みたいなことが書かれていたのを混同して不安があったが、
+試しにC言語の式のパースに使ってみて問題なく使えることがわかったのでもう今後は再帰下降法を使うのはやめるようPrattパーサーを布教したい。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/02/01/pratt-parser.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-02-01
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>今までコンパイラでの式のパーサーに再帰下降法を使ってたが、<a href="/blog/2019/12/22/crafting-interpreters.html" title="Crafting Interpretersを読んだ">Crafting Interpretersという本</a>（以降CI本）でPrattパーサーという手法があることを知った。
+本では加えて直接バイトコードを生成しているため「文法に制限がある」みたいなことが書かれていたのを混同して不安があったが、
+試しにC言語の式のパースに使ってみて問題なく使えることがわかったのでもう今後は再帰下降法を使うのはやめるようPrattパーサーを布教したい。</p>
+<span id="more"></span>
+
+<h2 id="式のパースの難しさ"><a href="#式のパースの難しさ" class="headerlink" title="式のパースの難しさ"></a>式のパースの難しさ</h2><p>式をパースする際になにが問題かというと、演算子に優先度があって例えば<code>1 + 2 * 3</code>みたいな式の場合にトークンを「<code>1</code>, <code>+</code>, <code>2</code>」と読んだ時点では判断できず、続く演算子によって結合を変更する必要がある。</p>
+<p>また結合に左右があり、例えば<code>a - b - c</code>は<code>(a - b) - c</code>と左結合なのに対して、<code>a = b = c</code>は<code>a = (b = c)</code>と右結合にする必要がある。</p>
+<p>Bisonなどのパーサージェネレータを使わないで手書きする場合<a href="https://ja.wikipedia.org/wiki/%E5%86%8D%E5%B8%B0%E4%B8%8B%E9%99%8D%E6%A7%8B%E6%96%87%E8%A7%A3%E6%9E%90">再帰下降法</a>という方法が一般的だと思う。
+再帰下降法は演算子の優先度ごとに実装言語上で再帰関数呼出をすることで処理する。
+処理的には問題ないが優先度の数の分だけ再帰呼出が必要なのでちょっと無駄が発生する。</p>
+<h2 id="Prattパーサー"><a href="#Prattパーサー" class="headerlink" title="Prattパーサー"></a>Prattパーサー</h2><p>CI本から入った口なのでPrattパーサーが正確になにを指すか詳しくはわかってないが、Vaughan Pratt氏の論文”<strong>Top Down Operator Precedence</strong>“＝演算子の優先度に基づいてトップダウンに式をパースする手法のことを言う。</p>
+<p>中置演算子ごとの優先度を数値として持っていて、現在処理中の優先度以上の演算子が登場した場合にその演算子に応じた処理を行う。
+呼び出された処理の関数側ではその高い優先度で式のパースを再帰で呼び出すことで、優先度に従って結合を処理できる。</p>
+<p>中置演算子以外にも前置演算子（単項演算子）も扱える。</p>
+<h3 id="CI本のPrattパーサーの仕組み"><a href="#CI本のPrattパーサーの仕組み" class="headerlink" title="CI本のPrattパーサーの仕組み"></a>CI本のPrattパーサーの仕組み</h3><p>CI本で紹介されるコードの<a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L1027"><code>expression</code>関数</a>が式のパースの起点となる関数で、
+そこから呼び出される<a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L980"><code>parsePrecedence</code>関数</a>がメインの処理をしている（コメントや筋に関係ないコードは省く）：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">expression</span><span class="params">()</span> &#123;</span><br><span class="line">  parsePrecedence(PREC_ASSIGNMENT);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">parsePrecedence</span><span class="params">(Precedence precedence)</span> &#123;</span><br><span class="line">  advance();</span><br><span class="line">  ParseFn prefixRule = getRule(parser.previous.type)-&gt;prefix;</span><br><span class="line">  <span class="keyword">if</span> (prefixRule == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    error(<span class="string">&quot;Expect expression.&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  prefixRule();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (precedence &lt;= getRule(parser.current.type)-&gt;precedence) &#123;</span><br><span class="line">    advance();</span><br><span class="line">    ParseFn infixRule = getRule(parser.previous.type)-&gt;infix;</span><br><span class="line">    infixRule();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>advance</code>でトークンを進めた上で<code>parser.previous</code>のトークンのルールを取得することで、関数呼出時点でのトークンに対して<code>prefix</code>の呼び出す。
+その後は与えられた<code>precedence</code>より高い優先度のトークンが続く間、<code>infix</code>を呼び出す。</p>
+<p>例えば<code>+</code>などの単純な左結合の二項演算子の<code>infix</code>として呼び出される<a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L601"><code>binary</code>関数</a>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">binary</span><span class="params">()</span> &#123;</span><br><span class="line">  TokenType operatorType = parser.previous.type;</span><br><span class="line">  ParseRule* rule = getRule(operatorType);</span><br><span class="line">  parsePrecedence((Precedence)(rule-&gt;precedence + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span> (operatorType) &#123;</span><br><span class="line">    <span class="keyword">case</span> TOKEN_PLUS:          emitByte(OP_ADD); <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> TOKEN_STAR:          emitByte(OP_MULTIPLY); <span class="keyword">break</span>;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>この関数の中で<code>parsePrecedence</code>関数を再帰的に呼び出している。
+<code>rule-&gt;precedence + 1</code>を渡しているので、<code>+</code>よりも高い優先度だけが処理されるようになる。</p>
+<h4 id="例"><a href="#例" class="headerlink" title="例"></a>例</h4><p>例えば<code>1 + 2 * 3</code>の場合、「<code>1</code>, <code>+</code>」で<code>binary</code>から<code>+</code>の優先度+1で<code>parsePrecedence</code>が呼び出され、
+「<code>2</code>, <code>*</code>」の<code>*</code>の優先度はそれ以上なので再度<code>binary</code>が呼び出されて、結果的に「<code>1 + (2 * 3)</code>」になる。</p>
+<p><code>1 + 2 + 3</code>の場合は、「<code>2</code>, <code>+</code>」の<code>+</code>の優先度はそれ未満なので<code>while</code>ループから抜けて<code>2</code>だけが返されて、呼び出し元の<code>while</code>ループ側で処理されて結果的に「<code>(1 + 2) + 3</code>」になる。</p>
+<h4 id="prefix演算子"><a href="#prefix演算子" class="headerlink" title="prefix演算子"></a>prefix演算子</h4><p><code>getRule</code>で得られるルールの<code>prefix</code>が指す関数は名前通り前置演算子を扱うが、それ以外にも数値などのリテラルや、括弧も処理する。</p>
+<p>単項演算子<code>-</code>では<a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L839"><code>unary</code>関数</a>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">unary</span><span class="params">()</span> &#123;</span><br><span class="line">  TokenType operatorType = parser.previous.type;</span><br><span class="line"></span><br><span class="line">  parsePrecedence(PREC_UNARY);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span> (operatorType) &#123;</span><br><span class="line">    <span class="keyword">case</span> TOKEN_MINUS: emitByte(OP_NEGATE); <span class="keyword">break</span>;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>で、同様に<code>parsePrecedence</code>を呼び出すことで続く式を処理する。</p>
+<p><code>1</code>などの数値リテラルは<a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L680"><code>number</code>関数</a>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">number</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">double</span> value = strtod(parser.previous.start, <span class="literal">NULL</span>);</span><br><span class="line">  emitConstant(NUMBER_VAL(value));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>となっていて、<code>parsePrecedence</code>は呼び出さずにトークン自体から値を取り出すだけ。
+これによって<code>prefix</code>が最終的にリテラルに前置演算子が適用されたものになる。</p>
+<p>括弧の<a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L669"><code>grouping</code>関数</a>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">grouping</span><span class="params">()</span> &#123;</span><br><span class="line">  expression();</span><br><span class="line">  consume(TOKEN_RIGHT_PAREN, <span class="string">&quot;Expect &#x27;)&#x27; after expression.&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>で、最低の優先度で再帰呼び出しすることですべての演算子の式を処理した上で、後に<code>)</code>が続くものとなる。</p>
+<h4 id="関数呼出"><a href="#関数呼出" class="headerlink" title="関数呼出"></a>関数呼出</h4><p>関数呼出は見た目的には<strong>中置</strong>演算子とは全然違うけど、処理的には<code>infix</code>で扱っている。
+実のところ<code>infix</code>といっても中置演算子だけに限らず、<code>prefix</code>に続いて許される演算子であればよくて、関数呼出以外にも後置演算子でも同様に扱える。</p>
+<p><a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L625"><code>call</code>関数</a>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">call</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">uint8_t</span> argCount = argumentList();</span><br><span class="line">  emitBytes(OP_CALL, argCount);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">uint8_t</span> <span class="title function_">argumentList</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">uint8_t</span> argCount = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> (!check(TOKEN_RIGHT_PAREN)) &#123;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">      expression();</span><br><span class="line">      argCount++;</span><br><span class="line">    &#125; <span class="keyword">while</span> (match(TOKEN_COMMA));</span><br><span class="line">  &#125;</span><br><span class="line">  consume(TOKEN_RIGHT_PAREN, <span class="string">&quot;Expect &#x27;)&#x27; after arguments.&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> argCount;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>argumentList</code>関数でカンマ区切りの式を受け付けて、<code>)</code>で閉じられる。</p>
+<h2 id="C言語の式パースに適用する"><a href="#C言語の式パースに適用する" class="headerlink" title="C言語の式パースに適用する"></a>C言語の式パースに適用する</h2><p>CI本で実装されたスクリプト言語と比べても、C言語の式ではいろいろ懸念点がある：</p>
+<ul>
+<li>前置でも中置でも使える演算子がある：<code>+</code>, <code>-</code>, <code>*</code>, <code>&amp;</code></li>
+<li>同様に、前置でも後置でも使える演算子がある：<code>++</code>, <code>--</code></li>
+<li>代入式が右結合、また代入演算子もある</li>
+<li>三項演算子<code>?:</code></li>
+<li>カンマ演算子</li>
+<li>括弧<code>()</code>が式を括る・関数呼出に加えて、キャスト演算子、複合リテラル、gcc拡張のステートメント式にも使われる</li>
+</ul>
+<p>これら全てをPrattパーサーで扱うことはできるのか？
+結論的には、式の前に扱うトークンは<code>prefix</code>で、後で扱うトークンは<code>infix</code>と優先度を設定すれば問題なくすべて扱える。</p>
+<ul>
+<li><code>(</code>の<code>prefix</code>で、<ul>
+<li><code>&#123;</code>が続く場合はステートメント式</li>
+<li>型名が続く場合には<code>)</code>に続いて<code>&#123;</code>なら複合リテラル、でなければキャスト演算子</li>
+<li>それ以外はグルーピング</li>
+</ul>
+</li>
+<li>後置演算子は最高の優先度を割り振る</li>
+<li>代入の右結合は<code>parsePrecedence</code>の呼び出しに優先度を+1せずに呼び出すことで実現できる</li>
+<li>配列アクセス<code>[]</code>も関数呼出同様に扱える</li>
+<li>カンマ演算子が一番低い優先度で、関数の引数はカンマで区切るのでそれより高い優先度で式のパースをする</li>
+<li>三項演算子は<code>?</code>の後をカンマ演算子も受け付け、<code>:</code>の後に右結合として再帰</li>
+</ul>
+<h4 id="行数の変化"><a href="#行数の変化" class="headerlink" title="行数の変化"></a>行数の変化</h4><p>再帰下降法に比べてPrattパーサーでは優先度の処理とループが共通化され、
+また二項演算や単項演算での任意の処理を共通化できるので、たいていの場合コード量は減らせると思う。</p>
+<p>自分のC言語の式パーサーでは、再帰下降法で918行だったものが、Prattパーサーに書き換えたところ812行に削減された（-11.5%）。</p>
+<h4 id="実行速度の変化"><a href="#実行速度の変化" class="headerlink" title="実行速度の変化"></a>実行速度の変化</h4><p>再帰下降法では不要に関数呼出がネストされるのが、Prattパーサーではトークンの種類によってネストが削減されるので、実行速度も改善されることが期待される。</p>
+<p>ただいくつかのソースのコンパイル時間を比べたところ大差なかった。
+これはコンパイル時間のうち式のパースがそんなに大きなパートを占めないからだと思う。</p>
+<h2 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h2><p>Prattパーサーの動作の仕組みはちょっと難しいけど、再帰下降法に比べてそれほど難解なわけではなく、
+それでいて効率的なので利用しない手はないと思う。</p>
+<p>変更したソース：<a href="https://github.com/tyfkda/xcc/blob/c8ed290348379a6b61bd01fda5a2392da7f9c16e/src/cc/frontend/parser_expr.c#L201-L800">xcc&#x2F;src&#x2F;cc&#x2F;frontend&#x2F;parser_expr.c</a>
+　（<a href="https://github.com/tyfkda/xcc/commit/c8ed290">変更コミット</a>）</p>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li><a href="https://www.craftinginterpreters.com/">Crafting Interpreters</a><ul>
+<li><a href="https://www.craftinginterpreters.com/compiling-expressions.html">17章 式のコンパイル</a>：Prattパーサーの説明と実装</li>
+</ul>
+</li>
+<li><a href="https://github.com/tdop/tdop.github.io">“Top Down Operator Precedence”, Vaughan R. Pratt</a> 元論文のコピー</li>
+</ul>
+<h4 id="過去ブログ"><a href="#過去ブログ" class="headerlink" title="過去ブログ"></a>過去ブログ</h4><ul>
+<li><a href="/blog/2019/12/22/crafting-interpreters.html" title="Crafting Interpretersを読んだ">Crafting Interpretersを読んだ</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">「ゼリーのパズル」ソルバーを作る（A＊）</a></li><li class="recent_post"><a href="/blog/2024/12/11/webgpu-f32tex-filter.html">【WebGPU】floatテクスチャにフィルタを使用したい場合</a></li><li class="recent_post"><a href="/blog/2024/08/07/smb-rl-sb3.html">スーパーマリオの強化学習を動かす（Stable Baselines 3）</a></li><li class="recent_post"><a href="/blog/2024/06/15/mach-o.html">Mach-Oオブジェクト形式を生成してみる</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

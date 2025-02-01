@@ -283,7 +283,8 @@ BFSに比べて探索する局面数は減るがかかる時間は増えてし�
 <li>下手に書き換えないようにRubyの<code>freeze</code>が使えたのはよかった</li>
 </ul>
 </li>
-<li>場合によってはA＊だと最短手順になってないかも？（距離推定が手抜きなので多くなる可能性があるかも）</li>
+<li>場合によってはA＊だと最短手順にならないことがある。
+距離推定が手抜きなので多くなる可能性がある、他のゼリーを押す<a href="https://github.com/tyfkda/JellySolver/blob/main/doc/%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E7%B4%B9%E4%BB%8B.md#%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B87">ステージ7</a>とか</li>
 <li>BFSとA＊の切り替えがキューのオブジェクト変更だけでできるの素敵</li>
 <li>局面を上下とか左右のくびれ部分で分割して、状態数が乗算じゃなく加算にして減らせたりしないか？</li>
 <li>Rubyから別言語にしたら2,3~10倍くらい速くなるだろうか？</li>
@@ -321,7 +322,7 @@ BFSに比べて探索する局面数は減るがかかる時間は増えてし�
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">「ゼリーのパズル」ソルバーを作る（A＊）</a></li><li class="recent_post"><a href="/blog/2024/12/11/webgpu-f32tex-filter.html">【WebGPU】floatテクスチャにフィルタを使用したい場合</a></li><li class="recent_post"><a href="/blog/2024/08/07/smb-rl-sb3.html">スーパーマリオの強化学習を動かす（Stable Baselines 3）</a></li><li class="recent_post"><a href="/blog/2024/06/15/mach-o.html">Mach-Oオブジェクト形式を生成してみる</a></li><li class="recent_post"><a href="/blog/2024/05/31/reinforce-invert-double-pendulum.html">強化学習に再挑戦（二重倒立振子）</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">「ゼリーのパズル」ソルバーを作る（A＊）</a></li><li class="recent_post"><a href="/blog/2024/12/11/webgpu-f32tex-filter.html">【WebGPU】floatテクスチャにフィルタを使用したい場合</a></li><li class="recent_post"><a href="/blog/2024/08/07/smb-rl-sb3.html">スーパーマリオの強化学習を動かす（Stable Baselines 3）</a></li><li class="recent_post"><a href="/blog/2024/06/15/mach-o.html">Mach-Oオブジェクト形式を生成してみる</a></li></ul>
                 </div>
             </div>
 

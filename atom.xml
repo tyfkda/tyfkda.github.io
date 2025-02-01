@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-01-24T06:55:21.885Z</updated>
+  <updated>2025-02-01T09:07:02.087Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,30 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</title>
+    <link href="https://tyfkda.github.io/blog/2025/02/01/pratt-parser.html"/>
+    <id>https://tyfkda.github.io/blog/2025/02/01/pratt-parser.html</id>
+    <published>2025-02-01T08:00:00.000Z</published>
+    <updated>2025-02-01T09:07:02.087Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;今までコンパイラでの式のパーサーに再帰下降法を使ってたが、&lt;a href=&quot;/blog/2019/12/22/crafting-interpreters.html&quot; title=&quot;Crafting Interpretersを読んだ&quot;&gt;Crafting Interpretersという本&lt;/a&gt;（以降CI本）でPrattパーサーという手法があることを知った。
+本では加えて直接バイトコードを生成しているため「文法に制限がある」みたいなことが書かれていたのを混同して不安があったが、
+試しにC言語の式のパースに使ってみて問題なく使えることがわかったのでもう今後は再帰下降法を使うのはやめるようPrattパーサーを布教したい。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+  </entry>
+  
+  <entry>
     <title>「ゼリーのパズル」ソルバーを作る（A＊）</title>
     <link href="https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html"/>
     <id>https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html</id>
     <published>2025-01-13T10:00:00.000Z</published>
-    <updated>2025-01-24T06:55:21.885Z</updated>
+    <updated>2025-01-27T04:08:11.316Z</updated>
     
     
     <summary type="html">&lt;p&gt;「&lt;strong&gt;ゼリーのパズル&lt;/strong&gt;」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
@@ -58,7 +77,7 @@
     <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
     <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2025-01-24T06:55:30.057Z</updated>
+    <updated>2025-01-27T04:07:57.052Z</updated>
     
     
     <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
@@ -197,23 +216,6 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <category term="processing" scheme="https://tyfkda.github.io/tags/processing/"/>
     
     <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Monacoエディタで内容が変更されたかどうか調べる</title>
-    <link href="https://tyfkda.github.io/blog/2024/01/15/monaco-editor-is-modified.html"/>
-    <id>https://tyfkda.github.io/blog/2024/01/15/monaco-editor-is-modified.html</id>
-    <published>2024-01-15T09:00:00.000Z</published>
-    <updated>2024-12-11T23:45:32.265Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;結論：&lt;a href=&quot;https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.ITextModel.html#getAlternativeVersionId&quot;&gt;getAlternativeVersionId()&lt;/a&gt;で判定できる。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="texteditor" scheme="https://tyfkda.github.io/tags/texteditor/"/>
     
   </entry>
   
