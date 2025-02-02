@@ -208,8 +208,8 @@
 そこから呼び出される<a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L980"><code>parsePrecedence</code>関数</a>がメインの処理をしている（コメントや筋に関係ないコードは省く）：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">expression</span><span class="params">()</span> &#123;</span><br><span class="line">  parsePrecedence(PREC_ASSIGNMENT);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">parsePrecedence</span><span class="params">(Precedence precedence)</span> &#123;</span><br><span class="line">  advance();</span><br><span class="line">  ParseFn prefixRule = getRule(parser.previous.type)-&gt;prefix;</span><br><span class="line">  <span class="keyword">if</span> (prefixRule == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    error(<span class="string">&quot;Expect expression.&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  prefixRule();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (precedence &lt;= getRule(parser.current.type)-&gt;precedence) &#123;</span><br><span class="line">    advance();</span><br><span class="line">    ParseFn infixRule = getRule(parser.previous.type)-&gt;infix;</span><br><span class="line">    infixRule();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><code>advance</code>でトークンを進めた上で<code>parser.previous</code>のトークンのルールを取得することで、関数呼出時点でのトークンに対して<code>prefix</code>の呼び出す。
-その後は与えられた<code>precedence</code>より高い優先度のトークンが続く間、<code>infix</code>を呼び出す。</p>
+<p><code>advance</code>でトークンを進めた上で<code>parser.previous</code>のトークンのルール(<a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L61-L65"><code>ParseRule</code></a>)を取得することで、関数呼出時点でのトークンに対応する<code>prefix</code>を呼び出す。
+その後は与えられた<code>precedence</code>以上の優先度のトークンが続く間、<code>infix</code>を呼び出す。</p>
 <p>例えば<code>+</code>などの単純な左結合の二項演算子の<code>infix</code>として呼び出される<a href="https://github.com/munificent/craftinginterpreters/blob/4a840f70f69c6ddd17cfef4f6964f8e1bcd8c3d4/c/compiler.c#L601"><code>binary</code>関数</a>：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">binary</span><span class="params">()</span> &#123;</span><br><span class="line">  TokenType operatorType = parser.previous.type;</span><br><span class="line">  ParseRule* rule = getRule(operatorType);</span><br><span class="line">  parsePrecedence((Precedence)(rule-&gt;precedence + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span> (operatorType) &#123;</span><br><span class="line">    <span class="keyword">case</span> TOKEN_PLUS:          emitByte(OP_ADD); <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> TOKEN_STAR:          emitByte(OP_MULTIPLY); <span class="keyword">break</span>;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -264,7 +264,7 @@
 </ul>
 <h4 id="行数の変化"><a href="#行数の変化" class="headerlink" title="行数の変化"></a>行数の変化</h4><p>再帰下降法に比べてPrattパーサーでは優先度の処理とループが共通化され、
 また二項演算や単項演算での任意の処理を共通化できるので、たいていの場合コード量は減らせると思う。</p>
-<p>自分のC言語の式パーサーでは、再帰下降法で918行だったものが、Prattパーサーに書き換えたところ812行に削減された（-11.5%）。</p>
+<p>自分のC言語の式パーサーでは、再帰下降法で917行だったものが、Prattパーサーに書き換えたところ811行に削減された（-11.6%）。</p>
 <h4 id="実行速度の変化"><a href="#実行速度の変化" class="headerlink" title="実行速度の変化"></a>実行速度の変化</h4><p>再帰下降法では不要に関数呼出がネストされるのが、Prattパーサーではトークンの種類によってネストが削減されるので、実行速度も改善されることが期待される。</p>
 <p>ただいくつかのソースのコンパイル時間を比べたところ大差なかった。
 これはコンパイル時間のうち式のパースがそんなに大きなパートを占めないからだと思う。</p>
@@ -279,7 +279,7 @@
 </li>
 <li><a href="https://github.com/tdop/tdop.github.io">“Top Down Operator Precedence”, Vaughan R. Pratt</a> 元論文のコピー</li>
 </ul>
-<h4 id="過去ブログ"><a href="#過去ブログ" class="headerlink" title="過去ブログ"></a>過去ブログ</h4><ul>
+<h4 id="過去記事"><a href="#過去記事" class="headerlink" title="過去記事"></a>過去記事</h4><ul>
 <li><a href="/blog/2019/12/22/crafting-interpreters.html" title="Crafting Interpretersを読んだ">Crafting Interpretersを読んだ</a></li>
 </ul>
 
@@ -293,7 +293,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
