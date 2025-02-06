@@ -272,6 +272,17 @@ BFSに比べて探索する局面数は減るがかかる時間は増えてし�
 ゼリーやブロックなどをクラスのインスタンスとして保持しているが、手を進めるときに分岐させるためにインスタンスを複製する必要がある。
 状態のオブジェクトすべて複製するとメモリ消費量が不安なので更新が必要なインスタンスだけを複製したかった。
 しかしそうしたことで書き換えていいのか複製すべきか判定して、複製が必要だったら他の参照も書き換える処理が必要になってしまい、抜けてるとバグるという問題が出た。</p>
+<h4 id="状態のハッシュ値"><a href="#状態のハッシュ値" class="headerlink" title="状態のハッシュ値"></a>状態のハッシュ値</h4><p>ある局面から手を進めたステージの状態がすでに探索済みかどうかを判定する必要がある。
+その情報を保持するのにハッシュが使える。
+局面をキーとして、そのキーがハッシュに存在すれば探索済みと判定できる。</p>
+<p>Rubyでは自作のクラスでも<code>hash</code>と<code>eql?</code>を実装することで、任意のインスタンスもキーとして使える。
+ただそれを使ってステージのインスタンス自体をキーにしてしまうと、探索済みの全ての局面のインスタンスが生存し続けることになる。
+難しい面で探索に時間がかかる場合、後半GCで固まる時間がすごく長くなってしまった。
+RubyのGCはインクリメンタルGCを使ってると思うが、インスタンスの数が増えると結局GCの時間がかかってしまうのかもしれない。</p>
+<p>状況を緩和するためにステージのインスタンス自体ではなく、<a href="https://github.com/tyfkda/JellySolver/blob/419c2baff43e0d20b856f079c6498fcfcbeeb716/ruby/jelly/stage.rb#L511-L518">ゼリーなどのインスタンスのハッシュ値</a>をキーにしてみた。
+ハッシュ値は単純な数値で内部表現でポインタ整数に収まる範囲の63ビットに収まる値（多分）でGC対象のインスタンスが増えずに済み、探索時間が大幅に削減された。
+ただしハッシュ値がもし衝突してしまうと違う局面なのに同じと誤判定されてしまうことになる。
+これは速度と正確さのどっちを取るかで、衝突しないことを祈るのみ…。</p>
 <h4 id="計算時間"><a href="#計算時間" class="headerlink" title="計算時間"></a>計算時間</h4><p>ステージによってまちまちで、数秒〜数分〜数十分〜数時間かかるものも。
 唯一ステージ50が解くまで待ちきれず、断念…。
 探索する局面が増えるに従ってGCで固まる時間が増えていき、プロファイラで測ってみると20~30%までにも達していて、どうしたもんか。</p>
@@ -315,7 +326,7 @@ BFSに比べて探索する局面数は減るがかかる時間は増えてし�
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/01/09/hakoiri-solver.html" title="箱入り娘パズルを解く（幅優先探索）" rel="bookmark">箱入り娘パズルを解く（幅優先探索）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/01/09/hakoiri-solver.html" title="箱入り娘パズルを解く（幅優先探索）" rel="bookmark">箱入り娘パズルを解く（幅優先探索）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
