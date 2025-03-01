@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-03-01T09:54:55.574Z</updated>
+  <updated>2025-03-01T12:35:58.517Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2025/03/01/ssa-intro.html"/>
     <id>https://tyfkda.github.io/blog/2025/03/01/ssa-intro.html</id>
     <published>2025-03-01T10:00:00.000Z</published>
-    <updated>2025-03-01T09:54:55.574Z</updated>
+    <updated>2025-03-01T12:35:58.517Z</updated>
     
     
     <summary type="html">&lt;p&gt;趣味でコンパイラのバックエンドを作っているが現状最適化はほとんどできてない。
@@ -42,7 +42,7 @@
     <link href="https://tyfkda.github.io/blog/2025/02/01/pratt-parser.html"/>
     <id>https://tyfkda.github.io/blog/2025/02/01/pratt-parser.html</id>
     <published>2025-02-01T08:00:00.000Z</published>
-    <updated>2025-02-06T01:46:19.554Z</updated>
+    <updated>2025-03-01T12:27:10.823Z</updated>
     
     
     <summary type="html">&lt;p&gt;今までコンパイラでの式のパーサーに再帰下降法を使ってたが、&lt;a href=&quot;/blog/2019/12/22/crafting-interpreters.html&quot; title=&quot;Crafting Interpretersを読んだ&quot;&gt;Crafting Interpretersという本&lt;/a&gt;（以降CI本）でPrattパーサーという手法があることを知った。
@@ -57,11 +57,11 @@
   </entry>
   
   <entry>
-    <title>「ゼリーのパズル」ソルバーを作る（A＊）</title>
+    <title>激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</title>
     <link href="https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html"/>
     <id>https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html</id>
     <published>2025-01-13T10:00:00.000Z</published>
-    <updated>2025-02-06T01:46:23.239Z</updated>
+    <updated>2025-03-01T12:35:51.347Z</updated>
     
     
     <summary type="html">&lt;p&gt;「&lt;strong&gt;ゼリーのパズル&lt;/strong&gt;」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
@@ -81,7 +81,7 @@
     <link href="https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html"/>
     <id>https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html</id>
     <published>2024-12-11T13:00:00.000Z</published>
-    <updated>2025-02-06T01:45:49.398Z</updated>
+    <updated>2025-03-01T10:06:19.909Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUで反応拡散系&lt;/a&gt;を動かした時にテクスチャのサンプルにフィルタが使えなかった理由がわかった。&lt;/p&gt;</summary>
@@ -98,7 +98,7 @@
     <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
     <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2025-02-23T05:43:29.631Z</updated>
+    <updated>2025-03-01T12:35:27.733Z</updated>
     
     
     <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
@@ -141,7 +141,7 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html"/>
     <id>https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html</id>
     <published>2024-05-31T09:00:00.000Z</published>
-    <updated>2025-02-06T01:46:19.555Z</updated>
+    <updated>2025-03-01T10:06:19.907Z</updated>
     
     
     <summary type="html">&lt;p&gt;流行りの機械学習でなにか動かしたいなぁとチュートリアルを動かそうとするも大抵エラーで動かない、動いたとしてもちょっと経つとライブラリの更新だか環境の変化でエラーになってしまい、その依存関係も解決できない。
