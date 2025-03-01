@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="趣味でコンパイラのバックエンドを作っているが現状最適化はほとんどできてない。
+最適化をしやすくするために静的単一代入を導入しようとして手間取っているのでメモ
+（力任せに実装しただけなので真偽は不明です）。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/03/01/ssa-intro.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-03-01
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a> <a href="/tags/optimization/">#optimization</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>趣味でコンパイラのバックエンドを作っているが現状最適化はほとんどできてない。
+最適化をしやすくするために静的単一代入を導入しようとして手間取っているのでメモ
+（力任せに実装しただけなので真偽は不明です）。</p>
+<span id="more"></span>
+
+<h2 id="静的単一代入とは"><a href="#静的単一代入とは" class="headerlink" title="静的単一代入とは"></a>静的単一代入とは</h2><p>変数への再代入がなければ変数名を追うだけでどんな値が入っているのかが判明するので便利。
+<strong>静的単一代入</strong>（Static Single Assignment, SSA）形式は再代入があったら変数の別バージョンを作ることで再代入を除去して、最適化を行いやすくする。</p>
+<p>例えば</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">a = <span class="number">1</span>;</span><br><span class="line">x = a + <span class="number">1</span>;</span><br><span class="line">a = <span class="number">2</span>;       <span class="comment">// 再代入</span></span><br><span class="line">y = a + <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>というコードで字面上は<code>x</code>も<code>y</code>も<code>a + 1</code>を代入しているが途中で<code>a</code>の値が再代入で変わっているために実際には値が異なる。
+これを、再代入している<code>a</code>を別バージョンにしてやれば</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">a = <span class="number">1</span>;</span><br><span class="line">x = a + <span class="number">1</span>;</span><br><span class="line">a2 = <span class="number">2</span>;      <span class="comment">// 再代入された変数を別バージョンにする</span></span><br><span class="line">y = a2 + <span class="number">1</span>;  <span class="comment">// 以降は新しいバージョンを使用</span></span><br></pre></td></tr></table></figure>
+
+<p>となって別物だということがすぐにわかる。</p>
+<h3 id="Φ関数"><a href="#Φ関数" class="headerlink" title="Φ関数"></a>Φ関数</h3><p>SSA形式では再代入が不可だが処理の分岐で異なるバージョンが合流する場合にどうするかというと、<strong>Φ関数</strong>という疑似的な命令を挿入する。例えば</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (condition)</span><br><span class="line">  x = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  x = <span class="number">2</span>;</span><br><span class="line"><span class="comment">// xの値は？</span></span><br></pre></td></tr></table></figure>
+
+<p>というコードを</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (condition)</span><br><span class="line">  x1 = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  x2 = <span class="number">2</span>;</span><br><span class="line">x3 = phi(x1, x2);  <span class="comment">// &lt;-Φ関数を挿入</span></span><br></pre></td></tr></table></figure>
+
+<p>として、<code>x3</code>は上の条件分岐を通ったら<code>x1</code>、下を通ったら<code>x2</code>が選ばれるものとする
+（疑似的なので実際にこのまま実行するわけではない）。</p>
+<p>SSA化されてどの変数も代入が一度限りということになっていれば、さまざまな最適化がしやすくなる。</p>
+<h2 id="SSA形式への変換"><a href="#SSA形式への変換" class="headerlink" title="SSA形式への変換"></a>SSA形式への変換</h2><p>SSA形式に変換するにはどうするか。
+論文では支配辺境がどうだとかいってよく理解できないので、再代入時に別バージョンを割り振ればいいんでしょと力任せにやってみた。</p>
+<p>前段階として、レジスタ割付をするための各仮想レジスタの生存範囲を調べる方法を実装済みで、
+そのため各基本ブロック（Basic Block, BB）に流入するレジスタと出力するレジスタが把握できる。</p>
+<p>再代入は当然として、それ以外にも合流するBBでも別バージョンを作る必要があるので、合流するBBに流入するすべてのレジスタに別バージョンを用意する。
+合流なしで一本道で遷移するBBでは前のBBから出力されるバージョンをそのまま使う。</p>
+<p>BBに流入するレジスタのバージョンが判明したので、そのBB内のレジスタをそのバージョンに置き換える。
+BB内で再代入があった場合には更新する。</p>
+<p>ということをBBを辿れる順に行うことで全BBが出力するレジスタのバージョンを決定する。</p>
+<ul>
+<li>本当なら合流するどちらのパスでも代入がない変数はバージョンを更新する必要がないので、この方法では無駄に作られてしまうという欠点がある</li>
+</ul>
+<h3 id="Φ関数の挿入"><a href="#Φ関数の挿入" class="headerlink" title="Φ関数の挿入"></a>Φ関数の挿入</h3><p>合流するBBで流入するレジスタに対して、合流の遷移元から出力するバージョンを集めてΦ関数の引数とする。</p>
+<h2 id="SSA形式での最適化"><a href="#SSA形式での最適化" class="headerlink" title="SSA形式での最適化"></a>SSA形式での最適化</h2><p>SSA形式に変換できたら最適化を適用できるので、試しにいくつか実装してみた。</p>
+<h3 id="コピー伝播"><a href="#コピー伝播" class="headerlink" title="コピー伝播"></a>コピー伝播</h3><p>変数に代入された値は再代入されず変わらないので、単なるコピーであればそのコピー元の変数に置き換えてしまうことができる(Copy propagation)。
+一番上の疑似コードは<code>a</code>と<code>a2</code>をコピーして</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//  a = 1;</span></span><br><span class="line">    x = <span class="number">1</span> + <span class="number">1</span>;</span><br><span class="line"><span class="comment">//  a2 = 2;</span></span><br><span class="line">    y = <span class="number">2</span> + <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>とすることができる。
+コピー元の変数は使われなくなるので削除することができる。</p>
+<ul>
+<li>Φ関数のすべての引数が同じ値・変数であれば、同様にコピーできる</li>
+</ul>
+<h3 id="定数畳み込み"><a href="#定数畳み込み" class="headerlink" title="定数畳み込み"></a>定数畳み込み</h3><p>コピー伝播によって定数同士の演算式になった場合、実行時ではなくコンパイル時に計算してしまうことができる(Constant folding)。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">x = <span class="number">2</span>;</span><br><span class="line">y = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="SSA形式から戻す方法"><a href="#SSA形式から戻す方法" class="headerlink" title="SSA形式から戻す方法"></a>SSA形式から戻す方法</h2><p>最適化を適用した後にマシン語を出力する際にはΦ関数が残ったままでは困るので元に戻す必要がある。
+戻すにはΦ関数のBBへの遷移元に目的レジスタへのコピー命令を挿入してやる。</p>
+<p>ただ合流元BBからの遷移が条件ジャンプだと条件が不成立で遷移しない場合にもコピー命令が実行されてしまってまずいので、その場合には新たなBBを挿入することにした。</p>
+<h3 id="並列でコピーする必要がある件"><a href="#並列でコピーする必要がある件" class="headerlink" title="並列でコピーする必要がある件"></a>並列でコピーする必要がある件</h3><p>Φ関数解決時のコピー命令は<strong>並列で</strong>行う必要がある。
+理由は最適化の結果、Φ関数の代入先が別のΦ関数の引数として使われている可能性があるため。
+例えばループ中に変数をスワップ、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">a = <span class="number">1</span>;</span><br><span class="line">b = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i) &#123;</span><br><span class="line">  t = a;</span><br><span class="line">  a = b;</span><br><span class="line">  b = t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>などというコードをSSA化、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">bb0:</span><br><span class="line">  a = <span class="number">1</span>;</span><br><span class="line">  b = <span class="number">2</span>;</span><br><span class="line">  i = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">goto</span> bb2;</span><br><span class="line">bb1:</span><br><span class="line">  t = a1;</span><br><span class="line">  a2 = b1;</span><br><span class="line">  b2 = t;</span><br><span class="line">  i2 = i1 + <span class="number">1</span>;</span><br><span class="line">bb2:</span><br><span class="line">  a1 = phi(a, a2);</span><br><span class="line">  b1 = phi(b, b2);</span><br><span class="line">  i1 = phi(i, i2);</span><br><span class="line">  <span class="keyword">if</span> (i1 &lt; <span class="number">10</span>) <span class="keyword">goto</span> bb1;</span><br><span class="line">bb3:</span><br></pre></td></tr></table></figure>
+
+<p>コピー伝播すると、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">bb0:</span><br><span class="line">  <span class="keyword">goto</span> bb2;</span><br><span class="line">bb1:</span><br><span class="line">  i2 = i1 + <span class="number">1</span>;</span><br><span class="line">bb2:</span><br><span class="line">  a1 = phi(<span class="number">1</span>, b1);  <span class="comment">// &lt;- b1とa1がΦ関数の代入先かつ引数にも登場</span></span><br><span class="line">  b1 = phi(<span class="number">2</span>, a1);  <span class="comment">// &lt;-</span></span><br><span class="line">  i1 = phi(<span class="number">0</span>, i2);</span><br><span class="line">  <span class="keyword">if</span> (i1 &lt; <span class="number">10</span>) <span class="keyword">goto</span> bb1;</span><br><span class="line">bb3:</span><br></pre></td></tr></table></figure>
+
+<p>単純に順番にΦ関数を解決すると、</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">bb0:</span><br><span class="line">  a1 = <span class="number">1</span>;</span><br><span class="line">  b1 = <span class="number">2</span>;</span><br><span class="line">  i1 = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">goto</span> bb2;</span><br><span class="line">bb1:</span><br><span class="line">  i2 = i1 + <span class="number">1</span>;</span><br><span class="line">  <span class="comment">// vvv</span></span><br><span class="line">  a1 = b1;  <span class="comment">// &lt;- ここでa1が更新されてしまって</span></span><br><span class="line">  b1 = a1;  <span class="comment">// &lt;- b1が旧a1にならない</span></span><br><span class="line">  i1 = i2;</span><br><span class="line">  <span class="comment">// ^^^</span></span><br><span class="line">bb2:</span><br><span class="line">  <span class="keyword">if</span> (i1 &lt; <span class="number">10</span>) <span class="keyword">goto</span> bb1;</span><br><span class="line">bb3:</span><br></pre></td></tr></table></figure>
+
+<p>となってしまって誤動作してしまう。</p>
+<p>解決法は実際には並列に行う必要はなくて、Φ関数の代入での循環を検出して、テンポラリ変数に代入してやる：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">bb1:</span><br><span class="line">  ...</span><br><span class="line">  a1_bak = a1;  <span class="comment">// a1とb1が循環しているのでテンポラリ変数に待避する</span></span><br><span class="line">  a1 = b1;</span><br><span class="line">  b1 = a1_bak;  <span class="comment">// 退避した変数から復帰</span></span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最初単純にコピーしてたところ、文字列編集の<a href="https://github.com/git/git/blob/cb0ae672aeabefca9704477ea8018ac94f523970/levenshtein.c#L74-L77">レーベンシュタイン距離計算</a>が誤動作して初めて問題を認識した</li>
+</ul>
+<h2 id="つまづいている箇所"><a href="#つまづいている箇所" class="headerlink" title="つまづいている箇所"></a>つまづいている箇所</h2><p>SSAを適用すればパフォーマンスが向上するわけじゃなく、現状SSAを有効にできてない。</p>
+<h3 id="変数爆増による性能劣化"><a href="#変数爆増による性能劣化" class="headerlink" title="変数爆増による性能劣化"></a>変数爆増による性能劣化</h3><p>SSAへの変換によって使用する変数が増えてしまうため、後にマシン語に変換する際に問題になる。
+実際のマシン語に出力する場合に変数を物理レジスタに割り付ける必要があるが、使用する変数が増えると必然的にレジスタ割付から溢れるものが増えてしまうため性能が劣化してしまう。</p>
+<p>対策としてはレジスタの生存期間を最初から最後までではなく途中の穴を考慮してやったり、分岐で別バージョンになる同変数をうまく同じ物理レジスタに割り振れるようにするなどの必要があるのではないかと思う。</p>
+<h3 id="共通部分式除去（適用できず）"><a href="#共通部分式除去（適用できず）" class="headerlink" title="共通部分式除去（適用できず）"></a>共通部分式除去（適用できず）</h3><p>SSA形式で適用できる最適化として共通部分式除去 (Common Sub-expression Elimination)がある。
+２つの式が同じ演算式であれば、２つ目の計算は１つ目の値に置き換えることができる。</p>
+<p>喜び勇んで実装してみたが、部分式の計算をするパスを通らない可能性があるということを見落としていた。
+なのでこの最適化を適用するには、後の計算の場所に来るには前の計算が必ず行われることを確認する必要がある。
+がわかってないので保留…。</p>
+<h2 id="現状のコード"><a href="#現状のコード" class="headerlink" title="現状のコード"></a>現状のコード</h2><ul>
+<li><a href="https://github.com/tyfkda/xcc/blob/3611adb54c116466f16aaa9fcdf233ca0473283c/src/cc/backend/ssa.c#L77-L142">SSA変換</a></li>
+<li><a href="https://github.com/tyfkda/xcc/blob/3611adb54c116466f16aaa9fcdf233ca0473283c/src/cc/backend/ssa.c#L144-L195">Φ関数挿入</a></li>
+<li><a href="https://github.com/tyfkda/xcc/blob/3611adb54c116466f16aaa9fcdf233ca0473283c/src/cc/backend/optimize.c#L573-L633">コピー伝播</a></li>
+<li><a href="https://github.com/tyfkda/xcc/blob/3611adb54c116466f16aaa9fcdf233ca0473283c/src/cc/backend/ssa.c#L365-L415">Φ関数を戻す</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/08/25/backend-more-registers.html" title="コンパイラでもっとレジスタを活用するために行った対策" rel="bookmark">コンパイラでもっとレジスタを活用するために行った対策</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/10/21/regalloc-linearscan.html" title="自作Cコンパイラでレジスタ割付" rel="bookmark">自作Cコンパイラでレジスタ割付</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">「ゼリーのパズル」ソルバーを作る（A＊）</a></li><li class="recent_post"><a href="/blog/2024/12/11/webgpu-f32tex-filter.html">【WebGPU】floatテクスチャにフィルタを使用したい場合</a></li><li class="recent_post"><a href="/blog/2024/08/07/smb-rl-sb3.html">スーパーマリオの強化学習を動かす（Stable Baselines 3）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

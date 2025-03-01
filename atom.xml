@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-02-06T01:46:19.554Z</updated>
+  <updated>2025-03-01T09:54:55.574Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</title>
+    <link href="https://tyfkda.github.io/blog/2025/03/01/ssa-intro.html"/>
+    <id>https://tyfkda.github.io/blog/2025/03/01/ssa-intro.html</id>
+    <published>2025-03-01T10:00:00.000Z</published>
+    <updated>2025-03-01T09:54:55.574Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;趣味でコンパイラのバックエンドを作っているが現状最適化はほとんどできてない。
+最適化をしやすくするために静的単一代入を導入しようとして手間取っているのでメモ
+（力任せに実装しただけなので真偽は不明です）。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+    <category term="optimization" scheme="https://tyfkda.github.io/tags/optimization/"/>
+    
+  </entry>
   
   <entry>
     <title>再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</title>
@@ -77,7 +98,7 @@
     <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
     <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2025-02-06T01:46:27.036Z</updated>
+    <updated>2025-02-23T05:43:29.631Z</updated>
     
     
     <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
@@ -190,34 +211,6 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
     
     <category term="binary" scheme="https://tyfkda.github.io/tags/binary/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Roseスクリーンセーバーを再現</title>
-    <link href="https://tyfkda.github.io/blog/2024/01/27/rose-screen-saver.html"/>
-    <id>https://tyfkda.github.io/blog/2024/01/27/rose-screen-saver.html</id>
-    <published>2024-01-27T10:00:00.000Z</published>
-    <updated>2024-09-02T01:47:27.581Z</updated>
-    
-    
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-
-&lt;iframe src=&quot;https://openprocessing.org/sketch/2158350/embed/&quot; width=&quot;90%&quot; height=&quot;600&quot;&gt;&lt;/iframe&gt;
-
-&lt;p&gt;&lt;a href=&quot;http</summary>
-      
-    
-    
-    
-    
-    <category term="cg" scheme="https://tyfkda.github.io/tags/cg/"/>
-    
-    <category term="processing" scheme="https://tyfkda.github.io/tags/processing/"/>
-    
-    <category term="math" scheme="https://tyfkda.github.io/tags/math/"/>
     
   </entry>
   
