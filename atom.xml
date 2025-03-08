@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-03-01T12:35:58.517Z</updated>
+  <updated>2025-03-08T03:35:51.037Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,64 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Mach-Oの実行形式を自分で生成する</title>
+    <link href="https://tyfkda.github.io/blog/2025/03/08/macho-exe.html"/>
+    <id>https://tyfkda.github.io/blog/2025/03/08/macho-exe.html</id>
+    <published>2025-03-08T03:00:00.000Z</published>
+    <updated>2025-03-08T03:35:51.037Z</updated>
+    
+    
+    <summary type="html">&lt;style&gt;
+.code-container {
+  /* height: 600px;
+  overflow-y: scroll; */
+  overflow-y: hidden;
+  overflow-x: scroll;
+  border: 1px solid black;
+  border-radius: 8px;
+}
+.gist ::selection {
+  color: white !important;
+  background-color: green !important;
+}
+
+.gist table tr {
+  background-color: rgba(220,220,220,0.2) !important;
+}
+.blob-num {
+  display: none;
+}
+.gist-meta {
+  display: none;
+}
+.gist-file {
+  border-bottom: none !important;
+}
+table.highlight tr td,table.highlight tr td span {
+  font-size: 15px !important;
+  font-family: &quot;SFMono-Regular&quot;,Consolas,&quot;Liberation Mono&quot;,Menlo,Courier,monospace !important;
+}
+.gist tr:first-child td {
+  padding-top: 12px !important;
+}
+.gist tr:last-child td {
+  padding-bottom: 12px !important;
+}
+&lt;/style&gt;
+
+&lt;p&gt;自作したリンカーはELFは扱えるがMacOSで使われるMach-O形式には対応できてない。
+Mach-Oの実行ファイルも自分で生成できるようになればリンカーにも適用できて嬉しい。
+なので調べてみようという試み。&lt;/p&gt;
+&lt;p&gt;環境：Apple M1, macOS Sequoia 15.3.1, Apple clang version 16.0.0&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="binary" scheme="https://tyfkda.github.io/tags/binary/"/>
+    
+  </entry>
   
   <entry>
     <title>SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</title>
@@ -98,7 +156,7 @@
     <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
     <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2025-03-01T12:35:27.733Z</updated>
+    <updated>2025-03-07T02:15:09.133Z</updated>
     
     
     <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
@@ -119,7 +177,7 @@
     <link href="https://tyfkda.github.io/blog/2024/06/15/mach-o.html"/>
     <id>https://tyfkda.github.io/blog/2024/06/15/mach-o.html</id>
     <published>2024-06-15T09:00:00.000Z</published>
-    <updated>2024-09-02T01:47:27.578Z</updated>
+    <updated>2025-03-08T03:35:51.037Z</updated>
     
     
     <summary type="html">&lt;p&gt;Linuxなどの実行ファイルやコンパイラから出力されるオブジェクトファイルはELFという形式だが、
@@ -191,26 +249,6 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     
     
     <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【WASM】オブジェクトフォーマットとその実装方法</title>
-    <link href="https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html"/>
-    <id>https://tyfkda.github.io/blog/2024/02/05/wasm-obj-format.html</id>
-    <published>2024-02-05T12:00:00.000Z</published>
-    <updated>2025-01-22T03:03:32.359Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;WASMのバイナリフォーマットは実行用の情報しかないのでコンパイルの中間ファイル・リンク用には別途独自のファイル形式が必要かと思ってたんだけど、どうやら追加の情報を加えることで対応してるらしい。
-そこで使い方を探った。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-    <category term="binary" scheme="https://tyfkda.github.io/tags/binary/"/>
     
   </entry>
   
