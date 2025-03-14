@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-03-08T04:55:17.976Z</updated>
+  <updated>2025-03-14T03:44:40.476Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,28 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Viteに移行してみたら開発環境が快適になった</title>
+    <link href="https://tyfkda.github.io/blog/2025/03/13/vite-task-runner.html"/>
+    <id>https://tyfkda.github.io/blog/2025/03/13/vite-task-runner.html</id>
+    <published>2025-03-13T09:00:00.000Z</published>
+    <updated>2025-03-14T03:44:40.476Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;ずっと以前から&lt;a href=&quot;/blog/2015/12/10/gulp-es6.html&quot; title=&quot;gulp+ES6でフロントエンド開発&quot;&gt;Gulpなど&lt;/a&gt;やWebpackを使ってブラウザ上で動くウェブアプリを作っていたが、&lt;a href=&quot;https://ja.vitejs.dev/&quot;&gt;Vite&lt;/a&gt;に載せ替えてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="javascript" scheme="https://tyfkda.github.io/tags/javascript/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</title>
     <link href="https://tyfkda.github.io/blog/2025/03/08/macho-exe.html"/>
     <id>https://tyfkda.github.io/blog/2025/03/08/macho-exe.html</id>
     <published>2025-03-08T03:00:00.000Z</published>
-    <updated>2025-03-08T04:55:17.976Z</updated>
+    <updated>2025-03-14T01:32:49.236Z</updated>
     
     
     <summary type="html">&lt;style&gt;
@@ -177,7 +194,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2024/06/15/mach-o.html"/>
     <id>https://tyfkda.github.io/blog/2024/06/15/mach-o.html</id>
     <published>2024-06-15T09:00:00.000Z</published>
-    <updated>2025-03-08T04:55:17.976Z</updated>
+    <updated>2025-03-14T01:32:49.235Z</updated>
     
     
     <summary type="html">&lt;p&gt;Linuxなどの実行ファイルやコンパイラから出力されるオブジェクトファイルはELFという形式だが、
@@ -226,24 +243,6 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://gihyo.jp/book/2023/978-4-297-13360-3&quot;&gt;ゲームで学ぶ探索アルゴリズム実践入門
 ～木探索とメタヒューリスティクス&lt;/a&gt;という本の中でコネクトフォーの思考ルーチンをモンテカルロ木探索で実装するサンプルがあったので動かしてみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>折れ線にフィットするベジェ曲線を求める方法</title>
-    <link href="https://tyfkda.github.io/blog/2024/03/12/fit-curve.html"/>
-    <id>https://tyfkda.github.io/blog/2024/03/12/fit-curve.html</id>
-    <published>2024-03-12T09:00:00.000Z</published>
-    <updated>2024-09-02T01:47:27.576Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;以前に調べた&lt;a href=&quot;/blog/2020/10/26/simplify-line-segments.html&quot; title=&quot;折れ線を簡略化する方法(Ramer-Douglas-Peucker法)&quot;&gt;折れ線を簡略化する方法&lt;/a&gt;は線分の途中の点を省いて軽量化する方法で、線分のままだった。
-それとは違い、曲線を当てはめるアルゴリズムを調べた。&lt;/p&gt;</summary>
     
     
     

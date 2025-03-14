@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ずっと以前からGulpなどやWebpackを使ってブラウザ上で動くウェブアプリを作っていたが、Viteに載せ替えてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Viteに移行してみたら開発環境が快適になった"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Viteに移行してみたら開発環境が快適になった - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/03/13/vite-task-runner.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Viteに移行してみたら開発環境が快適になった</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-03-13
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/javascript/">#javascript</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ずっと以前から<a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発">Gulpなど</a>やWebpackを使ってブラウザ上で動くウェブアプリを作っていたが、<a href="https://ja.vitejs.dev/">Vite</a>に載せ替えてみた。</p>
+<span id="more"></span>
+
+<h2 id="タスクランナー小史"><a href="#タスクランナー小史" class="headerlink" title="タスクランナー小史"></a>タスクランナー小史</h2><p>以前のGulp+browserify（後にWebpackに変更）でなにをしたかったかというと、複数のファイルに分割したJavaScriptのコードをひとまとめにして、ブラウザ上で動かせるようにするのが目的だった。
+さらには変数名を縮めてサイズを減らしたり、SASSやTypeScriptを扱ったり、ソースの更新を見張って自動的に再コンパイル＋lintでコードスタイルチェック＋自動ページリロードで反映されるようにしていた。</p>
+<p>時は流れて知らぬうちに環境がより一層整備されていたらしく、Viteというのが結構使われているっぽい（観測範囲の限り）ので、どんなもんかとみてみた。</p>
+<h2 id="Viteかんそう"><a href="#Viteかんそう" class="headerlink" title="Viteかんそう"></a>Viteかんそう</h2><p>Viteがなんたるかは<a href="https://ja.vitejs.dev/">オフィシャル</a>にあたってもらうとして、試した利点として、</p>
+<ul>
+<li>設定なしでもほとんどそのまま使える<ul>
+<li>index.html からスクリプトタグで読み込むソースを自動的にパックしてくれる</li>
+<li>最初からTypeScriptが使える</li>
+<li>SASSも？</li>
+</ul>
+</li>
+<li>開発用ローカルサーバの機能がついてる</li>
+<li>再コンパイル、ページリロードが速い</li>
+</ul>
+<h2 id="個別ユースケース"><a href="#個別ユースケース" class="headerlink" title="個別ユースケース"></a>個別ユースケース</h2><h3 id="vite-configをモジュールにする"><a href="#vite-configをモジュールにする" class="headerlink" title="vite.configをモジュールにする"></a>vite.configをモジュールにする</h3><p>Viteの設定ファイルをvite.config.ts（または.js）というファイル名にすると怒られる：</p>
+<blockquote>
+<p>The CJS build of Vite’s Node API is deprecated. See <a href="https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated">https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated</a> for more details.</p>
+</blockquote>
+<p>ので、.mts（または.mjs）にすること。</p>
+<h3 id="アセットの出力ファイル名指定"><a href="#アセットの出力ファイル名指定" class="headerlink" title="アセットの出力ファイル名指定"></a>アセットの出力ファイル名指定</h3><p>リリース用に<code>vite build</code>でファイルを出力する際に、htmlから読み込まれるJavaScriptやCSSなどのアセットファイル名に自動的にハッシュが追加されてしまう。
+キャッシュ効果防止にはいいかもしれないが、ファイル名を指定したい場合にはconfigの<code>build.rollupOptions.output</code>に記述：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineConfig</span>(&#123;</span><br><span class="line">  <span class="attr">build</span>: &#123;</span><br><span class="line">    <span class="attr">rollupOptions</span>: &#123;</span><br><span class="line">      <span class="attr">output</span>: &#123;</span><br><span class="line">        <span class="attr">entryFileNames</span>: <span class="string">&#x27;assets/[name].js&#x27;</span>,</span><br><span class="line">        <span class="attr">assetFileNames</span>: <span class="string">&#x27;assets/[name].[ext]&#x27;</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">worker</span>: &#123;</span><br><span class="line">    <span class="attr">rollupOptions</span>: &#123;</span><br><span class="line">      <span class="attr">output</span>: &#123;</span><br><span class="line">        <span class="attr">entryFileNames</span>: <span class="string">&#x27;assets/[name].js&#x27;</span>,</span><br><span class="line">        <span class="attr">assetFileNames</span>: <span class="string">&#x27;assets/[name].[ext]&#x27;</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="起点となるhtmlのminify"><a href="#起点となるhtmlのminify" class="headerlink" title="起点となるhtmlのminify"></a>起点となるhtmlのminify</h3><p>index.htmlなどブラウザから読み込むhtmlがそのままではminifyされないので、するにはnpmで必要なモジュールをインストールして：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install --save-dev vite-plugin-html-minifier</span><br><span class="line">$ npm install --save-dev @types/html-minifier  <span class="comment"># TypeScriptの場合、こちらも</span></span><br></pre></td></tr></table></figure>
+
+<p>プラグインに追加する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vite.config.mts</span></span><br><span class="line"><span class="keyword">import</span> &#123; defineConfig &#125; <span class="keyword">from</span> <span class="string">&#x27;vite&#x27;</span></span><br><span class="line"><span class="keyword">import</span> htmlMinifier <span class="keyword">from</span> <span class="string">&#x27;vite-plugin-html-minifier&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineConfig</span>(&#123;</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="title function_">htmlMinifier</span>(&#123;  <span class="comment">// ← これ</span></span><br><span class="line">      <span class="attr">minify</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>JavaScriptやCSSは自動的にminifyされるっぽい</li>
+</ul>
+<h3 id="JavaScript内でhtmlファイルの内容を文字列としてインポート"><a href="#JavaScript内でhtmlファイルの内容を文字列としてインポート" class="headerlink" title="JavaScript内でhtmlファイルの内容を文字列としてインポート"></a>JavaScript内でhtmlファイルの内容を文字列としてインポート</h3><p>JavaScript内でhtmlを書き換える場合に、内容を別のhtmlファイルに記述しておいてそれを埋め込みたい場合にどうするかというと、<a href="https://github.com/tyfkda/nesemu/blob/9a415dc2e4dbf6d297ce7f6892cfca6b1629a2d3/src/app/other_wnd.ts#L19">インポートに<code>?inline</code>と指定</a>する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> aboutHtmlContent <span class="keyword">from</span> <span class="string">&#x27;../res/about.html?inline&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">root</span>: <span class="title class_">HTMLElement</span></span><br><span class="line">root.<span class="property">innerHTML</span> = aboutHtmlContent</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://ja.vite.dev/guide/assets#%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%95%E3%82%9A%E3%83%88%E3%82%92-worker-%E3%81%A8%E3%81%97%E3%81%A6%E3%82%A4%E3%83%B3%E3%83%9B%E3%82%9A%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B">明示的なインライン処理</a></li>
+</ul>
+<h3 id="インポートされるhtmlから参照される画像の埋め込み"><a href="#インポートされるhtmlから参照される画像の埋め込み" class="headerlink" title="インポートされるhtmlから参照される画像の埋め込み"></a>インポートされるhtmlから参照される画像の埋め込み</h3><p>前述のようにインポートしたhtml内から参照する画像ファイルを埋め込みたい場合にどうするか。
+結局事前に埋め込むやり方は分からず、同じくJavaScriptで<a href="https://github.com/tyfkda/nesemu/blob/9a415dc2e4dbf6d297ce7f6892cfca6b1629a2d3/src/app/other_wnd.ts#L20">画像を<code>?raw</code>インポート</a>してセットするしかなかった：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> githubLogoSvg <span class="keyword">from</span> <span class="string">&#x27;../res/github-logo.svg?raw&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">root</span>: <span class="title class_">HTMLElement</span></span><br><span class="line"><span class="keyword">const</span> img = root.<span class="title function_">querySelector</span>(<span class="string">&#x27;img#github-logo&#x27;</span>)</span><br><span class="line"><span class="keyword">if</span> (img != <span class="literal">null</span>) &#123;</span><br><span class="line">  img.<span class="title function_">setAttribute</span>(<span class="string">&#x27;src&#x27;</span>, <span class="string">`data:image/svg+xml;base64,<span class="subst">$&#123;btoa(githubLogoSvg)&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://ja.vite.dev/guide/assets#importing-asset-as-string">アセットを文字列としてインポートする</a></li>
+</ul>
+<h3 id="WebWorker-AudioWorklet"><a href="#WebWorker-AudioWorklet" class="headerlink" title="WebWorker, AudioWorklet"></a>WebWorker, AudioWorklet</h3><p>WebWorkerやAudioWorkletなどの、メインスレッド以外のワーカースレッドで動かすスクリプトは別ファイルにする必要があるが、どうするか。
+htmlから<code>script</code>タグで読み込まれるスクリプトはアセットとして自動的にビルドされるが、WebWorkerはJavaScript内から<code>new Worker(&#39;パス&#39;)</code>で起動されるため、自動的にはビルドされない。</p>
+<p>どうするかというと<a href="https://github.com/tyfkda/nesemu/blob/9a415dc2e4dbf6d297ce7f6892cfca6b1629a2d3/src/util/audio/delta_modulation_channel_worker.ts#L3">インポート時に<code>?worker&amp;url</code>と指定</a>して、<a href="https://github.com/tyfkda/nesemu/blob/9a415dc2e4dbf6d297ce7f6892cfca6b1629a2d3/src/util/audio/delta_modulation_channel_worker.ts#L19">それをURLとして使用</a>する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">DmcWorkletURL</span> <span class="keyword">from</span> <span class="string">&#x27;../../dmc_channel_worker.ts?worker&amp;url&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">context</span>: <span class="title class_">AudioContext</span></span><br><span class="line"></span><br><span class="line">context.<span class="property">audioWorklet</span>.<span class="title function_">addModule</span>(<span class="title class_">DmcWorkletURL</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://ja.vite.dev/guide/assets#%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%95%E3%82%9A%E3%83%88%E3%82%92-worker-%E3%81%A8%E3%81%97%E3%81%A6%E3%82%A4%E3%83%B3%E3%83%9B%E3%82%9A%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B">スクリプトを Worker としてインポートする</a></li>
+<li><a href="https://ja.vite.dev/guide/features#web-workers">Web Workers</a></li>
+</ul>
+<h2 id="かんそう"><a href="#かんそう" class="headerlink" title="かんそう"></a>かんそう</h2><p>GulpとWebpackでは設定ファイルを大量にゴリゴリ書く必要があったのがほぼなくなって、正直環境の進化に感心している。</p>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li>オフィシャル：<a href="https://ja.vitejs.dev/">Vite | 次世代フロントエンドツール</a></li>
+<li><a href="https://voidzero.dev/posts/announcing-voidzero-inc">Announcing VoidZero - Next Generation Toolchain for JavaScript | VoidZero</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/03/19/js-case-range.html" title="【JavaScript】switch-caseで「これ以上これ以下」にマッチさせる" rel="bookmark">【JavaScript】switch-caseで「これ以上これ以下」にマッチさせる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/03/13/vite-task-runner.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
