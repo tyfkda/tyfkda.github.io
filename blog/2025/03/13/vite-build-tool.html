@@ -67,7 +67,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/03/13/vite-task-runner.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/03/13/vite-build-tool.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -223,6 +223,14 @@
 <ul>
 <li>JavaScriptやCSSは自動的にminifyされるっぽい</li>
 </ul>
+<h3 id="埋め込む画像のファイルサイズ制限を緩和する"><a href="#埋め込む画像のファイルサイズ制限を緩和する" class="headerlink" title="埋め込む画像のファイルサイズ制限を緩和する"></a>埋め込む画像のファイルサイズ制限を緩和する</h3><p>JavaScriptから<code>img</code>タグの画像を書き換える際にPNGファイルを別途サーバーに用意して<code>src</code>属性にセットすることもできるが、小さい画像の場合には埋め込みたい。
+JavaScriptからインポートすると画像リソースが埋め込み文字列としてコンパイルされるんだけど、デフォルトだとサイズが4KBより大きい場合には埋め込まれずにアセットとして出力されてしまう。
+この制限を設定するには<a href="https://ja.vite.dev/config/build-options#build-assetsinline"><code>build.assetsInlineLimit</code></a>に設定する：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// foo.js</span></span><br><span class="line"><span class="keyword">import</span> barImg <span class="keyword">from</span> <span class="string">&#x27;../res/bar.png&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">img</span>: <span class="title class_">HTMLImageElement</span></span><br><span class="line">img.<span class="property">src</span> = barImg</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vite.config.mts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineConfig</span>(&#123;</span><br><span class="line">  <span class="attr">build</span>: &#123;</span><br><span class="line">    <span class="attr">assetsInlineLimit</span>: <span class="number">8192</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
 <h3 id="JavaScript内でhtmlファイルの内容を文字列としてインポート"><a href="#JavaScript内でhtmlファイルの内容を文字列としてインポート" class="headerlink" title="JavaScript内でhtmlファイルの内容を文字列としてインポート"></a>JavaScript内でhtmlファイルの内容を文字列としてインポート</h3><p>JavaScript内でhtmlを書き換える場合に、内容を別のhtmlファイルに記述しておいてそれを埋め込みたい場合にどうするかというと、<a href="https://github.com/tyfkda/nesemu/blob/9a415dc2e4dbf6d297ce7f6892cfca6b1629a2d3/src/app/other_wnd.ts#L19">インポートに<code>?inline</code>と指定</a>する：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> aboutHtmlContent <span class="keyword">from</span> <span class="string">&#x27;../res/about.html?inline&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">root</span>: <span class="title class_">HTMLElement</span></span><br><span class="line">root.<span class="property">innerHTML</span> = aboutHtmlContent</span><br></pre></td></tr></table></figure>
 
@@ -261,14 +269,14 @@ htmlから<code>script</code>タグで読み込まれるスクリプトはアセ
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/03/19/js-case-range.html" title="【JavaScript】switch-caseで「これ以上これ以下」にマッチさせる" rel="bookmark">【JavaScript】switch-caseで「これ以上これ以下」にマッチさせる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/18/fastclick.html" title="FastClickを使った体感応答時間の短縮テスト" rel="bookmark">FastClickを使った体感応答時間の短縮テスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6-karma.html" title="gulp+ES6+Karma(Jasmine)でユニットテスト" rel="bookmark">gulp+ES6+Karma(Jasmine)でユニットテスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/10/gulp-es6.html" title="gulp+ES6でフロントエンド開発" rel="bookmark">gulp+ES6でフロントエンド開発</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/11/js-leap-year.html" title="【JavaScript】うるう年判定" rel="bookmark">【JavaScript】うるう年判定</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/01/js-range.html" title="【JavaScript】range（整数列）の作成方法" rel="bookmark">【JavaScript】range（整数列）の作成方法</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/03/13/vite-task-runner.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</a></li></ul>
                 </div>
             </div>
 
