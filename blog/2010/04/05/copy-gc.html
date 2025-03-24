@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="GC本を見ながら、コピーGCをC++で実装する。
+ガベージコレクションのアルゴリズムと実装posted at 10.04.06中村 成洋 相川 光 秀和システム 売り上げランキング: 961おすすめ度の平均:  GCの入門書として今のところ最強!Amazon.co.jp で詳細を見る
+
+GC対象とな">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="コピーGCをC++で実装する"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>コピーGCをC++で実装する - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2010/04/05/copy-gc.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>コピーGCをC++で実装する</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2010-04-05
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cplusplus/">#cplusplus</a> <a href="/tags/gc/">#gc</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>GC本を見ながら、コピーGCをC++で実装する。</p>
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798025623/tyfkda-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/51V5Kpc7m9L._SL160_.jpg" alt="ガベージコレクションのアルゴリズムと実装" style="border: none;" /></a></div><div class="amazlet-info" style="float:left;margin-left:15px;line-height:120%"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798025623/tyfkda-22/ref=nosim/" name="amazletlink" target="_blank">ガベージコレクションのアルゴリズムと実装</a><div class="amazlet-powered-date" style="font-size:7pt;margin-top:5px;font-family:verdana;line-height:120%">posted at 10.04.06</div></div><div class="amazlet-detail">中村 成洋 相川 光 <br />秀和システム <br />売り上げランキング: 961<br /></div><div class="amazlet-review" style="margin-top:10px; margin-bottom:10px"><div class="amazlet-review-average" style="margin-bottom:5px">おすすめ度の平均: <img src="http://images-jp.amazon.com/images/G/09/x-locale/common/customer-reviews/stars-5-0.gif" alt="5.0" /></div><img src="http://images-jp.amazon.com/images/G/09/x-locale/common/customer-reviews/stars-5-0.gif" alt="5" /> GCの入門書として今のところ最強!<br /></div><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798025623/tyfkda-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jp で詳細を見る</a></div></div><div class="amazlet-footer" style="clear: left"></div></div>
+
+<p>GC対象となるオブジェクトのベースクラス：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GCObject</span> &#123;</span><br><span class="line">    <span class="type">size_t</span> size;</span><br><span class="line">    GCObject* forwarding;</span><br><span class="line"><span class="keyword">private</span>:    <span class="comment">// デストラクタは作れないようにする！</span></span><br><span class="line">    ~<span class="built_in">GCObject</span>() &#123; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">copy_children</span><span class="params">(<span class="keyword">class</span> CopyGC*)</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">class</span> <span class="title class_">CopyGC</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>オブジェクトのサイズとコピー先を示すforwardingポインタを持ってるけど、forwardingポインタはコピー時にコピー元にだけ置ければいいからうまくやれば削れそうな気がする。
+ここではコピー済みかどうかのタグは持たずに、forwardingポインタがNULL以外ならコピー済みとした。
+今回のコピーGCではデストラクタは呼ばれないので、継承先クラスでデストラクタを作れないようにprivateにしている。
+内部にオブジェクトを指すポインタを持っていたらcopy_children()メソッドをオーバーライドしてやる。</p>
+<p>ヒープとオブジェクトを管理し、コピーGCするクラス：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CopyGC</span> &#123;</span><br><span class="line">    <span class="type">size_t</span> half_size;</span><br><span class="line">    <span class="type">char</span>* from_start;</span><br><span class="line">    <span class="type">char</span>* to_start;</span><br><span class="line">    <span class="type">char</span>* free;</span><br><span class="line">    <span class="function"><span class="type">size_t</span> <span class="title">left</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>-&gt;half_size - (<span class="keyword">this</span>-&gt;free - <span class="keyword">this</span>-&gt;from_start); &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">set_heap</span><span class="params">(<span class="type">void</span>* buf, <span class="type">size_t</span> siz)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;half_size = siz / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">this</span>-&gt;from_start = <span class="built_in">static_cast</span>&lt;<span class="type">char</span>*&gt;(buf);</span><br><span class="line">        <span class="keyword">this</span>-&gt;to_start = <span class="built_in">static_cast</span>&lt;<span class="type">char</span>*&gt;(buf) + <span class="keyword">this</span>-&gt;half_size;</span><br><span class="line">        <span class="keyword">this</span>-&gt;free = <span class="keyword">this</span>-&gt;from_start;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function">GCObject* <span class="title">new_obj</span><span class="params">(<span class="type">size_t</span> size)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (size &gt; <span class="keyword">this</span>-&gt;<span class="built_in">left</span>()) &#123;</span><br><span class="line">            <span class="built_in">copying</span>();</span><br><span class="line">            <span class="keyword">if</span> (size &gt; <span class="keyword">this</span>-&gt;<span class="built_in">left</span>()) &#123;</span><br><span class="line">                <span class="built_in">allocation_fail</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        GCObject* obj = <span class="built_in">reinterpret_cast</span>&lt;GCObject*&gt;(<span class="keyword">this</span>-&gt;free);</span><br><span class="line">        obj-&gt;size = size;</span><br><span class="line">        obj-&gt;forwarding = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">this</span>-&gt;free += size;</span><br><span class="line">        <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">copying</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;free = <span class="keyword">this</span>-&gt;to_start;</span><br><span class="line">        <span class="built_in">copy_live_objs</span>();</span><br><span class="line">        <span class="built_in">SWAP</span>(<span class="keyword">this</span>-&gt;from_start, <span class="keyword">this</span>-&gt;to_start);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">copy_live_objs</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">GCObject* <span class="title">copy</span><span class="params">(GCObject* obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (obj-&gt;forwarding == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="built_in">memcpy</span>(<span class="keyword">this</span>-&gt;free, obj, obj-&gt;size);</span><br><span class="line">            obj-&gt;forwarding = <span class="built_in">reinterpret_cast</span>&lt;GCObject*&gt;(<span class="keyword">this</span>-&gt;free);</span><br><span class="line">            <span class="keyword">this</span>-&gt;free += obj-&gt;size;</span><br><span class="line"></span><br><span class="line">            obj-&gt;forwarding-&gt;<span class="built_in">copy_children</span>(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> obj-&gt;forwarding;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>new_obj()</code>でメモリを確保するときにアライメントとかとってない。
+ヒープに空き容量がなかったら<code>copying()</code>を呼び出してコピーGCする。
+ルートをたどる処理は継承先で<code>copy_live_objs()</code>をオーバーライドして実装する。
+<code>copy()</code>でオブジェクトをto領域にコピーする。</p>
+<p>ほとんどGC本の擬似コードどおりに書ける、素晴らしい！</p>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;</p>
+<p>これを使って、スタックマシンを作ってみる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> GCObject* Value;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> Value nil = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Integer</span> : <span class="keyword">public</span> GCObject &#123;</span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">    <span class="built_in">Integer</span>(<span class="type">int</span> x_) : <span class="built_in">GCObject</span>(), <span class="built_in">x</span>(x_)    &#123; &#125;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">get</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>-&gt;x; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">class</span> <span class="title class_">Context</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">is_integer</span><span class="params">(Value v)</span> </span>&#123; <span class="keyword">return</span> <span class="built_in">typeid</span>(*v) == <span class="built_in">typeid</span>(Integer); &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Stack</span> &#123;</span><br><span class="line">    vector&lt;Value&gt; buf;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Stack</span>() : <span class="built_in">buf</span>() &#123; &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;buf.<span class="built_in">clear</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">push</span><span class="params">(Value v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;buf.<span class="built_in">push_back</span>(v);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">Value <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> idx = <span class="keyword">this</span>-&gt;buf.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">if</span> (idx &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            Value v = <span class="keyword">this</span>-&gt;buf[idx<span class="number">-1</span>];</span><br><span class="line">            <span class="keyword">this</span>-&gt;buf.<span class="built_in">pop_back</span>();</span><br><span class="line">            <span class="keyword">return</span> v;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">assert</span>(!<span class="string">&quot;stack empty&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> nil;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">pop</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;n; ++i) &#123;</span><br><span class="line">            <span class="keyword">this</span>-&gt;buf.<span class="built_in">pop_back</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">remove</span><span class="params">(<span class="type">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = <span class="keyword">this</span>-&gt;buf.<span class="built_in">size</span>();</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= idx + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=n-idx; i&lt;n; ++i) &#123;</span><br><span class="line">            <span class="keyword">this</span>-&gt;buf[i<span class="number">-1</span>] = <span class="keyword">this</span>-&gt;buf[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>-&gt;buf.<span class="built_in">pop_back</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">Value <span class="title">peek</span><span class="params">(<span class="type">int</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = <span class="keyword">this</span>-&gt;buf.<span class="built_in">size</span>();</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= idx + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>-&gt;buf[n - idx - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">copy</span><span class="params">(CopyGC* gc)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (vector&lt;Value&gt;::iterator it = <span class="keyword">this</span>-&gt;buf.<span class="built_in">begin</span>(); it != <span class="keyword">this</span>-&gt;buf.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">            *it = gc-&gt;<span class="built_in">copy</span>(*it);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Context</span> : <span class="keyword">private</span> CopyGC &#123;</span><br><span class="line">    Stack stack;</span><br><span class="line">    Stack temp_stack;</span><br><span class="line">    <span class="type">void</span>* heap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Context</span>() : <span class="built_in">CopyGC</span>(), <span class="built_in">stack</span>(), <span class="built_in">temp_stack</span>() &#123;</span><br><span class="line">        <span class="type">const</span> <span class="type">size_t</span> HeapSize = <span class="number">4</span> * <span class="number">1024</span>;</span><br><span class="line">        <span class="keyword">this</span>-&gt;heap = <span class="built_in">malloc</span>(HeapSize);</span><br><span class="line">        <span class="keyword">this</span>-&gt;<span class="built_in">set_heap</span>(<span class="keyword">this</span>-&gt;heap, HeapSize);</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Context</span>() &#123;</span><br><span class="line">        <span class="built_in">free</span>(<span class="keyword">this</span>-&gt;heap);</span><br><span class="line">        stack.<span class="built_in">clear</span>();</span><br><span class="line">        temp_stack.<span class="built_in">clear</span>();</span><br><span class="line">        <span class="keyword">this</span>-&gt;<span class="built_in">copying</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">push_integer</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">        Integer* p = <span class="built_in">new</span>(<span class="built_in">new_obj</span>(<span class="built_in">sizeof</span>(*p))) <span class="built_in">Integer</span>(x);</span><br><span class="line">        <span class="keyword">this</span>-&gt;stack.<span class="built_in">push</span>(p);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;stack.<span class="built_in">pop</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">remove</span><span class="params">(<span class="type">int</span> ofs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;stack.<span class="built_in">remove</span>(ofs);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dup</span><span class="params">(<span class="type">int</span> ofs=<span class="number">0</span>)</span> </span>&#123;</span><br><span class="line">        Value v = <span class="keyword">this</span>-&gt;stack.<span class="built_in">peek</span>(ofs);</span><br><span class="line">        <span class="keyword">this</span>-&gt;<span class="built_in">push_value</span>(v);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">add</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Value v1 = <span class="keyword">this</span>-&gt;stack.<span class="built_in">pop</span>();    <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">push</span>(v1);</span><br><span class="line">        Value v2 = <span class="keyword">this</span>-&gt;stack.<span class="built_in">pop</span>();    <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">push</span>(v2);</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">is_integer</span>(v1) &amp;&amp; <span class="built_in">is_integer</span>(v2)) &#123;</span><br><span class="line">            Integer* p1 = <span class="built_in">static_cast</span>&lt;Integer*&gt;(v1);</span><br><span class="line">            Integer* p2 = <span class="built_in">static_cast</span>&lt;Integer*&gt;(v2);</span><br><span class="line">            <span class="keyword">this</span>-&gt;<span class="built_in">push_integer</span>(p1-&gt;<span class="built_in">get</span>() + p2-&gt;<span class="built_in">get</span>());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">error_exit</span>(<span class="string">&quot;not number&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">pop</span>(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">sub</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Value v1 = <span class="keyword">this</span>-&gt;stack.<span class="built_in">pop</span>();    <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">push</span>(v1);</span><br><span class="line">        Value v2 = <span class="keyword">this</span>-&gt;stack.<span class="built_in">pop</span>();    <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">push</span>(v2);</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">is_integer</span>(v1) &amp;&amp; <span class="built_in">is_integer</span>(v2)) &#123;</span><br><span class="line">            Integer* p1 = <span class="built_in">static_cast</span>&lt;Integer*&gt;(v1);</span><br><span class="line">            Integer* p2 = <span class="built_in">static_cast</span>&lt;Integer*&gt;(v2);</span><br><span class="line">            <span class="keyword">this</span>-&gt;<span class="built_in">push_integer</span>(p1-&gt;<span class="built_in">get</span>() - p2-&gt;<span class="built_in">get</span>());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">error_exit</span>(<span class="string">&quot;not number&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">pop</span>(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">comp_le</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Value v1 = <span class="keyword">this</span>-&gt;stack.<span class="built_in">pop</span>();    <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">push</span>(v1);</span><br><span class="line">        Value v2 = <span class="keyword">this</span>-&gt;stack.<span class="built_in">pop</span>();    <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">push</span>(v2);</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">is_integer</span>(v1) &amp;&amp; <span class="built_in">is_integer</span>(v2)) &#123;</span><br><span class="line">            Integer* p1 = <span class="built_in">static_cast</span>&lt;Integer*&gt;(v1);</span><br><span class="line">            Integer* p2 = <span class="built_in">static_cast</span>&lt;Integer*&gt;(v2);</span><br><span class="line">            <span class="keyword">this</span>-&gt;<span class="built_in">push_integer</span>(p1-&gt;<span class="built_in">get</span>() &lt;= p2-&gt;<span class="built_in">get</span>());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">error_exit</span>(<span class="string">&quot;not number&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">pop</span>(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">is_false</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Value v = <span class="keyword">this</span>-&gt;stack.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">is_integer</span>(v) &amp;&amp; (<span class="built_in">static_cast</span>&lt;Integer*&gt;(v))-&gt;<span class="built_in">get</span>() == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">is_true</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !<span class="keyword">this</span>-&gt;<span class="built_in">is_false</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dump</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Value v = <span class="keyword">this</span>-&gt;stack.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">is_integer</span>(v)) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, <span class="built_in">static_cast</span>&lt;Integer*&gt;(v)-&gt;<span class="built_in">get</span>());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">error_exit</span>(<span class="string">&quot;unknown type&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">push_value</span><span class="params">(Value v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;stack.<span class="built_in">push</span>(v);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">copy_live_objs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;stack.<span class="built_in">copy</span>(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">this</span>-&gt;temp_stack.<span class="built_in">copy</span>(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">fib</span><span class="params">(Context&amp; ctx)</span> </span>&#123;</span><br><span class="line">    ctx.<span class="built_in">push_integer</span>(<span class="number">1</span>);</span><br><span class="line">    ctx.<span class="built_in">dup</span>(<span class="number">1</span>);</span><br><span class="line">    ctx.<span class="built_in">comp_le</span>();</span><br><span class="line">    <span class="keyword">if</span> (ctx.<span class="built_in">is_true</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;        <span class="comment">// x</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ctx.<span class="built_in">push_integer</span>(<span class="number">2</span>);</span><br><span class="line">        ctx.<span class="built_in">dup</span>(<span class="number">1</span>);</span><br><span class="line">        ctx.<span class="built_in">sub</span>();</span><br><span class="line">        <span class="built_in">fib</span>(ctx);</span><br><span class="line">        ctx.<span class="built_in">push_integer</span>(<span class="number">1</span>);</span><br><span class="line">        ctx.<span class="built_in">dup</span>(<span class="number">2</span>);</span><br><span class="line">        ctx.<span class="built_in">sub</span>();</span><br><span class="line">        <span class="built_in">fib</span>(ctx);</span><br><span class="line">        ctx.<span class="built_in">add</span>();</span><br><span class="line">        ctx.<span class="built_in">remove</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span> </span>&#123;</span><br><span class="line">    Context ctx;</span><br><span class="line">    <span class="type">int</span> n = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">if</span> (argc &gt;= <span class="number">2</span>) &#123;</span><br><span class="line">        n = <span class="built_in">atoi</span>(argv[<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ctx.<span class="built_in">push_integer</span>(n);</span><br><span class="line">    <span class="built_in">fib</span>(ctx);</span><br><span class="line">    ctx.<span class="built_in">dump</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>コピーGCはヒープの確保が速くてすごくいい。
+今の世の中、メモリはうなるほどあるので、ヒープが半分しか使えなくても問題ないかもしれない。
+解放もCoalescingも必要ないし。</p>
+<p>例によってフィボナッチ計算。
+Cのプログラムで呼び出してるのにLuaのVMより遅いとかどんだけ。</p>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/04/02/mark-sweep2.html" title="マークスイープGCのテスト２" rel="bookmark">マークスイープGCのテスト２</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html" title="Cocos2dx3系のタッチイベントをラムダ式で書く" rel="bookmark">Cocos2dx3系のタッチイベントをラムダ式で書く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/10/05/cpp-cast.html" title="【C++】static_castとreinterpret_cast、またdynamic_castの違い" rel="bookmark">【C++】static_castとreinterpret_cast、またdynamic_castの違い</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/09/08/cpp-lambda.html" title="【C++】ラムダ関数" rel="bookmark">【C++】ラムダ関数</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/26/cpp-multi-value.html" title="【C++】関数から多値を返す" rel="bookmark">【C++】関数から多値を返す</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

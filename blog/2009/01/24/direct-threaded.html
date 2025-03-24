@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Direct threadingってよく聞くんだけどどういうものか知らなかったので調べた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Direct threaded code"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Direct threaded code - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/01/24/direct-threaded.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Direct threaded code</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-01-24
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/c/">#c</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>Direct threadingってよく聞くんだけどどういうものか知らなかったので調べた。</p>
+<span id="more"></span>
+
+<p><a href="http://en.wikipedia.org/wiki/Threaded_code">Threaded code</a></p>
+<ul>
+<li>threaded codeは、VMの実装をするときに命令のフェッチ→オペコードによって処理の分岐というのを、プログラム側に各オペコードの処理のアドレスを埋め込んで高速化する技のこと</li>
+<li>threaded codeで実装するとコンパクト、だけど遅い。
+でも小さいから場合によってはキャッシュミスが減って十分速いかも。</li>
+<li>threaded codeはVMのバイトコードから実際の関数だかサブルーチンのアドレスを直接埋め込みをコンパイル時やプログラムロード時に行って、実行時は直接そのアドレスに飛ぶようにしたもの<ul>
+<li>しかしバイトコードよりは使う空間が大きくなる</li>
+</ul>
+</li>
+<li>direct threaded codeは、次の命令への分岐を先頭の一ヶ所で行わず、各オペコードの処理の最後で先頭に戻る代わりに次の命令に直接ジャンプする</li>
+<li><a href="https://magazine.rubyist.net/articles/0008/0008-YarvManiacs.html">YARV Maniacs 【第 3 回】 命令ディスパッチの高速化</a><ul>
+<li>threaded codeだと分岐予測がほぼはずれる、のでdirect threadedはその分有利</li>
+</ul>
+</li>
+</ul>
+<p>テストのプログラムを書いた（GCC拡張のgotoのラベルのアドレスを取る機能を使って）</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/// VMのオペコード</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    HALT,</span><br><span class="line">    LDA,</span><br><span class="line">    DEC,</span><br><span class="line">    JNZ,</span><br><span class="line">&#125; Opcode;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// コード</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        Opcode op;</span><br><span class="line">        <span class="type">const</span> <span class="type">void</span>* adr;</span><br><span class="line">    &#125; u;</span><br><span class="line">    <span class="type">int</span> operand;</span><br><span class="line">&#125; Code;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// VM</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">        <span class="type">int</span> a;</span><br><span class="line">    &#125; reg;</span><br><span class="line">&#125; Vm;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> DIRECT_THREADED</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OP_SWITCH_LOOP      for (;;) &#123; switch((pc++)-&gt;u.op) &#123;</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CASE(op)            case op:</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BREAK               break;</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OP_SWITCH_LOOP_END  &#125; &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OP_SWITCH_LOOP      goto *((pc++)-&gt;u.adr);</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CASE(op)            op:</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BREAK               goto *((pc++)-&gt;u.adr);</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OP_SWITCH_LOOP_END  <span class="comment">/* nothing */</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 命令をラベルに置き換える</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">replace_label</span><span class="params">(Code* code, <span class="type">const</span> <span class="type">void</span>* optbl[])</span> &#123;</span><br><span class="line">    Opcode op;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        op = code-&gt;u.op;</span><br><span class="line">        code-&gt;u.adr = optbl[op];</span><br><span class="line">    &#125; <span class="keyword">while</span> (++code, op != HALT);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">run</span><span class="params">(Vm* vm, Code* pc)</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> DIRECT_THREADED</span></span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">void</span>* optbl[] = &#123;</span><br><span class="line">        &amp;&amp;HALT,</span><br><span class="line">        &amp;&amp;LDA,</span><br><span class="line">        &amp;&amp;DEC,</span><br><span class="line">        &amp;&amp;JNZ,</span><br><span class="line">    &#125;;</span><br><span class="line">    replace_label(pc, optbl);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    OP_SWITCH_LOOP</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(HALT)</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    CASE(LDA)</span><br><span class="line">        vm-&gt;reg.a = (pc<span class="number">-1</span>)-&gt;operand;</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(DEC)</span></span><br><span class="line">        vm-&gt;reg.a -= <span class="number">1</span>;</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(JNZ)</span></span><br><span class="line">        <span class="title function_">if</span> <span class="params">(vm-&gt;reg.a != <span class="number">0</span>)</span> &#123;</span><br><span class="line">            pc += (pc<span class="number">-1</span>)-&gt;operand;</span><br><span class="line">        &#125;</span><br><span class="line">        BREAK</span><br><span class="line">    OP_SWITCH_LOOP_END</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    Code code[] = &#123;</span><br><span class="line">        &#123; LDA,  <span class="number">100000000</span> &#125;,    <span class="comment">// １億</span></span><br><span class="line">        &#123; DEC &#125;,</span><br><span class="line">        &#123; JNZ,  <span class="number">-2</span> &#125;,</span><br><span class="line">        &#123; HALT &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">    Vm vm;</span><br><span class="line">    run(&amp;vm, code);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>cygwin上でgcc -O2 でコンパイルした実行結果：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time ./thread.exe</span><br><span class="line"></span><br><span class="line">real    0m2.795s</span><br><span class="line">user    0m2.753s</span><br><span class="line">sys     0m0.040s</span><br><span class="line"></span><br><span class="line">$ time ./direct.exe</span><br><span class="line"></span><br><span class="line">real    0m5.557s</span><br><span class="line">user    0m5.367s</span><br><span class="line">sys     0m0.050s</span><br></pre></td></tr></table></figure>
+
+<p>だめじゃん。
+gcc -Sでアセンブリコードを見てみるとDIRECT_THREADEDでもディスパッチ部がひとつにまとめられてdirect threadedになってない。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">; ディスパッチ部</span><br><span class="line">L17:</span><br><span class="line">    movl    (%ebx), %eax</span><br><span class="line">    addl    $8, %ebx</span><br><span class="line">    jmp     *%eax</span><br><span class="line">    .p2align 4,,7</span><br><span class="line">; JNZ</span><br><span class="line">L10:</span><br><span class="line">    movl    (%esi), %eax</span><br><span class="line">    testl   %eax, %eax</span><br><span class="line">    je      L17</span><br><span class="line">    movl    -4(%ebx), %eax</span><br><span class="line">    leal    (%ebx,%eax,8), %ebx</span><br><span class="line">    jmp     L17    ; ディスパッチ部に戻る</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>gcc -S で出力された.sを直接書き換えてdirect threadingにして実行してみる：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time ./real-direct.exe</span><br><span class="line"></span><br><span class="line">real    0m1.310s</span><br><span class="line">user    0m1.261s</span><br><span class="line">sys     0m0.060s</span><br></pre></td></tr></table></figure>
+
+<p>おお、確かに速くなった。
+ジャンプ命令ひとつでこれだけ変わるというのは致命的かも。</p>
+<ul>
+<li><code>.p2align 4,,7</code>は、最大７バイト挿入して１６バイトにアライメントする、ということらしい。
+ページにあわせると命令キャッシュに乗って？有利とか何とか。
+勝手にやってくれるんか。</li>
+<li><a href="http://www.complang.tuwien.ac.at/forth/threaded-code.html">Threaded Code</a></li>
+</ul>
+<h3 id="Direct-threadingでフィボナッチ計算"><a href="#Direct-threadingでフィボナッチ計算" class="headerlink" title="Direct threadingでフィボナッチ計算"></a>Direct threadingでフィボナッチ計算</h3><p>上のVMにいくつかてきとーに命令を足してフィボナッチ計算(30)をさせてみた：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/// VMのオペコード</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    HALT,</span><br><span class="line">    NOP,</span><br><span class="line">    LDI,</span><br><span class="line">    MOV,</span><br><span class="line">    DEC,</span><br><span class="line">    ADD,</span><br><span class="line">    CMPI,</span><br><span class="line">    PUSH,</span><br><span class="line">    POP,</span><br><span class="line">    JMP,</span><br><span class="line">    JNZ,</span><br><span class="line">    JLT,</span><br><span class="line">    CALL,</span><br><span class="line">    RET,</span><br><span class="line">    CFUNC,</span><br><span class="line">&#125; Opcode;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// コード</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        Opcode op;</span><br><span class="line">        <span class="type">const</span> <span class="type">void</span>* adr;</span><br><span class="line">    &#125; u;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="type">int</span> l;</span><br><span class="line">        <span class="type">short</span> w[<span class="number">2</span>];</span><br><span class="line">    &#125; operand;</span><br><span class="line">&#125; Code;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REG_NUM  (8)</span></span><br><span class="line"><span class="comment">/// VM</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span>* <span class="built_in">stack</span>;</span><br><span class="line">    <span class="type">int</span> reg[REG_NUM];</span><br><span class="line">    <span class="type">int</span> sp;</span><br><span class="line">    <span class="type">int</span> opr1, opr2;</span><br><span class="line">&#125; Vm;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> WORD(_0, _1)  ((_0) | ((_1)&lt;&lt;16))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//#define DIRECT_THREADED</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> DIRECT_THREADED</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OP_SWITCH_LOOP      for (;;) &#123; switch((pc++)-&gt;u.op) &#123;</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CASE(op)            case op:</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BREAK               break;</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OP_SWITCH_LOOP_END  &#125; &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OP_SWITCH_LOOP      goto *((pc++)-&gt;u.adr);</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CASE(op)            op:</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BREAK               goto *((pc++)-&gt;u.adr);</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OP_SWITCH_LOOP_END  <span class="comment">/* nothing */</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 命令をラベルに置き換える</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">replace_label</span><span class="params">(Code* code, <span class="type">const</span> <span class="type">void</span>* optbl[])</span> &#123;</span><br><span class="line">    Opcode op;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        op = code-&gt;u.op;</span><br><span class="line">        code-&gt;u.adr = optbl[op];</span><br><span class="line">    &#125; <span class="keyword">while</span> (++code, op != HALT);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">run</span><span class="params">(Vm* vm, Code* pc)</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> DIRECT_THREADED</span></span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">void</span>* optbl[] = &#123;</span><br><span class="line">        &amp;&amp;HALT,</span><br><span class="line">        &amp;&amp;NOP,</span><br><span class="line">        &amp;&amp;LDI,</span><br><span class="line">        &amp;&amp;MOV,</span><br><span class="line">        &amp;&amp;DEC,</span><br><span class="line">        &amp;&amp;ADD,</span><br><span class="line">        &amp;&amp;CMPI,</span><br><span class="line">        &amp;&amp;PUSH,</span><br><span class="line">        &amp;&amp;POP,</span><br><span class="line">        &amp;&amp;JMP,</span><br><span class="line">        &amp;&amp;JNZ,</span><br><span class="line">        &amp;&amp;JLT,</span><br><span class="line">        &amp;&amp;CALL,</span><br><span class="line">        &amp;&amp;RET,</span><br><span class="line">        &amp;&amp;CFUNC,</span><br><span class="line">    &#125;;</span><br><span class="line">    replace_label(pc, optbl);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> JUMP_EXEC(pc)   (pc += (pc-1)-&gt;operand.l)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> COND_JUMP(op)   do &#123; <span class="keyword">if</span> (vm-&gt;opr1 op vm-&gt;opr2) JUMP_EXEC(pc); &#125; while (0)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PUSH_EXEC(v)    (vm-&gt;stack[vm-&gt;sp++] = (int)(v))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POP_EXEC()       (vm-&gt;stack[--vm-&gt;sp])</span></span><br><span class="line"></span><br><span class="line">    vm-&gt;sp = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    OP_SWITCH_LOOP</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(HALT)</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    CASE(NOP)</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(LDI)</span></span><br><span class="line">        vm-&gt;reg[<span class="params">(pc<span class="number">-1</span>)</span>-&gt;operand.w[0]] = (pc<span class="number">-1</span>)-&gt;operand.w[<span class="number">1</span>];</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(MOV)</span></span><br><span class="line">        vm-&gt;reg[<span class="params">(pc<span class="number">-1</span>)</span>-&gt;operand.w[0]] = vm-&gt;reg[(pc<span class="number">-1</span>)-&gt;operand.w[<span class="number">1</span>]];</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(DEC)</span></span><br><span class="line">        vm-&gt;reg[<span class="params">(pc<span class="number">-1</span>)</span>-&gt;operand.l] -= <span class="number">1</span>;</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(ADD)</span></span><br><span class="line">        vm-&gt;reg[<span class="params">(pc<span class="number">-1</span>)</span>-&gt;operand.w[0]] += vm-&gt;reg[(pc<span class="number">-1</span>)-&gt;operand.w[<span class="number">1</span>]];</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(CMPI)</span></span><br><span class="line">        vm-&gt;opr1 = vm-&gt;reg[(pc<span class="number">-1</span>)-&gt;operand.w[<span class="number">0</span>]];</span><br><span class="line">        vm-&gt;opr2 = (pc<span class="number">-1</span>)-&gt;operand.w[<span class="number">1</span>];</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(PUSH)</span></span><br><span class="line">        <span class="title function_">PUSH_EXEC</span><span class="params">(vm-&gt;reg[(pc<span class="number">-1</span>)-&gt;operand.l])</span>;</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(POP)</span></span><br><span class="line">        vm-&gt;reg[<span class="params">(pc<span class="number">-1</span>)</span>-&gt;operand.l] = POP_EXEC();</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(JMP)</span></span><br><span class="line">        <span class="title function_">JUMP_EXEC</span><span class="params">(pc)</span>;</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(JNZ)</span></span><br><span class="line">        <span class="title function_">COND_JUMP</span><span class="params">(!=)</span>;</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(JLT)</span></span><br><span class="line">        <span class="title function_">COND_JUMP</span><span class="params">(&lt;)</span>;</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(CALL)</span></span><br><span class="line">        <span class="title function_">PUSH_EXEC</span><span class="params">(pc)</span>;</span><br><span class="line">        JUMP_EXEC(pc);</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(RET)</span></span><br><span class="line">        <span class="title function_">if</span> <span class="params">(vm-&gt;sp == <span class="number">0</span>)</span> &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pc = (Code*)POP_EXEC();</span><br><span class="line">        BREAK</span><br><span class="line">    <span class="title function_">CASE</span><span class="params">(CFUNC)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">void</span> (*f)() = (<span class="type">void</span> (*)())(pc<span class="number">-1</span>)-&gt;operand.l;</span><br><span class="line">            f(vm);</span><br><span class="line">        &#125;</span><br><span class="line">        BREAK</span><br><span class="line">    OP_SWITCH_LOOP_END</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STACK_SIZE  (256)</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="built_in">stack</span>[STACK_SIZE];</span><br><span class="line">    Code code[] = &#123;</span><br><span class="line">        &#123; JMP,    <span class="number">13</span> &#125;,          <span class="comment">// goto main</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// fib</span></span><br><span class="line">        &#123; CMPI,   WORD(<span class="number">0</span>, <span class="number">2</span>) &#125;,  <span class="comment">// if a &lt; 2    return a;</span></span><br><span class="line">        &#123; JLT,    <span class="number">10</span> &#125;,</span><br><span class="line">        &#123; DEC,    <span class="number">0</span> &#125;,           <span class="comment">// a -= 1</span></span><br><span class="line">        &#123; PUSH,   <span class="number">0</span> &#125;,           <span class="comment">// push(a)</span></span><br><span class="line">        &#123; CALL,   <span class="number">-5</span> &#125;,          <span class="comment">// a = fib(a)</span></span><br><span class="line">        &#123; POP,    <span class="number">1</span> &#125;,           <span class="comment">// b = pop()</span></span><br><span class="line">        &#123; PUSH,   <span class="number">0</span> &#125;,           <span class="comment">// push(a)</span></span><br><span class="line">        &#123; MOV,    WORD(<span class="number">0</span>, <span class="number">1</span>) &#125;,  <span class="comment">// a = b</span></span><br><span class="line">        &#123; DEC,    <span class="number">0</span> &#125;,           <span class="comment">// a -= 1</span></span><br><span class="line">        &#123; CALL,   <span class="number">-10</span> &#125;,         <span class="comment">// a = fib(a)</span></span><br><span class="line">        &#123; POP,    <span class="number">1</span> &#125;,           <span class="comment">// b = pop()</span></span><br><span class="line">        &#123; ADD,    WORD(<span class="number">0</span>, <span class="number">1</span>) &#125;,  <span class="comment">// a += b</span></span><br><span class="line">        &#123; RET &#125;,</span><br><span class="line"></span><br><span class="line">        <span class="comment">// main</span></span><br><span class="line">        &#123; CALL,    <span class="number">-14</span> &#125;,</span><br><span class="line">        &#123; HALT &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="type">int</span> n = argc &gt;= <span class="number">2</span> ? atoi(argv[<span class="number">1</span>]) : <span class="number">10</span>;</span><br><span class="line">    Vm vm;</span><br><span class="line">    vm.<span class="built_in">stack</span> = <span class="built_in">stack</span>;</span><br><span class="line">    vm.reg[<span class="number">0</span>] = n;</span><br><span class="line">    run(&amp;vm, code);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, vm.reg[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="threaded-code-の実行結果"><a href="#threaded-code-の実行結果" class="headerlink" title="threaded code の実行結果"></a>threaded code の実行結果</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time ./fib-threaded 30</span><br><span class="line">832040</span><br><span class="line"></span><br><span class="line">real    0m0.817s</span><br><span class="line">user    0m0.771s</span><br><span class="line">sys     0m0.050s</span><br></pre></td></tr></table></figure>
+
+<h4 id="direct-threaded-code-の実行結果"><a href="#direct-threaded-code-の実行結果" class="headerlink" title="direct threaded code の実行結果"></a>direct threaded code の実行結果</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time ./fib-direct 30</span><br><span class="line">832040</span><br><span class="line"></span><br><span class="line">real    0m0.439s</span><br><span class="line">user    0m0.400s</span><br><span class="line">sys     0m0.030s</span><br></pre></td></tr></table></figure>
+
+<h3 id="Cとか、他のスクリプト言語での実行結果"><a href="#Cとか、他のスクリプト言語での実行結果" class="headerlink" title="Cとか、他のスクリプト言語での実行結果"></a>Cとか、他のスクリプト言語での実行結果</h3><p>Cネイティブと、<a href="http://d.hatena.ne.jp/mokehehe/20090117/script">ゲームにおけるスクリプト言語の現状</a>に出てきたスクリプト言語、あとはSchemeで速度検証。
+Celeron 650MHz。</p>
+<table>
+<thead>
+<tr>
+<th>言語</th>
+<th>real</th>
+<th>user</th>
+<th>sys</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>gcc</td>
+<td>0m0.136s (1.00)</td>
+<td>0m0.100s</td>
+<td>0m0.040s</td>
+</tr>
+<tr>
+<td>threaded</td>
+<td>0m0.817s (6.01)</td>
+<td>0m0.771s</td>
+<td>0m0.050s</td>
+</tr>
+<tr>
+<td>direct-threaded</td>
+<td>0m0.439s (3.23)</td>
+<td>0m0.400s</td>
+<td>0m0.030s</td>
+</tr>
+<tr>
+<td><a href="http://www.lua.org/">Lua</a></td>
+<td>0m2.060s (15.15)</td>
+<td>0m2.032s</td>
+<td>0m0.040s</td>
+</tr>
+<tr>
+<td><a href="http://www.squirrel-lang.org/">Squirrel</a></td>
+<td>0m12.117s (89.10)</td>
+<td>0m12.117s</td>
+<td>0m0.020s</td>
+</tr>
+<tr>
+<td><a href="http://code.google.com/p/xtal-language/">xtal</a></td>
+<td>0m2.874s (21.13)</td>
+<td>0m0.020s</td>
+<td>0m0.020s</td>
+</tr>
+<tr>
+<td><a href="http://practical-scheme.net/gauche/index-j.html">Gauche</a></td>
+<td>0m1.661s (12.21)</td>
+<td>0m0.020s</td>
+<td>0m0.030s</td>
+</tr>
+<tr>
+<td><a href="http://www.littlewingpinball.net/mediawiki-ja/index.php/Ypsilon_Scheme_System">Ypsilon</a></td>
+<td>0m1.593s (11.71)</td>
+<td>0m0.010s</td>
+<td>0m0.040s</td>
+</tr>
+</tbody></table>
+<p>YpsilonだけはWin32バイナリ版で他はCygwin上でソースをコンパイルしたもの。
+純粋に計算だけだから、それほど問題ないよね。</p>
+<p><a href="http://www.squirrel-lang.org/">Squirrel</a>の遅さは異常。
+これはリファレンスカウンタ方式によるものなのか？コンパイルオプションを見てもちゃんと-O2でやってるし。
+もしも文法とか機能が飛びぬけてよかったとしても、遅い言語には興味ありません！
+Xtalが結構速いのが驚き。</p>
+<p>CRIScriptはとにかくデカすぎる、boostとか入ってるもんだから。
+組み込むのはちょっと辛い。
+そしてVisualStudioのプロジェクトしかついてなくて、Cygwinから簡単にコンパイルできない。
+今使ってる旧マシンで動かそうとしたけど、Visual C++ 2008 Express Editionのインストールがうまくいかず断念
+<a href="http://www.littlewingpinball.net/mediawiki-ja/index.php/Ypsilon_Scheme_System">Ypsilon</a>は以前試したときはGaucheの２倍くらいの速度が出たんだけど、今回はシングルコアで動かしたせいかな？</p>
+<p>ということで、これから使うべき組み込みスクリプト言語はSchemeという結論が出たようだな！</p>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/08/14/c-const.html" title="【C】constポインタは何が上書き不可なのか" rel="bookmark">【C】constポインタは何が上書き不可なのか</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/08/29/customize-printf.html" title="【C】printfに独自の表示形式を追加する" rel="bookmark">【C】printfに独自の表示形式を追加する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/23/mark-sweep.html" title="マーク＆スイープ法をテスト実装してみる" rel="bookmark">マーク＆スイープ法をテスト実装してみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/11/23/open-impl.html" title="【C】可変長引数の回避と引数の数による関数の呼び分け" rel="bookmark">【C】可変長引数の回避と引数の数による関数の呼び分け</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/20/parsing-func-returning-func.html" title="関数ポインタを返す関数のパースと型の構築" rel="bookmark">関数ポインタを返す関数のパースと型の構築</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

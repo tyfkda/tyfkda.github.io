@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="AO benchにはCUDA版がないじゃないか！ということで手を出してみる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="CUDAでAO bench"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>CUDAでAO bench - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/09/11/aobench-in-cuda.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>CUDAでAO bench</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2009-09-11
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/cg/">#cg</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://code.google.com/archive/p/aobench/">AO bench</a>には<a href="http://www.nvidia.co.jp/object/cuda_home_jp.html">CUDA</a>版がないじゃないか！ということで手を出してみる。</p>
+<span id="more"></span>
+
+<p><code>cudaMalloc</code>でGPUのメモリを確保、<code>cudaMemcpy</code>でメモリコピー、GPUプログラムの呼び出しは <code>func&lt;&lt;&lt;grid, block&gt;&gt;&gt;()</code> でいけるらしい。
+GPU側では <code>threadIdx</code> や <code>blockIdx</code> を使って並列にアクセスする。
+ベクトル型は <code>float4</code> が使える。</p>
+<p>ということで実行結果：0.320秒</p>
+<ul>
+<li>同じ環境でC言語版が1.756秒だったので、CPUシングルスレッドに比べ5.49倍の高速化<ul>
+<li>計測はプロセスの起動や画像の保存なども含んでいるので、精度はいまいち</li>
+</ul>
+</li>
+<li>NVIDIA Quadro FX 570<ul>
+<li>Intel(R) Core(TM)2 Duo CPU, E8400 @ 3.00GHz, 2.99 GHz, 2.00 GB RAM</li>
+</ul>
+</li>
+</ul>
+<p>以下ソース：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// includes, system</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// includes, project</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cutil_inline.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cuda.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;vec.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> WIDTH  = <span class="number">256</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> HEIGHT = <span class="number">256</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> NSUBSAMPLES = <span class="number">2</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> NAO_SAMPLES = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">__device__ <span class="type">const</span> <span class="type">float</span> M_PI = <span class="number">3.1415926535</span>;</span><br><span class="line">__device__ <span class="type">const</span> <span class="type">float</span> NoHit = <span class="number">1e16</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    vec center;</span><br><span class="line">    <span class="type">float</span> radius;</span><br><span class="line">&#125; Sphere;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">float</span> a, b, c, d;</span><br><span class="line">&#125; Plane;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">float</span> t;</span><br><span class="line">    vec p;</span><br><span class="line">    vec n;</span><br><span class="line">&#125; Isect;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">__device__ __host__ <span class="type">float</span> <span class="title function_">sq</span><span class="params">(<span class="type">float</span> x)</span> &#123; <span class="keyword">return</span> x * x; &#125;</span><br><span class="line"></span><br><span class="line">__device__ __host__ <span class="type">void</span> <span class="title function_">ray_sphere_intersect</span><span class="params">(Isect* isect, <span class="type">const</span> vec* orig, <span class="type">const</span> vec* dir, <span class="type">const</span> vec* sphere_center, <span class="type">float</span> sphere_radius)</span> &#123;</span><br><span class="line">    vec v;</span><br><span class="line">    vsub(&amp;v, orig, sphere_center);</span><br><span class="line">    <span class="type">float</span> dd = sq(vdot(&amp;v, dir)) - (vsqlength(&amp;v) - sq(sphere_radius));</span><br><span class="line">    <span class="keyword">if</span> (dd &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="type">float</span> sqdd = <span class="built_in">sqrt</span>(dd);</span><br><span class="line">        <span class="type">float</span> t1 = -vdot(&amp;v, dir) - sqdd;</span><br><span class="line">        <span class="keyword">if</span> (<span class="number">0</span> &lt; t1 &amp;&amp; t1 &lt; isect-&gt;t) &#123;</span><br><span class="line">            isect-&gt;t = t1;</span><br><span class="line"></span><br><span class="line">            vec tmp;</span><br><span class="line">            vadd(&amp;isect-&gt;p, orig, vscale(&amp;tmp, dir, t1));</span><br><span class="line"></span><br><span class="line">            vnormalize(vsub(&amp;isect-&gt;n, &amp;isect-&gt;p, sphere_center));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__device__ __host__ <span class="type">void</span> <span class="title function_">ray_plane_intersect</span><span class="params">(Isect* isect, <span class="type">const</span> vec* orig, <span class="type">const</span> vec* dir, <span class="type">float</span> a, <span class="type">float</span> b, <span class="type">float</span> c, <span class="type">float</span> d)</span> &#123;</span><br><span class="line">    <span class="type">float</span> h = orig-&gt;x * a + orig-&gt;y * b + orig-&gt;z * c + d;</span><br><span class="line">    <span class="keyword">if</span> (h &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="type">float</span> dot = dir-&gt;x * a + dir-&gt;y * b + dir-&gt;z * c;</span><br><span class="line">        <span class="keyword">if</span> (dot &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="type">float</span> t = h / -dot;</span><br><span class="line">            <span class="keyword">if</span> (t &lt; isect-&gt;t) &#123;</span><br><span class="line">                isect-&gt;t = t;</span><br><span class="line"></span><br><span class="line">                vec tmp;</span><br><span class="line">                vadd(&amp;isect-&gt;p, orig, vscale(&amp;tmp, dir, t));</span><br><span class="line"></span><br><span class="line">                isect-&gt;n.x = a;</span><br><span class="line">                isect-&gt;n.y = b;</span><br><span class="line">                isect-&gt;n.z = c;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__device__ __host__ <span class="type">void</span> <span class="title function_">orthoBasis</span><span class="params">(vec* basis, <span class="type">const</span> vec&amp; n)</span> &#123;</span><br><span class="line">    basis[<span class="number">2</span>] = n;</span><br><span class="line">    basis[<span class="number">1</span>].x = basis[<span class="number">1</span>].y = basis[<span class="number">1</span>].z = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (n.x &lt; <span class="number">0.6</span> &amp;&amp; n.x &gt; <span class="number">-0.6</span>) &#123;</span><br><span class="line">        basis[<span class="number">1</span>].x = <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n.y &lt; <span class="number">0.6</span> &amp;&amp; n.y &gt; <span class="number">-0.6</span>) &#123;</span><br><span class="line">        basis[<span class="number">1</span>].y = <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n.z &lt; <span class="number">0.6</span> &amp;&amp; n.z &gt; <span class="number">-0.6</span>) &#123;</span><br><span class="line">        basis[<span class="number">1</span>].z = <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        basis[<span class="number">1</span>].x = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    vnormalize(vcross(&amp;basis[<span class="number">0</span>], &amp;basis[<span class="number">1</span>], &amp;basis[<span class="number">2</span>]));</span><br><span class="line">    vnormalize(vcross(&amp;basis[<span class="number">1</span>], &amp;basis[<span class="number">2</span>], &amp;basis[<span class="number">0</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">__device__ <span class="type">const</span> Sphere spheres[<span class="number">3</span>] = &#123;</span><br><span class="line">    &#123;    &#123; <span class="number">-2.0</span>, <span class="number">0.0</span>, <span class="number">-3.5</span> &#125;, <span class="number">0.5</span>    &#125;,</span><br><span class="line">    &#123;    &#123; <span class="number">-0.5</span>, <span class="number">0.0</span>, <span class="number">-3.0</span> &#125;, <span class="number">0.5</span>    &#125;,</span><br><span class="line">    &#123;    &#123;  <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">-2.2</span> &#125;, <span class="number">0.5</span>    &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">__device__ <span class="type">const</span> Plane plane = &#123; <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0.5</span> &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">__device__ __host__ <span class="type">void</span> <span class="title function_">ambient_occlusion</span><span class="params">(vec* col, <span class="type">const</span> Isect* isect, <span class="type">float</span>* rands)</span> &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">float</span> eps = <span class="number">0.0001</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> ntheta = NAO_SAMPLES;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> nphi   = NAO_SAMPLES;</span><br><span class="line"></span><br><span class="line">    vec p;</span><br><span class="line">    vadd(&amp;p, &amp;isect-&gt;p, vscale(&amp;p, &amp;isect-&gt;n, eps));</span><br><span class="line"></span><br><span class="line">    vec basis[<span class="number">3</span>];</span><br><span class="line">    orthoBasis(basis, isect-&gt;n);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> occludeCount = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i &lt; ntheta * nphi; ++i) &#123;</span><br><span class="line">        <span class="type">float</span> theta = <span class="built_in">sqrt</span>(rands[i*<span class="number">2</span>+<span class="number">0</span>]);</span><br><span class="line">        <span class="type">float</span> phi   = <span class="number">2</span> * M_PI * rands[i*<span class="number">2</span>+<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">        <span class="type">float</span> x = <span class="built_in">cos</span>(phi) * theta;</span><br><span class="line">        <span class="type">float</span> y = <span class="built_in">sin</span>(phi) * theta;</span><br><span class="line">        <span class="type">float</span> z = <span class="built_in">sqrt</span>(<span class="number">1</span> - theta * theta);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// local -&gt; global</span></span><br><span class="line">        <span class="type">float</span> rx = x * basis[<span class="number">0</span>].x + y * basis[<span class="number">1</span>].x + z * basis[<span class="number">2</span>].x;</span><br><span class="line">        <span class="type">float</span> ry = x * basis[<span class="number">0</span>].y + y * basis[<span class="number">1</span>].y + z * basis[<span class="number">2</span>].y;</span><br><span class="line">        <span class="type">float</span> rz = x * basis[<span class="number">0</span>].z + y * basis[<span class="number">1</span>].z + z * basis[<span class="number">2</span>].z;</span><br><span class="line"></span><br><span class="line">        vec raydir = &#123; rx, ry, rz &#125;;</span><br><span class="line">        Isect occIsect;</span><br><span class="line">        occIsect.t = NoHit;</span><br><span class="line">        ray_sphere_intersect(&amp;occIsect, &amp;p, &amp;raydir, &amp;spheres[<span class="number">0</span>].center, spheres[<span class="number">0</span>].radius);</span><br><span class="line">        ray_sphere_intersect(&amp;occIsect, &amp;p, &amp;raydir, &amp;spheres[<span class="number">1</span>].center, spheres[<span class="number">1</span>].radius);</span><br><span class="line">        ray_sphere_intersect(&amp;occIsect, &amp;p, &amp;raydir, &amp;spheres[<span class="number">2</span>].center, spheres[<span class="number">2</span>].radius);</span><br><span class="line">        ray_plane_intersect(&amp;occIsect, &amp;p, &amp;raydir, plane.a, plane.b, plane.c, plane.d);</span><br><span class="line">        <span class="keyword">if</span> (occIsect.t &lt; NoHit)    occludeCount += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> c = (<span class="type">float</span>)(ntheta * nphi - occludeCount) / (ntheta * nphi);</span><br><span class="line">    col-&gt;x = c;</span><br><span class="line">    col-&gt;y = c;</span><br><span class="line">    col-&gt;z = c;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// kernel</span></span><br><span class="line">__global__ <span class="type">void</span> <span class="title function_">render</span><span class="params">(<span class="type">float</span>* fimg, <span class="type">float</span>* rands)</span> &#123;</span><br><span class="line">    <span class="type">int</span> x = blockIdx.x * blockDim.x + threadIdx.x;</span><br><span class="line">    <span class="type">int</span> y = blockIdx.y * blockDim.y + threadIdx.y;</span><br><span class="line">    <span class="keyword">if</span> (x &lt; WIDTH &amp;&amp; y &lt; HEIGHT) &#123;</span><br><span class="line">        vec col = &#123; <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> &#125;;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> v=<span class="number">0</span>; v&lt;NSUBSAMPLES; ++v) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> u=<span class="number">0</span>; u&lt;NSUBSAMPLES; ++u) &#123;</span><br><span class="line">                vec raydir;</span><br><span class="line">                raydir.x = (x + (u / (<span class="type">float</span>)NSUBSAMPLES) - (WIDTH / <span class="number">2.0</span>)) / (WIDTH / <span class="number">2.0</span>);</span><br><span class="line">                raydir.y = -(y + (v / (<span class="type">float</span>)NSUBSAMPLES) - (HEIGHT / <span class="number">2.0</span>)) / (HEIGHT / <span class="number">2.0</span>);</span><br><span class="line">                raydir.z = <span class="number">-1</span>;</span><br><span class="line">                vnormalize(&amp;raydir);</span><br><span class="line"></span><br><span class="line">                <span class="type">const</span> vec eyepos = &#123; <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> &#125;;</span><br><span class="line"></span><br><span class="line">                Isect isect;</span><br><span class="line">                isect.t = NoHit;</span><br><span class="line">                ray_sphere_intersect(&amp;isect, &amp;eyepos, &amp;raydir, &amp;spheres[<span class="number">0</span>].center, spheres[<span class="number">0</span>].radius);</span><br><span class="line">                ray_sphere_intersect(&amp;isect, &amp;eyepos, &amp;raydir, &amp;spheres[<span class="number">1</span>].center, spheres[<span class="number">1</span>].radius);</span><br><span class="line">                ray_sphere_intersect(&amp;isect, &amp;eyepos, &amp;raydir, &amp;spheres[<span class="number">2</span>].center, spheres[<span class="number">2</span>].radius);</span><br><span class="line">                ray_plane_intersect(&amp;isect, &amp;eyepos, &amp;raydir, plane.a, plane.b, plane.c, plane.d);</span><br><span class="line">                <span class="keyword">if</span> (isect.t &lt; NoHit) &#123;</span><br><span class="line">                    vec c;</span><br><span class="line">                    ambient_occlusion(&amp;c, &amp;isect, rands);</span><br><span class="line">                    vadd(&amp;col, &amp;col, &amp;c);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        fimg[(y*WIDTH+x)*<span class="number">3</span>+<span class="number">0</span>] = col.x * (<span class="number">1.0</span> / sq(NSUBSAMPLES));</span><br><span class="line">        fimg[(y*WIDTH+x)*<span class="number">3</span>+<span class="number">1</span>] = col.y * (<span class="number">1.0</span> / sq(NSUBSAMPLES));</span><br><span class="line">        fimg[(y*WIDTH+x)*<span class="number">3</span>+<span class="number">2</span>] = col.z * (<span class="number">1.0</span> / sq(NSUBSAMPLES));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> <span class="title function_">clamp</span><span class="params">(<span class="type">float</span> x, <span class="type">float</span> min, <span class="type">float</span> max)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> x &lt; min ? min : x &gt; max ? max : x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">bool</span> <span class="title function_">saveppm</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* fn, <span class="type">int</span> w, <span class="type">int</span> h, <span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span>* img)</span> &#123;</span><br><span class="line">    FILE* fp = fopen(fn, <span class="string">&quot;wb&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (fp == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(fp,<span class="string">&quot;P6\n%d %d\n%d\n&quot;</span>, w, h, <span class="number">255</span>);</span><br><span class="line">        fwrite(img, w * h * <span class="number">3</span>, <span class="number">1</span>, fp);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">float</span>* d_fimg;</span><br><span class="line">    <span class="type">float</span>* d_rands;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// allocate device memory</span></span><br><span class="line">    cutilSafeCall(cudaMalloc((<span class="type">void</span>**) &amp;d_fimg, <span class="keyword">sizeof</span>(<span class="type">float</span>) * (WIDTH * HEIGHT) * <span class="number">3</span>));</span><br><span class="line">    cutilSafeCall(cudaMalloc((<span class="type">void</span>**) &amp;d_rands, <span class="keyword">sizeof</span>(<span class="type">float</span>) * NAO_SAMPLES * NAO_SAMPLES * <span class="number">2</span>));</span><br><span class="line"></span><br><span class="line">    &#123;    <span class="comment">// 乱数テーブル</span></span><br><span class="line">        <span class="type">float</span> h_rands[NAO_SAMPLES * NAO_SAMPLES * <span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;NAO_SAMPLES * NAO_SAMPLES * <span class="number">2</span>; ++i)    h_rands[i] = (<span class="type">float</span>)rand() / (<span class="type">float</span>)RAND_MAX;</span><br><span class="line">        <span class="comment">// copy host memory to device</span></span><br><span class="line">        cutilSafeCall( cudaMemcpy( d_rands, h_rands, <span class="keyword">sizeof</span>(h_rands), cudaMemcpyHostToDevice) );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dim3 <span class="title function_">dimBlock</span><span class="params">(<span class="number">16</span>, <span class="number">16</span>)</span>;</span><br><span class="line">    dim3 <span class="title function_">dimGrid</span><span class="params">( (WIDTH  + dimBlock.x - <span class="number">1</span>) / dimBlock.x, (HEIGHT + dimBlock.y - <span class="number">1</span>) / dimBlock.y)</span>;</span><br><span class="line">    <span class="comment">// execute the kernel</span></span><br><span class="line">    render&lt;&lt;&lt;dimGrid, dimBlock&gt;&gt;&gt;(d_fimg, d_rands);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// check if kernel execution generated and error</span></span><br><span class="line">    cutilCheckMsg(<span class="string">&quot;Kernel execution failed&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 結果取り出し</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">const</span> <span class="type">int</span> N = WIDTH * HEIGHT * <span class="number">3</span>;</span><br><span class="line">        <span class="type">float</span>* result = new <span class="type">float</span>[N];</span><br><span class="line">        <span class="comment">// copy result from device to host</span></span><br><span class="line">        cutilSafeCall( cudaMemcpy( result, d_fimg, <span class="keyword">sizeof</span>(<span class="type">float</span>) * N, cudaMemcpyDeviceToHost) );</span><br><span class="line"></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">char</span>* img = new <span class="type">unsigned</span> <span class="type">char</span>[N];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;N; ++i)    img[i] = (<span class="type">unsigned</span> <span class="type">char</span>)(clamp(result[i], <span class="number">0</span>, <span class="number">1</span>) * <span class="number">255.99f</span>);</span><br><span class="line">        saveppm(<span class="string">&quot;ao.ppm&quot;</span>, WIDTH, HEIGHT, img);</span><br><span class="line"></span><br><span class="line">        delete[] result;</span><br><span class="line">        delete[] img;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// cleanup memory</span></span><br><span class="line">    cutilSafeCall(cudaFree(d_fimg));</span><br><span class="line">    cutilSafeCall(cudaFree(d_rands));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>vec.h</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> float4 vec;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* return vector sum c = a+b */</span></span><br><span class="line">__device__ __host__ vec* <span class="title function_">vadd</span><span class="params">(vec* dst, <span class="type">const</span> vec* v1, <span class="type">const</span> vec* v2)</span> &#123;</span><br><span class="line">    dst-&gt;x = v1-&gt;x + v2-&gt;x;</span><br><span class="line">    dst-&gt;y = v1-&gt;y + v2-&gt;y;</span><br><span class="line">    dst-&gt;z = v1-&gt;z + v2-&gt;z;</span><br><span class="line">    <span class="keyword">return</span> dst;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* return vector difference c = a-b */</span></span><br><span class="line">__device__ __host__ vec* <span class="title function_">vsub</span><span class="params">(vec* dst, <span class="type">const</span> vec* v1, <span class="type">const</span> vec* v2)</span> &#123;</span><br><span class="line">    dst-&gt;x = v1-&gt;x - v2-&gt;x;</span><br><span class="line">    dst-&gt;y = v1-&gt;y - v2-&gt;y;</span><br><span class="line">    dst-&gt;z = v1-&gt;z - v2-&gt;z;</span><br><span class="line">    <span class="keyword">return</span> dst;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* return vector scale c = a*s */</span></span><br><span class="line">__device__ __host__ vec* <span class="title function_">vscale</span><span class="params">(vec* dst, <span class="type">const</span> vec* v, <span class="type">float</span> s)</span> &#123;</span><br><span class="line">    dst-&gt;x = v-&gt;x * s;</span><br><span class="line">    dst-&gt;y = v-&gt;y * s;</span><br><span class="line">    dst-&gt;z = v-&gt;z * s;</span><br><span class="line">    <span class="keyword">return</span> dst;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* return the dot product of vectors a and b */</span></span><br><span class="line">__device__ __host__ <span class="type">float</span> <span class="title function_">vdot</span><span class="params">(<span class="type">const</span> vec* a, <span class="type">const</span> vec* b)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> a-&gt;x * b-&gt;x + a-&gt;y * b-&gt;y + a-&gt;z * b-&gt;z;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* return the cross product of vectors a and b */</span></span><br><span class="line">__device__ __host__ vec* <span class="title function_">vcross</span><span class="params">(vec* dst, <span class="type">const</span> vec* a, <span class="type">const</span> vec* b)</span> &#123;</span><br><span class="line">    dst-&gt;x = a-&gt;y * b-&gt;z - a-&gt;z * b-&gt;y;</span><br><span class="line">    dst-&gt;y = a-&gt;z * b-&gt;x - a-&gt;x * b-&gt;z;</span><br><span class="line">    dst-&gt;z = a-&gt;x * b-&gt;y - a-&gt;y * b-&gt;x;</span><br><span class="line">    <span class="keyword">return</span> dst;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* returns squared length of input vector */</span></span><br><span class="line">__device__ __host__ <span class="type">float</span> <span class="title function_">vsqlength</span><span class="params">(<span class="type">const</span> vec* v)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> v-&gt;x * v-&gt;x + v-&gt;y * v-&gt;y + v-&gt;z * v-&gt;z;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* returns length of input vector */</span></span><br><span class="line">__device__ __host__ <span class="type">float</span> <span class="title function_">vlength</span><span class="params">(<span class="type">const</span> vec* v)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sqrt</span>(vsqlength(v));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* normalizes the input vector and returns it */</span></span><br><span class="line">__device__ __host__ vec* <span class="title function_">vnormalize</span><span class="params">(vec* v)</span> &#123;</span><br><span class="line">    <span class="type">float</span> len = vlength(v);</span><br><span class="line">    <span class="keyword">if</span> (len != <span class="number">0.0</span>) &#123;</span><br><span class="line">        v-&gt;x /= len;</span><br><span class="line">        v-&gt;y /= len;</span><br><span class="line">        v-&gt;z /= len;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ほとんどC版そのままでいける<ul>
+<li>拡張子を.cuにして、Cの関数とCUDAの関数などを一緒くたに書ける、どうなってるの？</li>
+<li>関数名の頭に「<strong>device</strong> __host__」を追加したくらい</li>
+</ul>
+</li>
+<li>乱数の作り方がわからなかったので、固定の乱数テーブルを使うことにしたら残念な結果に→<ul>
+<li><a href="http://forums.nvidia.com/index.php?showtopic=42165">メルセンヌツイスタを使ったら？</a>との話</li>
+<li>shared memoryとか、よくわかってない</li>
+</ul>
+</li>
+<li>3fpsなら、十分リアルタイムとうたえるよね<ul>
+<li><a href="http://kioku.sys-k.net/archives/2009/01/gpuaoglsl.html">GPUAO</a>は1024x768で10msくらいとのこと、速いなぁ</li>
+</ul>
+</li>
+<li><code>0.0</code>とか書いて、倍精度になってないかちと心配…</li>
+<li>なんかこう、並列化するところを自分で考えてデータ構造考えて転送して書き戻して…とかメンドイ。OpenMPとか<a href="http://blogs.msdn.com/hiroyuk/archive/2009/09/07/9892087.aspx">parallel_for</a>とか書くだけで速くなる、とかが楽でいいな</li>
+<li>実際にGPUでどんな風に実行されてるのか、皆目検討つかないぜ<ul>
+<li>もっと低レベルな状態で触らせて欲しい</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://www.nvidia.co.jp/object/cuda_develop_jp.html">ドキュメント</a></li>
+<li><a href="http://www.sjbrown.co.uk/2009/08/15/cuda-path-tracing/">Adventures in CUDA Path Tracing: Part 1</a></li>
+<li><a href="http://www.atmarkit.co.jp/fcoding/articles/parallel/03/para03a.html">プロセッサ別に見る並列アーキテクチャ （1&#x2F;3）－ ＠IT</a></li>
+</ul>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/25/cardioid-caustics.html" title="ハート型のコースティクス" rel="bookmark">ハート型のコースティクス</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

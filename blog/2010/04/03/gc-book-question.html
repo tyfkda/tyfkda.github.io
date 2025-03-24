@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="&amp;nbsp;マークスイープGCを再度実装しながらGC本を参照しててマークスイープGCの章を読んでると「やっぱこれダメなんじゃ？」と思ったんだけど、「よく考えてみると大丈夫なのか」と思ったんだけど、「でもやっぱこれだとダメなんじゃ？」と思った。
+最初にダメなんじゃないかと思ったのは、2.1マークスイー">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="GC本の疑問点"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>GC本の疑問点 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2010/04/03/gc-book-question.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>GC本の疑問点</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2010-04-03
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/gc/">#gc</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>&nbsp;<a href="/blog/2010/04/02/mark-sweep2.html" title="マークスイープGCのテスト２">マークスイープGCを再度実装</a>しながらGC本を参照しててマークスイープGCの章を読んでると「やっぱこれダメなんじゃ？」と思ったんだけど、「よく考えてみると大丈夫なのか」と思ったんだけど、「でもやっぱこれだとダメなんじゃ？」と思った。</p>
+<p>最初にダメなんじゃないかと思ったのは、2.1マークスイープGC&#x2F;2.1.3 スイープフェーズのリスト4 <code>sweep_phase()</code>でヒープを順になめてくけど、アプリの実行が進んでフリーリストに小さいサイズしかなくて使われてない領域がある状態でGCが起動した場合に、その使われてない領域もスキャンしちゃうからまずいんじゃないか？と思った。</p>
+<p>でも使われてない領域はマークされてないはずだから、それらのチャンクにも<code>.size</code>がちゃんと入ってれば別にスキャンしてしまってもいいのか、と一旦は納得した。
+見なくてもいい空き領域をスキャンするから無駄なのと、オブジェクトのデストラクタを呼び出す必要がなければ。</p>
+<p>でも回収するときにフリーリスト<code>$free_list</code>につないでしまってるので、やっぱダメなんじゃないかと思った。
+空の領域は<code>$free_list</code>につながれた状態でGCが起動するわけだから、さらにフリーリストにつないでしまうとリストが循環してしまうのではないかと思う。</p>
+<p>解決策としては、スイープフェーズの頭でフリーリストを空にしてやればいいと思う：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">  <span class="number">1</span>: <span class="title function_">sweep_phase</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="number">1.5</span>:   $free_list = <span class="variable constant_">NULL</span>  <span class="comment">// &lt;- 挿入</span></span><br><span class="line">  <span class="number">2</span>:   sweeping = $heap_start</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>ヒープ領域は全体なめるはずなのですべてのチャンクは再度スキャンされ登録されるはず。
+Coalescingをするリスト6の<code>sweep_phase()</code>も同様。</p>
+<p>あと、いつGCが起動するのかという疑問が。
+2.1.4アロケーションのリスト5 <code>new_obj()</code>関数では<code>pickup_chunk()</code>の呼び出しで<code>NULL</code>が返ってきたら<code>allocation_fail()</code>してしまってる。
+<code>pickup_chunk()</code>は名前からすればGCの起動まではしないだろうから、<code>new_obj()</code>からGCを起動しないと自動的にGCされないことになってしまうんじゃないかと思う：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>: <span class="title function_">new_obj</span>(<span class="params">size</span>)&#123;</span><br><span class="line"><span class="number">2</span>:   chunk = <span class="title function_">pickup_chunk</span>(size, $free_list)</span><br><span class="line"><span class="number">3</span>:   <span class="keyword">if</span>(chunk == <span class="variable constant_">NULL</span>)</span><br><span class="line"><span class="number">4</span>:     <span class="title function_">mark_sweep</span>()</span><br><span class="line"><span class="number">5</span>:     chunk = <span class="title function_">pickup_chunk</span>(size, $free_list)</span><br><span class="line"><span class="number">6</span>:     <span class="keyword">if</span>(chunk == <span class="variable constant_">NULL</span>)</span><br><span class="line"><span class="number">7</span>:       <span class="title function_">allocation_fail</span>()</span><br><span class="line"><span class="number">8</span>:   <span class="keyword">return</span> chunk</span><br><span class="line"><span class="number">9</span>: &#125;</span><br></pre></td></tr></table></figure>
+
+<p>頭で考えただけで実装はしてないので、確証はない。</p>
+
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/04/05/copy-gc.html" title="コピーGCをC++で実装する" rel="bookmark">コピーGCをC++で実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/03/18/gc-book-review.html" title="「ガベージコレクションのアルゴリズムと実装」の感想" rel="bookmark">「ガベージコレクションのアルゴリズムと実装」の感想</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/29/lua4-gc.html" title="Lua-4.0のGC" rel="bookmark">Lua-4.0のGC</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/23/mark-sweep.html" title="マーク＆スイープ法をテスト実装してみる" rel="bookmark">マーク＆スイープ法をテスト実装してみる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/04/02/mark-sweep2.html" title="マークスイープGCのテスト２" rel="bookmark">マークスイープGCのテスト２</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li><li class="recent_post"><a href="/blog/2025/02/01/pratt-parser.html">再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</a></li><li class="recent_post"><a href="/blog/2025/01/13/jelly-solver.html">激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

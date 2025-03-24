@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-03-17T05:40:55.013Z</updated>
+  <updated>2025-03-24T03:01:06.537Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2025/03/13/vite-build-tool.html"/>
     <id>https://tyfkda.github.io/blog/2025/03/13/vite-build-tool.html</id>
     <published>2025-03-13T09:00:00.000Z</published>
-    <updated>2025-03-17T05:40:55.013Z</updated>
+    <updated>2025-03-24T03:01:06.537Z</updated>
     
     
     <summary type="html">&lt;p&gt;ずっと以前から&lt;a href=&quot;/blog/2015/12/10/gulp-es6.html&quot; title=&quot;gulp+ES6でフロントエンド開発&quot;&gt;Gulpなど&lt;/a&gt;やWebpackを使ってブラウザ上で動くウェブアプリを作っていたが、&lt;a href=&quot;https://ja.vitejs.dev/&quot;&gt;Vite&lt;/a&gt;に載せ替えてみた。&lt;/p&gt;</summary>
@@ -38,7 +38,7 @@
     <link href="https://tyfkda.github.io/blog/2025/03/08/macho-exe.html"/>
     <id>https://tyfkda.github.io/blog/2025/03/08/macho-exe.html</id>
     <published>2025-03-08T03:00:00.000Z</published>
-    <updated>2025-03-14T04:01:19.369Z</updated>
+    <updated>2025-03-24T03:01:06.526Z</updated>
     
     
     <summary type="html">&lt;style&gt;
@@ -96,7 +96,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2025/03/01/ssa-intro.html"/>
     <id>https://tyfkda.github.io/blog/2025/03/01/ssa-intro.html</id>
     <published>2025-03-01T10:00:00.000Z</published>
-    <updated>2025-03-14T04:01:19.377Z</updated>
+    <updated>2025-03-24T03:01:06.534Z</updated>
     
     
     <summary type="html">&lt;p&gt;趣味でコンパイラのバックエンドを作っているが現状最適化はほとんどできてない。
@@ -117,7 +117,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2025/02/01/pratt-parser.html"/>
     <id>https://tyfkda.github.io/blog/2025/02/01/pratt-parser.html</id>
     <published>2025-02-01T08:00:00.000Z</published>
-    <updated>2025-03-14T04:01:19.374Z</updated>
+    <updated>2025-03-24T03:01:06.530Z</updated>
     
     
     <summary type="html">&lt;p&gt;今までコンパイラでの式のパーサーに再帰下降法を使ってたが、&lt;a href=&quot;/blog/2019/12/22/crafting-interpreters.html&quot; title=&quot;Crafting Interpretersを読んだ&quot;&gt;Crafting Interpretersという本&lt;/a&gt;（以降CI本）でPrattパーサーという手法があることを知った。
@@ -136,7 +136,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html"/>
     <id>https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html</id>
     <published>2025-01-13T10:00:00.000Z</published>
-    <updated>2025-03-14T04:01:19.367Z</updated>
+    <updated>2025-03-24T03:01:06.522Z</updated>
     
     
     <summary type="html">&lt;p&gt;「&lt;strong&gt;ゼリーのパズル&lt;/strong&gt;」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
@@ -156,7 +156,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html"/>
     <id>https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html</id>
     <published>2024-12-11T13:00:00.000Z</published>
-    <updated>2025-03-14T04:01:19.380Z</updated>
+    <updated>2025-03-24T03:01:06.538Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUで反応拡散系&lt;/a&gt;を動かした時にテクスチャのサンプルにフィルタが使えなかった理由がわかった。&lt;/p&gt;</summary>
@@ -173,7 +173,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
     <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2025-03-17T05:41:01.781Z</updated>
+    <updated>2025-03-24T03:01:06.534Z</updated>
     
     
     <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
@@ -194,7 +194,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2024/06/15/mach-o.html"/>
     <id>https://tyfkda.github.io/blog/2024/06/15/mach-o.html</id>
     <published>2024-06-15T09:00:00.000Z</published>
-    <updated>2025-03-14T04:01:19.369Z</updated>
+    <updated>2025-03-24T03:01:06.525Z</updated>
     
     
     <summary type="html">&lt;p&gt;Linuxなどの実行ファイルやコンパイラから出力されるオブジェクトファイルはELFという形式だが、
@@ -216,7 +216,7 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html"/>
     <id>https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html</id>
     <published>2024-05-31T09:00:00.000Z</published>
-    <updated>2025-03-14T04:01:19.376Z</updated>
+    <updated>2025-03-24T03:01:06.533Z</updated>
     
     
     <summary type="html">&lt;p&gt;流行りの機械学習でなにか動かしたいなぁとチュートリアルを動かそうとするも大抵エラーで動かない、動いたとしてもちょっと経つとライブラリの更新だか環境の変化でエラーになってしまい、その依存関係も解決できない。
@@ -238,7 +238,7 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <link href="https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html"/>
     <id>https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html</id>
     <published>2024-04-09T12:00:00.000Z</published>
-    <updated>2025-03-14T04:01:19.370Z</updated>
+    <updated>2025-03-24T03:01:06.527Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://gihyo.jp/book/2023/978-4-297-13360-3&quot;&gt;ゲームで学ぶ探索アルゴリズム実践入門
