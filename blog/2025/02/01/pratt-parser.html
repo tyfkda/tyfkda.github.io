@@ -265,7 +265,7 @@
 <h4 id="行数の変化"><a href="#行数の変化" class="headerlink" title="行数の変化"></a>行数の変化</h4><p>再帰下降法に比べてPrattパーサーでは優先度の処理とループが共通化され、
 また二項演算や単項演算での任意の処理を共通化できるので、たいていの場合コード量は減らせると思う。</p>
 <p>自分のC言語の式パーサーでは、再帰下降法で917行だったものが、Prattパーサーに書き換えたところ811行に削減された（-11.6%）。</p>
-<h4 id="実行速度の変化"><a href="#実行速度の変化" class="headerlink" title="実行速度の変化"></a>実行速度の変化</h4><p>再帰下降法では不要に関数呼出がネストされるのが、Prattパーサーではトークンの種類によってネストが削減されるので、実行速度も改善されることが期待される。</p>
+<h4 id="実行速度の変化"><a href="#実行速度の変化" class="headerlink" title="実行速度の変化"></a>実行速度の変化</h4><p>再帰下降法ではトークン列の内容に関わらず言語が用意する演算子の優先度の数だけ必ず関数呼出がネストされるのが、Prattパーサーでは出現する演算子トークンによって呼び出す関数が直接決まることによりネストが削減されるので、実行速度も改善されることが期待される。</p>
 <p>ただいくつかのソースのコンパイル時間を比べたところ大差なかった。
 これはコンパイル時間のうち式のパースがそんなに大きなパートを占めないからだと思う。</p>
 <h2 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h2><p>Prattパーサーの動作の仕組みはちょっと難しいけど、再帰下降法に比べてそれほど難解なわけではなく、
@@ -294,7 +294,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->

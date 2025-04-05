@@ -275,6 +275,7 @@ gitのサブモジュールとして取り込んでビルドするようにし�
 <li>CNN：84x84x4 → 20x20x32 → 9x9x64 → 7x7x64</li>
 <li>フラット化：特徴数3,136</li>
 <li>全結合：3,136 → 512 → 行動数</li>
+<li>活性化関数はすべて<code>ReLU</code></li>
 </ul>
 </li>
 <li>モデルの<code>train</code>メソッドの<code>total_timesteps</code>で<code>5,000,000</code>（エピソード数とは違う）</li>
@@ -343,7 +344,7 @@ DQN
 <iframe class="app-movie" width="512" height="480" style="display:block; margin:0 auto" src="https://www.youtube.com/embed/mlSjsejrrZY?si=USSXkNVLEiWOoTpN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 <ul>
-<li>行動を<code>complex</code>にしたのにちゃんとBダッシュメインで、穴やファイアを飛び越え、ファイアの前では減速、長ジャンプするの偉い</li>
+<li>行動を<code>complex</code>にしたのにちゃんとBダッシュメインで、穴やファイアを飛び越え、回転ファイア棒の前では減速、長ジャンプするの偉い</li>
 </ul>
 <h2 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h2><ul>
 <li><a href="https://github.com/tyfkda/smb-rl-sb3">smb-rl-sb3</a></li>
@@ -399,7 +400,7 @@ DQN
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/04/06/nes-apu-dmc.html" title="ファミコンのDMCチャンネルの再現方法" rel="bookmark">ファミコンのDMCチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/07/07/nes-scrolling.html" title="ファミコンでのBGスクロール" rel="bookmark">ファミコンでのBGスクロール</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/04/06/nes-apu-dmc.html" title="ファミコンのDMCチャンネルの再現方法" rel="bookmark">ファミコンのDMCチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/07/07/nes-scrolling.html" title="ファミコンでのBGスクロール" rel="bookmark">ファミコンでのBGスクロール</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/05/03/quantized-tri-wave.html" title="階段三角波と聞き比べ" rel="bookmark">階段三角波と聞き比べ</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
