@@ -184,6 +184,32 @@ LTSV FAQ - LTSV って何? どういうところが良いの? - naoyaのはて�
 <h3 id="パースしてハッシュとして返す"><a href="#パースしてハッシュとして返す" class="headerlink" title="パースしてハッシュとして返す"></a>パースしてハッシュとして返す</h3><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">parse_ltsv</span>(<span class="params">ltsv_string</span>)</span><br><span class="line">  <span class="title class_">Hash</span>[ltsv_string.split(<span class="string">&quot;\t&quot;</span>).map&#123;|<span class="params">f</span>| f.split(<span class="string">&quot;:&quot;</span>, <span class="number">2</span>)&#125;]</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 例</span></span><br><span class="line">parse_ltsv(<span class="string">&quot;a:123\tb:456&quot;</span>)</span><br><span class="line"><span class="comment"># =&gt; &#123;&quot;a&quot;=&gt;&quot;123&quot;, &quot;b&quot;=&gt;&quot;456&quot;&#125;</span></span><br></pre></td></tr></table></figure>
 
                 
+                    <hr style="margin:48px 0 8px">
+                    <div style="display:flex; flex-direction:row; column-gap:4px; margin:16px 0">
+                        <div class="post-prev" style="flex: 1 50%; text-align:left">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2015/02/11/js-leap-year.html">
+                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                        【JavaScript】うるう年判定
+                                    </a>
+                                </div>
+                            
+                        </div>
+                        <div class="post-next" style="flex: 1 50%; text-align:right">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2015/02/11/omni-auth.html">
+                                        OmniAuthを使ってみる
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                    </a>
+                                </div>
+                            
+                        </div>
+                    </div>
+                
+
+                
 
             </div>
 

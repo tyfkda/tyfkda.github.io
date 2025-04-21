@@ -209,6 +209,32 @@
 <figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// MyURLProtocol.swift</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyURLProtocol</span>: <span class="title class_">NSURLProtocol</span> &#123;</span><br><span class="line">  <span class="operator">...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// ダミーを返す場合</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">func</span> <span class="title function_">sendBackEmpty</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> response <span class="operator">=</span> <span class="type">NSURLResponse</span>(URL: <span class="keyword">self</span>.request.<span class="type">URL</span>,</span><br><span class="line">      MIMEType: <span class="literal">nil</span>,</span><br><span class="line">      expectedContentLength: <span class="number">0</span>,</span><br><span class="line">      textEncodingName: <span class="literal">nil</span>)</span><br><span class="line">    <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocol</span>(<span class="keyword">self</span>,</span><br><span class="line">      didReceiveResponse: response,</span><br><span class="line">      cacheStoragePolicy: <span class="type">NSURLCacheStoragePolicy</span>.<span class="type">NotAllowed</span>)</span><br><span class="line">    <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocol</span>(<span class="keyword">self</span>, didLoadData: <span class="type">NSData</span>(bytes: <span class="literal">nil</span>, length: <span class="number">0</span>))</span><br><span class="line">    <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocolDidFinishLoading</span>(<span class="keyword">self</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// プレーンテキストを返す場合</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">func</span> <span class="title function_">sendBackPlainText</span>(<span class="params">str</span>: <span class="type">String</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> data: <span class="type">NSData</span> <span class="operator">=</span> str.dataUsingEncoding(<span class="type">NSUTF8StringEncoding</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> headers <span class="operator">=</span> [</span><br><span class="line">        <span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;text/plain&quot;</span>,</span><br><span class="line">        <span class="string">&quot;ContentLength&quot;</span>: <span class="string">&quot;<span class="subst">\(data.length)</span>&quot;</span>,</span><br><span class="line">      ]</span><br><span class="line">      <span class="keyword">let</span> response <span class="operator">=</span> <span class="type">NSHTTPURLResponse</span>(URL: <span class="keyword">self</span>.request.<span class="type">URL</span>,</span><br><span class="line">        statusCode: <span class="number">200</span>,</span><br><span class="line">        HTTPVersion: <span class="string">&quot;1.1&quot;</span>,</span><br><span class="line">        headerFields: headers)</span><br><span class="line">      <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocol</span>(<span class="keyword">self</span>,</span><br><span class="line">        didReceiveResponse: response<span class="operator">!</span>,</span><br><span class="line">        cacheStoragePolicy: <span class="type">NSURLCacheStoragePolicy</span>.<span class="type">NotAllowed</span>)</span><br><span class="line">      <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocol</span>(<span class="keyword">self</span>, didLoadData: data)</span><br><span class="line">      <span class="keyword">self</span>.client<span class="operator">?</span>.<span class="type">URLProtocolDidFinishLoading</span>(<span class="keyword">self</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
                 
+                    <hr style="margin:48px 0 8px">
+                    <div style="display:flex; flex-direction:row; column-gap:4px; margin:16px 0">
+                        <div class="post-prev" style="flex: 1 50%; text-align:left">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2015/02/02/gawa-native-pass-values.html">
+                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                        iOSガワネイティブでSwiftにでかいデータを受け渡す
+                                    </a>
+                                </div>
+                            
+                        </div>
+                        <div class="post-next" style="flex: 1 50%; text-align:right">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2015/01/30/volley.html">
+                                        Volleyでの画像表示はNetworkImageViewが楽だった
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                    </a>
+                                </div>
+                            
+                        </div>
+                    </div>
+                
+
+                
 
             </div>
 

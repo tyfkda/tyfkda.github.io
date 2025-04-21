@@ -198,6 +198,32 @@
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">auto</span> listener = EventListenerCustom::<span class="built_in">create</span>(<span class="string">&quot;FooEvent&quot;</span>, [](EventCustom*) &#123;</span><br><span class="line">  <span class="built_in">CCLOG</span>(<span class="string">&quot;FooEvent notified&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">auto</span> dispatcher = Director::<span class="built_in">getInstance</span>()-&gt;<span class="built_in">getEventDispatcher</span>();</span><br><span class="line">dispatcher-&gt;<span class="built_in">addEventListenerWithSceneGraphPriority</span>(listener, <span class="keyword">this</span>);</span><br><span class="line">...</span><br><span class="line">dispatcher-&gt;<span class="built_in">dispatchCustomEvent</span>(<span class="string">&quot;FooEvent&quot;</span>);</span><br></pre></td></tr></table></figure>
 
                 
+                    <hr style="margin:48px 0 8px">
+                    <div style="display:flex; flex-direction:row; column-gap:4px; margin:16px 0">
+                        <div class="post-prev" style="flex: 1 50%; text-align:left">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2014/10/11/cocos2dx-v3-webview.html">
+                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                        Cocos2dx-3.3betaでWebViewを試す
+                                    </a>
+                                </div>
+                            
+                        </div>
+                        <div class="post-next" style="flex: 1 50%; text-align:right">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2014/07/20/cocos2dx-v3-touchevent.html">
+                                        Cocos2dx3系のタッチイベントをラムダ式で書く
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                    </a>
+                                </div>
+                            
+                        </div>
+                    </div>
+                
+
+                
 
             </div>
 

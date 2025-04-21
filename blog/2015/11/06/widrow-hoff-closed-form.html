@@ -321,6 +321,32 @@ w_{21}
 <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coding: UTF-8</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">  <span class="comment"># パターン行列</span></span><br><span class="line">  X = np.matrix([[<span class="number">1.</span>, <span class="number">1.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">0.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">0.5</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">1.0</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">1.5</span>]])</span><br><span class="line">  <span class="comment"># パターンごとの、クラスiに属するかどうかの教師行列</span></span><br><span class="line">  b = np.matrix([[<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>]])</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 識別関数のウェイトを求める</span></span><br><span class="line">  W = learn_error_close(X, b)</span><br><span class="line">  <span class="built_in">print</span> <span class="string">&#x27;W:&#x27;</span></span><br><span class="line">  <span class="built_in">print</span> W</span><br><span class="line"></span><br><span class="line">  x = -(W[<span class="number">0</span>, <span class="number">0</span>] - W[<span class="number">0</span>, <span class="number">1</span>]) / (W[<span class="number">1</span>, <span class="number">0</span>] - W[<span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">  <span class="built_in">print</span> <span class="string">&#x27;x=&#x27;</span>, x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 「誤差評価に基づく学習」の「閉じた形の解」</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">learn_error_close</span>(<span class="params">X, b</span>):</span><br><span class="line">  W = np.linalg.solve(X.T * X, X.T * b)</span><br><span class="line">  <span class="keyword">return</span> W</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># W:</span></span><br><span class="line"><span class="comment"># [[ 0.640625  0.359375]</span></span><br><span class="line"><span class="comment">#  [ 0.46875  -0.46875 ]]</span></span><br><span class="line"><span class="comment"># x= -0.3</span></span><br></pre></td></tr></table></figure>
 
                 
+                    <hr style="margin:48px 0 8px">
+                    <div style="display:flex; flex-direction:row; column-gap:4px; margin:16px 0">
+                        <div class="post-prev" style="flex: 1 50%; text-align:left">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2015/11/13/defmacro.html">
+                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                        マクロを定義するマクロを定義する
+                                    </a>
+                                </div>
+                            
+                        </div>
+                        <div class="post-next" style="flex: 1 50%; text-align:right">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2015/10/19/cocos2d-x-js.html">
+                                        Cocos2d-x(JS)を使ってみる
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                    </a>
+                                </div>
+                            
+                        </div>
+                    </div>
+                
+
+                
 
             </div>
 

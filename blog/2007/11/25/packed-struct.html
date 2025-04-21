@@ -10,9 +10,9 @@
 
     <!--Description-->
     
-        <meta name="description" content="るびまに、データの構造をDSLで指定してシリアライズできるPackedStructクラスが書いてある。
+        <meta name="description" content="るびまのあなたの Ruby コードを添削します 【第 3 回】 dbf.rbに、データの構造をDSLで指定してシリアライズできるPackedStructクラスが書いてある。
 これを使えば
-def struct(&amp;amp;block)  PackedStruct.define(&amp;amp;block)endLVITEM = struct &amp;#123;  UINT   :m">
+def struct(&amp;amp;block)  PackedStruct.define(&amp;amp;block)e">
     
 
     <!--Author-->
@@ -22,7 +22,7 @@ def struct(&amp;amp;block)  PackedStruct.define(&amp;amp;block)endLVITEM = struc
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="PackedStruct"/>
+        <meta property="og:title" content="【Ruby】PackedStruct"/>
     
 
     <!--Open Graph Description-->
@@ -44,7 +44,7 @@ def struct(&amp;amp;block)  PackedStruct.define(&amp;amp;block)endLVITEM = struc
 
     <!-- Title -->
     
-    <title>PackedStruct - Kludge Factory</title>
+    <title>【Ruby】PackedStruct - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -148,7 +148,7 @@ def struct(&amp;amp;block)  PackedStruct.define(&amp;amp;block)endLVITEM = struc
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>PackedStruct</h1>
+                    <h1>【Ruby】PackedStruct</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
@@ -190,14 +190,43 @@ def struct(&amp;amp;block)  PackedStruct.define(&amp;amp;block)endLVITEM = struc
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p><a href="http://jp.rubyist.net/magazine/?0013-CodeReview#l35">るびま</a>に、データの構造をDSLで指定してシリアライズできるPackedStructクラスが書いてある。
+                <p>るびまの<a href="https://magazine.rubyist.net/articles/0013/0013-CodeReview.html#packedstruct">あなたの Ruby コードを添削します 【第 3 回】 dbf.rb</a>に、データの構造をDSLで指定してシリアライズできるPackedStructクラスが書いてある。
 これを使えば</p>
 <figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">struct</span>(<span class="params">&amp;block</span>)</span><br><span class="line">  <span class="title class_">PackedStruct</span>.define(&amp;block)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="variable constant_">LVITEM</span> = struct &#123;</span><br><span class="line">  <span class="variable constant_">UINT</span>   <span class="symbol">:mask</span>;</span><br><span class="line">  int    <span class="symbol">:iItem</span>;</span><br><span class="line">  int    <span class="symbol">:iSubItem</span>;</span><br><span class="line">  <span class="variable constant_">UINT</span>   <span class="symbol">:state</span>;</span><br><span class="line">  <span class="variable constant_">UINT</span>   <span class="symbol">:stateMask</span>;</span><br><span class="line">  <span class="variable constant_">LPSTR</span>  <span class="symbol">:pszText</span>;</span><br><span class="line">  int    <span class="symbol">:cchTextMax</span>;</span><br><span class="line">  int    <span class="symbol">:iImage</span>;</span><br><span class="line">  <span class="variable constant_">LPARAM</span> <span class="symbol">:lParam</span>;</span><br><span class="line">  int    <span class="symbol">:iIndent</span>;</span><br><span class="line">  int    <span class="symbol">:iGroupId</span>;</span><br><span class="line">  <span class="variable constant_">UINT</span>   <span class="symbol">:cColumns</span>;</span><br><span class="line">  <span class="variable constant_">PUINT</span>  <span class="symbol">:puColumns</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <p>おぉ、Ｃの構造体の定義がほぼそのまま持ってこれる。
 pack_templateを何度も書かなくていいし、これはすばらしい！</p>
 <p><code>PackedStruct</code> 内で<a href="http://www.ruby-lang.org/ja/man/index.cgi?cmd=view;name=%EF%BF%BD%EF%BF%BD%EF%BF%BD%E9%A5%B9%EF%BF%BD%EF%BF%BD%EF%BF%BD%E1%A5%BD%EF%BF%BD%C3%A5%C9%A4%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD#a.c6.c3.b0.db.a5.af.a5.e9.a5.b9.c4.ea.b5.c1">特異クラス</a>が定義してあって、そこで <code>int32LE</code> とか <code>string</code> とかDSLで使える型定義の関数が定義されてるんだけど、これを外から簡単に拡張できるといいな～と思ったんだけど、特異クラスの部分にメソッド追加したり継承したりするやり方がわからず…。</p>
+<ul>
+<li>続き：<a href="/blog/2009/07/10/packed-struct2.html" title="【Ruby】PackedStructの拡張">【Ruby】PackedStructの拡張</a></li>
+</ul>
 
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <div style="display:flex; flex-direction:row; column-gap:4px; margin:16px 0">
+                        <div class="post-prev" style="flex: 1 50%; text-align:left">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2007/12/20/hello-rakefile.html">
+                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                        こんにちはRakefile
+                                    </a>
+                                </div>
+                            
+                        </div>
+                        <div class="post-next" style="flex: 1 50%; text-align:right">
+                            
+                                <div style="display:inline-block; padding:8px; background-color:#eee; border-radius:8px">
+                                    <a href="/blog/2006/01/13/72-div.html">
+                                        72割の法則を考える
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                    </a>
+                                </div>
+                            
+                        </div>
+                    </div>
+                
 
                 
 
