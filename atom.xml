@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-05-14T02:26:04.310Z</updated>
+  <updated>2025-06-06T12:58:48.367Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</title>
+    <link href="https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html"/>
+    <id>https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html</id>
+    <published>2025-06-06T12:00:00.000Z</published>
+    <updated>2025-06-06T12:58:48.367Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;いかにもCGで作りましたっていうクッキリハッキリした反射ではなく、少し不完全な金属の光沢や表面のざらざら具合を表現するためのマテリアル表現をパストレーサーに組み込んでみた。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pbr-material-pt/image-ggx.jpg&quot; alt=&quot;PBRマテリアルでパストレーシング&quot;&gt;&lt;/p&gt;
+&lt;p&gt;640x480, 25,000サンプル&amp;#x2F;ピクセル, 39.03秒, M1MacbookAir (8コア)&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
+    
+  </entry>
   
   <entry>
     <title>Viteに移行してみたら開発環境が快適になった</title>
@@ -230,24 +249,6 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <category term="python" scheme="https://tyfkda.github.io/tags/python/"/>
     
     <category term="reinforcement learning" scheme="https://tyfkda.github.io/tags/reinforcement-learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>モンテカルロ木探索で引き分け狙いのコネクトフォーAIを作ろうとしたがうまくいかなかった話</title>
-    <link href="https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html"/>
-    <id>https://tyfkda.github.io/blog/2024/04/09/mcts-connect-four.html</id>
-    <published>2024-04-09T12:00:00.000Z</published>
-    <updated>2025-03-24T03:01:06.527Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://gihyo.jp/book/2023/978-4-297-13360-3&quot;&gt;ゲームで学ぶ探索アルゴリズム実践入門
-～木探索とメタヒューリスティクス&lt;/a&gt;という本の中でコネクトフォーの思考ルーチンをモンテカルロ木探索で実装するサンプルがあったので動かしてみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
     
   </entry>
   
