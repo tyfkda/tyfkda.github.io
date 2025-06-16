@@ -191,7 +191,15 @@
             <div class="col-lg-9 col-md-9">
                 <p>レイとトーラスの交差判定は<a href="http://tog.acm.org/resources/GraphicsGems/gems.html#gemsii">Graphics Gems II</a>の <a href="http://www.cs.ualberta.ca/~graphics/books/GraphicsGems/gemsii/intersect/inttor.c">Intersecting a Ray with An Elliptical Torus</a> (Cychosz, Joseph M) に、
 その中で使ってる、４次方程式を解くSolveQuarticは、<a href="http://tog.acm.org/resources/GraphicsGems/gems.html#gems">Graphics Gems I</a>の <a href="http://tog.acm.org/resources/GraphicsGems/gems/Roots3And4.c">Cubic and Quartic Roots</a> (Schwarze, Jochen) にソースがある。</p>
-<p>法線ベクトルは偏微分を使って求めると、<script type="math/tex">{ 4x(x^2 + y^2 + z^2 - (a^2 + b^2)), 4y(x^2 + y^2 + z^2 - (a^2 + b^2) + 2a^2), 4z(x^2 + y^2 + z^2 - (a^2 + b^2)) }</script> だそうだ。
+<p>法線ベクトルは偏微分を使って求めると、</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{pmatrix} 4x(x^2 + y^2 + z^2 - (a^2 + b^2)) \\
+4y(x^2 + y^2 + z^2 - (a^2 + b^2) + 2a^2) \\
+4z(x^2 + y^2 + z^2 - (a^2 + b^2))
+\end{pmatrix}
+%]]></script>
+<p>だそうだ。
 試してはない。</p>
 
 
@@ -216,7 +224,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/07/17/calc-asin.html" title="arcsinを数値計算する方法を探し求めて彷徨う" rel="bookmark">arcsinを数値計算する方法を探し求めて彷徨う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/07/17/calc-asin.html" title="arcsinを数値計算する方法を探し求めて彷徨う" rel="bookmark">arcsinを数値計算する方法を探し求めて彷徨う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->

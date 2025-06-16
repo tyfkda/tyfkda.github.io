@@ -439,7 +439,7 @@ FP比較命令はnot equalがないので、<code>feq</code>ののちに条件�
 <ul>
 <li>これらのコードは<a href="https://github.com/eblot/newlib/blob/2a63fa0fd26ffb6603f69d9e369e944fe449c246/newlib/libc/include/sys/reent.h#L367-L376">newlibと同じ</a>なので、RISC-Vツールチェインはnewlibを使っているっぽい</li>
 </ul>
-<h4 id="呼出規約"><a href="#呼出規約" class="headerlink" title="呼出規約"></a>呼出規約</h4><p>関数の呼出規約はx86-64やaarch64と同様に<code>int</code>や<code>double</code>などのスカラー値はレジスタ渡しで、8個を超えた分や構造体はスタック渡し。
+<h4 id="呼出規約"><a href="#呼出規約" class="headerlink" title="呼出規約"></a>呼出規約</h4><p>関数の呼出規約はx86-64やaarch64と同様に<code>int</code>や<code>double</code>などのスカラー値はレジスタ渡しで、8個を超えた分<del>や構造体</del>はスタック渡し（追記：構造体はポインタ渡しっぽい）。
 レジスタによって呼出元保存や呼出先保存となっているのでそれに従う
 （<code>tn</code>レジスタがテンポラリ＝破壊される＝Caller Save、<code>sn</code>は保存される＝Callee Save）。</p>
 <h4 id="任意長引数"><a href="#任意長引数" class="headerlink" title="任意長引数"></a>任意長引数</h4><p><code>riscv64-unknown-elf-gcc</code>の出力結果を見ると、呼び出す関数が任意長引数の場合は<code>double</code>の値でもFPレジスタではなく汎用レジスタで渡すっぽい。
@@ -450,7 +450,7 @@ RISC-Vでは受け渡しが汎用レジスタのみということもあって�
 <p>ただ8個まではレジスタ渡しされるので、スタック渡しの引数と連続になるように関数プロローグで一番最初にスタックに積んで残りのスタック引数と連続させる必要がある。
 <code>call</code>命令でリターンアドレスが<code>ra</code>レジスタに格納されるので、先に任意長引数の可能性のあるレジスタをスタックに積んで、その後リターンアドレスやフレームポインタを積んだりスタックフレームの確保を行う。</p>
 <ul>
-<li>構造体引数と混ぜられたら対処できなそうな気がする…</li>
+<li><del>構造体引数と混ぜられたら対処できなそうな気がする…</del> 追記：構造体はポインタ渡しなので扱える</li>
 <li>ヘッダのパス： &#x2F;opt&#x2F;homebrew&#x2F;Cellar&#x2F;riscv-gnu-toolchain&#x2F;main&#x2F;lib&#x2F;gcc&#x2F;riscv64-unknown-elf&#x2F;12.2.0&#x2F;include&#x2F;stdarg.h</li>
 </ul>
 <h4 id="浮動小数点数の丸めモード"><a href="#浮動小数点数の丸めモード" class="headerlink" title="浮動小数点数の丸めモード"></a>浮動小数点数の丸めモード</h4><p>C言語で<code>double</code>から<code>int</code>へのキャストをすると小数点以下は切り捨てになる。
