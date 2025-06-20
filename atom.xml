@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-06-07T02:05:10.166Z</updated>
+  <updated>2025-06-20T12:51:58.192Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【C++】shared_ptrとOpenMPの相性が最悪な件</title>
+    <link href="https://tyfkda.github.io/blog/2025/06/20/openmp-shared_ptr.html"/>
+    <id>https://tyfkda.github.io/blog/2025/06/20/openmp-shared_ptr.html</id>
+    <published>2025-06-20T13:00:00.000Z</published>
+    <updated>2025-06-20T12:51:58.192Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;久しぶりにC++でプログラムを書いて、その時に生ポインタの代わりに&lt;code&gt;shared_ptr&lt;/code&gt;を使うように変更したところとんでもなく遅くなってしまうことがあり、導入できなかった。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
+    
+  </entry>
   
   <entry>
     <title>PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</title>
@@ -227,28 +244,6 @@ macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマット�
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
     
     <category term="binary" scheme="https://tyfkda.github.io/tags/binary/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>強化学習に再挑戦（二重倒立振子）</title>
-    <link href="https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html"/>
-    <id>https://tyfkda.github.io/blog/2024/05/31/reinforce-invert-double-pendulum.html</id>
-    <published>2024-05-31T09:00:00.000Z</published>
-    <updated>2025-03-24T03:01:06.533Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;流行りの機械学習でなにか動かしたいなぁとチュートリアルを動かそうとするも大抵エラーで動かない、動いたとしてもちょっと経つとライブラリの更新だか環境の変化でエラーになってしまい、その依存関係も解決できない。
-ローカルで動かそうとするが環境構築でつまずく。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="physics" scheme="https://tyfkda.github.io/tags/physics/"/>
-    
-    <category term="python" scheme="https://tyfkda.github.io/tags/python/"/>
-    
-    <category term="reinforcement learning" scheme="https://tyfkda.github.io/tags/reinforcement-learning/"/>
     
   </entry>
   
