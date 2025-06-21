@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-06-20T12:51:58.192Z</updated>
+  <updated>2025-06-21T02:31:41.787Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2025/06/20/openmp-shared_ptr.html"/>
     <id>https://tyfkda.github.io/blog/2025/06/20/openmp-shared_ptr.html</id>
     <published>2025-06-20T13:00:00.000Z</published>
-    <updated>2025-06-20T12:51:58.192Z</updated>
+    <updated>2025-06-21T02:31:41.787Z</updated>
     
     
     <summary type="html">&lt;p&gt;久しぶりにC++でプログラムを書いて、その時に生ポインタの代わりに&lt;code&gt;shared_ptr&lt;/code&gt;を使うように変更したところとんでもなく遅くなってしまうことがあり、導入できなかった。&lt;/p&gt;</summary>
