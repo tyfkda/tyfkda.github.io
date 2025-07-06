@@ -246,10 +246,10 @@
 問題点：<code>fmod</code> 、 <code>for</code>ループ使用、速度、精度。</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
+\begin{eqnarray*}
 \sin x &=& x - \frac{x^3}{3!} + \frac{x^5}{5!} + \cdots &=& \sum_{n=0}^{\infty} -1^n \frac{x^{2n+1}}{(2n+1)!} \\
 \cos x &=& 1 - \frac{x^2}{2!} + \frac{x^4}{4!} + \cdots &=& \sum_{n=0}^{\infty} -1^n \frac{x^{2n}}{2n!}
-\end{align}
+\end{eqnarray*}
 %]]></script>
 
 <p>10項程度。</p>
@@ -258,28 +258,28 @@
 <h4 id="atan"><a href="#atan" class="headerlink" title="atan"></a>atan</h4><p>範囲を22.5度以内に絞ってマクローリン展開：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\tan^{-1} x &= x - \frac{x^3}{3} + \frac{x^5}{5} - \frac{x^7}{7} + \cdots \\
-            &= \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n+1}}{2n+1}
-\end{align}
+\begin{eqnarray*}
+\tan^{-1} x &=& x - \frac{x^3}{3} + \frac{x^5}{5} - \frac{x^7}{7} + \cdots \\
+            &=& \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n+1}}{2n+1}
+\end{eqnarray*}
 %]]></script>
 
 <p>入力が <script type="math/tex">x</script> 、求める角度を <script type="math/tex">\theta</script> とすると、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\tan^{-1} x &= \theta \\
-\tan \theta &= x
-\end{align}
+\begin{eqnarray*}
+\tan^{-1} x &=& \theta \\
+\tan \theta &=& x
+\end{eqnarray*}
 %]]></script>
 
 <p>角度を絞るためにタンジェントの加法定理：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\tan(\alpha - \beta) &= \frac{\tan \alpha - \tan \beta}{1 + \tan \alpha \tan \beta} \\
-                     &= \frac{1 - \frac{\tan \beta}{\tan \alpha}}{\frac{1}{\tan \alpha} + \tan \beta}
-\end{align}
+\begin{eqnarray*}
+\tan(\alpha - \beta) &=& \frac{\tan \alpha - \tan \beta}{1 + \tan \alpha \tan \beta} \\
+                     &=& \frac{1 - \frac{\tan \beta}{\tan \alpha}}{\frac{1}{\tan \alpha} + \tan \beta}
+\end{eqnarray*}
 %]]></script>
 
 <p>を利用する。</p>
@@ -298,10 +298,10 @@
 <p>と変換して値の範囲を狭める。</p>
 <h4 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h4><script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-e^x &= 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots \\
-    &= \sum_{n=0}^{\infty} \frac{x^n}{n!}
-\end{align}
+\begin{eqnarray*}
+e^x &=& 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots \\
+    &=& \sum_{n=0}^{\infty} \frac{x^n}{n!}
+\end{eqnarray*}
 %]]></script>
 
 <p>で求める。</p>
@@ -312,7 +312,11 @@ e^x &= 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots \\
 <h4 id="log"><a href="#log" class="headerlink" title="log"></a>log</h4><p>入力<script type="math/tex">x</script> を2のべき乗との積で0.5〜1.0の範囲に絞る：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\log x = \log (2^n \cdot d) = \log 2^n + \log d = n \log 2 + \log d
+\begin{eqnarray*}
+\log x &=& \log (2^n \cdot d) \\
+       &=& \log 2^n + \log d \\
+       &=& n \log 2 + \log d
+\end{eqnarray*}
 %]]></script>
 
 <p>このままマクローリン展開：</p>
@@ -337,11 +341,11 @@ e^x &= 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots \\
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-1 + x &= y \cdot (1 - x) \\
-x \cdot (y + 1) &= y - 1 \\
-\therefore x &= \frac{y - 1}{y + 1}
-\end{align}
+\begin{eqnarray*}
+1 + x &=& y \cdot (1 - x) \\
+x \cdot (y + 1) &=& y - 1 \\
+\therefore x &=& \frac{y - 1}{y + 1}
+\end{eqnarray*}
 %]]></script>
 
 <p>で求めた <script type="math/tex">x</script> を使って求めると2乗で減っていくのでマシになる。</p>
@@ -384,7 +388,7 @@ x \cdot (y + 1) &= y - 1 \\
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2012/02/27/2week-script.html" title="「２週間でできるスクリプト言語の作り方」事始め" rel="bookmark">「２週間でできるスクリプト言語の作り方」事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->

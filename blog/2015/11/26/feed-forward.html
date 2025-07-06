@@ -219,10 +219,10 @@ a^l_j = \sigma(z^l_j)
 <h3 id="フィードフォワードのベクトル表記"><a href="#フィードフォワードのベクトル表記" class="headerlink" title="フィードフォワードのベクトル表記"></a>フィードフォワードのベクトル表記</h3><p>ベクトル表記で書くと、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\mathbf{z}^l &= \mathbf{W}^l \mathbf{a}^{l-1} + \mathbf{b}^l \\
-\mathbf{a}^l &= \sigma(\mathbf{z}^l)
-\end{align}
+\begin{eqnarray*}
+\mathbf{z}^l &=& \mathbf{W}^l \mathbf{a}^{l-1} + \mathbf{b}^l \\
+\mathbf{a}^l &=& \sigma(\mathbf{z}^l)
+\end{eqnarray*}
 %]]></script>
 
 <p>ベクトル<script type="math/tex">\mathbf{x}</script>, <script type="math/tex">\mathbf{z}^l</script>, <script type="math/tex">\mathbf{a}^l</script>, <script type="math/tex">\mathbf{b}^l</script>
@@ -232,24 +232,22 @@ a^l_j = \sigma(z^l_j)
 <h3 id="展開形"><a href="#展開形" class="headerlink" title="展開形"></a>展開形</h3><p>マトリクスやベクトルの成分まで明示すると、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\left(\begin{array}{c}z^l_1 \\ z^l_2 \\ \vdots \\ z^l_J \end{array}\right) =
-\left[
-\begin{array}{c}
-  \begin{array}{r} w^l_{11} & w^l_{12} & w^l_{13} & \cdots & w^l_{1K} \end{array} \\
-  \begin{array}{r} w^l_{21} & w^l_{22} & w^l_{23} & \cdots & w^l_{2K} \end{array} \\
-  \begin{array}{r} \vdots   & \vdots   & \vdots   & \ddots & \vdots   \end{array} \\
-  \begin{array}{r} w^l_{J1} & w^l_{J2} & w^l_{J3} & \cdots & w^l_{JK} \end{array}
-\end{array}
-\right]
+\begin{pmatrix}z^l_1 \\ z^l_2 \\ \vdots \\ z^l_J \end{pmatrix} =
+\begin{bmatrix}
+  w^l_{11} & w^l_{12} & w^l_{13} & \cdots & w^l_{1K} \\
+  w^l_{21} & w^l_{22} & w^l_{23} & \cdots & w^l_{2K} \\
+  \vdots   & \vdots   & \vdots   & \ddots & \vdots   \\
+  w^l_{J1} & w^l_{J2} & w^l_{J3} & \cdots & w^l_{JK}
+\end{bmatrix}
 
-\left(\begin{array}{c}a^{l-1}_1 \\ a^{l-1}_2 \\ a^{l-1}_3 \\ \vdots \\ a^{l-1}_K \end{array}\right) +
-\left(\begin{array}{c}b^l_1 \\ b^l_2 \\ \vdots \\ b^l_J \end{array}\right),
+\begin{pmatrix}a^{l-1}_1 \\ a^{l-1}_2 \\ \vdots \\ a^{l-1}_K \end{pmatrix} +
+\begin{pmatrix}b^l_1 \\ b^l_2 \\ \vdots \\ b^l_J \end{pmatrix},
 %]]></script>
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\left(\begin{array}{c}a^l_1 \\ a^l_2 \\ \vdots \\ a^l_J \end{array}\right) =
-\left(\begin{array}{c}\sigma(z^l_1) \\ \sigma(z^l_2) \\ \vdots \\ \sigma(z^l_J) \end{array}\right)
+\begin{pmatrix}a^l_1 \\ a^l_2 \\ \vdots \\ a^l_J \end{pmatrix} =
+\begin{pmatrix}\sigma(z^l_1) \\ \sigma(z^l_2) \\ \vdots \\ \sigma(z^l_J) \end{pmatrix}
 %]]></script>
 
 
@@ -257,64 +255,61 @@ a^l_j = \sigma(z^l_j)
 層ごとのニューロンの数はそれぞれ4, 3, 2とします：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\mathbf{a}^1 &= \mathbf{x} \\
+\begin{eqnarray*}
+\mathbf{a}^1 &=& \mathbf{x} \\
 \\
-\mathbf{z}^2 &= \mathbf{W}^2 \mathbf{a}^1 + \mathbf{b}^2 \\
-\mathbf{a}^2 &= \sigma(\mathbf{z}^2) \\
+\mathbf{z}^2 &=& \mathbf{W}^2 \mathbf{a}^1 + \mathbf{b}^2 \\
+\mathbf{a}^2 &=& \sigma(\mathbf{z}^2) \\
 \\
-\mathbf{z}^3 &= \mathbf{W}^3 \mathbf{a}^2 + \mathbf{b}^3 \\
-\mathbf{a}^3 &= \sigma(\mathbf{z}^3) \\
-\end{align}
+\mathbf{z}^3 &=& \mathbf{W}^3 \mathbf{a}^2 + \mathbf{b}^3 \\
+\mathbf{a}^3 &=& \sigma(\mathbf{z}^3) \\
+\end{eqnarray*}
 %]]></script>
 
 <p>展開して書くと、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\left(\begin{array}{c}a^1_1 \\ a^1_2 \\ a^1_3 \\ a^1_4 \end{array}\right) =
-\left(\begin{array}{c}x_1 \\ x_2 \\ x_3 \\ x_4 \end{array}\right)
+\begin{pmatrix}a^1_1 \\ a^1_2 \\ a^1_3 \\ a^1_4 \end{pmatrix} =
+\begin{pmatrix}x_1 \\ x_2 \\ x_3 \\ x_4 \end{pmatrix}
 %]]></script>
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\left(\begin{array}{c}z^2_1 \\ z^2_2 \\ z^2_3 \end{array}\right) =
-\left[
-\begin{array}{c}
-  \begin{array}{r} w^2_{11} & w^2_{12} & w^2_{13} & w^2_{14} \end{array} \\
-  \begin{array}{r} w^2_{21} & w^2_{22} & w^2_{23} & w^2_{24} \end{array} \\
-  \begin{array}{r} w^2_{31} & w^2_{32} & w^2_{33} & w^2_{34} \end{array}
-\end{array}
-\right]
+\begin{pmatrix}z^2_1 \\ z^2_2 \\ z^2_3 \end{pmatrix} =
+\begin{bmatrix}
+  w^2_{11} & w^2_{12} & w^2_{13} & w^2_{14} \\
+  w^2_{21} & w^2_{22} & w^2_{23} & w^2_{24} \\
+  w^2_{31} & w^2_{32} & w^2_{33} & w^2_{34}
+\end{bmatrix}
 
-\left(\begin{array}{c}a^1_1 \\ a^1_2 \\ a^1_3 \\ a^1_4 \end{array}\right) +
-\left(\begin{array}{c}b^2_1 \\ b^2_2 \\ b^2_3 \end{array}\right),
+\begin{pmatrix}a^1_1 \\ a^1_2 \\ a^1_3 \\ a^1_4 \end{pmatrix} +
+\begin{pmatrix}b^2_1 \\ b^2_2 \\ b^2_3 \end{pmatrix},
 %]]></script>
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\left(\begin{array}{c}a^2_1 \\ a^2_2 \\ a^2_3 \end{array}\right) =
-\left(\begin{array}{c}\sigma(z^2_1) \\ \sigma(z^2_2) \\ \sigma(z^l_3) \end{array}\right)
+\begin{pmatrix}a^2_1 \\ a^2_2 \\ a^2_3 \end{pmatrix} =
+\begin{pmatrix}\sigma(z^2_1) \\ \sigma(z^2_2) \\ \sigma(z^l_3) \end{pmatrix}
 %]]></script>
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\left(\begin{array}{c}z^3_1 \\ z^3_2 \end{array}\right) =
-\left[
-\begin{array}{c}
-  \begin{array}{r} w^3_{11} & w^3_{12} & w^3_{13} \end{array} \\
-  \begin{array}{r} w^3_{21} & w^3_{22} & w^3_{23} \end{array} \\
-\end{array}
-\right]
+\begin{pmatrix}z^3_1 \\ z^3_2 \end{pmatrix} =
+\begin{bmatrix}
+  w^3_{11} & w^3_{12} & w^3_{13} \\
+  w^3_{21} & w^3_{22} & w^3_{23} \\
+\end{bmatrix}
 
-\left(\begin{array}{c}a^2_1 \\ a^2_2 \\ a^2_3 \end{array}\right) +
-\left(\begin{array}{c}b^3_1 \\ b^3_2 \end{array}\right),
+\begin{pmatrix}a^2_1 \\ a^2_2 \\ a^2_3 \end{pmatrix} +
+\begin{pmatrix}b^3_1 \\ b^3_2 \end{pmatrix},
 %]]></script>
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\left(\begin{array}{c}a^3_1 \\ a^3_2 \\ a^3_3 \end{array}\right) =
-\left(\begin{array}{c}\sigma(z^3_1) \\ \sigma(z^3_2) \end{array}\right)
+\begin{pmatrix}a^3_1 \\ a^3_2 \\ a^3_3 \end{pmatrix} =
+\begin{pmatrix}\sigma(z^3_1) \\ \sigma(z^3_2) \end{pmatrix}
 %]]></script>
+
 
                 
                     <hr style="margin:48px 0 8px">
@@ -337,7 +332,7 @@ a^l_j = \sigma(z^l_j)
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/05/26/hira-kan-recog.html" title="転移学習で手書きのひらがな・漢字認識" rel="bookmark">転移学習で手書きのひらがな・漢字認識</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/05/05/keras-model-on-tfjs.html" title="Kerasで構築したモデルをTensorFlow.jsで動かす" rel="bookmark">Kerasで構築したモデルをTensorFlow.jsで動かす</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->

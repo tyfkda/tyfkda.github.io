@@ -182,10 +182,10 @@
 <h4 id="graph-SLAM"><a href="#graph-SLAM" class="headerlink" title="graph SLAM"></a>graph SLAM</h4><p>例えば、x0&#x3D;0として、そこから10移動した（つもりの）位置をx1としたとき</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
- x0 - x1 &= -10, \\
--x0 + x1 &= 10,
-\end{align}
+\begin{eqnarray*}
+ x0 - x1 &=& -10, \\
+-x0 + x1 &=& 10,
+\end{eqnarray*}
 %]]></script>
 
 <p>という行列の形にして、連立方程式を解くと<script type="math/tex">x0</script>, <script type="math/tex">x1</script>が求まる。センサーで標的までの距離が測れたとすると、<script type="math/tex">L0 - x0 = d</script> などという制約も行列に追加する。</p>
@@ -193,10 +193,10 @@
 <h3 id="online-SLAM"><a href="#online-SLAM" class="headerlink" title="online SLAM"></a>online SLAM</h3><p>ロボットが長時間動いている場合、SLAMの位置履歴が膨大になり、計算に時間がかかってしまう。単に部分行列を取り出すだけではうまくいかない。online SLAMという方法で、全履歴を持っていなくても最後の位置と標的の制約行列に新しい移動制約とセンサーの制約を追加する方法がある。</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-new\Omega &= \Omega^{'} - A^T B^{-1} A \\
-new\xi &= \xi^{'} - A^T B^{-1} C
-\end{align}
+\begin{eqnarray*}
+new\Omega &=& \Omega^{'} - A^T B^{-1} A \\
+new\xi &=& \xi^{'} - A^T B^{-1} C
+\end{eqnarray*}
 %]]></script>
 
 <h3 id="QA"><a href="#QA" class="headerlink" title="QA"></a>QA</h3><ul>

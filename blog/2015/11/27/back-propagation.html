@@ -208,11 +208,11 @@ How the backpropagation algorithm works
 実際の値<script type="math/tex">\mathbf{a}^L</script>の差の二乗誤差とする：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-C(\mathbf{x}) &= \frac{1}{2} \| \mathbf{y}(\mathbf{x}) - \mathbf{a}^L(\mathbf{x}) \|^2 \\
-              &= \frac{1}{2} \sum_i (y_i - a^L_i)^2 \\
-              &= \frac{1}{2} \left( (y_1 - a^L_1)^2 + (y_2 - a^L_2)^2 + \cdots \right)
-\end{align}
+\begin{eqnarray*}
+C(\mathbf{x}) &=& \frac{1}{2} \| \mathbf{y}(\mathbf{x}) - \mathbf{a}^L(\mathbf{x}) \|^2 \\
+              &=& \frac{1}{2} \sum_i (y_i - a^L_i)^2 \\
+              &=& \frac{1}{2} \left( (y_1 - a^L_1)^2 + (y_2 - a^L_2)^2 + \cdots \right)
+\end{eqnarray*}
 %]]></script>
 
 <p>実際には学習パターン<script type="math/tex">\mathbf{x}</script>-教師データ<script type="math/tex">\mathbf{y}</script>のペアは複数与えられて
@@ -239,10 +239,10 @@ C = \frac{1}{n} \sum_{\mathbf{x}} C(\mathbf{x})
 ニューロンへの入力<script type="math/tex">z^l_j</script>を偏微分のチェインルールに用いる：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\frac{\partial C}{\partial w^l_{jk}} &= \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial w^l_{jk}}, \\
-\frac{\partial C}{\partial b^l_j} &= \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial b^l_j}
-\end{align}
+\begin{eqnarray*}
+\frac{\partial C}{\partial w^l_{jk}} &=& \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial w^l_{jk}}, \\
+\frac{\partial C}{\partial b^l_j} &=& \frac{\partial C}{\partial z^l_j} \frac{\partial z^l_j}{\partial b^l_j}
+\end{eqnarray*}
 %]]></script>
 
 
@@ -258,10 +258,10 @@ C = \frac{1}{n} \sum_{\mathbf{x}} C(\mathbf{x})
 偏微分の中間変数として<script type="math/tex">a^L_k</script>を導入して計算する：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\delta^L_j &= \frac{\partial C}{\partial z^L_j} \tag{36} \\
-           &= \sum_k \frac{\partial C}{\partial a^L_k} \frac{\partial a^L_k}{\partial z^L_j} \tag{37} \\
-\end{align}
+\begin{eqnarray*}
+\delta^L_j &=& \frac{\partial C}{\partial z^L_j} \tag{36} \\
+           &=& \sum_k \frac{\partial C}{\partial a^L_k} \frac{\partial a^L_k}{\partial z^L_j} \tag{37} \\
+\end{eqnarray*}
 %]]></script>
 
 <script type="math/tex">k \ne j</script>の場合同じ層の別のニューロンだから、<script type="math/tex">a^L_k</script>は<script type="math/tex">z^L_j</script>と無関係なので
@@ -273,10 +273,10 @@ C = \frac{1}{n} \sum_{\mathbf{x}} C(\mathbf{x})
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\delta^L_j &= \frac{\partial C}{\partial a^L_j} \frac{\partial a^L_j}{\partial z^L_j} \tag{38} \\
-           &= \frac{\partial C}{\partial a^L_j} \sigma^\prime(z^L_j)
-\end{align}
+\begin{eqnarray*}
+\delta^L_j &=& \frac{\partial C}{\partial a^L_j} \frac{\partial a^L_j}{\partial z^L_j} \tag{38} \\
+           &=& \frac{\partial C}{\partial a^L_j} \sigma^\prime(z^L_j)
+\end{eqnarray*}
 %]]></script>
 
 <script type="math/tex">C = \frac{1}{2} \left( (y_1 - a^L_1)^2 + (y_2 - a^L_2)^2 + \cdots \right)</script>から、
@@ -295,30 +295,30 @@ C = \frac{1}{n} \sum_{\mathbf{x}} C(\mathbf{x})
 <p>ベクトル表記で書くと、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\mathbf{\delta}^L &= \nabla_a C \odot \sigma^\prime(\mathbf{z}^L) \\
-                  &= (\mathbf{a}^L - \mathbf{y}) \odot \sigma^\prime(\mathbf{z}^L)
-\end{align}
+\begin{eqnarray*}
+\mathbf{\delta}^L &=& \nabla_a C \odot \sigma^\prime(\mathbf{z}^L) \\
+                  &=& (\mathbf{a}^L - \mathbf{y}) \odot \sigma^\prime(\mathbf{z}^L)
+\end{eqnarray*}
 %]]></script>
 
 <p>記号<script type="math/tex">\odot</script>はアマダール積といい、ベクトルの各要素ごとの乗算を表す演算子。</p>
 <h4 id="2-中間層での誤差"><a href="#2-中間層での誤差" class="headerlink" title="2. 中間層での誤差"></a>2. 中間層での誤差</h4><p>出力層以外の、中間層の誤差は後の層の誤差から求めることができる：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\delta^L_j &= \frac{\partial C}{\partial z^l_j} \tag{40} \\
-           &= \sum_k \frac{\partial C}{\partial z^{l+1}_k} \frac{\partial z^{l+1}_k}{\partial z^l_j} \tag{41} \\
-           &= \sum_k \frac{\partial z^{l+1}_k}{\partial z^l_j} \delta^{l+1}_k \tag{42} \\
-\end{align}
+\begin{eqnarray*}
+\delta^L_j &=& \frac{\partial C}{\partial z^l_j} \tag{40} \\
+           &=& \sum_k \frac{\partial C}{\partial z^{l+1}_k} \frac{\partial z^{l+1}_k}{\partial z^l_j} \tag{41} \\
+           &=& \sum_k \frac{\partial z^{l+1}_k}{\partial z^l_j} \delta^{l+1}_k \tag{42} \\
+\end{eqnarray*}
 %]]></script>
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-z^{l+1}_k &= \sum_j w^{l+1}_{kj} a^l_j + b^{l+1}_k \\
-          &= \sum_j w^{l+1}_{kj} \sigma(z^l_j) + b^{l+1}_k \tag{43} \\
-\therefore \frac{\partial z^{l+1}_k}{\partial z^l_j} &= w^{l+1}_{kj} \sigma^\prime(z^l_j) \tag{44} \\
-\end{align}
+\begin{eqnarray*}
+z^{l+1}_k &=& \sum_j w^{l+1}_{kj} a^l_j + b^{l+1}_k \\
+          &=& \sum_j w^{l+1}_{kj} \sigma(z^l_j) + b^{l+1}_k \tag{43} \\
+\therefore \frac{\partial z^{l+1}_k}{\partial z^l_j} &=& w^{l+1}_{kj} \sigma^\prime(z^l_j) \tag{44} \\
+\end{eqnarray*}
 %]]></script>
 
 <p>(44)を(42)に代入して：</p>
@@ -361,10 +361,10 @@ z^{l+1}_k &= \sum_j w^{l+1}_{kj} a^l_j + b^{l+1}_k \\
 <p>ここで</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\frac{\partial z^l_j}{\partial w^l_{jk}} &= \frac{\partial}{\partial w^l_{jk}} \left( \sum_t w^l_{jt} a^{l-1}_t + b^l_j \right) \\
-                                         &= a^{l-1}_k
-\end{align}
+\begin{eqnarray*}
+\frac{\partial z^l_j}{\partial w^l_{jk}} &=& \frac{\partial}{\partial w^l_{jk}} \left( \sum_t w^l_{jt} a^{l-1}_t + b^l_j \right) \\
+                                         &=& a^{l-1}_k
+\end{eqnarray*}
 %]]></script>
 
 <p>なので、</p>
@@ -385,20 +385,21 @@ z^{l+1}_k &= \sum_j w^{l+1}_{kj} a^l_j + b^{l+1}_k \\
 ある学習率<script type="math/tex">\eta</script>を設定して、コストを減らす方向に変更してやる（確率的最急降下法）：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
+\begin{eqnarray*}
 w^l_{jk} &\leftarrow w^l_{jk} - \eta \frac{\partial C}{\partial w^l_{jk}}, \\
 b^l_j &\leftarrow b^l_j - \eta \frac{\partial C}{\partial b^l_j}
-\end{align}
+\end{eqnarray*}
 %]]></script>
 
 <p>ベクトル表記だと：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
+\begin{eqnarray*}
 \mathbf{w}^l &\leftarrow \mathbf{w}^l - \eta \frac{\partial C}{\partial \mathbf{w}^l}, \\
 \mathbf{b}^l &\leftarrow \mathbf{b}^l - \eta \frac{\partial C}{\partial \mathbf{b}^l}
-\end{align}
+\end{eqnarray*}
 %]]></script>
+
 
                 
                     <hr style="margin:48px 0 8px">
@@ -421,7 +422,7 @@ b^l_j &\leftarrow b^l_j - \eta \frac{\partial C}{\partial b^l_j}
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/26/feed-forward.html" title="多層パーセプトロンの出力値の計算（フィードフォワード）" rel="bookmark">多層パーセプトロンの出力値の計算（フィードフォワード）</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/26/feed-forward.html" title="多層パーセプトロンの出力値の計算（フィードフォワード）" rel="bookmark">多層パーセプトロンの出力値の計算（フィードフォワード）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/05/26/hira-kan-recog.html" title="転移学習で手書きのひらがな・漢字認識" rel="bookmark">転移学習で手書きのひらがな・漢字認識</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/05/05/keras-model-on-tfjs.html" title="Kerasで構築したモデルをTensorFlow.jsで動かす" rel="bookmark">Kerasで構築したモデルをTensorFlow.jsで動かす</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->

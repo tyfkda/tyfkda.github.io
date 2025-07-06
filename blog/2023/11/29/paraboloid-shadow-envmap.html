@@ -364,11 +364,11 @@ JavaScriptとから現在時刻をユニフォームで渡して、シェーダ�
 <p>ということで方程式を解くと、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{eqnarray}
+\begin{eqnarray*}
 x^2 &=& 4pz \\
 1^2 &=& 4p \cdot p \\
 \therefore p &=& \pm \frac{1}{2}
-\end{eqnarray}
+\end{eqnarray*}
 %]]></script>
 
 <p>上に凸にするために負の場合を取って<script type="math/tex">z = -\frac{1}{2} x^2</script>、そして焦点を原点に合わせることで説明通りの式になる。</p>
@@ -379,28 +379,28 @@ ZX平面で考えて、Z軸からの角度を<script type="math/tex">\theta</scr
 これらの比と放物面の交点座標<script type="math/tex">(z, x)</script>の比は同じになるので、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-v_z : v_x &= z : x  && \text{方向ベクトルと交点の比が等しい} \\
-\cos \theta : \sin \theta &= \frac{1}{2} - \frac{1}{2} x^2 : x  && \text{代入} \\
-\cos \theta \cdot x &= \left( \frac{1}{2} - \frac{1}{2} x^2 \right) \cdot \sin \theta  && \text{たすき掛け} \\
-\cos \theta \cdot x &= \frac{1}{2} \sin \theta - \frac{1}{2} \sin \theta \cdot x^2  && \text{分配法則} \\
-\sin \theta \cdot x^2 + 2 \cos \theta \cdot x - \sin \theta &= 0  && \text{両辺に2をかけて左辺に移項} \\
-\end{align}
+\begin{eqnarray*}
+v_z : v_x &=& z : x  && \text{方向ベクトルと交点の比が等しい} \\
+\cos \theta : \sin \theta &=& \frac{1}{2} - \frac{1}{2} x^2 : x  && \text{代入} \\
+\cos \theta \cdot x &=& \left( \frac{1}{2} - \frac{1}{2} x^2 \right) \cdot \sin \theta  && \text{たすき掛け} \\
+\cos \theta \cdot x &=& \frac{1}{2} \sin \theta - \frac{1}{2} \sin \theta \cdot x^2  && \text{分配法則} \\
+\sin \theta \cdot x^2 + 2 \cos \theta \cdot x - \sin \theta &=& 0  && \text{両辺に2をかけて左辺に移項} \\
+\end{eqnarray*}
 %]]></script>
 
 <script type="math/tex">x</script>の２次方程式に対して解の公式を適用、プラスの方を考えて、
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-x &= \frac{-2 \cos \theta + \sqrt{(2 \cos \theta)^2 + 4 \cdot \sin \theta \cdot \sin \theta}}{2 \sin \theta}  && \text{解の公式に代入} \\
-  &= \frac{-2 \cos \theta + 2 \sqrt{\cos^2 \theta + \sin^2 \theta}}{2 \sin \theta}  && \text{ルートの中を展開して4を外に} \\
-  &= \frac{1 - \cos \theta}{\sin \theta}  && \text{2を約分、ルートの中は1} \\
-  &= \frac{1 - \cos \theta}{\sin \theta} \cdot \frac{\sin \theta}{\sin \theta} = \frac{1 - \cos \theta}{\sin^2 \theta} \cdot \sin \theta  &&  \sin \theta/\sin \theta \text{を乗算} \\
-  &= \frac{1 - \cos \theta}{1 - \cos^2 \theta} \cdot \sin \theta  &&  \sin^2\theta=1-\cos^2\theta \\
-  &= \frac{1 - \cos \theta}{(1 + \cos \theta) (1 - \cos \theta)} \cdot \sin \theta  && \text{分母を因数分解} \\
-  &= \frac{\sin \theta}{1 + \cos \theta}  && \text{約分} \\
-\end{align}
+\begin{eqnarray*}
+x &=& \frac{-2 \cos \theta + \sqrt{(2 \cos \theta)^2 + 4 \cdot \sin \theta \cdot \sin \theta}}{2 \sin \theta}  && \text{解の公式に代入} \\
+  &=& \frac{-2 \cos \theta + 2 \sqrt{\cos^2 \theta + \sin^2 \theta}}{2 \sin \theta}  && \text{ルートの中を展開して4を外に} \\
+  &=& \frac{1 - \cos \theta}{\sin \theta}  && \text{2を約分、ルートの中は1} \\
+  &=& \frac{1 - \cos \theta}{\sin \theta} \cdot \frac{\sin \theta}{\sin \theta} = \frac{1 - \cos \theta}{\sin^2 \theta} \cdot \sin \theta  &&  \sin \theta/\sin \theta \text{を乗算} \\
+  &=& \frac{1 - \cos \theta}{1 - \cos^2 \theta} \cdot \sin \theta  &&  \sin^2\theta=1-\cos^2\theta \\
+  &=& \frac{1 - \cos \theta}{(1 + \cos \theta) (1 - \cos \theta)} \cdot \sin \theta  && \text{分母を因数分解} \\
+  &=& \frac{\sin \theta}{1 + \cos \theta}  && \text{約分} \\
+\end{eqnarray*}
 %]]></script>
 
 <script type="math/tex">\sin\theta, \cos\theta</script>から元の方向ベクトルに戻すと
@@ -415,8 +415,8 @@ x = \frac{v_x}{1 + v_z}
 
 \left\{
 \begin{array}{ll}
-x &= \frac{v_x}{1 + v_z} \\
-y &= \frac{v_y}{1 + v_z}
+x &=& \frac{v_x}{1 + v_z} \\
+y &=& \frac{v_y}{1 + v_z}
 \end{array}
 \right .
 %]]></script>

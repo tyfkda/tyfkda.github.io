@@ -263,10 +263,10 @@ P(v_k) = \sum_{i=1}^c \pi_i \cdot \theta_{ik} = \frac{r_k}{n}
 <p>書き下すと</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\pi_1 \cdot \theta_{1,odd} + \pi_2 \cdot \theta_{2,odd} + \pi_3 \cdot \theta_{3,odd} &= \frac{r_{odd}}{n} \\
-\pi_1 \cdot \theta_{1,even} + \pi_2 \cdot \theta_{2,even} + \pi_3 \cdot \theta_{3,even} &= \frac{r_{even}}{n}
-\end{align}
+\begin{eqnarray*}
+\pi_1 \cdot \theta_{1,odd} + \pi_2 \cdot \theta_{2,odd} + \pi_3 \cdot \theta_{3,odd} &=& \frac{r_{odd}}{n} \\
+\pi_1 \cdot \theta_{1,even} + \pi_2 \cdot \theta_{2,even} + \pi_3 \cdot \theta_{3,even} &=& \frac{r_{even}}{n}
+\end{eqnarray*}
 %]]></script>
 
 <p><code>srand(0)</code> で試した所、１万回中 <script type="math/tex">r_{odd} = 4793</script>、<script type="math/tex">r_{even} = 5207</script> だった。未知の変数は <script type="math/tex">pi</script> の3、方程式は2つなので一意に解けない。仮に <script type="math/tex">\pi_1 = 0.1139</script> とわかったとして計算すると、 <script type="math/tex">\pi_2 = 0.4078</script>, <script type="math/tex">\pi_3 = 0.4783</script> となり、繰り返し計算で求めた値と近い値が得られた。</p>
@@ -276,7 +276,7 @@ P(v_k) = \sum_{i=1}^c \pi_i \cdot \theta_{ik} = \frac{r_k}{n}
                     <hr style="margin:48px 0 8px">
                     <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
                         
-                            <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2015/09/19/self-organizing-computer-course.html"><span class="glyphicon glyphicon-chevron-left"></span>次：The self-organizing computer course</a></li>
+                            <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2015/09/20/rxjs.html"><span class="glyphicon glyphicon-chevron-left"></span>次：RxJSでFizzBuzz</a></li>
                         
                         
                             <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2015/09/11/generate-prefabs.html">前：【Unity】スクリプトでプレハブを大量生産する<span class="glyphicon glyphicon-chevron-right"></span></a></li>

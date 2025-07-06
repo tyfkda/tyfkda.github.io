@@ -204,15 +204,15 @@
 <p>周期を1、階段の段数を <script type="math/tex">d</script> とするとフーリエ級数展開の係数は、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-a_n = & 2 \sum_{j=0}^{2 d} k_j \frac{1}{2 n \pi} \left\{ \sin \left( 2 n \pi \frac{j+1}{2d} \right) - \sin \left( 2 n \pi \frac{j}{2d} \right) \right\} \\
-      & k_j = \left\{
+\begin{eqnarray*}
+a_n &=& 2 \sum_{j=0}^{2 d} k_j \frac{1}{2 n \pi} \left\{ \sin \left( 2 n \pi \frac{j+1}{2d} \right) - \sin \left( 2 n \pi \frac{j}{2d} \right) \right\}, \\
+      k_j &=& \left\{
           \begin{array}{ll}
             j < d \cdots 1 - \frac{2j}{d-1} \\
             j \ge d \cdots -1 + \frac{2(j-d)}{d-1}
           \end{array}
         \right.
-\end{align}
+\end{eqnarray*}
 %]]></script>
 
 <p>となる

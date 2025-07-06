@@ -202,10 +202,10 @@
 <p>とすると</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-F_k &= \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i 2\pi kl/N} \\
-    &= \frac{1}{N} \sum_{l=0}^{N-1} f_l(\omega_N)^{-kl} \\
-\end{align}
+\begin{eqnarray*}
+F_k &=& \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i 2\pi kl/N} \\
+    &=& \frac{1}{N} \sum_{l=0}^{N-1} f_l(\omega_N)^{-kl} \\
+\end{eqnarray*}
 %]]></script>
 
 <p>&nbsp;<script type="math/tex">\overline{\omega_N} = \omega_N^{-1}</script> より（上バーは<a href="https://ja.wikipedia.org/wiki/%E8%A4%87%E7%B4%A0%E5%85%B1%E5%BD%B9">複素数の共役</a>をあらわす）</p>
@@ -218,10 +218,10 @@ F_k &= \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i 2\pi kl/N} \\
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
- &= \frac{1}{N} \overline{\overline{ \sum_{l=0}^{N-1} f_l \overline{\omega_N^{kl} } }} \\
- &= \frac{1}{N} \overline{ \sum_{l=0}^{N-1} \overline{f_l} \omega_N^{kl} } \\
-\end{align}
+\begin{eqnarray*}
+ &=& \frac{1}{N} \overline{\overline{ \sum_{l=0}^{N-1} f_l \overline{\omega_N^{kl} } }} \\
+ &=& \frac{1}{N} \overline{ \sum_{l=0}^{N-1} \overline{f_l} \omega_N^{kl} } \\
+\end{eqnarray*}
 %]]></script>
 
 <p>となる。</p>

@@ -210,19 +210,19 @@ b_k = \sum_{l=0}^{N-1} a_l \omega_N^{kl} = f(\omega_N^k)
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-f(x) &= (a_0 + a_2 x^2 + ... + a_{N-2} x^{N-2}) + x (a_1 + a_3 x^2 + ... + a_{N-1} x^{N-2}) \\
-     &= p(x^2) + xq(x^2) \\
-\end{align}
+\begin{eqnarray*}
+f(x) &=& (a_0 + a_2 x^2 + ... + a_{N-2} x^{N-2}) + x (a_1 + a_3 x^2 + ... + a_{N-1} x^{N-2}) \\
+     &=& p(x^2) + xq(x^2) \\
+\end{eqnarray*}
 %]]></script>
 
 <p>ただし、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-p(x) &= (a_0 + a_2 x + ... + a_{N-2} x^{N/2-1}) \\
-q(x) &= (a_1 + a_3 x + ... + a_{N-1} x^{N/2-1}) \\
-\end{align}
+\begin{eqnarray*}
+p(x) &=& (a_0 + a_2 x + ... + a_{N-2} x^{N/2-1}) \\
+q(x) &=& (a_1 + a_3 x + ... + a_{N-1} x^{N/2-1}) \\
+\end{eqnarray*}
 %]]></script>
 
 <p>とする。</p>
@@ -231,11 +231,11 @@ q(x) &= (a_1 + a_3 x + ... + a_{N-1} x^{N/2-1}) \\
 <script type="math/tex; mode=display">% <![CDATA[
 
 b_k = \Bigg\{
- \begin{align}
- f(\omega_N^j) &= p(\omega_{N/2}^j) + \omega_N^j q(\omega_{N/2}^j), & \\
- f(\omega_N^{N/2+j}) &= p(\omega_{N/2}^j) - \omega_N^j q(\omega_{N/2}^j) & \\
+ \begin{eqnarray*}
+ f(\omega_N^j) &=& p(\omega_{N/2}^j) + \omega_N^j q(\omega_{N/2}^j), & \\
+ f(\omega_N^{N/2+j}) &=& p(\omega_{N/2}^j) - \omega_N^j q(\omega_{N/2}^j) & \\
  & &  (j = 0, 1, ..., N/2-1)
- \end{align}
+ \end{eqnarray*}
 %]]></script>
 
 <p>と計算することができる。<script type="math/tex">p</script>と<script type="math/tex">q</script>は<script type="math/tex">f</script>と同じ形なので、この分割を再帰的に行って計算量を減らすことができる。</p>

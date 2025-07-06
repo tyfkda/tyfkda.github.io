@@ -195,29 +195,27 @@
 <p>学習パターンと教師ベクトルは「閉じた形の解」と同じだが、列ベクトルの形式で、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\mathbf{x_1} = \left(\begin{array}{c}1 \\ 1.2\end{array}\right), 
-\mathbf{x_2} = \left(\begin{array}{c}1 \\ 0.2\end{array}\right), 
-\mathbf{x_3} = \left(\begin{array}{c}1 \\ -0.2\end{array}\right), 
-\mathbf{x_4} = \left(\begin{array}{c}1 \\ -0.5\end{array}\right), 
-\mathbf{x_5} = \left(\begin{array}{c}1 \\ -1.0\end{array}\right), 
-\mathbf{x_6} = \left(\begin{array}{c}1 \\ -1.5\end{array}\right), 
-%]]></script>
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\mathbf{b_1} = \mathbf{b_2} = \mathbf{b_3} = \left(\begin{array}{c}1 \\ 0\end{array}\right), 
-\mathbf{b_4} = \mathbf{b_5} = \mathbf{b_6} = \left(\begin{array}{c}0 \\ 1\end{array}\right), 
+\begin{eqnarray*}
+\mathbf{x_1} &=& \begin{pmatrix}1 \\ 1.2\end{pmatrix}, \\
+\mathbf{x_2} &=& \begin{pmatrix}1 \\ 0.2\end{pmatrix}, \\
+\mathbf{x_3} &=& \begin{pmatrix}1 \\ -0.2\end{pmatrix}, \\
+\mathbf{x_4} &=& \begin{pmatrix}1 \\ -0.5\end{pmatrix}, \\
+\mathbf{x_5} &=& \begin{pmatrix}1 \\ -1.0\end{pmatrix}, \\
+\mathbf{x_6} &=& \begin{pmatrix}1 \\ -1.5\end{pmatrix}, \\
+\mathbf{b_1} = \mathbf{b_2} = \mathbf{b_3} &=& \begin{pmatrix}1 \\ 0\end{pmatrix}, \\
+\mathbf{b_4} = \mathbf{b_5} = \mathbf{b_6} &=& \begin{pmatrix}0 \\ 1\end{pmatrix},
+\end{eqnarray*}
 %]]></script>
 
 <p>とする。</p>
 <p>パターンごとに</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\mathbf{W}^\prime &= \mathbf{W} - \rho \mathbf{X}_p \mathbf{\epsilon}_p^t \tag{3.31} \\
-\mathbf{\epsilon}_p &= g(\mathbf{x}_p) - \mathbf{b}_p \tag{3.3} \\
-           &= \mathbf{W}^t \mathbf{X}_p - \mathbf{b}_p
-\end{align}
+\begin{eqnarray*}
+\mathbf{W}^\prime &=& \mathbf{W} - \rho \mathbf{X}_p \mathbf{\epsilon}_p^t \tag{3.31} \\
+\mathbf{\epsilon}_p &=& g(\mathbf{x}_p) - \mathbf{b}_p \tag{3.3} \\
+           &=& \mathbf{W}^t \mathbf{X}_p - \mathbf{b}_p
+\end{eqnarray*}
 %]]></script>
 
 <p>として <script type="math/tex">\mathbf{W}</script> を更新する（<strong>Widrow-Hoffの学習規則</strong>）。</p>
@@ -225,60 +223,60 @@
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\mathbf{W} = \left[
-\begin{array}{c}
-\left(\begin{array}{c}1 \\ 1\end{array}\right) &
-\left(\begin{array}{c}1 \\ 1\end{array}\right)
-\end{array}
-\right]
+\mathbf{W} =
+\begin{bmatrix}
+\begin{pmatrix}1 \\ 1\end{pmatrix} &
+\begin{pmatrix}1 \\ 1\end{pmatrix}
+\end{bmatrix}
 %]]></script>
 
 <p>として、計算してみる。</p>
 <h3 id="1-パターン１に適用"><a href="#1-パターン１に適用" class="headerlink" title="(1) パターン１に適用"></a>(1) パターン１に適用</h3><script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\mathbf{W}^\prime &= 
-\left[\begin{array}{c} 1 & 1 \\ 1 & 1 \end{array}\right]
-- 0.4 
-\left(\begin{array}{c}1 \\ 1.2\end{array}\right)
+\begin{eqnarray*}
+\mathbf{W}^\prime &=&
+\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
+- 0.4
+\begin{pmatrix}1 \\ 1.2\end{pmatrix}
 \left(
-\left[\begin{array}{c} 1 & 1 \\ 1 & 1 \end{array}\right]
-\left(\begin{array}{c}1 \\ 1.2\end{array}\right)
-- \left(\begin{array}{c}1 \\ 0\end{array}\right)
+\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
+\begin{pmatrix}1 \\ 1.2\end{pmatrix}
+- \begin{pmatrix}1 \\ 0\end{pmatrix}
 \right)^t \\
 
-&=
-\left[\begin{array}{c} 1 & 1 \\ 1 & 1 \end{array}\right]
+&=&
+\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
 - 0.4
-\left(\begin{array}{c}1 \\ 1.2\end{array}\right)
-\left(\begin{array}{c}1.2 & 2.2\end{array}\right) \\
+\begin{pmatrix}1 \\ 1.2\end{pmatrix}
+\begin{pmatrix}1.2 & 2.2\end{pmatrix} \\
 
-&=
-\left[\begin{array}{c} 1 & 1 \\ 1 & 1 \end{array}\right]
+&=&
+\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
 - 0.4
-\left[\begin{array}{c} 1.2 & 2.2 \\ 1.44 & 2.64 \end{array}\right] \\
+\begin{bmatrix} 1.2 & 2.2 \\ 1.44 & 2.64 \end{bmatrix} \\
 
-&=
-\left[\begin{array}{c} 1 & 1 \\ 1 & 1 \end{array}\right]
-- \left[\begin{array}{c} 0.48 & 0.88 \\ 0.576 & 1.056 \end{array}\right] \\
+&=&
+\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
+- \begin{bmatrix} 0.48 & 0.88 \\ 0.576 & 1.056 \end{bmatrix} \\
 
-&=
-\left[\begin{array}{c} 0.52 & 0.12 \\ 0.424 & -0.056 \end{array}\right]
-\end{align}
+&=&
+\begin{bmatrix} 0.52 & 0.12 \\ 0.424 & -0.056 \end{bmatrix}
+\end{eqnarray*}
 %]]></script>
 
 <p>以後パターン２〜６も同様に計算して一周させると、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\mathbf{W}^\prime = 
-\left[\begin{array}{c} 0.68368057 & 0.50155838 \\ 0.40088957 & -0.30792911 \end{array}\right]
+\mathbf{W}^\prime =
+\begin{bmatrix} 0.68368057 & 0.50155838 \\ 0.40088957 & -0.30792911 \end{bmatrix}
 %]]></script>
 
 <p>となり、識別の値 <script type="math/tex">x= -0.256937622954</script> となる。</p>
 <a href="/blog/2015/11/06/widrow-hoff-closed-form.html" title="「誤差評価に基づく学習」の「閉じた形の解」で例題を解いてみる">閉じた形</a>で求めた結果と近い値が得られている。
 
 
-<h3 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h3><figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># learn_widrow_hoff.py</span></span><br><span class="line"><span class="comment"># coding: UTF-8</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">  <span class="comment"># パターン行列</span></span><br><span class="line">  X = np.matrix([[<span class="number">1.</span>, <span class="number">1.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">0.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">0.5</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">1.0</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">1.5</span>]])</span><br><span class="line">  <span class="comment"># パターンごとの、クラスiに属するかどうかの教師行列</span></span><br><span class="line">  b = np.matrix([[<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>]])</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 識別関数のウェイトをランダムで初期化する</span></span><br><span class="line">  W = np.matrix(np.random.random((b.shape[<span class="number">1</span>], X.shape[<span class="number">1</span>])))</span><br><span class="line"></span><br><span class="line">  rho = <span class="number">0.4</span>  <span class="comment"># 学習率</span></span><br><span class="line">  <span class="keyword">for</span> k <span class="keyword">in</span> xrange(<span class="number">1</span>):  <span class="comment"># <span class="doctag">TODO:</span> 収束するまで </span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(X.shape[<span class="number">0</span>]):</span><br><span class="line">      learn_widrow_hoff(W, X[i, :].T, b[i, :].T, rho)</span><br><span class="line">  <span class="built_in">print</span> W</span><br><span class="line">  x = -(W[<span class="number">0</span>, <span class="number">0</span>] - W[<span class="number">0</span>, <span class="number">1</span>]) / (W[<span class="number">1</span>, <span class="number">0</span>] - W[<span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">  <span class="built_in">print</span> <span class="string">&#x27;x=&#x27;</span>, x, <span class="string">&#x27;error=&#x27;</span>, calc_error(W, X, b)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Widrow-Hoffの学習規則でパターン１つに対して学習させる</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">learn_widrow_hoff</span>(<span class="params">W, xp, bp, rho</span>):</span><br><span class="line">  e = W.T * xp - bp</span><br><span class="line">  W -= rho * (xp * e.T)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calc_error</span>(<span class="params">W, X, b</span>):</span><br><span class="line">  <span class="comment">#J = 0.</span></span><br><span class="line">  <span class="comment">#for i in xrange(X.shape[0]):</span></span><br><span class="line">  <span class="comment">#  xp = X[i, :].T</span></span><br><span class="line">  <span class="comment">#  bp = b[i, :].T</span></span><br><span class="line">  <span class="comment">#  e = W.T * xp - bp</span></span><br><span class="line">  <span class="comment">#  J += e.T.dot(e).sum()</span></span><br><span class="line">  e = X * W - b</span><br><span class="line">  J = np.vectorize(<span class="keyword">lambda</span> x: x * x)(e).<span class="built_in">sum</span>()</span><br><span class="line">  <span class="keyword">return</span> J</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># [[ 0.75759575  0.49664788]</span></span><br><span class="line"><span class="comment">#  [ 0.4370989  -0.31125436]]</span></span><br><span class="line"><span class="comment"># x= -0.348696099486 error= 1.29145201213</span></span><br></pre></td></tr></table></figure>
+<h3 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h3><figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># learn_widrow_hoff.py</span></span><br><span class="line"><span class="comment"># coding: UTF-8</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">  <span class="comment"># パターン行列</span></span><br><span class="line">  X = np.matrix([[<span class="number">1.</span>, <span class="number">1.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">0.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">0.5</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">1.0</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">1.5</span>]])</span><br><span class="line">  <span class="comment"># パターンごとの、クラスiに属するかどうかの教師行列</span></span><br><span class="line">  b = np.matrix([[<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>]])</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 識別関数のウェイトをランダムで初期化する</span></span><br><span class="line">  W = np.matrix(np.random.random((b.shape[<span class="number">1</span>], X.shape[<span class="number">1</span>])))</span><br><span class="line"></span><br><span class="line">  rho = <span class="number">0.4</span>  <span class="comment"># 学習率</span></span><br><span class="line">  <span class="keyword">for</span> k <span class="keyword">in</span> xrange(<span class="number">1</span>):  <span class="comment"># <span class="doctag">TODO:</span> 収束するまで</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(X.shape[<span class="number">0</span>]):</span><br><span class="line">      learn_widrow_hoff(W, X[i, :].T, b[i, :].T, rho)</span><br><span class="line">  <span class="built_in">print</span> W</span><br><span class="line">  x = -(W[<span class="number">0</span>, <span class="number">0</span>] - W[<span class="number">0</span>, <span class="number">1</span>]) / (W[<span class="number">1</span>, <span class="number">0</span>] - W[<span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">  <span class="built_in">print</span> <span class="string">&#x27;x=&#x27;</span>, x, <span class="string">&#x27;error=&#x27;</span>, calc_error(W, X, b)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Widrow-Hoffの学習規則でパターン１つに対して学習させる</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">learn_widrow_hoff</span>(<span class="params">W, xp, bp, rho</span>):</span><br><span class="line">  e = W.T * xp - bp</span><br><span class="line">  W -= rho * (xp * e.T)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calc_error</span>(<span class="params">W, X, b</span>):</span><br><span class="line">  <span class="comment">#J = 0.</span></span><br><span class="line">  <span class="comment">#for i in xrange(X.shape[0]):</span></span><br><span class="line">  <span class="comment">#  xp = X[i, :].T</span></span><br><span class="line">  <span class="comment">#  bp = b[i, :].T</span></span><br><span class="line">  <span class="comment">#  e = W.T * xp - bp</span></span><br><span class="line">  <span class="comment">#  J += e.T.dot(e).sum()</span></span><br><span class="line">  e = X * W - b</span><br><span class="line">  J = np.vectorize(<span class="keyword">lambda</span> x: x * x)(e).<span class="built_in">sum</span>()</span><br><span class="line">  <span class="keyword">return</span> J</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># [[ 0.75759575  0.49664788]</span></span><br><span class="line"><span class="comment">#  [ 0.4370989  -0.31125436]]</span></span><br><span class="line"><span class="comment"># x= -0.348696099486 error= 1.29145201213</span></span><br></pre></td></tr></table></figure>
+
 
                 
                     <hr style="margin:48px 0 8px">
@@ -301,7 +299,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/26/feed-forward.html" title="多層パーセプトロンの出力値の計算（フィードフォワード）" rel="bookmark">多層パーセプトロンの出力値の計算（フィードフォワード）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/05/26/hira-kan-recog.html" title="転移学習で手書きのひらがな・漢字認識" rel="bookmark">転移学習で手書きのひらがな・漢字認識</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="何故か書いてしまったduck typing (Haskell,存在型+型クラス)
+うおおぉぉ！まさにこれだ！
+ゲームに出てくるオブジェクトを型をあれこれ構わずリストにぶち込んで更新処理や描画処理をぶん回す、みたいな作り方をよくすると思う。C++とかだったら基底型を作って仮想関数を定義してそれを呼び出">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Haskell】オブジェクトリスト"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Haskell】オブジェクトリスト - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2008/10/02/hs-gameobj.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Haskell】オブジェクトリスト</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2008-10-02
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/haskell/">#haskell</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://d.hatena.ne.jp/keigoi/20080805/p2">何故か書いてしまったduck typing (Haskell,存在型+型クラス)</a>
+うおおぉぉ！まさにこれだ！
+ゲームに出てくるオブジェクトを型をあれこれ構わずリストにぶち込んで更新処理や描画処理をぶん回す、みたいな作り方をよくすると思う。C++とかだったら基底型を作って仮想関数を定義してそれを呼び出しという具合で。でも Haskell だとリストには同一の型しか入れられないのでどうしようかと悩んでたところ。
+普通に考えられるのは代数的データ型を使って、すべてをひとつのデータ型にしてしまうやり方：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">GameObject</span> = <span class="type">Kuribo</span> | <span class="type">Nokonoko</span> | …</span></span><br></pre></td></tr></table></figure>
+
+<p>Monadius がこういうやり方。けどそれぞれの型による関数の分岐を書くのに問題があって、関数ごとに処理を１ヶ所に書かないといけないのでソースを分けづらい：</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">update</span> <span class="type">Kuribo</span> = あれこれ</span><br><span class="line"><span class="title">update</span> <span class="type">Nokonoko</span> = あれこれ</span><br><span class="line">…</span><br><span class="line"></span><br><span class="line"><span class="title">render</span> <span class="type">Kuribo</span> = あれこれ</span><br><span class="line"><span class="title">render</span> <span class="type">Nokonoko</span> = あれこれ</span><br><span class="line">…</span><br></pre></td></tr></table></figure>
+
+<p>型クラスを使って、型によって関数の呼び出しを変えることもできるけど</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="type">GameObject</span> a <span class="keyword">where</span></span></span><br><span class="line">    update :: a -&gt; a</span><br><span class="line">    render :: a -&gt; <span class="type">IO</span> ()</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Kuribo</span> = <span class="type">Kuribo</span></span></span><br><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">GameObject</span> <span class="type">Kuribo</span> <span class="keyword">where</span></span></span><br><span class="line">    update self = あれこれ</span><br><span class="line">    render self = あれこれ</span><br></pre></td></tr></table></figure>
+
+<p>共通のリストにいれるにはやっぱり代数的データ型でまとめないといけないし、型ごとに呼び出しを書くのがメンドイ。
+そこで上の存在型。</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="meta">&#123;-# OPTIONS_GHC -fglasgow-exts #-&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="type">GameObject</span> a <span class="keyword">where</span></span></span><br><span class="line">    update :: a -&gt; a</span><br><span class="line">    render :: a -&gt; <span class="type">IO</span> ()</span><br><span class="line">    isDead :: a -&gt; <span class="type">Bool</span></span><br><span class="line"></span><br><span class="line"><span class="comment">----</span></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Kuribo</span> = <span class="type">Kuribo</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">GameObject</span> <span class="type">Kuribo</span> <span class="keyword">where</span></span></span><br><span class="line">    update self = self</span><br><span class="line">    render self = print <span class="string">&quot;Kuribo&quot;</span></span><br><span class="line">    isDead self = <span class="type">False</span></span><br><span class="line"></span><br><span class="line"><span class="comment">----</span></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Nokonoko</span> = <span class="type">Nokonoko</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">GameObject</span> <span class="type">Nokonoko</span> <span class="keyword">where</span></span></span><br><span class="line">    update self = self</span><br><span class="line">    render self = print <span class="string">&quot;Nokonoko&quot;</span></span><br><span class="line">    isDead self = <span class="type">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- ====</span></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">ObjWrapper</span> = forall a. <span class="type">GameObject</span> a =&gt; <span class="type">ObjWrapper</span> a    <span class="comment">-- 存在型aの動く範囲を型クラスに制限</span></span></span><br><span class="line"></span><br><span class="line"><span class="title">updateObjList</span> :: [<span class="type">ObjWrapper</span>] -&gt; [<span class="type">ObjWrapper</span>]</span><br><span class="line"><span class="title">updateObjList</span> = map (\(<span class="type">ObjWrapper</span> x) -&gt; <span class="type">ObjWrapper</span> $ update x)</span><br><span class="line"></span><br><span class="line"><span class="title">renderObjList</span> :: [<span class="type">ObjWrapper</span>] -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">renderObjList</span> = mapM_ (\(<span class="type">ObjWrapper</span> x) -&gt; render x)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ====</span></span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">let</span> objList = [<span class="type">ObjWrapper</span> <span class="type">Kuribo</span>, <span class="type">ObjWrapper</span> <span class="type">Nokonoko</span>]</span><br><span class="line">    <span class="keyword">let</span> objList&#x27; = updateObjList objList</span><br><span class="line">    <span class="keyword">let</span> objList&#x27;&#x27; = filter (\(<span class="type">ObjWrapper</span> a) -&gt; isDead a) objList&#x27;</span><br><span class="line">    renderObjList objList&#x27;&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="http://www.haskell.org/haskellwiki/Keywords#forall">forall</a> は GHC(&#x2F;Hugs)拡張だから、コマンドオプションに<code>-fglasgow-exts</code>をつけるか、ソースに<code>&#123;-# OPTIONS_GHC -fglasgow-exts #-&#125;</code>を書く</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                            <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2008/10/17/nabeatsu.html"><span class="glyphicon glyphicon-chevron-left"></span>次：世界のナベアツにHaskellで挑戦する</a></li>
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2008/10/01/make-subdir.html">前：Makefileでサブディレクトリを処理する場合のエラー処理<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/09/21/hs-tetris.html" title="Haskell で○トリス作った" rel="bookmark">Haskell で○トリス作った</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/07/15/knapsack.html" title="【Haskell】ナップサック問題を解く" rel="bookmark">【Haskell】ナップサック問題を解く</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

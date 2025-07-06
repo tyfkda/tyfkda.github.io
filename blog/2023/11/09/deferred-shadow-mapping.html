@@ -343,19 +343,19 @@ WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US
 <p>理解したところだとパースペクティブ射影変換後の座標は</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\begin{pmatrix}x^\prime \\ y^\prime \\ z^\prime \\ w^\prime \end{pmatrix} &= ProjMat \times \begin{pmatrix} x \\ y \\ z \\ 1 \end{pmatrix} \\
- &= \begin{pmatrix} \left( \cot(fov/2) / aspect \right) \cdot x \\ \cot(fov/2) \cdot y \\ fZ \cdot \frac{z - nZ}{fZ - nZ} \\ z \end{pmatrix}
-\end{align}
+\begin{eqnarray*}
+\begin{pmatrix}x^\prime \\ y^\prime \\ z^\prime \\ w^\prime \end{pmatrix} &=& ProjMat \times \begin{pmatrix} x \\ y \\ z \\ 1 \end{pmatrix} \\
+ &=& \begin{pmatrix} \left( \cot(fov/2) / aspect \right) \cdot x \\ \cot(fov/2) \cdot y \\ fZ \cdot \frac{z - nZ}{fZ - nZ} \\ z \end{pmatrix}
+\end{eqnarray*}
 %]]></script>
 
 <p>となって、<script type="math/tex">z^\prime</script>を<script type="math/tex">w^\prime</script>で割ると、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\frac{z^\prime}{w^\prime} &= fZ \cdot \frac{z - nZ}{fZ - nZ} \cdot \frac{1}{z} \\
- &= \frac{fZ}{fZ - nZ} \cdot \left( 1 -  \frac{nZ}{z} \right)
-\end{align}
+\begin{eqnarray*}
+\frac{z^\prime}{w^\prime} &=& fZ \cdot \frac{z - nZ}{fZ - nZ} \cdot \frac{1}{z} \\
+ &=& \frac{fZ}{fZ - nZ} \cdot \left( 1 -  \frac{nZ}{z} \right)
+\end{eqnarray*}
 %]]></script>
 
 <p>となる。最終的なデプス値は意図通りにnearZの時0.0、farZの時に1.0となる。

@@ -221,23 +221,23 @@ F_k = \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i2\pi kl/N}
 <p>複素表示を展開すると</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-F_k &= \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i2\pi kl/N} \\
-    &= \frac{1}{N} \sum_{l=0}^{N-1} \left\{ f_l \left( \cos(-2\pi kl/N) + i \sin(-2\pi kl/N) \right) \right\} \\
-    &= \frac{1}{N} \sum_{l=0}^{N-1} \left\{ f_l \left( \cos(2\pi kl/N) - i \sin(2\pi kl/N) \right) \right\} \\
-    &= \frac{1}{N} \sum_{l=0}^{N-1} f_l \cos(2\pi kl/N) - i\frac{1}{N} \sum_{l=0}^{N-1} f_l \sin(2\pi kl/N) \\
-\end{align}
+\begin{eqnarray*}
+F_k &=& \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i2\pi kl/N} \\
+    &=& \frac{1}{N} \sum_{l=0}^{N-1} \left\{ f_l \left( \cos(-2\pi kl/N) + i \sin(-2\pi kl/N) \right) \right\} \\
+    &=& \frac{1}{N} \sum_{l=0}^{N-1} \left\{ f_l \left( \cos(2\pi kl/N) - i \sin(2\pi kl/N) \right) \right\} \\
+    &=& \frac{1}{N} \sum_{l=0}^{N-1} f_l \cos(2\pi kl/N) - i\frac{1}{N} \sum_{l=0}^{N-1} f_l \sin(2\pi kl/N) \\
+\end{eqnarray*}
 %]]></script>
 
 <p>となる。</p>
 <h3 id="逆変換"><a href="#逆変換" class="headerlink" title="逆変換"></a>逆変換</h3><p>サンプル点を復元する逆変換は、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-f_l &= \sum_{k=0}^{N-1} F_k e^{i2\pi kl/N} \\
-    &= \sum_{k=0}^{N-1} (Fr_k + i Fi_k) (\cos(2\pi kl/N) + i\sin(2\pi kl/N)) \\
-    &= \sum_{k=0}^{N-1} (Fr_k \cos(2\pi kl/N) - Fi_k \sin(2\pi kl/N)) + i \sum_{k=0}^{N-1} (Fr_k \sin(2\pi kl/N) + Fi_k \cos(2\pi kl/N)) \\
-\end{align}
+\begin{eqnarray*}
+f_l &=& \sum_{k=0}^{N-1} F_k e^{i2\pi kl/N} \\
+    &=& \sum_{k=0}^{N-1} (Fr_k + i Fi_k) (\cos(2\pi kl/N) + i\sin(2\pi kl/N)) \\
+    &=& \sum_{k=0}^{N-1} (Fr_k \cos(2\pi kl/N) - Fi_k \sin(2\pi kl/N)) + i \sum_{k=0}^{N-1} (Fr_k \sin(2\pi kl/N) + Fi_k \cos(2\pi kl/N)) \\
+\end{eqnarray*}
 %]]></script>
 
 <h3 id="プログラム化"><a href="#プログラム化" class="headerlink" title="プログラム化"></a>プログラム化</h3><p>Rubyの配列にベクトル演算を仕込む：</p>

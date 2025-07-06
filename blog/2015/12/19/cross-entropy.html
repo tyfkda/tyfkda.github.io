@@ -228,48 +228,48 @@ C(\mathbf{x}) = y \ln a + (1 - y) \ln (1 - a)
 
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\frac{\partial C}{\partial a^L_j} &= \frac{\partial}{\partial a^L_j} \big\{ y \ln a^L_j + (1 - y) \ln (1 - a^L_j) \big\} \\
-                                  &= y \frac{1}{a^L_j} - (1 - y) \frac{1}{1 - a^L_j} \\
-                                  &= \frac{y(1 - a^L_j) - (1 - y) a^L_j}{a^L_j (1 - a^L_j)} \\
-                                  &= \frac{y - y a^L_j - a^L_j + y a^L_j}{a^L_j (1 - a^L_j)} \\
-                                  &= \frac{y - a^L_j}{a^L_j (1 - a^L_j)} \\
-\end{align}
+\begin{eqnarray*}
+\frac{\partial C}{\partial a^L_j} &=& \frac{\partial}{\partial a^L_j} \big\{ y \ln a^L_j + (1 - y) \ln (1 - a^L_j) \big\} \\
+                                  &=& y \frac{1}{a^L_j} - (1 - y) \frac{1}{1 - a^L_j} \\
+                                  &=& \frac{y(1 - a^L_j) - (1 - y) a^L_j}{a^L_j (1 - a^L_j)} \\
+                                  &=& \frac{y - y a^L_j - a^L_j + y a^L_j}{a^L_j (1 - a^L_j)} \\
+                                  &=& \frac{y - a^L_j}{a^L_j (1 - a^L_j)} \\
+\end{eqnarray*}
 %]]></script>
 
 <script type="math/tex">\frac{\partial a^L_j}{\partial z^L_j}</script> は、<script type="math/tex">a^L_j = \sigma (z^L_j)</script>で、
 <p>シグモイド関数の微分は：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\sigma(z)^\prime &= \left( \frac{1}{1 + e^{-z}} \right)^\prime \\
-                 &= \left( (1 + e^{-z}) ^ {-1} \right)^\prime \\
-                 &= -1 (1 + e^{-z}) ^ {-2} \cdot (-1) e^{-z} \\
-                 &= \frac{e^{-z}}{(1 + e^{-z})^2} \\
-                 &= \frac{1}{1 + e^{-z}} \cdot \frac{e^{-z}}{1 + e^{-z}} \\
-                 &= \frac{1}{1 + e^{-z}} \cdot \frac{1 + e^{-z} - 1}{1 + e^{-z}} \\
-                 &= \frac{1}{1 + e^{-z}} \cdot \left( 1 - \frac{1}{1 + e^{-z}} \right) \\
-                 &= \sigma(z) \cdot \left( 1 - \sigma(z) \right) \\
-\end{align}
+\begin{eqnarray*}
+\sigma(z)^\prime &=& \left( \frac{1}{1 + e^{-z}} \right)^\prime \\
+                 &=& \left( (1 + e^{-z}) ^ {-1} \right)^\prime \\
+                 &=& -1 (1 + e^{-z}) ^ {-2} \cdot (-1) e^{-z} \\
+                 &=& \frac{e^{-z}}{(1 + e^{-z})^2} \\
+                 &=& \frac{1}{1 + e^{-z}} \cdot \frac{e^{-z}}{1 + e^{-z}} \\
+                 &=& \frac{1}{1 + e^{-z}} \cdot \frac{1 + e^{-z} - 1}{1 + e^{-z}} \\
+                 &=& \frac{1}{1 + e^{-z}} \cdot \left( 1 - \frac{1}{1 + e^{-z}} \right) \\
+                 &=& \sigma(z) \cdot \left( 1 - \sigma(z) \right) \\
+\end{eqnarray*}
 %]]></script>
 
 <p>より、</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\frac{\partial a^L_j}{\partial z^L_j} &= \sigma(z^L_j) \cdot \left( 1 - \sigma(z^L_j) \right) \\
-                                      &= a^L_j \cdot \left( 1 - a^L_j \right)
-\end{align}
+\begin{eqnarray*}
+\frac{\partial a^L_j}{\partial z^L_j} &=& \sigma(z^L_j) \cdot \left( 1 - \sigma(z^L_j) \right) \\
+                                      &=& a^L_j \cdot \left( 1 - a^L_j \right)
+\end{eqnarray*}
 %]]></script>
 
 <p>これを式に代入すると：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
-\begin{align}
-\delta^L_j &= \frac{\partial C}{\partial a^L_j} \cdot \frac{\partial a^L_j}{\partial z^L_j} \\
-           &= \left\{ \frac{y - a^L_j}{a^L_j (1 - a^L_j)} \right\} \cdot \left\{ a^L_j (1 - a^L_j) \right\} \\
-           &= y - a^L_j
-\end{align}
+\begin{eqnarray*}
+\delta^L_j &=& \frac{\partial C}{\partial a^L_j} \cdot \frac{\partial a^L_j}{\partial z^L_j} \\
+           &=& \left\{ \frac{y - a^L_j}{a^L_j (1 - a^L_j)} \right\} \cdot \left\{ a^L_j (1 - a^L_j) \right\} \\
+           &=& y - a^L_j
+\end{eqnarray*}
 %]]></script>
 
 <p>と、<script type="math/tex">\sigma(z)^\prime</script>が出てこないきれいな式になる。</p>
@@ -297,7 +297,7 @@ C(\mathbf{x}) = y \ln a + (1 - y) \ln (1 - a)
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/08/28/auto-encoder.html" title="AutoEncoder" rel="bookmark">AutoEncoder</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/deep-learning.html" title="Deep Learning?" rel="bookmark">Deep Learning?</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/26/feed-forward.html" title="多層パーセプトロンの出力値の計算（フィードフォワード）" rel="bookmark">多層パーセプトロンの出力値の計算（フィードフォワード）</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/26/feed-forward.html" title="多層パーセプトロンの出力値の計算（フィードフォワード）" rel="bookmark">多層パーセプトロンの出力値の計算（フィードフォワード）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/05/26/hira-kan-recog.html" title="転移学習で手書きのひらがな・漢字認識" rel="bookmark">転移学習で手書きのひらがな・漢字認識</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/05/05/keras-model-on-tfjs.html" title="Kerasで構築したモデルをTensorFlow.jsで動かす" rel="bookmark">Kerasで構築したモデルをTensorFlow.jsで動かす</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
