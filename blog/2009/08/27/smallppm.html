@@ -96,7 +96,7 @@ Ray::oはoriginだからこ">
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -118,6 +118,14 @@ Ray::oはoriginだからこ">
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -215,12 +223,12 @@ Ray::oはoriginだからこ">
 <p><code>genp</code>では<code>hal</code>の第１引数に0と1を渡してるので、基数として2と3のペアが使われてる。
 他には拡散面の跳ね返り方向やロシアンルーレットにも<code>hal</code>を使ってる。</p>
 <h4 id="カラーの求め方"><a href="#カラーの求め方" class="headerlink" title="カラーの求め方"></a>カラーの求め方</h4><p><a href="http://lucille.atso-net.jp/blog/?p=636">syoyoさんのパストレーサー</a>では求めたラディアンスの０～１を直接カラー値にしている。smallppmではなんかの値（<code>hp-&gt;flux*(1.0/(PI*hp-&gt;r2*num_photon*1000.0)</code>)て書いてあるからラディアンス？）を<code>toInt()</code>関数でカラーにしてる：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">toInt</span><span class="params">(<span class="type">double</span> x)</span>&#123;<span class="keyword">return</span> <span class="type">int</span>(<span class="built_in">pow</span>(<span class="number">1</span>-<span class="built_in">exp</span>(-x),<span class="number">1</span>/<span class="number">2.2</span>)*<span class="number">255</span>+<span class="number">.5</span>);&#125; <span class="comment">//tone mapping</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">toInt</span><span class="params">(<span class="type">double</span> x)</span>&#123;<span class="keyword">return</span> <span class="type">int</span>(<span class="built_in">pow</span>(<span class="number">1</span>-<span class="built_in">exp</span>(-x),<span class="number">1</span>/<span class="number">2.2</span>)*<span class="number">255</span>+.<span class="number">5</span>);&#125; <span class="comment">//tone mapping</span></span><br></pre></td></tr></table></figure>
 
 <p>コメントには「トーンマッピング」と書いてあって、なにやら難しい計算をしている。
 exp(-x)が１から指数的に小さくなってく値でそれを１から引いて1&#x2F;2.2乗するので[0, 1)の値。</p>
 <p>smallppmの元になったという<a href="http://www.kevinbeason.com/smallpt/">smallpt</a>を見てみると、ラディアンスを1&#x2F;2.2乗してる：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="type">int</span> <span class="title function_">toInt</span><span class="params">(<span class="type">double</span> x)</span>&#123; <span class="keyword">return</span> <span class="type">int</span>(<span class="built_in">pow</span>(clamp(x),<span class="number">1</span>/<span class="number">2.2</span>)*<span class="number">255</span>+<span class="number">.5</span>); &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="type">int</span> <span class="title function_">toInt</span><span class="params">(<span class="type">double</span> x)</span>&#123; <span class="keyword">return</span> <span class="type">int</span>(<span class="built_in">pow</span>(clamp(x),<span class="number">1</span>/<span class="number">2.2</span>)*<span class="number">255</span>+.<span class="number">5</span>); &#125;</span><br></pre></td></tr></table></figure>
 
 <p>この1&#x2F;2.2乗はなんなのか。
 Windowsでのディスプレイのガンマ値は2.2とからしいけどそれを打ち消すもの？人間の目の特性？</p>
@@ -257,14 +265,14 @@ Windowsでのディスプレイのガンマ値は2.2とからしいけどそれ�
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 

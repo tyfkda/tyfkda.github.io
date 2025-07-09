@@ -91,7 +91,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -113,6 +113,14 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -255,7 +263,7 @@ Macの場合 <code>brew install wabt</code> で簡単にインストールでき
 <code>import</code> する外部関数の <code>$puts</code> で文字列表示をさせるが、文字列やポインタといったものをWASMで扱うことができない。
 <a href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-mem">線形メモリ</a>というものに対して、そのオフセットを受け渡すことでやりとりする。</p>
 <p>起動側のJavScript(Node.js)：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// run_fizzbuzz.js</span></span><br><span class="line"><span class="keyword">const</span> w = <span class="built_in">require</span>(<span class="string">&#x27;./runwasm.js&#x27;</span>)</span><br><span class="line"></span><br><span class="line">;(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> imports = &#123;</span><br><span class="line">    <span class="attr">console</span>: &#123;</span><br><span class="line">      <span class="attr">puts</span>: <span class="function">(<span class="params">offset</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> buffer = instance.<span class="property">exports</span>.<span class="property">memory</span>.<span class="property">buffer</span></span><br><span class="line">        <span class="keyword">const</span> mem = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(buffer)</span><br><span class="line">        <span class="keyword">let</span> end</span><br><span class="line">        <span class="keyword">for</span> (end = offset; mem[end] !== <span class="number">0</span>; ++end)</span><br><span class="line">          ;</span><br><span class="line">        <span class="keyword">const</span> str = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(buffer, offset, end - offset)</span><br><span class="line">        <span class="keyword">const</span> text = <span class="keyword">new</span> <span class="title class_">TextDecoder</span>(<span class="string">&#x27;utf-8&#x27;</span>).<span class="title function_">decode</span>(str)</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(text)</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> instance = <span class="keyword">await</span> w.<span class="title function_">loadWebAssembly</span>(<span class="string">&#x27;fizzbuzz.wasm&#x27;</span>, imports)</span><br><span class="line">  instance.<span class="property">exports</span>.<span class="title function_">fizzbuzz</span>()</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// run_fizzbuzz.js</span></span><br><span class="line"><span class="keyword">const</span> w = <span class="built_in">require</span>(<span class="string">&#x27;./runwasm.js&#x27;</span>)</span><br><span class="line"></span><br><span class="line">;(<span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> imports = &#123;</span><br><span class="line">    <span class="attr">console</span>: &#123;</span><br><span class="line">      <span class="attr">puts</span>: <span class="function">(<span class="params">offset</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> buffer = instance.<span class="property">exports</span>.<span class="property">memory</span>.<span class="property">buffer</span></span><br><span class="line">        <span class="keyword">const</span> mem = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(buffer)</span><br><span class="line">        <span class="keyword">let</span> end</span><br><span class="line">        <span class="keyword">for</span> (end = offset; mem[end] !== <span class="number">0</span>; ++end)</span><br><span class="line">          ;</span><br><span class="line">        <span class="keyword">const</span> str = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(buffer, offset, end - offset)</span><br><span class="line">        <span class="keyword">const</span> text = <span class="keyword">new</span> <span class="title class_">TextDecoder</span>(<span class="string">&#x27;utf-8&#x27;</span>).<span class="title function_">decode</span>(str)</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(text)</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> instance = <span class="keyword">await</span> w.<span class="title function_">loadWebAssembly</span>(<span class="string">&#x27;fizzbuzz.wasm&#x27;</span>, imports)</span><br><span class="line">  instance.<span class="property">exports</span>.<span class="title function_">fizzbuzz</span>()</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><a href="https://gist.github.com/kanaka/3c9caf38bc4da2ecec38f41ba24b77df#file-runwasm-js">runwasm</a>を使用<ul>
@@ -329,14 +337,14 @@ plnkr で動作確認できて便利</li>
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/29/cc-aarch64.html" title="M1Mac向けにコンパイルする(aarch64)" rel="bookmark">M1Mac向けにコンパイルする(aarch64)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/12/22/cc-riscv.html" title="自作CコンパイラをRISC-Vに対応した" rel="bookmark">自作CコンパイラをRISC-Vに対応した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/03/13/elf-linker.html" title="リンカーを自作した" rel="bookmark">リンカーを自作した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/06/elf-quine.html" title="ELF64でQuine" rel="bookmark">ELF64でQuine</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす" rel="bookmark">【WASM】Cコンパイラをブラウザ上で動かす</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/12/22/cc-riscv.html" title="自作CコンパイラをRISC-Vに対応した" rel="bookmark">自作CコンパイラをRISC-Vに対応した</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/09/29/cc-aarch64.html" title="M1Mac向けにコンパイルする(aarch64)" rel="bookmark">M1Mac向けにコンパイルする(aarch64)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する" rel="bookmark">ELFのオブジェクトファイル形式を生成する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/03/13/elf-linker.html" title="リンカーを自作した" rel="bookmark">リンカーを自作した</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 

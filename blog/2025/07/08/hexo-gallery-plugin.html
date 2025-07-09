@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="今さらブログを書いたところで生成AIにパクられて検索に食われるだけなのでオワコン気味ではあるが、
+ギャラリーページみたいに画像を列挙して一覧表示させたかったのでHexoのプラグインを作ってみた。
+サンプル：ギャラリー
+環境：Hexo 7.3.0">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Hexo】ギャラリープラグインを作ってみた"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Hexo】ギャラリープラグインを作ってみた - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/07/08/hexo-gallery-plugin.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Hexo】ギャラリープラグインを作ってみた</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-07-08
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/blog/">#blog</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>今さらブログを書いたところで生成AIにパクられて検索に食われるだけなのでオワコン気味ではあるが、
+ギャラリーページみたいに画像を列挙して一覧表示させたかったのでHexoのプラグインを作ってみた。</p>
+<p>サンプル：<a href="/blog/gallery/">ギャラリー</a></p>
+<p>環境：Hexo 7.3.0</p>
+<span id="more"></span>
+
+<h2 id="Hexoプラグインの作り方"><a href="#Hexoプラグインの作り方" class="headerlink" title="Hexoプラグインの作り方"></a>Hexoプラグインの作り方</h2><p><a href="https://hexo.io/plugins/">Hexoのプラグイン</a>はいろいろ公開されているが、探すのも大変なので自分で作ってみることに。</p>
+<h3 id="プラグイン"><a href="#プラグイン" class="headerlink" title="プラグイン"></a>プラグイン</h3><p><a href="https://hexo.io/docs/plugins">プラグイン</a>の作り方がどこに書いてあるのか分からなかったので
+<a href="https://github.com/hexojs/hexo-generator-tag">hexo-generator-tag</a>や<a href="https://github.com/hexojs/hexo-generator-archive">hexo-generator-archive</a>を参考に試した
+（後々<a href="https://hexo.io/ja/api/">API</a>の「拡張」に説明が書かれているのを知った）。</p>
+<ul>
+<li>単純なプラグインの場合、scritsディレクトリ内にJavaScriptのファイルを置く</li>
+<li>ページを生成するには<a href="https://hexo.io/ja/api/generator">ジェネレータ</a>で、<code>hexo.extend.generator.register(&#39;gallery&#39;, function(locals) &#123;...&#125;)</code>で登録する<ul>
+<li>コールバック関数から返すオブジェクトに<code>path</code>, <code>data</code>, <code>layout</code>の各キーに値を格納</li>
+<li>複数のページを生成する場合には配列にして返す</li>
+<li>引数<code>locals</code>にいろいろ入っていて、<code>locals.posts</code>が全てのポスト内容</li>
+<li><code>this.config</code>でコンフィグ</li>
+<li>ページネーションさせるには<a href="https://github.com/hexojs/hexo-pagination">hexo-pagination</a>を使用する</li>
+</ul>
+</li>
+</ul>
+<p>各ポストには<a href="https://hexo.io/ja/api/posts">タイトルやパス</a>の他に、Front Matterの内容も格納されている。
+ここではギャラリーに載せたい記事のFront Matterに<code>gallery: 画像のパス</code>で指定：</p>
+<figure class="highlight md"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: ブログ記事のタイトル</span><br><span class="line"><span class="section">gallery: 画像のパス　（例：/assets/foo.png）</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">本文</span><br></pre></td></tr></table></figure>
+
+<p>して、その記事を列挙させることにした：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// scripts/hexo-generator-gallery.js</span></span><br><span class="line"><span class="meta">&#x27;use strict&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> pagination = <span class="built_in">require</span>(<span class="string">&#x27;hexo-pagination&#x27;</span>)</span><br><span class="line"></span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">generator</span>.<span class="title function_">register</span>(<span class="string">&#x27;gallery&#x27;</span>, <span class="keyword">function</span>(<span class="params">locals</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> config = <span class="variable language_">this</span>.<span class="property">config</span></span><br><span class="line">    <span class="keyword">const</span> galleryDir = config.<span class="property">gallery_dir</span> || <span class="string">&#x27;gallery/&#x27;</span></span><br><span class="line">    <span class="keyword">const</span> orderBy = config.<span class="property">gallery_generator</span>?.<span class="property">order_by</span> || <span class="string">&#x27;-date&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> galleryPosts = locals.<span class="property">posts</span></span><br><span class="line">        .<span class="title function_">filter</span>(<span class="function"><span class="params">post</span> =&gt;</span> post.<span class="property">gallery</span>)</span><br><span class="line">        .<span class="title function_">sort</span>(orderBy)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (galleryPosts.<span class="property">length</span> === <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// HTMLのヘッダ用に、タイトルを多言語対応しておく</span></span><br><span class="line">    <span class="keyword">const</span> __ = <span class="variable language_">this</span>.<span class="property">theme</span>.<span class="property">i18n</span>.<span class="title function_">__</span>()</span><br><span class="line">    <span class="keyword">const</span> title = <span class="title function_">__</span>(<span class="string">&#x27;gallery&#x27;</span>) || <span class="string">&#x27;Gallery&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 単一のページで済ます場合：</span></span><br><span class="line">    <span class="comment">// return &#123;</span></span><br><span class="line">    <span class="comment">//     path: `$&#123;galleryDir&#125;index.html`,</span></span><br><span class="line">    <span class="comment">//     data: &#123;</span></span><br><span class="line">    <span class="comment">//         title,</span></span><br><span class="line">    <span class="comment">//         posts: galleryPosts,</span></span><br><span class="line">    <span class="comment">//     &#125;,</span></span><br><span class="line">    <span class="comment">//     layout: [&#x27;gallery&#x27;, &#x27;index&#x27;],</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ページネーション対応</span></span><br><span class="line">    <span class="keyword">const</span> perPage = config.<span class="property">gallery_generator</span>?.<span class="property">per_page</span> || <span class="number">50</span></span><br><span class="line">    <span class="keyword">const</span> pages = <span class="title function_">pagination</span>(galleryDir, galleryPosts, &#123;</span><br><span class="line">        perPage,</span><br><span class="line">        <span class="attr">layout</span>: [<span class="string">&#x27;gallery&#x27;</span>, <span class="string">&#x27;index&#x27;</span>],</span><br><span class="line">        <span class="attr">format</span>: <span class="string">`<span class="subst">$&#123;galleryDir&#125;</span>%d/`</span>,</span><br><span class="line">        <span class="attr">data</span>: &#123; title &#125;,</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> pages</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>filter</code>で<code>post.gallery</code>としてるので、Front Matterに指定した記事だけが列挙される</li>
+<li>HTMLのヘッダの<code>&lt;title&gt;</code>が<code>data.title</code>で設定されるようになってるが、自分の使用しているテーマでは自動的には多言語対応されないので、ジェネレータ内で対応しておく<ul>
+<li><code>$/themes/xxxx/layout/_partial/head.ejs</code>でヘッダの出力で、<code>&lt;title&gt;</code>もそこで設定されていた</li>
+</ul>
+</li>
+<li>ページネーション、簡単に使えて便利</li>
+</ul>
+<h3 id="コンフィグ"><a href="#コンフィグ" class="headerlink" title="コンフィグ"></a>コンフィグ</h3><p>一応設定をいじれるように、コンフィグの値を参照するようにした：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># $/_config.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">gallery_dir:</span> <span class="string">blog/gallery/</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Gallery Generator</span></span><br><span class="line"><span class="attr">gallery_generator:</span></span><br><span class="line">  <span class="attr">per_page:</span> <span class="number">50</span></span><br><span class="line">  <span class="attr">order_by:</span> <span class="string">-date</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="レイアウト追加"><a href="#レイアウト追加" class="headerlink" title="レイアウト追加"></a>レイアウト追加</h3><p>生成するページの<code>layout</code>に<code>&#39;gallery&#39;</code>と指定したので、それにあうレイアウトのテンプレートファイルを追加する：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- $/themes/xxxx/layout/gallery.ejs --&gt;</span></span><br><span class="line">&lt;%</span><br><span class="line">    var title = __(&#x27;gallery&#x27;);</span><br><span class="line">%&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Page Header --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Set your background image for this header in the theme&#x27;s configuration: index_cover --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">header</span> <span class="attr">class</span>=<span class="string">&quot;intro-header&quot;</span> <span class="attr">style</span>=<span class="string">&quot;background-image: url(&#x27;&lt;%- theme.index_cover %&gt;&#x27;)&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;site-heading&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>&lt;%- title %&gt;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Main Content --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;gallery-container&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;card-container&quot;</span>&gt;</span></span><br><span class="line">        &lt;% page.posts.forEach(function(post)&#123; %&gt;</span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;card&quot;</span> <span class="attr">data-hover</span>=<span class="string">&quot;&lt;%- post.title %&gt;&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&lt;%- config.root %&gt;&lt;%- post.path %&gt;&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;&lt;%- post.gallery %&gt;&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;&lt;%- post.title %&gt;&quot;</span> <span class="attr">title</span>=<span class="string">&quot;&lt;%- post.title %&gt;&quot;</span> <span class="attr">loading</span>=<span class="string">&quot;lazy&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        &lt;% &#125;); %&gt;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    &lt;%- partial(&#x27;_partial/pagination&#x27;) %&gt;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>HTMLの内容はテーマに合うように、同じディレクトリ内の<code>archive.ejs</code>などを参考に書き換えること</li>
+<li><code>page.posts</code> に各記事が入ってくる<ul>
+<li><code>post.gallery</code>にFront Matterに記述した内容が入っているので、例えば<code>&lt;img src&gt;</code>に使用する</li>
+</ul>
+</li>
+</ul>
+<h3 id="辞書追加"><a href="#辞書追加" class="headerlink" title="辞書追加"></a>辞書追加</h3><p>ギャラリーページのタイトルを多言語対応するために辞書に追加：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># $/themes/xxxx/languages/ja.yml</span></span><br><span class="line"><span class="attr">gallery:</span> <span class="string">ギャラリー</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="メニューに追加"><a href="#メニューに追加" class="headerlink" title="メニューに追加"></a>メニューに追加</h3><p>使用しているテーマにもよると思うが、メニューに追加するにはテーマのコンフィグに追加：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># $/themes/xxxx/_config.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="attr">Gallery:</span> <span class="string">/blog/gallery</span>    <span class="comment"># &lt;- gallery_dirと合わせる</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="センスのいいギャラリーページ"><a href="#センスのいいギャラリーページ" class="headerlink" title="センスのいいギャラリーページ"></a>センスのいいギャラリーページ</h2><p>Googleの画像検索結果やPinterestみたいなカッコいいページにしたいが、デザインセンス皆無なのでなんともいえない。</p>
+<ul>
+<li>レスポンシブ：PCではカードで3~4列程度、スマホではSNSアプリっぽく各画像を正方形で横幅いっぱいにしたい：<code>flexbox</code>とメディアクエリを使う<ul>
+<li><code>flex-grow</code>を指定すると最後の行が割り切れない場合に横に拡大されてしまうのを回避したい</li>
+</ul>
+</li>
+<li>マウスホバーで記事タイトルを表示：<code>&lt;div data-hover=&quot;タイトル&quot;&gt;</code>と指定しておき、<code>.card::before&#123;content:attr(data-hover); opacity:0&#125;</code>、<code>.card:hover::before&#123;opacity:1;&#125;</code>とする</li>
+</ul>
+<p>できはともかく、画像がたくさん並ぶとなんかいろいろやってきたんだなって感じでよい。</p>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2025/06/20/openmp-shared_ptr.html">前：【C++】shared_ptrとOpenMPの相性が最悪な件<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/08/29/hexo-tags.html" title="Hexoでタグ一覧ページを作成させる" rel="bookmark">Hexoでタグ一覧ページを作成させる</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

@@ -93,7 +93,7 @@ WebViewを使ってhtml+JavaScriptを使ってアプリを組みたい。
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -115,6 +115,14 @@ WebViewを使ってhtml+JavaScriptを使ってアプリを組みたい。
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -216,10 +224,10 @@ WebViewを使ってhtml+JavaScriptを使ってアプリを組みたい。
 <li>Main.storyboardを削除する</li>
 <li>ViewControllerが呼び出されなくなるので、自前で呼び出す</li>
 </ul>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AppDelegate</span>: <span class="title class_">UIResponder</span>, <span class="title class_">UIApplicationDelegate</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> window: <span class="type">UIWindow</span>?</span><br><span class="line">  <span class="keyword">var</span> navigationController: <span class="type">UINavigationController</span>?</span><br><span class="line"></span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">application</span>(<span class="keyword">_</span> <span class="params">application</span>: <span class="type">UIApplication</span>, <span class="params">didFinishLaunchingWithOptions</span> <span class="params">launchOptions</span>: [<span class="params">UIApplicationLaunchOptionsKey</span>: <span class="keyword">Any</span>]<span class="operator">?</span>) -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">    window <span class="operator">=</span> <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.main.bounds)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> viewController: <span class="type">ViewController</span> <span class="operator">=</span> <span class="type">ViewController</span>()</span><br><span class="line">    window<span class="operator">!</span>.rootViewController <span class="operator">=</span> viewController</span><br><span class="line">    window<span class="operator">!</span>.makeKeyAndVisible()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="operator">...</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AppDelegate</span>: <span class="title class_ inherited__">UIResponder</span>, <span class="title class_ inherited__">UIApplicationDelegate</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> window: <span class="type">UIWindow</span>?</span><br><span class="line">  <span class="keyword">var</span> navigationController: <span class="type">UINavigationController</span>?</span><br><span class="line"></span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">application</span>(<span class="keyword">_</span> <span class="params">application</span>: <span class="type">UIApplication</span>, <span class="params">didFinishLaunchingWithOptions</span> <span class="params">launchOptions</span>: [<span class="params">UIApplicationLaunchOptionsKey</span>: <span class="keyword">Any</span>]<span class="operator">?</span>) -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">    window <span class="operator">=</span> <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.main.bounds)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> viewController: <span class="type">ViewController</span> <span class="operator">=</span> <span class="type">ViewController</span>()</span><br><span class="line">    window<span class="operator">!</span>.rootViewController <span class="operator">=</span> viewController</span><br><span class="line">    window<span class="operator">!</span>.makeKeyAndVisible()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="operator">...</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="WebViewを全画面の大きさで追加"><a href="#WebViewを全画面の大きさで追加" class="headerlink" title="WebViewを全画面の大きさで追加"></a>WebViewを全画面の大きさで追加</h2><p>ViewControllerで全画面のWebViewを追加する。</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ViewController</span>: <span class="title class_">UIViewController</span>, <span class="title class_">WKNavigationDelegate</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> webView: <span class="type">WKWebView</span> <span class="operator">=</span> <span class="type">WKWebView</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">viewDidLoad</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line">    webView.frame <span class="operator">=</span> view.bounds</span><br><span class="line">    webView.navigationDelegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">    view.addSubview(webView)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ViewController</span>: <span class="title class_ inherited__">UIViewController</span>, <span class="title class_ inherited__">WKNavigationDelegate</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> webView: <span class="type">WKWebView</span> <span class="operator">=</span> <span class="type">WKWebView</span>()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">viewDidLoad</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line">    webView.frame <span class="operator">=</span> view.bounds</span><br><span class="line">    webView.navigationDelegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">    view.addSubview(webView)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><a href="https://developer.apple.com/reference/webkit/wkwebview">WKWebView</a>からのイベントを処理するため、<a href="https://developer.apple.com/reference/webkit/wknavigationdelegate">WKNavigationDelegate</a>を継承してやる</li>
@@ -300,7 +308,7 @@ WebViewを使ってhtml+JavaScriptを使ってアプリを組みたい。
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 

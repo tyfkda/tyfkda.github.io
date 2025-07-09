@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-07-06T07:59:16.774Z</updated>
+  <updated>2025-07-09T02:39:54.166Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【Hexo】ギャラリープラグインを作ってみた</title>
+    <link href="https://tyfkda.github.io/blog/2025/07/08/hexo-gallery-plugin.html"/>
+    <id>https://tyfkda.github.io/blog/2025/07/08/hexo-gallery-plugin.html</id>
+    <published>2025-07-08T12:00:00.000Z</published>
+    <updated>2025-07-09T02:39:54.166Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;今さらブログを書いたところで生成AIにパクられて検索に食われるだけなのでオワコン気味ではあるが、
+ギャラリーページみたいに画像を列挙して一覧表示させたかったのでHexoのプラグインを作ってみた。&lt;/p&gt;
+&lt;p&gt;サンプル：&lt;a href=&quot;/blog/gallery/&quot;&gt;ギャラリー&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;環境：Hexo 7.3.0&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="blog" scheme="https://tyfkda.github.io/tags/blog/"/>
+    
+  </entry>
   
   <entry>
     <title>【C++】shared_ptrとOpenMPの相性が最悪な件</title>
@@ -38,7 +58,7 @@
     <link href="https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html"/>
     <id>https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html</id>
     <published>2025-06-06T12:00:00.000Z</published>
-    <updated>2025-07-08T05:39:45.626Z</updated>
+    <updated>2025-07-09T02:39:54.172Z</updated>
     
     
     <summary type="html">&lt;p&gt;いかにもCGで作りましたっていうクッキリハッキリした反射ではなく、少し不完全な金属の光沢や表面のざらざら具合を表現するためのマテリアル表現をパストレーサーに組み込んでみた。&lt;/p&gt;
@@ -209,7 +229,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
     <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2025-07-08T05:39:45.626Z</updated>
+    <updated>2025-07-09T02:39:54.177Z</updated>
     
     
     <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
@@ -222,28 +242,6 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
     
     <category term="reinforcement learning" scheme="https://tyfkda.github.io/tags/reinforcement-learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Mach-Oオブジェクト形式を生成してみる</title>
-    <link href="https://tyfkda.github.io/blog/2024/06/15/mach-o.html"/>
-    <id>https://tyfkda.github.io/blog/2024/06/15/mach-o.html</id>
-    <published>2024-06-15T09:00:00.000Z</published>
-    <updated>2025-07-06T06:03:33.594Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;Linuxなどの実行ファイルやコンパイラから出力されるオブジェクトファイルはELFという形式だが、
-macOSでは&lt;strong&gt;Mach-O&lt;/strong&gt;という別のフォーマットが使われている。
-このフォーマットを学んでみる、
-要するに&lt;a href=&quot;/blog/2020/04/20/elf-obj.html&quot; title=&quot;ELFのオブジェクトファイル形式を生成する&quot;&gt;ELFのオブジェクトファイル形式を生成する&lt;/a&gt;をMach-O&amp;#x2F;aarch64上でやってみる。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-    <category term="binary" scheme="https://tyfkda.github.io/tags/binary/"/>
     
   </entry>
   

@@ -92,7 +92,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -114,6 +114,14 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -198,11 +206,11 @@
 
 
 <h3 id="開発環境構築"><a href="#開発環境構築" class="headerlink" title="開発環境構築"></a>開発環境構築</h3><p>記事ではFedora 18（32ビット版）を開発環境としているので、同じ環境を用意するためVagrantでセットアップ：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ vagrant init fedora-18 http://static.stasiak.at/fedora-18-x86-2.box</span><br><span class="line"><span class="comment"># Vagrantファイルで共有フォルダの設定を追加する：</span></span><br><span class="line"><span class="comment">#   config.vm.synced_folder &quot;.&quot;, &quot;/vagrant&quot;</span></span><br><span class="line">$ vagrant up</span><br><span class="line">$ vagrant ssh</span><br><span class="line"><span class="comment"># 開発環境Fedora-18上</span></span><br><span class="line">$ sudo yum update</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ vagrant init fedora-18 http://static.stasiak.at/fedora-18-x86-2.box</span><br><span class="line"><span class="comment"># Vagrantファイルで共有フォルダの設定を追加する：</span></span><br><span class="line"><span class="comment">#   config.vm.synced_folder &quot;.&quot;, &quot;/vagrant&quot;</span></span><br><span class="line">$ vagrant up</span><br><span class="line">$ vagrant ssh</span><br><span class="line"><span class="comment"># 開発環境Fedora-18上</span></span><br><span class="line">$ <span class="built_in">sudo</span> yum update</span><br></pre></td></tr></table></figure>
 
 <p>再起動が必要とのことなのでその通りにする。</p>
 <p>Fedoraに以降のビルドで使う開発ツールをいくつか入れる必要がある：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ sudo yum install bzip2 gcc perl ncurses-devel libxslt</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">sudo</span> yum install bzip2 gcc perl ncurses-devel libxslt</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="作業用ディレクトリ作成"><a href="#作業用ディレクトリ作成" class="headerlink" title="作業用ディレクトリ作成"></a>作業用ディレクトリ作成</h3><p>以降は開発環境で、rootユーザに移って行う。</p>
@@ -297,7 +305,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 

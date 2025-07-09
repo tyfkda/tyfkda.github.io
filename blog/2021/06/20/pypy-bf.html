@@ -94,7 +94,7 @@ PyPy Status Blog: Tutorial: Writing an Interpreter with PyPy, Part 1
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -116,6 +116,14 @@ PyPy Status Blog: Tutorial: Writing an Interpreter with PyPy, Part 1
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -213,14 +221,14 @@ PyPy Status Blog: Tutorial: Writing an Interpreter with PyPy, Part 1
 <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># for_cpython.py</span></span><br><span class="line"><span class="keyword">import</span> bf</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">putc</span>(<span class="params">c</span>):</span><br><span class="line">  sys.stdout.write(<span class="built_in">chr</span>(c))  <span class="comment">#; sys.stdout.flush()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getc</span>():</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">ord</span>(sys.stdin.read(<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">run</span>(<span class="params"><span class="built_in">input</span></span>):</span><br><span class="line">  program, <span class="built_in">map</span> = bf.parse(<span class="built_in">input</span>.read())</span><br><span class="line">  bf.mainloop(program, <span class="built_in">map</span>, putc, getc)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  <span class="keyword">import</span> sys</span><br><span class="line">  run(<span class="built_in">open</span>(sys.argv[<span class="number">1</span>], <span class="string">&#x27;r&#x27;</span>))</span><br></pre></td></tr></table></figure>
 
 <p>動かすにはシェルからBrainf*ckのコードを渡す：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time python for_cpython.py examples/mandelbrot.b</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">time</span> python for_cpython.py examples/mandelbrot.b</span><br></pre></td></tr></table></figure>
 
 <p>試しにマンデルブロ集合を計算するプログラムを動かしてみたが、遅過ぎて実行完了を待ちきれずかかる時間は不明。</p>
 <h3 id="PyPyによる実行"><a href="#PyPyによる実行" class="headerlink" title="PyPyによる実行"></a>PyPyによる実行</h3><p>PyPyはPythonの処理系の1つとして使用できる。
 なので上記のプログラムも動かすことができる。</p>
 <h4 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h4><p>Mac OSXだと <code>brew install pypy</code> でインストールできる。</p>
 <p>またはpyenv経由でインストールすることもできるらしい。</p>
-<h4 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time pypy for_cpython.py examples/mandelbrot.b</span><br></pre></td></tr></table></figure>
+<h4 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">time</span> pypy for_cpython.py examples/mandelbrot.b</span><br></pre></td></tr></table></figure>
 
 <p>手元で動かしたところCPythonよりずっと高速で完了まで待つことができて、70.70秒だった。</p>
 <h3 id="RPython-Toolchain"><a href="#RPython-Toolchain" class="headerlink" title="RPython Toolchain"></a>RPython Toolchain</h3><p>RPython ToolchainというJITコンパイラ生成のツールチェインがあって、制限されたPythonの文法でインタプリタを書くとそれを変換して高速に実行できるようになる。
@@ -245,7 +253,7 @@ PyPyがRPythonで実装されているらしい。</p>
 
 <p>しばらく待つとファイル名に<code>-c</code>が付けられた実行ファイルが生成される。
 実行：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ time ./for_rpython-c examples/mandelbrot.b</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">time</span> ./for_rpython-c examples/mandelbrot.b</span><br></pre></td></tr></table></figure>
 
 <p>手元では22.44秒だったので、PyPyでの実行時間と比べて31.7%(3.2倍速)に短縮された。</p>
 <p>C++で同じ処理内容のVMを書いて動かしたところ43.71秒となり、RPythonで変換したもののほうが速い（すごい）。
@@ -354,14 +362,14 @@ PyPyがRPythonで実装されているらしい。</p>
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/21/adv-in-jit-compilation.html" title="「JITコンパイルでの冒険」を読んだ" rel="bookmark">「JITコンパイルでの冒険」を読んだ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/10/10/calling-convension-64.html" title="Xbyakで動的に生成するコードからCの関数を呼び出す" rel="bookmark">Xbyakで動的に生成するコードからCの関数を呼び出す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/22/dt-jit-comparison.html" title="Direct Threaded版とJITの速度比較" rel="bookmark">Direct Threaded版とJITの速度比較</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/05/jit.html" title="JITについてお勉強" rel="bookmark">JITについてお勉強</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/08/19/xbyak-genfunc.html" title="実行時に関数を生成する方法(Xbyak)" rel="bookmark">実行時に関数を生成する方法(Xbyak)</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/21/adv-in-jit-compilation.html" title="「JITコンパイルでの冒険」を読んだ" rel="bookmark">「JITコンパイルでの冒険」を読んだ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/10/10/calling-convension-64.html" title="Xbyakで動的に生成するコードからCの関数を呼び出す" rel="bookmark">Xbyakで動的に生成するコードからCの関数を呼び出す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/02/22/dt-jit-comparison.html" title="Direct Threaded版とJITの速度比較" rel="bookmark">Direct Threaded版とJITの速度比較</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/05/jit.html" title="JITについてお勉強" rel="bookmark">JITについてお勉強</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/09/11/xbyak-jit.html" title="Xbyakで簡単な関数を実行時に生成する" rel="bookmark">Xbyakで簡単な関数を実行時に生成する</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 

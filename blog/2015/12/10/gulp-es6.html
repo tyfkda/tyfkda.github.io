@@ -91,7 +91,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -113,6 +113,14 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -195,7 +203,7 @@
 <p>俺用完成コード：<a href="https://github.com/tyfkda/FrontendTemplate">https://github.com/tyfkda/FrontendTemplate</a> （追記：本記事から多少内容が変更されてます）
 <code>git clone</code>, <code>npm install</code> して使える。</p>
 <h3 id="プロジェクトディレクトリの作成"><a href="#プロジェクトディレクトリの作成" class="headerlink" title="プロジェクトディレクトリの作成"></a>プロジェクトディレクトリの作成</h3><p>プロジェクト用にディレクトリを作り、その中で環境を構築していく：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> ~/gulptest  <span class="comment"># プロジェクト用ディレクトリ作成</span></span><br><span class="line">$ <span class="built_in">cd</span> ~/gulptest  <span class="comment"># 中に移って</span></span><br><span class="line">$ npm init -y  <span class="comment"># npm初期化（-yで質問への回答を省略してデフォルトを使用する）</span></span><br><span class="line">$ npm install --save-dev gulp  <span class="comment"># ローカルにgulpをインストール</span></span><br><span class="line">$ sudo npm install -g gulp  <span class="comment"># グローバルにもgulpをインストール</span></span><br><span class="line">$ npm install --save-dev babel-preset-es2015  <span class="comment"># babel変換用</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> ~/gulptest  <span class="comment"># プロジェクト用ディレクトリ作成</span></span><br><span class="line">$ <span class="built_in">cd</span> ~/gulptest  <span class="comment"># 中に移って</span></span><br><span class="line">$ npm init -y  <span class="comment"># npm初期化（-yで質問への回答を省略してデフォルトを使用する）</span></span><br><span class="line">$ npm install --save-dev gulp  <span class="comment"># ローカルにgulpをインストール</span></span><br><span class="line">$ <span class="built_in">sudo</span> npm install -g gulp  <span class="comment"># グローバルにもgulpをインストール</span></span><br><span class="line">$ npm install --save-dev babel-preset-es2015  <span class="comment"># babel変換用</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><code>npm install</code> とすることで必要なパッケージが <code>package.json</code> に記録され、他の環境で <code>npm install</code> したときに自動的に反映されるようになる<ul>
@@ -325,7 +333,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 

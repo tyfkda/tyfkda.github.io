@@ -91,7 +91,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -113,6 +113,14 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -194,7 +202,7 @@
 <h3 id="OSイメージの作成"><a href="#OSイメージの作成" class="headerlink" title="OSイメージの作成"></a>OSイメージの作成</h3><p>起動させるOSはOS自作入門のはりぼてOSで、フロッピー起動のものと全く同じ。はりぼてOSは512バイトのブートローダーと、そのブートローダーから読み込まれるOS本体からなっている。ドライブからのデータの読み込みはブートローダーでBIOSを使って行っていて、すべてのデータをメモリ上に読み込んでしまい、OS起動後はメモリへのアクセスだけでドライブへのアクセスは一切していない。</p>
 <h3 id="起動用USBの作成"><a href="#起動用USBの作成" class="headerlink" title="起動用USBの作成"></a>起動用USBの作成</h3><p>Macでのやりかたの説明。まずアプリケーション＞ユーティリティ＞ディスクユーティリティを開いて、消去タブからUSBメモリをフォーマットする。
 次に、ddコマンドでディスクイメージを書き込む。んだけど、メモリスティックを挿した段階でマウントされてしまっているので、アンマウントする必要がある（<a href="http://nahareport.blogspot.jp/2013/03/mac-osxdd.html">参考</a>）：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -l /dev/disk*  <span class="comment"># ドライブ情報の確認</span></span><br><span class="line">  ...</span><br><span class="line">$ <span class="built_in">df</span>  <span class="comment"># ドライブ情報の確認</span></span><br><span class="line">  ...</span><br><span class="line">$ sudo umount -fv /Volumes/UNTITLED  <span class="comment"># アンマウント</span></span><br><span class="line">$ sudo <span class="built_in">dd</span> <span class="keyword">if</span>=ディスクイメージのパス of=/dev/disk1  <span class="comment"># イメージの書き込み</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -l /dev/disk*  <span class="comment"># ドライブ情報の確認</span></span><br><span class="line">  ...</span><br><span class="line">$ <span class="built_in">df</span>  <span class="comment"># ドライブ情報の確認</span></span><br><span class="line">  ...</span><br><span class="line">$ <span class="built_in">sudo</span> umount -fv /Volumes/UNTITLED  <span class="comment"># アンマウント</span></span><br><span class="line">$ <span class="built_in">sudo</span> <span class="built_in">dd</span> <span class="keyword">if</span>=ディスクイメージのパス of=/dev/disk1  <span class="comment"># イメージの書き込み</span></span><br></pre></td></tr></table></figure>
 
 <p>最後のddコマンドでディスクイメージをUSBメモリの0クラスタから書き込む。
 （出力先を間違ったらハードディスクがぶっ壊れる可能性があるので、怖いなぁ…）</p>
@@ -244,7 +252,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 

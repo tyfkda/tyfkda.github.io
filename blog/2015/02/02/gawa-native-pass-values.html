@@ -91,7 +91,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -113,6 +113,14 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -199,7 +207,7 @@
 <li>受け渡すデータは<code>a=x&amp;b=y&amp;...</code>という形式でなくても、改行などを含んでいても受け渡すことができる</li>
 </ul>
 <h3 id="SwiftでPOSTデータを受け取る"><a href="#SwiftでPOSTデータを受け取る" class="headerlink" title="SwiftでPOSTデータを受け取る"></a>SwiftでPOSTデータを受け取る</h3><p><a href="http://qiita.com/tyfkda/items/5c82a4c28ae21c7c758d">iOSガワネイティブでSwiftから値を受け取る</a>と同様に、NSURLProtocolを継承して拡張したクラスを定義して、所定のURLをフックしてPOSTのデータを受け取る：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// MyURLProtocol.swift</span></span><br><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NativeURLProtocol</span>: <span class="title class_">NSURLProtocol</span> &#123;</span><br><span class="line">  <span class="comment">// 以下のメソッドで所定のURLをフック</span></span><br><span class="line">  <span class="comment">//override class func canInitWithRequest(request: NSURLRequest) -&gt; Bool</span></span><br><span class="line">  <span class="comment">//override class func canonicalRequestForRequest(request: NSURLRequest) -&gt; NSURLRequest</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">startLoading</span>() &#123;</span><br><span class="line">    <span class="comment">// POSTデータを受け取る</span></span><br><span class="line">    <span class="keyword">let</span> httpBody: <span class="type">NSData</span>? <span class="operator">=</span> request.<span class="type">HTTPBody</span></span><br><span class="line">    <span class="operator">...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// MyURLProtocol.swift</span></span><br><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NativeURLProtocol</span>: <span class="title class_ inherited__">NSURLProtocol</span> &#123;</span><br><span class="line">  <span class="comment">// 以下のメソッドで所定のURLをフック</span></span><br><span class="line">  <span class="comment">//override class func canInitWithRequest(request: NSURLRequest) -&gt; Bool</span></span><br><span class="line">  <span class="comment">//override class func canonicalRequestForRequest(request: NSURLRequest) -&gt; NSURLRequest</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">startLoading</span>() &#123;</span><br><span class="line">    <span class="comment">// POSTデータを受け取る</span></span><br><span class="line">    <span class="keyword">let</span> httpBody: <span class="type">NSData</span>? <span class="operator">=</span> request.<span class="type">HTTPBody</span></span><br><span class="line">    <span class="operator">...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>注意点として、POSTを受け取るURLのスキームは<code>http</code>か<code>https</code>である必要がある。これを自分で独自に定義したスキームを使うと<code>request.HTTPBody</code>が<code>nil</code>になってしまい、受け取れない。</li>
@@ -234,7 +242,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 

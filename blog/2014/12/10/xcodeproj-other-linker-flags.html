@@ -91,7 +91,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -113,6 +113,14 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -192,7 +200,7 @@
 <span id="more"></span>
 
 <p>Ruby の <a href="https://rubygems.org/gems/xcodeproj">xcodeproj</a> gemを使って、</p>
-<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env ruby</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;xcodeproj&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Xcodeのプロジェクトのターゲットの Build Settings &gt; Linking &gt; Other Linker Flags に</span></span><br><span class="line"><span class="comment"># フラグを追加する</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add_ldflags_to_targets</span>(<span class="params">xcproj, target_name, flags</span>)</span><br><span class="line">  xcproj.targets.each <span class="keyword">do</span> |<span class="params">target</span>|</span><br><span class="line">    <span class="keyword">next</span> <span class="keyword">unless</span> target_name === target.name</span><br><span class="line">    target.build_configurations.each <span class="keyword">do</span> |<span class="params">cfg</span>|</span><br><span class="line">      cfg.build_settings[<span class="string">&#x27;OTHER_LDFLAGS&#x27;</span>] |<span class="params">= flags</span></span><br><span class="line"><span class="params">    <span class="keyword">end</span></span></span><br><span class="line"><span class="params">  <span class="keyword">end</span></span></span><br><span class="line"><span class="params"><span class="keyword">end</span></span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">xcproj_path = ARGV.shift</span></span><br><span class="line"><span class="params">target_name = ARGV.shift</span></span><br><span class="line"><span class="params">flags = ARGV</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">xcproj = Xcodeproj::Project.new(xcproj_path)</span></span><br><span class="line"><span class="params">xcproj.initialize_from_file</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">add_ldflags_to_targets(xcproj, target_name, flags)</span></span><br><span class="line"><span class="params"></span></span><br><span class="line"><span class="params">xcproj.save</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env ruby</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;xcodeproj&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Xcodeのプロジェクトのターゲットの Build Settings &gt; Linking &gt; Other Linker Flags に</span></span><br><span class="line"><span class="comment"># フラグを追加する</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add_ldflags_to_targets</span>(<span class="params">xcproj, target_name, flags</span>)</span><br><span class="line">  xcproj.targets.each <span class="keyword">do</span> |<span class="params">target</span>|</span><br><span class="line">    <span class="keyword">next</span> <span class="keyword">unless</span> target_name === target.name</span><br><span class="line">    target.build_configurations.each <span class="keyword">do</span> |<span class="params">cfg</span>|</span><br><span class="line">      cfg.build_settings[<span class="string">&#x27;OTHER_LDFLAGS&#x27;</span>] |= flags</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">xcproj_path = <span class="variable constant_">ARGV</span>.shift</span><br><span class="line">target_name = <span class="variable constant_">ARGV</span>.shift</span><br><span class="line">flags = <span class="variable constant_">ARGV</span></span><br><span class="line"></span><br><span class="line">xcproj = <span class="title class_">Xcodeproj::Project</span>.new(xcproj_path)</span><br><span class="line">xcproj.initialize_from_file</span><br><span class="line"></span><br><span class="line">add_ldflags_to_targets(xcproj, target_name, flags)</span><br><span class="line"></span><br><span class="line">xcproj.save</span><br></pre></td></tr></table></figure>
 
 <p>使い方： <code>ruby add_ldflags.rb [xcodeprojパス] [ターゲット名] [追加するフラグ...]</code></p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># UnityからBuildで出力したプロジェクトに &quot;-ObjC&quot; を追加する場合</span></span><br><span class="line">$ ruby add_objc.rb /Path/To/Project/Unity-iPhone.xcodeproj Unity-iPhone <span class="string">&quot;-ObjC&quot;</span></span><br></pre></td></tr></table></figure>
@@ -208,10 +216,10 @@
                     <hr style="margin:48px 0 8px">
                     <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
                         
-                            <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2014/12/21/metropolis-light-transport.html"><span class="glyphicon glyphicon-chevron-left"></span>次：メトロポリス輸送の事始め</a></li>
+                            <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2014/12/10/xcodeproj-copy-bundle-resources.html"><span class="glyphicon glyphicon-chevron-left"></span>次：xcodeprojでXcodeのターゲットのCopy Bundle Resourcesにファイルを追加する</a></li>
                         
                         
-                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2014/12/10/xcodeproj-copy-bundle-resources.html">前：xcodeprojでXcodeのターゲットのCopy Bundle Resourcesにファイルを追加する<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2014/12/09/modify-xcproj.html">前：【Unity】PostprocessBuildPlayerでiOS用に出力されたプロジェクトを編集する<span class="glyphicon glyphicon-chevron-right"></span></a></li>
                         
                     </ul>
                 
@@ -232,7 +240,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 

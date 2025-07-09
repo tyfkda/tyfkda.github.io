@@ -92,7 +92,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.0.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 
 <body>
@@ -114,6 +114,14 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
                 
                     <li>
                         <a href="/blog/archive/">
@@ -232,10 +240,10 @@ BFSはキューから取り出した局面に対して可能な手を列挙し�
 <p>ゼリーのパズルで可能な手はゼリーを左か右に動かすことだけなので、それほど手が広いわけではない。
 また重力があるため下に床がなければ落下してしまい盤面全体で自由に動かせるわけではなく持ち上げることも（自由には）できないので、そこまでべらぼうに探索すべき局面が広いわけではない。
 とはいえクリアまでの手数が長かったりゼリーや黒ブロックの数が多い面ではかなり時間がかかってしまうので対策が必要。</p>
-<h3 id="A＊を適用する"><a href="#A＊を適用する" class="headerlink" title="A＊を適用する"></a>A＊を適用する</h3><p>対策として<strong>A＊</strong>を適用してみることにした。
+<h3 id="A＊を適用する"><a href="#A＊を適用する" class="headerlink" title="A＊を適用する"></a>A＊を適用する</h3><p>対策として<strong>A＊<strong>を適用してみることにした。
 A＊は迷路探索やゲーム内の敵がプレイヤーを追うときとかによく使われて、目的位置がなんとなくわかる場合に使える。
 局面を探索する順を単なるBFS・キューに積んだ順ではなく、目的地に近いと思われる局面を優先的に探索する。
-これまでの距離とゴールまでの<strong>残り推定距離</strong>を加えたものが小さい局面を優先して探索することで、早期に発見できるものと期待できる。</p>
+これまでの距離とゴールまでの</strong>残り推定距離</strong>を加えたものが小さい局面を優先して探索することで、早期に発見できるものと期待できる。</p>
 <p>A＊の注意点としては残りの推定距離は<strong>実際のゴールまでの距離かそれ未満</strong>にする必要がある。
 理由は実際より長い距離になる場合があると最初に見つかった解が最短経路とはならない可能性があるため。</p>
 <p>ゼリーのパズルでいえば各色のゼリーがすべてくっついた状態がステージクリアなので、その状態に近づく手が優先されるようにすればいいんじゃないかということで、
@@ -345,7 +353,7 @@ RubyのGCはインクリメンタルGCを使ってると思うが、インスタ
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li><li class="recent_post"><a href="/blog/2025/03/01/ssa-intro.html">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li><li class="recent_post"><a href="/blog/2025/03/08/macho-exe.html">Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</a></li></ul>
                 </div>
             </div>
 
