@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
+これを明示的に光源計算することで改善できる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="パストレーサーで直接光計算（重点的サンプリング、合成pdf）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>パストレーサーで直接光計算（重点的サンプリング、合成pdf） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>パストレーサーで直接光計算（重点的サンプリング、合成pdf）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-07-24
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/graphics/">#graphics</a> <a href="/tags/probability/">#probability</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
+これを明示的に光源計算することで改善できる。</p>
+<span id="more"></span>
+
+<h2 id="smallpt-explicitを見てみる"><a href="#smallpt-explicitを見てみる" class="headerlink" title="smallpt_explicitを見てみる"></a>smallpt_explicitを見てみる</h2><p><a href="https://www.kevinbeason.com/smallpt/">smallpt</a>という簡潔でソースが公開されているパストレーサーがある。
+同ページにその改善としてexplicit.cppで明示的に光源をサンプルするコードが公開されているので、どうやっているのか見てみた。
+明示的な光源計算の計算部分：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">Vec <span class="title">radiance</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">int</span> depth, <span class="type">unsigned</span> <span class="type">short</span> *Xi,<span class="type">int</span> E=<span class="number">1</span>)</span></span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// 拡散反射面の箇所</span></span><br><span class="line">    <span class="comment">// Loop over any lights</span></span><br><span class="line">    Vec e;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;numSpheres; i++)&#123;</span><br><span class="line">      <span class="type">const</span> Sphere &amp;s = spheres[i];</span><br><span class="line">      <span class="keyword">if</span> (s.e.x&lt;=<span class="number">0</span> &amp;&amp; s.e.y&lt;=<span class="number">0</span> &amp;&amp; s.e.z&lt;=<span class="number">0</span>) <span class="keyword">continue</span>; <span class="comment">// skip non-lights</span></span><br><span class="line"></span><br><span class="line">      Vec sw=s.p-x, su=((<span class="built_in">fabs</span>(sw.x)&gt;<span class="number">.1</span>?<span class="built_in">Vec</span>(<span class="number">0</span>,<span class="number">1</span>):<span class="built_in">Vec</span>(<span class="number">1</span>))%sw).<span class="built_in">norm</span>(), sv=sw%su;</span><br><span class="line">      <span class="type">double</span> cos_a_max = <span class="built_in">sqrt</span>(<span class="number">1</span>-s.rad*s.rad/(x-s.p).<span class="built_in">dot</span>(x-s.p));</span><br><span class="line">      <span class="type">double</span> eps1 = <span class="built_in">erand48</span>(Xi), eps2 = <span class="built_in">erand48</span>(Xi);</span><br><span class="line">      <span class="type">double</span> cos_a = <span class="number">1</span>-eps1+eps1*cos_a_max;</span><br><span class="line">      <span class="type">double</span> sin_a = <span class="built_in">sqrt</span>(<span class="number">1</span>-cos_a*cos_a);</span><br><span class="line">      <span class="type">double</span> phi = <span class="number">2</span>*M_PI*eps2;</span><br><span class="line">      Vec l = su*<span class="built_in">cos</span>(phi)*sin_a + sv*<span class="built_in">sin</span>(phi)*sin_a + sw*cos_a;</span><br><span class="line">      l.<span class="built_in">norm</span>();</span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">intersect</span>(<span class="built_in">Ray</span>(x,l), t, id) &amp;&amp; id==i)&#123;  <span class="comment">// shadow ray</span></span><br><span class="line">        <span class="type">double</span> omega = <span class="number">2</span>*M_PI*(<span class="number">1</span>-cos_a_max);</span><br><span class="line">        e = e + f.<span class="built_in">mult</span>(s.e*l.<span class="built_in">dot</span>(nl)*omega)*M_1_PI;  <span class="comment">// 1/pi for brdf</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> obj.e*E+e+f.<span class="built_in">mult</span>(<span class="built_in">radiance</span>(<span class="built_in">Ray</span>(x,d),depth,Xi,<span class="number">0</span>));</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>smallptで扱える形状は球のみで、光源も球という前提</li>
+<li>交点<code>x</code>から光源を見ると必ず円形になるが、その方向をランダムに選ぶ</li>
+<li>レイを飛ばして（シャドウレイ）遮るものがなければ光源の影響を加える</li>
+<li>光源の影響は、<code>f * M_1_PI</code>がBRDF（拡散反射面なので）、<code>l.dot(nl)</code>が法線との向きによる影響度、<code>omega</code>が光源が占める立体角</li>
+</ul>
+<p>合計した直接光の影響<code>e</code>を加え、<code>radiance</code>の再帰呼び出しで間接光を計算する。</p>
+<h4 id="影響の重複の除外法"><a href="#影響の重複の除外法" class="headerlink" title="影響の重複の除外法"></a>影響の重複の除外法</h4><p><code>radiance</code>の再帰呼び出しでは元々の動作と同様にランダム方向にトレースを続ける。
+光源の影響は明示的に付加しているので、ランダムに選んだ方向が再度光源方向を調べてしまうと重複してしまう。</p>
+<p>どうやって除外してるかというと、<code>radiance</code>の最後の引数<code>E</code>に<code>0</code>を渡して自己発光<code>obj.e</code>と乗算することで直後の光源の影響が重複しないようにしている。</p>
+<h2 id="光源を球以外の形状にしたい場合（矩形）"><a href="#光源を球以外の形状にしたい場合（矩形）" class="headerlink" title="光源を球以外の形状にしたい場合（矩形）"></a>光源を球以外の形状にしたい場合（矩形）</h2><p>上記では光源の形状が球という前提が必要になる。
+これをもっと違う形状にしたい場合にどうするか。</p>
+<p><a href="https://github.com/mebiusbox/docs/blob/master/Rust%E3%81%A7%E3%81%AF%E3%81%98%E3%82%81%E3%82%8B%E3%83%AC%E3%82%A4%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%B3%E3%82%B0%E5%85%A5%E9%96%80.pdf">Rustではじめるレイトレーシング入門.pdf</a>という解説書の第４章「モンテカルロレイトレーシング」に書かれていた。
+この解説書は<a href="https://raytracing.github.io/">Ray Tracing in One Weekend</a>を元にしているらしく、
+特に第４章は<a href="https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html"><em>Ray Tracing: The Rest of Your Life</em></a>をなぞっている。</p>
+<p>どちらもちゃんと説明が書かれているのだが、モンテカルロ積分とか数学にあまりなじんでないこともありそのままでは理解が難しかった。
+自分なりの解釈を書き出してみる。</p>
+<h3 id="重点的サンプリング-Importance-Sampling"><a href="#重点的サンプリング-Importance-Sampling" class="headerlink" title="重点的サンプリング (Importance Sampling)"></a>重点的サンプリング (Importance Sampling)</h3><p>モンテカルロ積分で区間内を一様にサンプルするのではなく、<strong>確率密度</strong>に基づいてサンプルしてやることでノイズ（分散）が減らせる。
+ていうことでこれまでもパストレの物体表面での反射時に使用していて、「影響が大きい法線方向にサンプルを増やして細かく調べて、平行方向は影響小さいのでサンプルを減らす」という理解だった。</p>
+<p>ただそれは反射面特性としてランバートを仮定していて入射した光が所定の方向にどのくらい反射するかという特性が、面への入射角で光の影響が減衰するということと（たまたま？）打ち消しあうから、ということでしか使ったことなかったからかもしれない。
+実際には確率密度関数<code>pdf</code>で<strong>除算</strong>する、なので値が大きい＝サンプルとして選ばれる確率密度が高い候補は個々の結果としては影響が<strong>下げ</strong>られ、値が小さい＝選ばれる確率密度が低い候補は影響が<strong>上げ</strong>られることになる。</p>
+<p>どうも今まで逆の感覚だったがよく考えると実は道理で、パストレーサーでいえばナイーブに一様にサンプルする場合にたまたま光源にヒットする確率はとても小さいわけだけど、それを高頻度に取り上げるよう意図的に光源方向にサンプル方向を選んで影響を確実に考慮するのと引き換えに、頻度を持ち上げた分係数を下げてやることで辻褄を合わせることになる。
+その割合が<code>pdf</code>で除算するってんだからうまくできてるもんだねぇ。</p>
+<h3 id="光源の直接サンプリング"><a href="#光源の直接サンプリング" class="headerlink" title="光源の直接サンプリング"></a>光源の直接サンプリング</h3><p>smallpt_explicitでは光源は球という前提があったが、両著では矩形で扱っている。
+「矩形が投影された立体角を計算してそこからサンプル」というのは難しそうなのでどうするかと思ったが、サンプルする点を微小面と考えて計算する。
+光源上のランダムな点を一様に選び、その微小面がどのくらいの立体角に相当するかということから確率密度を計算する。</p>
+<p>具体的には</p>
+<script type="math/tex; mode=display">% <![CDATA[
+
+p(\omega) = \frac{distance^2(p, q)}{cos(\theta) \cdot A}
+%]]></script>
+
+<p>となる
+（<script type="math/tex">\omega</script>：サンプル方向（＝<script type="math/tex">p \rightarrow q</script>）、<script type="math/tex">p</script>：散乱の元の点、<script type="math/tex">q</script>：光源上のサンプル点、<script type="math/tex">\theta</script>：サンプル方向<script type="math/tex">\omega</script>と光源面法線の角度、<script type="math/tex">A</script>：光源の面積）。</p>
+<ul>
+<li>これがpdf・積分すると1.0になるというのは、領域の面積<script type="math/tex">A</script>を打ち消す<script type="math/tex">1/A</script>、そして距離と向きの補正のヤコビアン、ということらしい（付録で数値的に確認）</li>
+</ul>
+<h3 id="合成PDF-Mixture-Densities"><a href="#合成PDF-Mixture-Densities" class="headerlink" title="合成PDF (Mixture Densities)"></a>合成PDF (Mixture Densities)</h3><p>smallpt_explicitでは直接光計算＋再帰トレースという具合に計算しているが、重複の除外が必要でちょっと扱いにくいのではないかと思う。
+のでpdfを合成する方法を使用する。</p>
+<p>pdfは区間の積分結果が1.0になるので、複数のpdfを重み付け和で合成すればそれもまたpdfになる。
+パストレーサーの例でいえば、ある確率qで光源サンプリング、残り1-qで反射面での反射特性でのサンプリングという具合に合成して、トレース方向を選択させることができる。</p>
+<p>選んだサンプル方向に対して合成したpdfのそれぞれにおいて、逆にそのサンプル点が選ばれる確率密度を計算してやる。
+そしてそれらを混ぜ合わせた線形の比率で再度合計する。
+例えばサンプルした方向が光源に向かわない場合には、光源サンプリング側のpdfで選ばれた確率密度は0となる。
+逆に光源に向かう方向の場合には、光源サンプリングと表面反射サンプリングのどちらからも選ばれた可能性があり、確率密度は線形合成されて高くなる。</p>
+<h2 id="smallptに組み込んでみる"><a href="#smallptに組み込んでみる" class="headerlink" title="smallptに組み込んでみる"></a>smallptに組み込んでみる</h2><p>両著とも上記のほかにPDFをクラス化したりマテリアル側に散乱のpdfをメソッド化したりしてとてつもなくうまく構造化する。
+が初学者の自分にとってはあちこち処理を追ったり計算の値を確認するのが混乱してしまい、動作を理解するには難しかった。
+そこでsmallpt（explicitじゃない元の）に、ベタに組み込んでみることにした。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">  Vec p, a1, a2, n; <span class="type">double</span> area;</span><br><span class="line">  Vec e, c;         <span class="comment">// emission, color</span></span><br><span class="line">  <span class="built_in">Rectangle</span>(<span class="type">const</span> Vec&amp; p_, <span class="type">const</span> Vec&amp; a1_, <span class="type">const</span> Vec&amp; a2_, <span class="type">const</span> Vec&amp; e_, <span class="type">const</span> Vec&amp; c_)</span><br><span class="line">    : <span class="built_in">p</span>(p_), <span class="built_in">a1</span>(a1_), <span class="built_in">a2</span>(a2_), <span class="built_in">e</span>(e_), <span class="built_in">c</span>(c_) &#123;</span><br><span class="line">    n = a1 % a2; area = n.<span class="built_in">length</span>(); n = n * (<span class="number">1.0</span> / area);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="type">double</span> <span class="title">intersect</span><span class="params">(<span class="type">const</span> Ray &amp;ray)</span> <span class="type">const</span> </span>&#123; <span class="comment">// returns distance, 0 if nohit</span></span><br><span class="line">    <span class="type">const</span> <span class="type">double</span> eps=<span class="number">1e-4</span>;</span><br><span class="line">    Vec r = ray.o - p, alpha = ray.d % a2, beta = r % a1;</span><br><span class="line">    <span class="type">double</span> inv = <span class="number">1.0</span> / alpha.<span class="built_in">dot</span>(a1), t = beta.<span class="built_in">dot</span>(a2) * inv, u, v;  <span class="comment">// tはnanになり得る: 0.0 * inf = nan</span></span><br><span class="line">    <span class="keyword">if</span> (t &gt;= eps) &#123;</span><br><span class="line">      <span class="keyword">if</span> ((u = alpha.<span class="built_in">dot</span>(r) * inv) &gt;= <span class="number">0</span> &amp;&amp; u &lt;= <span class="number">1</span> &amp;&amp;</span><br><span class="line">          (v = beta.<span class="built_in">dot</span>(ray.d) * inv) &gt;= <span class="number">0</span> &amp;&amp; v &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> t; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> INFINITY;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function">Vec <span class="title">random_sample</span><span class="params">(<span class="type">unsigned</span> <span class="type">short</span> *Xi)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> 正方形じゃない場合の一様サンプル方法</span></span><br><span class="line">    <span class="type">double</span> r1 = <span class="built_in">erand48</span>(Xi), r2 = <span class="built_in">erand48</span>(Xi);</span><br><span class="line">    <span class="keyword">return</span> p + a1 * r1 + a2 * r2;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">light</span><span class="params">(Vec(<span class="number">50</span><span class="number">-16</span>,<span class="number">81.5</span>,<span class="number">81.6</span><span class="number">-16</span>), Vec(<span class="number">32</span>,<span class="number">0</span>,<span class="number">0</span>), Vec(<span class="number">0</span>,<span class="number">0</span>,<span class="number">32</span>), Vec(<span class="number">12</span>), Vec())</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Vec <span class="title">radiance</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">int</span> depth, <span class="type">unsigned</span> <span class="type">short</span> *Xi)</span></span>&#123;</span><br><span class="line">  <span class="type">double</span> t;                               <span class="comment">// distance to intersection</span></span><br><span class="line">  Vec x, n, f, e; Refl_t refl;</span><br><span class="line">  <span class="keyword">if</span> (<span class="type">int</span> id; <span class="built_in">intersect</span>(r, t, id)) &#123;</span><br><span class="line">    <span class="type">const</span> Sphere &amp;obj = spheres[id];        <span class="comment">// the hit object</span></span><br><span class="line">    x=r.o+r.d*t; n=(x-obj.p).<span class="built_in">norm</span>(); f=obj.c; e=obj.e; refl=obj.refl; &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="type">double</span> t2 = light.<span class="built_in">intersect</span>(r); t2 &lt; t) &#123;  <span class="comment">// 光源の交差判定を追加</span></span><br><span class="line">    t=t2; x=r.o+r.d*t; n=light.n; f=light.c; e=light.e; refl=DIFF; &#125;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">isfinite</span>(t)) <span class="keyword">return</span> <span class="built_in">Vec</span>(); <span class="comment">// if miss, return black</span></span><br><span class="line">  Vec nl=n; <span class="keyword">if</span> (n.<span class="built_in">dot</span>(r.d)&gt;=<span class="number">0</span>) &#123;nl=n*<span class="number">-1</span>; e=<span class="built_in">Vec</span>(<span class="number">0</span>);&#125;</span><br><span class="line">  <span class="type">double</span> p = f.x&gt;f.y &amp;&amp; f.x&gt;f.z ? f.x : f.y&gt;f.z ? f.y : f.z; <span class="comment">// max refl</span></span><br><span class="line">  <span class="keyword">if</span> (++depth&gt;<span class="number">5</span>) &#123; <span class="keyword">if</span> (<span class="built_in">erand48</span>(Xi)&lt;p) f=f*(<span class="number">1</span>/p); <span class="keyword">else</span> <span class="keyword">return</span> e; &#125; <span class="comment">//R.R.</span></span><br><span class="line">  <span class="keyword">if</span> (refl == DIFF)&#123;                  <span class="comment">// Ideal DIFFUSE reflection</span></span><br><span class="line">    <span class="type">const</span> <span class="type">double</span> direct_prob = <span class="number">0.5</span>;  <span class="comment">// 直接光のパスを選ぶ確率</span></span><br><span class="line">    Vec nextdir;</span><br><span class="line">    <span class="comment">// サンプルする方向の選択</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">erand48</span>(Xi) &lt; direct_prob) &#123;  <span class="comment">// 光源上の点を一様サンプリングし、その方向を候補とする</span></span><br><span class="line">      Vec lp = light.<span class="built_in">random_sample</span>(Xi); nextdir = (lp - x).<span class="built_in">norm</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  <span class="comment">// 反射特性に従い、半球状をコサインに比例してサンプリング</span></span><br><span class="line">      <span class="type">double</span> r1=<span class="number">2</span>*M_PI*<span class="built_in">erand48</span>(Xi), r2=<span class="built_in">erand48</span>(Xi), r2s=<span class="built_in">sqrt</span>(r2);</span><br><span class="line">      Vec w=nl, u=((<span class="built_in">fabs</span>(w.x)&gt;<span class="number">.1</span>?<span class="built_in">Vec</span>(<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>):<span class="built_in">Vec</span>(<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>))%w).<span class="built_in">norm</span>(), v=w%u;</span><br><span class="line">      nextdir = (u*<span class="built_in">cos</span>(r1)*r2s + v*<span class="built_in">sin</span>(r1)*r2s + w*<span class="built_in">sqrt</span>(<span class="number">1</span>-r2)).<span class="built_in">norm</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">Ray <span class="title">nextray</span><span class="params">(x, nextdir)</span></span>;</span><br><span class="line">    <span class="comment">// 選んだ方向が「選ばれる確率密度」を逆算</span></span><br><span class="line">    <span class="type">double</span> pdf_light = <span class="number">0</span>;  <span class="comment">// 光源サンプルのpdf</span></span><br><span class="line">    <span class="type">double</span> pdf_brdf = <span class="number">0</span>;   <span class="comment">// 反射面のpdf</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="type">double</span> t3 = light.<span class="built_in">intersect</span>(nextray); t3 &lt; INFINITY) &#123;</span><br><span class="line">      <span class="type">double</span> distance_squared = t3 * t3;</span><br><span class="line">      <span class="type">double</span> cosine = <span class="built_in">fabs</span>(nextdir.<span class="built_in">dot</span>(light.n));</span><br><span class="line">      pdf_light = distance_squared / (cosine * light.area);</span><br><span class="line">    &#125;</span><br><span class="line">    pdf_brdf = <span class="built_in">fmax</span>(nextdir.<span class="built_in">dot</span>(nl), <span class="number">0.0</span>) * M_1_PI;</span><br><span class="line">    <span class="type">double</span> pdf_value = direct_prob * pdf_light + (<span class="number">1</span> - direct_prob) * pdf_brdf;  <span class="comment">// 合成pdf</span></span><br><span class="line">    <span class="keyword">if</span> (pdf_value &lt;= <span class="number">0.0</span>)  <span class="keyword">return</span> e;</span><br><span class="line">    <span class="type">double</span> scattering_pdf = <span class="built_in">fmax</span>(nextdir.<span class="built_in">dot</span>(nl), <span class="number">0.0</span>) * M_1_PI;</span><br><span class="line">    <span class="keyword">return</span> e + f.<span class="built_in">mult</span>(<span class="built_in">radiance</span>(nextray, depth, Xi)) * (scattering_pdf / pdf_value);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 以降、鏡面反射と透過材質の処理（元ソースに合流）</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>矩形の光源を表現できるよう<code>Rectangle</code>クラスを追加し、<code>light</code>グローバル変数に保持</li>
+<li>シーンに存在する球配列<code>spheres</code>とは別に交差判定を呼び出す</li>
+<li>拡散反射面だったら合成pdfでトレース方向を選択</li>
+<li>確率密度関数から寄与度を算出</li>
+<li>ベクトル<code>Vec</code>クラスに<code>length</code>メソッドを追加する必要あり</li>
+</ul>
+<h4 id="出力画像比較"><a href="#出力画像比較" class="headerlink" title="出力画像比較"></a>出力画像比較</h4><script src="https://unpkg.com/image-compare-viewer/dist/image-compare-viewer.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/image-compare-viewer/dist/image-compare-viewer.min.css" />
+
+<div id="image-compare">
+  <img src="/assets/pt-direct-lighting/image-pt1000.webp" style="image-rendering:pixelated" alt="" />
+  <img src="/assets/pt-direct-lighting/image-dl1000.webp" style="image-rendering:pixelated; height:100%; max-width:none !important" alt="" />
+</div>
+
+<script>
+  const element = document.getElementById("image-compare")
+  const options = {
+    smoothing: false,
+    preventScroll: true,
+    handleSize: 40,
+  }
+  const viewer = new ImageCompare(element, options).mount()
+</script>
+
+<p>左：元のsmallpt方式（cos重点的サンプリング）、右：光源サンプリングとcos重点サンプリングの半々
+　それぞれ1000spp（サンプル&#x2F;ピクセル）</p>
+<ul>
+<li>床など全体的なノイズは減っているが、明るいドットが目立ってしまう（ファイアフライノイズ）<ul>
+<li>半々じゃなく間接光をサンプルする割合を増やせば、ドットを減らせる</li>
+</ul>
+</li>
+<li>より光源が小さければさらに効果は高い</li>
+<li>同じsppだけど実行時間はナイーブなパストレのほうが1.8倍ほど時間がかかった
+（光源のアルベドが0.0なのでロシアンルーレットで打ち切られる確率が高まるからっぽい）</li>
+</ul>
+<h2 id="考察・あれこれ"><a href="#考察・あれこれ" class="headerlink" title="考察・あれこれ"></a>考察・あれこれ</h2><ul>
+<li>「光源が重要」、といっても合成のウェイトをむやみに高くすればいいわけではない<ul>
+<li>直接光の影響は数回のサンプリングで収束してしまうので、そんなに高頻度でサンプルしたところで内容は深まらない</li>
+<li>逆に広い範囲から影響のある間接光のサンプル数が減ってしまい、ピクセルあたりのサンプル数を増やしても無駄撃ちになってしまう<ul>
+<li>マルチインポータンスサンプリング・バランスヒューリスティックでウェイトを調整？</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>光源をサンプリングすることを”Next Event Estimation”というらしい、
+それは意味がわかりづらくない？</li>
+<li>実際のところ太陽には使えるが、電球とか窓ガラスとか屋内や人工物のシーンでは事実上必ず光源の直接サンプリングには失敗するのでそのままでは使い所が難しいかも<ul>
+<li>ライトトレーシング、双方向パストレ？</li>
+</ul>
+</li>
+<li>光源と逆向きや隠れてる面などでは光源のサンプリングは無駄になってしまうので、シャドウレイ自体は使って有効な場合のみにした方がよいかも？</li>
+<li><code>Rectangle</code>の交差判定で距離<code>t</code>が<code>nan</code>になり得て（<code>0.0 * inf</code>が<code>nan</code>になる）、アーリーイグジットしてたらドツボにハマった、浮動小数点数で<code>nan</code>の可能性のある場合は条件を反転すると意味が変わる可能性がある！</li>
+<li>変数名：rayt_rustでは<code>pdf_value / spdf_value</code>となっているがRest ofでは<code>scattering_pdf / pdf_value</code>となっていて混乱する<ul>
+<li>rayt_rustの<code>pdf_value</code>もマテリアルの<code>scattering_pdf()</code>で計算してるしscatteringなんだろう、ということでRest ofの方に合わせてみた</li>
+</ul>
+</li>
+<li>モンテカルロ積分やら重点的サンプリングやら、考えた人も組み合わせた人も天才すぎるやろ…</li>
+<li><a href="https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html#playingwithimportancesampling/usingauniformpdfinsteadofaperfectmatch">6.2. Using a Uniform PDF Instead of a Perfect Match</a>で「pdfだけいじって反射方向のサンプリング方法はそのままでも同じ結果に収束する(6.3.)」ってホントに？
+これがサンプルを選ぶ確率とマッチしてる必要があるんじゃないの？</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.kevinbeason.com/smallpt/">smallpt</a> explicit</li>
+<li><a href="https://github.com/mebiusbox/docs/blob/master/Rust%E3%81%A7%E3%81%AF%E3%81%98%E3%82%81%E3%82%8B%E3%83%AC%E3%82%A4%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%B3%E3%82%B0%E5%85%A5%E9%96%80.pdf">Rustではじめるレイトレーシング入門.pdf</a><ul>
+<li>リポジトリ：<a href="https://github.com/mebiusbox/rayt_rust">mebiusbox&#x2F;rayt_rust</a></li>
+</ul>
+</li>
+<li><a href="https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html"><em>Ray Tracing: The Rest of Your Life</em></a></li>
+</ul>
+<h4 id="他リンク"><a href="#他リンク" class="headerlink" title="他リンク"></a>他リンク</h4><ul>
+<li><a href="https://rayspace.xyz/CG/contents/path_tracing/">パストレーシング - Computer Graphics - memoRANDOM</a> Next Event Estimationの記述あり<ul>
+<li>合成PDFじゃなくて直接サンプリングの寄与を加えるっぽい？</li>
+<li>光源の影響の重複をどう除外しているのかはわからなかった…</li>
+</ul>
+</li>
+<li><a href="https://kinakomoti321.hatenablog.com/entry/2021/12/23/035027">NEEとMISの実装 (NEE編) - MochiMochi3D</a><ul>
+<li>ランダム方向で光源に達した場合には寄与を与えないことで重複を除外</li>
+</ul>
+</li>
+</ul>
+<h2 id="付録"><a href="#付録" class="headerlink" title="付録"></a>付録</h2><h4 id="smallpt-explitの不具合"><a href="#smallpt-explitの不具合" class="headerlink" title="smallpt-explitの不具合"></a>smallpt-explitの不具合</h4><p>explicitでは素のsmallptと違って光源が小さく中空に浮かぶようになっている。
+これは直接光の計算するにはそうする必要があるんだろうかと疑問だったが、これだと天井も明るくなってしまいあまり見た目がよろしくないので元のsmallptと同じシーン配置にしたかった。</p>
+<p>しかし結果がおかしく、ほぼ真っ暗になってしまう。
+ちゃんとシャドウレイで光源から届くかどうかチェックしてるから動きそうなもんだけど、と原因を調べた：</p>
+<ul>
+<li>面が裏向きでも直接光の計算が加えられてしまっている</li>
+<li>光源サンプリング用の直交基底が正規化されてないため偏りが生じる</li>
+</ul>
+<p>上記を修正したところ、元のシーンでも直接光を計算した場合にもナイーブなパストレと同じ結果になった
+（光源サンプリングの大半は失敗するので効果は薄いが）。
+ソースの差分：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line"><span class="meta">@@ -66,7 +66,7 @@</span></span><br><span class="line">       const Sphere &amp;s = spheres[i];</span><br><span class="line">       if (s.e.x&lt;=0 &amp;&amp; s.e.y&lt;=0 &amp;&amp; s.e.z&lt;=0) continue; // skip non-lights</span><br><span class="line"></span><br><span class="line"><span class="deletion">-      Vec sw=s.p-x, su=((fabs(sw.x)&gt;.1?Vec(0,1):Vec(1))%sw).norm(), sv=sw%su;</span></span><br><span class="line"><span class="addition">+      Vec sw=(s.p-x).norm(), su=((fabs(sw.x)&gt;.1?Vec(0,1):Vec(1))%sw).norm(), sv=sw%su;</span></span><br><span class="line">       double cos_a_max = sqrt(1-s.rad*s.rad/(x-s.p).dot(x-s.p));</span><br><span class="line">       double eps1 = erand48(Xi), eps2 = erand48(Xi);</span><br><span class="line">       double cos_a = 1-eps1+eps1*cos_a_max;</span><br><span class="line"><span class="meta">@@ -74,7 +74,7 @@</span></span><br><span class="line">       double phi = 2*M_PI*eps2;</span><br><span class="line">       Vec l = su*cos(phi)*sin_a + sv*sin(phi)*sin_a + sw*cos_a;</span><br><span class="line">       l.norm();</span><br><span class="line"><span class="deletion">-      if (intersect(Ray(x,l), t, id) &amp;&amp; id==i)&#123;  // shadow ray</span></span><br><span class="line"><span class="addition">+      if (l.dot(nl)&gt;0 &amp;&amp; intersect(Ray(x,l), t, id) &amp;&amp; id==i)&#123;  // shadow ray</span></span><br><span class="line">         double omega = 2*M_PI*(1-cos_a_max);</span><br><span class="line">         e = e + f.mult(s.e*l.dot(nl)*omega)*M_1_PI;  // 1/pi for brdf</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="直接光のサンプル確率がpdfになっていることの確認"><a href="#直接光のサンプル確率がpdfになっていることの確認" class="headerlink" title="直接光のサンプル確率がpdfになっていることの確認"></a>直接光のサンプル確率がpdfになっていることの確認</h4><p>光源をサンプルする際のpdfというのが実際に積分すると1.0になっているのか理解できなかったので、モンテカルロ積分で確認してみた。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Rectangle, lightなどは上のソースから</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">double</span> <span class="title">random</span><span class="params">(<span class="type">double</span> min, <span class="type">double</span> max)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (<span class="built_in">rand</span>() * (max - min) / (RAND_MAX + <span class="number">1.0</span>)) + min;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Vec <span class="title">random_in_unit_sphere</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    <span class="function">Vec <span class="title">point</span><span class="params">(random(<span class="number">-1.0</span>, <span class="number">+1.0</span>), random(<span class="number">-1.0</span>, <span class="number">+1.0</span>), random(<span class="number">-1.0</span>, <span class="number">+1.0</span>))</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (point.<span class="built_in">squareLength</span>() &lt; <span class="number">1.0</span>)</span><br><span class="line">      <span class="keyword">return</span> point;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Vec <span class="title">random_unit_vector</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">random_in_unit_sphere</span>().<span class="built_in">norm</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="built_in">srand</span>(<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line">  <span class="built_in">rand</span>();</span><br><span class="line">  <span class="function">Vec <span class="title">x</span><span class="params">(random(<span class="number">1.0</span>, <span class="number">99.0</span>), random(<span class="number">0.0</span>, <span class="number">80</span>), random(<span class="number">1.0</span>, <span class="number">99.0</span>))</span></span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;x(%.2f, %.2f, %.2f), light.area=%g\n&quot;</span>, x.x, x.y, x.z, light.area);</span><br><span class="line"></span><br><span class="line">  <span class="type">const</span> <span class="type">long</span> N = <span class="number">100000000</span>;</span><br><span class="line">  <span class="type">double</span> sum = <span class="number">0</span>;</span><br><span class="line">  <span class="type">int</span> n = <span class="number">1</span>;</span><br><span class="line">  <span class="function">Vec <span class="title">nl</span><span class="params">(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">long</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">    Vec nextdir = <span class="built_in">random_unit_vector</span>();</span><br><span class="line">    <span class="keyword">if</span> (nl.<span class="built_in">dot</span>(nextdir) &lt;= <span class="number">0</span>)</span><br><span class="line">      nextdir = nextdir * <span class="number">-1</span>;</span><br><span class="line">    <span class="type">double</span> pdf_value = <span class="number">1.0</span> / (<span class="number">2</span> * M_PI);</span><br><span class="line"></span><br><span class="line">    <span class="function">Ray <span class="title">nextray</span><span class="params">(x, nextdir)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="type">double</span> t3 = light.<span class="built_in">intersect</span>(nextray); t3 &lt; INFINITY) &#123;</span><br><span class="line">      <span class="type">double</span> distance_squared = t3 * t3;</span><br><span class="line">      <span class="type">double</span> cosine = <span class="built_in">fabs</span>(nextdir.<span class="built_in">dot</span>(light.n));</span><br><span class="line">      <span class="type">double</span> pdf_light = distance_squared / (cosine * light.area);</span><br><span class="line">      sum += pdf_light / pdf_value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((i + <span class="number">1</span>) == n) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;%10ld: result: %g\n&quot;</span>, i<span class="number">+1</span>, sum / n);</span><br><span class="line">      n *= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">前：【Hexo】ギャラリープラグインを作ってみた<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li><li class="recent_post"><a href="/blog/2025/03/13/vite-build-tool.html">Viteに移行してみたら開発環境が快適になった</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

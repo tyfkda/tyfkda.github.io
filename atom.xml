@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-07-09T02:39:54.166Z</updated>
+  <updated>2025-07-24T03:53:32.937Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>パストレーサーで直接光計算（重点的サンプリング、合成pdf）</title>
+    <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
+    <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
+    <published>2025-07-24T03:00:00.000Z</published>
+    <updated>2025-07-24T03:53:32.937Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
+これを明示的に光源計算することで改善できる。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
+    
+    <category term="probability" scheme="https://tyfkda.github.io/tags/probability/"/>
+    
+  </entry>
   
   <entry>
     <title>【Hexo】ギャラリープラグインを作ってみた</title>
@@ -221,27 +241,6 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     
     
     <category term="webgpu" scheme="https://tyfkda.github.io/tags/webgpu/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>スーパーマリオの強化学習を動かす（Stable Baselines 3）</title>
-    <link href="https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html"/>
-    <id>https://tyfkda.github.io/blog/2024/08/07/smb-rl-sb3.html</id>
-    <published>2024-08-07T03:00:00.000Z</published>
-    <updated>2025-07-09T02:39:54.177Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;PyTorchのチュートリアルにファミコンのスーパーマリオを使った強化学習があってずっと昔に試した時にはGoogle Colab上で動かせたはずなんだけど、
-今ではライブラリのインストールで競合してバージョンの不整合でエラーが出たりして動かせない。
-なんとか動かしたかったのでローカルで起動できるようやってみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
-    
-    <category term="reinforcement learning" scheme="https://tyfkda.github.io/tags/reinforcement-learning/"/>
     
   </entry>
   
