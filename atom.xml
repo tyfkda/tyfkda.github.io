@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-07-24T23:51:59.392Z</updated>
+  <updated>2025-09-01T10:08:58.522Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,15 +17,35 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Count Leading Zerosその他ビルトイン関数の実装</title>
+    <link href="https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html"/>
+    <id>https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html</id>
+    <published>2025-09-01T10:00:00.000Z</published>
+    <updated>2025-09-01T10:08:58.522Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;コンパイラの主要なトピックでは全然ないけど、余興として自作Cコンパイラにビルトイン関数として&lt;code&gt;clz&lt;/code&gt;と&lt;code&gt;ctz&lt;/code&gt;と&lt;code&gt;popcount&lt;/code&gt;を実装した顛末。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
+    
+  </entry>
+  
+  <entry>
     <title>パストレーサーで直接光計算（重点的サンプリング、合成pdf）</title>
     <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
     <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2025-07-24T23:51:59.392Z</updated>
+    <updated>2025-08-26T07:11:29.270Z</updated>
     
     
     <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
-これを明示的に光源計算することで改善できる。&lt;/p&gt;</summary>
+これを明示的に光源計算することで改善できる。&lt;/p&gt;
+&lt;div style=&quot;text-align:center&quot;&gt;
+&lt;img src=&quot;/assets/pt-direct-lighting-dl1000.webp&quot; style=&quot;width:80%&quot; /&gt;
+&lt;/div&gt;</summary>
     
     
     
@@ -212,7 +232,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html"/>
     <id>https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html</id>
     <published>2025-01-13T10:00:00.000Z</published>
-    <updated>2025-07-06T06:03:33.587Z</updated>
+    <updated>2025-09-01T10:08:49.314Z</updated>
     
     
     <summary type="html">&lt;p&gt;「&lt;strong&gt;ゼリーのパズル&lt;/strong&gt;」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
@@ -224,23 +244,6 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
     
     <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【WebGPU】floatテクスチャにフィルタを使用したい場合</title>
-    <link href="https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html"/>
-    <id>https://tyfkda.github.io/blog/2024/12/11/webgpu-f32tex-filter.html</id>
-    <published>2024-12-11T13:00:00.000Z</published>
-    <updated>2025-07-06T06:03:33.651Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2023/10/10/webgpu-reaction-diffusion.html&quot; title=&quot;WebGPUで反応拡散系&quot;&gt;WebGPUで反応拡散系&lt;/a&gt;を動かした時にテクスチャのサンプルにフィルタが使えなかった理由がわかった。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="webgpu" scheme="https://tyfkda.github.io/tags/webgpu/"/>
     
   </entry>
   

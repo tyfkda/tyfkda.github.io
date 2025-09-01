@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="コンパイラの主要なトピックでは全然ないけど、余興として自作Cコンパイラにビルトイン関数としてclzとctzとpopcountを実装した顛末。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Count Leading Zerosその他ビルトイン関数の実装"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Count Leading Zerosその他ビルトイン関数の実装 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Count Leading Zerosその他ビルトイン関数の実装</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-09-01
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/compiler/">#compiler</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>コンパイラの主要なトピックでは全然ないけど、余興として自作Cコンパイラにビルトイン関数として<code>clz</code>と<code>ctz</code>と<code>popcount</code>を実装した顛末。</p>
+<span id="more"></span>
+
+<h2 id="builtin-clzなどの説明"><a href="#builtin-clzなどの説明" class="headerlink" title="__builtin_clzなどの説明"></a>__builtin_clzなどの説明</h2><p><code>__builtin_clz</code>という、上位ビットから0が何個連続しているかを得るコンパイラのビルトイン関数が用意されている。
+これを使うと最上位ビットの位置がわかり、例えば２のべき乗のシフト数を得ることができる。</p>
+<p>他にも関係するビルトイン関数として、</p>
+<ul>
+<li><code>__builtin_ctz</code>: 下位ビットからの0の個数 (Count Trailing Zeros)</li>
+<li><code>__builtin_popcount</code>: ビットが1の個数 (Population Count)</li>
+</ul>
+<p>などのビルトイン関数がある。
+なぜ標準のライブラリ関数ではなくてビルトイン関数なのかというのは謎だが、プロセッサによっては専用の命令が用意されていて１命令で実行できるため関数呼び出しのコストを削るためなのかもしれない。</p>
+<p>これらをどういう用途に使うのか、各プロセッサの専用命令として実装されるほど速度的に必須なのかは把握してないが、パリティを取ったりいろいろ用途があるんでしょう。</p>
+<h2 id="実装方法"><a href="#実装方法" class="headerlink" title="実装方法"></a>実装方法</h2><p>自作のCコンパイラにビルトイン関数自体は以前から実装していて、<code>alloca</code>などのコンパイル時の情報も利用する必要がある要素に使用していた。
+構文としては普通の関数呼び出しと同じで、関数が規定の識別子の場合にはそれぞれに対応するコード生成を行うという仕組みとして実装していた。</p>
+<p>ただ今まではコンパイル時に対応できるものだけで、<code>__builtin_clz</code>などのように実行時に特別な命令が必要なビルトイン関数は作ったことがなかった。
+コード生成では中間表現(Intermediate Representation, IR)を生成するが、IRは普通のC言語で使う範囲の一般的な命令セットしか用意してないので、プロセッサごとの専門の命令には対応してない。</p>
+<p>なのでどう実装するか、IRの命令に特殊処理を追加するかとも考えたが、<strong>インラインアセンブラ</strong>で対応することにした。</p>
+<h3 id="インラインアセンブラ"><a href="#インラインアセンブラ" class="headerlink" title="インラインアセンブラ"></a>インラインアセンブラ</h3><p>インラインアセンブラはC言語のソース中にアセンブリを埋め込める機能で、C言語では対応しきれない処理やプロセッサ依存のコードを書くことができる。
+自作のCコンパイラで使用するライブラリでシステムコールを実装する必要があったため、簡易的なものは扱えるようにしていた。
+これを<code>clz</code>などを使えるようにするために、gccの書式に合わせて拡張する。</p>
+<p>gccでのインラインアセンブラの書式は、
+<code>__asm(&quot;アセンブリコードテンプレート&quot; : 出力変数指定 : 入力変数指定 : 破壊レジスタ指定)</code>
+となっている。
+細かくは、</p>
+<ul>
+<li>出力や入力に与えた変数はテンプレート中で<code>%0</code>などとして参照できて、C言語の変数とやりとりできる</li>
+<li>出力や入力はカンマ区切りで複数指定でき、出力<code>&quot;=r&quot;(result)</code>、入力<code>&quot;ri&quot;(x)</code>などといった形で指定</li>
+</ul>
+<p>そうした上で、プロセッサごとの定義済みマクロに応じてインラインアセンブラのコードを切り替えてやる。</p>
+<h4 id="変数を必ずレジスタに配置するためのハック"><a href="#変数を必ずレジスタに配置するためのハック" class="headerlink" title="変数を必ずレジスタに配置するためのハック"></a>変数を必ずレジスタに配置するためのハック</h4><p>テンプレートから<code>%0</code>などとC言語の値を参照する場合に、場合によっては問題になる。
+変数を与えれば普通はプロセッサのレジスタが割り当てられるが、最適化の定数伝播で定数に置き換えられる可能性がある。
+gccなどではその辺も対処しているのかもしれないが自作コンパイラでは単に置き換えるだけなので、レジスタの場合や即値の場合でアセンブリを変えないといけなかったりすると問題になる。</p>
+<p>その変数には定数伝播を無効にするために<code>volatile</code>を使用することも考えたが、「<code>volatile</code>を指定した変数は<code>setjmp</code>以降の変更が保持される」という仕様があるので、<code>volatile</code>変数はメモリ上に配置する必要があり、レジスタではなくなってしまうので無駄だし扱いが面倒になる。</p>
+<p>まともに対処するのは難しいのでどうするか。
+ハックとして<code>volatile register</code>と指定した変数はレジスタに配置した上で、定数伝播は無効にする、という独自ルールにした。
+そうすることで必ずレジスタとなり、意図するアセンブリに埋め込むことができるようになる。</p>
+<h2 id="CPUごとのclz-ctz実装方法"><a href="#CPUごとのclz-ctz実装方法" class="headerlink" title="CPUごとのclz, ctz実装方法"></a>CPUごとのclz, ctz実装方法</h2><h3 id="x86-64"><a href="#x86-64" class="headerlink" title="x86-64"></a>x86-64</h3><ul>
+<li><code>clz</code>: <code>lzcnt</code>命令<ul>
+<li>gccでコンパイルしたら<code>bsr</code>(Bit Scan Reverse)命令を使ったコードが生成されたが<code>lzcnt</code>も使える模様、
+<code>bsr</code>で得られる値は最上位ビットのビット位置なので、<code>clz</code>的にはビット幅-1から引く必要がある</li>
+</ul>
+</li>
+<li><code>ctz</code>: <code>tzcnt</code>(Trailing Zero Count)命令</li>
+<li><code>popcount</code>: <code>popcnt</code>命令</li>
+</ul>
+<h3 id="aarch64"><a href="#aarch64" class="headerlink" title="aarch64"></a>aarch64</h3><ul>
+<li><code>clz</code>: <code>clz</code>命令</li>
+<li><code>ctz</code>: <code>rbit</code>命令でビット列を反転し、<code>clz</code>を使う</li>
+<li><code>popcount</code>: <code>cnt.8b</code></li>
+</ul>
+<p><code>cnt.8b</code>はaarch64の汎用レジスタに対する命令ではなく、VFPというベクタ・浮動小数点演算命令のようで、汎用レジスタからコピーしたり戻したりする必要があるようだったので今回は未対応。</p>
+<h3 id="RISC-V64"><a href="#RISC-V64" class="headerlink" title="RISC-V64"></a>RISC-V64</h3><ul>
+<li><code>clz</code>, <code>ctz</code>, <code>cpop</code>命令</li>
+</ul>
+<p>上記の命令はRISC-Vの通常の命令セットには含まれず、ビット操作拡張命令セット(<a href="https://msyksphinz-self.github.io/riscv-bitmanip.github.io/index.html#zbb-basic-bit-manipulation">ZBB</a>)が必要になる。</p>
+<h4 id="zbb拡張の指定"><a href="#zbb拡張の指定" class="headerlink" title="zbb拡張の指定"></a>zbb拡張の指定</h4><p>自作コンパイラではなく既存のクロスコンパイラでのコンパイルを確認する際、これらの命令を使うようにするには<code>-march</code>で指定する必要がある：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ riscv64-unknown-elf-gcc -march=rv64gc_zbb clztest.c</span><br></pre></td></tr></table></figure>
+
+<p>指定しない場合には<code>clz</code>命令を使わずに汎用的な処理で求めるライブラリ関数呼び出しにフォールバックされる。</p>
+<p><code>zbb</code>を指定した場合、出力されるELFオブジェクトファイルの<code>.riscv.attributes</code>セクションに拡張を表す指定（<code>zbb1p0</code>）が追加される。
+この指定があることで<code>objdump</code>した時にビット拡張命令が逆アセンブルされる
+（自作アセンブラからの出力時にこの指定をつけない状態だと<code>.insn xxxx</code>として、未対応命令のように逆アセンブルされる）。</p>
+<p>RISC-Vのシミュレータspikeで実行する場合にも<code>--isa=rv64gc_zbb</code>と指定する必要がある
+（<code>clz</code>などを使用したコードにISAを指定せず実行しようとするとイリーガル命令エラーが出る）。</p>
+<h3 id="WebAssembly"><a href="#WebAssembly" class="headerlink" title="WebAssembly"></a>WebAssembly</h3><ul>
+<li><code>i32.clz</code>, <code>i32.ctz</code>, <code>i32.popcnt</code>命令</li>
+<li><code>i64</code>もあり</li>
+</ul>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li>修正コミット：<ul>
+<li><a href="https://github.com/tyfkda/xcc/commit/7a23c2d7da91d75c88404437020ea2382a62ed0d">__asmでテンプレートを使えるようにする</a></li>
+<li><a href="https://github.com/tyfkda/xcc/commit/ea051afa1c9e1eb75e6c85ec9c212659292dc74a">__builtin_clzなどの実装</a></li>
+</ul>
+</li>
+<li>ビルトイン関数：<a href="https://gcc.gnu.org/onlinedocs/gcc/Bit-Operation-Builtins.html#index-_005f_005fbuiltin_005fclz">Bit Operation Builtins (Using the GNU Compiler Collection (GCC))</a> 0に対しては未定義なので注意</li>
+<li>インラインアセンブラ：<a href="https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html">Extended Asm (Using the GNU Compiler Collection (GCC))</a><ul>
+<li>出力：<code>&quot;=r&quot;(result)</code>の<code>&quot;=r&quot;</code>が制約で、レジスタに対する出力、となる</li>
+<li>入力：<code>&quot;ri&quot;</code>の制約で、レジスタまたは即値、となる</li>
+</ul>
+</li>
+<li>x86-64: <a href="https://www.felixcloutier.com/x86/lzcnt">LZCNT — Count the Number of Leading Zero Bits</a></li>
+<li>aarch64: <a href="https://developer.arm.com/documentation/ddi0596/2020-12/Base-Instructions/CLZ--Count-Leading-Zeros-">CLZ - Arm A64 Instruction Set Architecture</a></li>
+<li>RISC-V ZBB: <a href="https://msyksphinz-self.github.io/riscv-bitmanip.github.io/index.html#zbb-basic-bit-manipulation">RISC-V Bit-Manipulation ISA-extensions — bitmanip  documentation</a></li>
+<li>WebAssembly: <a href="https://developer.mozilla.org/en-US/docs/WebAssembly/Reference/Numeric/Count_leading_zeros">Count leading zeros</a></li>
+<li><code>setjmp</code>で<code>volatile</code>変数が保持される件: <a href="https://www.jpcert.or.jp/sc-rules/c-msc22-c.html">MSC22-C. setjmp()、longjmp() の機能を安全に使用する</a></li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2025/07/24/pt-direct-lighting.html">前：パストレーサーで直接光計算（重点的サンプリング、合成pdf）<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/08/25/backend-more-registers.html" title="コンパイラでもっとレジスタを活用するために行った対策" rel="bookmark">コンパイラでもっとレジスタを活用するために行った対策</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
