@@ -206,8 +206,8 @@
 <h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>M1MacはCPUがAppleシリコン・Armアーキテクチャとのことで、x86-64向けにコンパイルしたバイナリを動かすことができない
 （<a href="https://www.infoq.com/jp/news/2021/01/rosetta-2-translation/">Rosetta2</a>という謎技術があるが…）。
 そこでCコンパイラから出力するアセンブリにaarch64(Arm64)を追加することにした。</p>
-<a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす">WASM</a>のときはフロントエンド（パーサ）の共有だけにとどまったが、
-<p>aarch64向けには中間表現まで共有して、バックエンドを差し替える形にする。</p>
+<p>&nbsp;<a href="/blog/2021/02/04/c-on-browser.html" title="【WASM】Cコンパイラをブラウザ上で動かす">WASM</a>のときはフロントエンド（パーサ）の共有だけにとどまったが、
+aarch64向けには中間表現まで共有して、バックエンドを差し替える形にする。</p>
 <h3 id="アーキテクチャ判別"><a href="#アーキテクチャ判別" class="headerlink" title="アーキテクチャ判別"></a>アーキテクチャ判別</h3><p>aarch64かどうかでコンパイル対象とするソースを切り替えるために、Makefile内で判定する。
 configureとかautoconfなどはまったくわからないので、Makefileでゴリ押しする。</p>
 <p>シェルの <code>arch</code> コマンドでプロセッサのアーキテクチャが取得できるので、Makefileからシェル呼び出しの結果を判定：</p>

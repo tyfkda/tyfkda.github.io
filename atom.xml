@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-09-18T03:49:15.141Z</updated>
+  <updated>2025-10-20T04:16:59.066Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html"/>
     <id>https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html</id>
     <published>2025-09-01T10:00:00.000Z</published>
-    <updated>2025-09-18T03:49:15.141Z</updated>
+    <updated>2025-10-20T04:16:59.066Z</updated>
     
     
     <summary type="html">&lt;p&gt;コンパイラの主要なトピックでは全然ないけど、余興として自作Cコンパイラにビルトイン関数として&lt;code&gt;clz&lt;/code&gt;と&lt;code&gt;ctz&lt;/code&gt;と&lt;code&gt;popcount&lt;/code&gt;を実装した顛末。&lt;/p&gt;</summary>
@@ -38,7 +38,7 @@
     <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
     <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2025-09-02T09:10:54.145Z</updated>
+    <updated>2025-10-21T02:08:16.655Z</updated>
     
     
     <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
@@ -61,7 +61,7 @@
     <link href="https://tyfkda.github.io/blog/2025/07/08/hexo-gallery-plugin.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/08/hexo-gallery-plugin.html</id>
     <published>2025-07-08T12:00:00.000Z</published>
-    <updated>2025-07-09T02:39:54.166Z</updated>
+    <updated>2025-10-20T01:24:43.416Z</updated>
     
     
     <summary type="html">&lt;p&gt;今さらブログを書いたところで生成AIにパクられて検索に食われるだけなのでオワコン気味ではあるが、
@@ -98,7 +98,7 @@
     <link href="https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html"/>
     <id>https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html</id>
     <published>2025-06-06T12:00:00.000Z</published>
-    <updated>2025-09-18T03:49:31.909Z</updated>
+    <updated>2025-10-21T02:08:16.653Z</updated>
     
     
     <summary type="html">&lt;p&gt;いかにもCGで作りましたっていうクッキリハッキリした反射ではなく、少し不完全な金属の光沢や表面のざらざら具合を表現するためのマテリアル表現をパストレーサーに組み込んでみた。&lt;/p&gt;
@@ -232,7 +232,7 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <link href="https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html"/>
     <id>https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html</id>
     <published>2025-01-13T10:00:00.000Z</published>
-    <updated>2025-09-02T09:10:43.657Z</updated>
+    <updated>2025-10-20T01:24:43.420Z</updated>
     
     
     <summary type="html">&lt;p&gt;「&lt;strong&gt;ゼリーのパズル&lt;/strong&gt;」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
