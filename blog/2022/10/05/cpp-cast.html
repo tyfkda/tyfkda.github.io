@@ -199,31 +199,46 @@
                 <p>C++のキャストについてあまりよく知らなかったので調べた。</p>
 <span id="more"></span>
 
+<p>先にまとめ：</p>
+<ul>
+<li><code>reinterpret_cast</code>は無条件のキャスト（C言語のキャストと同じで内容保証なし）</li>
+<li><code>static_cast</code>はダウンキャスト用で、使える場合にはこちらを使うべき</li>
+<li>動的に（実行時に）型チェックするには<code>dynamic_cast</code>を使う（仮想関数とRTTI必須）</li>
+</ul>
 <h3 id="static-castとreinterpret-cast"><a href="#static-castとreinterpret-cast" class="headerlink" title="static_castとreinterpret_cast"></a>static_castとreinterpret_cast</h3><p>まず<code>static_cast</code>と<code>reinterpret_cast</code>はどちらも型を強制的に変換するものという認識で、違いがよく分かってなかった。</p>
-<p><code>reinterpret_cast</code> は無条件にポインタを変換するのに対し、
-<code>static_cast</code> は変換元と先のクラスが親子関係でなければコンパイルエラーが発生する、という違いがある：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">Foo* foo;</span><br><span class="line"><span class="built_in">static_cast</span>&lt;Bar*&gt;(foo);</span><br><span class="line"><span class="comment">// ^^^ error: static_cast from &#x27;Foo *&#x27; to &#x27;Bar *&#x27;, which are not related by inheritance, is not allowed</span></span><br><span class="line"><span class="built_in">reinterpret_cast</span>&lt;Bar*&gt;(foo);  <span class="comment">// こちらはコンパイルが通る</span></span><br></pre></td></tr></table></figure>
+<p><code>reinterpret_cast</code> は<strong>無条件にポインタを変換する</strong>のに対し、
+<code>static_cast</code> は<strong>変換元と先のクラスが親と子の関係でなければコンパイルエラーが発生する</strong>、という違いがある：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span> &#123;&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Bar</span> &#123;&#125;;</span><br><span class="line">Foo* foo = <span class="keyword">new</span> <span class="built_in">Foo</span>();</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;foo=%p\n&quot;</span>, foo);</span><br><span class="line"><span class="comment">// Bar* bar = static_cast&lt;Bar*&gt;(foo);  // static_castではエラーが出る: static_cast from &#x27;Foo *&#x27; to &#x27;Bar *&#x27;, which are not related by inheritance, is not allowed</span></span><br><span class="line">Bar* bar = <span class="built_in">reinterpret_cast</span>&lt;Bar*&gt;(foo);  <span class="comment">// こちらはコンパイルが通る</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;bar=%p\n&quot;</span>, bar);</span><br></pre></td></tr></table></figure>
 
-<p>ということでどちらかというと <code>static_cast</code> の方が用途が少し制限されている、という違いがある。
+<p>ということで <code>static_cast</code> は用途が制限されている、という違いがある。
 言うなれば <code>reinterpret_cast</code> がCのキャストと同じもの。</p>
 <ul>
 <li><code>void*</code> からの変換にはどちらも使える</li>
-<li>コンパイル時に判定するだけなので、実行時には判定や変換処理というものはない</li>
-<li>どちらも変換後の内容が正しいかどうかは保証されない</li>
+<li>コンパイル時に判定するだけなので、実行時には判定はない</li>
+<li>どちらも変換後の内容が実際に変換先クラスのインスタンスであるかどうかは<strong>保証されない</strong></li>
 </ul>
 <h4 id="多重継承している場合"><a href="#多重継承している場合" class="headerlink" title="多重継承している場合"></a>多重継承している場合</h4><p><code>Base1</code> と <code>Base2</code> を継承した <code>Derived</code> クラスがあったとする。
-<code>Derived</code> から <code>Base2</code> にアップキャストした場合、第１の親クラスじゃないのでポインタがずれる。</p>
-<p>その状態から <code>Derived*</code> への <code>static_cast</code> を使用すると、オフセットを考慮してダウンキャストされ、元のポインタが復元できる。</p>
+<code>Derived</code> から <code>Base2</code> にアップキャストした場合、第１の親クラスじゃないのでポインタが調整される：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base1</span> &#123; <span class="keyword">protected</span>: <span class="keyword">virtual</span> ~<span class="built_in">Base1</span>()&#123;&#125; <span class="type">int</span> x; &#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base2</span> &#123; <span class="keyword">protected</span>: <span class="keyword">virtual</span> ~<span class="built_in">Base2</span>()&#123;&#125; <span class="type">int</span> y; &#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span> : <span class="keyword">public</span> Base1, <span class="keyword">public</span> Base2 &#123; <span class="keyword">protected</span>: <span class="keyword">virtual</span> ~<span class="built_in">Derived</span>()&#123;&#125;&#125;;</span><br><span class="line"></span><br><span class="line">Derived* d = <span class="keyword">new</span> <span class="built_in">Derived</span>();</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;d =%p\n&quot;</span>, &amp;d);  <span class="comment">// d =0x14d605dc0</span></span><br><span class="line"></span><br><span class="line">Base2* b2 = d;  <span class="comment">// アップキャスト</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;b2=%p\n&quot;</span>, b2);  <span class="comment">// b2=0x14d605dd0  &lt;== Base1のメンバ変数分、調整される</span></span><br></pre></td></tr></table></figure>
+
+<p>その状態から <code>Derived*</code> への <code>static_cast</code> を使用することでオフセットを考慮してダウンキャストされ、元のポインタが復元できる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">Derived* d2 = <span class="built_in">static_cast</span>&lt;Derived*&gt;(b2);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;d2=%p\n&quot;</span>, d2);  <span class="comment">// d2=0x14d605dc0  &lt;== 復元できる</span></span><br></pre></td></tr></table></figure>
+
 <p><code>reinterpret_cast</code> では考慮されないので復元はできない（オフセットがずれたまま）。
-コンパイルでワーニングが出る：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">reinterpret_cast</span>&lt;Derived*&gt;(b2);</span><br><span class="line"><span class="comment">// warning: &#x27;reinterpret_cast&#x27; to class &#x27;Derived *&#x27; from its base at non-zero offset &#x27;Base2 *&#x27; behaves differently from &#x27;static_cast&#x27; [-Wreinterpret-base-class]</span></span><br><span class="line"><span class="comment">// note: use &#x27;static_cast&#x27; to adjust the pointer correctly while downcasting</span></span><br></pre></td></tr></table></figure>
+コンパイルワーニングで警告はしてくれる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">Derived* d3 = <span class="built_in">reinterpret_cast</span>&lt;Derived*&gt;(b2);</span><br><span class="line"><span class="comment">// warning: &#x27;reinterpret_cast&#x27; to class &#x27;Derived *&#x27; from its base at non-zero offset &#x27;Base2 *&#x27; behaves differently from &#x27;static_cast&#x27; [-Wreinterpret-base-class]</span></span><br><span class="line"><span class="comment">// note: use &#x27;static_cast&#x27; to adjust the pointer correctly while downcasting</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;d3=%p\n&quot;</span>, d3);  <span class="comment">// d3=0x14d605dd0  &lt;== 復元されない</span></span><br></pre></td></tr></table></figure>
 
 
-<h3 id="dynamic-cast"><a href="#dynamic-cast" class="headerlink" title="dynamic_cast"></a>dynamic_cast</h3><p><code>dynamic_cast</code> は通常<strong>ダウンキャスト</strong>（親クラスから子クラスへの変換）に使用する。
+<h3 id="dynamic-cast"><a href="#dynamic-cast" class="headerlink" title="dynamic_cast"></a>dynamic_cast</h3><p><code>dynamic_cast</code>もダウンキャスト（親クラスから子クラスへの変換）に使用する
+（親子関係じゃない場合はコンパイルエラー）。
 実行時に実際に意図したクラス（またはそれを継承したクラス）かどうかを判定して
-そうであれば変換し、違ったら <code>nullptr</code> を返す。
+そうであれば変換し、違ったら<code>nullptr</code>を返す。
 実行時型情報(RTTI)を用いるので、仮想関数を持っている必要がある。</p>
-<h4 id="多重継承している場合-1"><a href="#多重継承している場合-1" class="headerlink" title="多重継承している場合"></a>多重継承している場合</h4><p><code>dynamic_cast</code> で <code>Base2*</code> から <code>Derived*</code> が復元できる。</p>
+<h4 id="多重継承している場合-1"><a href="#多重継承している場合-1" class="headerlink" title="多重継承している場合"></a>多重継承している場合</h4><p><code>dynamic_cast</code>で<code>Base2*</code>から<code>Derived*</code> が復元できる。
+<code>static_cast</code>との違いは、<code>Derived*</code>由来じゃない<code>Base2*</code>の場合には<code>nullptr</code>が返る：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">Base2* other_b2 = <span class="keyword">new</span> <span class="built_in">Base2</span>();</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;other_b2=%p\n&quot;</span>, other_b2);          <span class="comment">// other_b2=0x11de05bb0</span></span><br><span class="line">Derived* dyncasted = <span class="built_in">dynamic_cast</span>&lt;Derived*&gt;(other_b2);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;dyncasted=%p\n&quot;</span>, dyncasted);        <span class="comment">// dyncasted=0x0  &lt;== Derived由来じゃないことが判定できている</span></span><br><span class="line">Derived* staticcasted = <span class="built_in">static_cast</span>&lt;Derived*&gt;(other_b2);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;staticcasted=%p\n&quot;</span>, staticcasted);  <span class="comment">// staticcasted=0x11de05ba0  &lt;== Derived由来じゃないが実行時に判定されないため、無効なポインタが返る</span></span><br></pre></td></tr></table></figure>
+
+
 <h3 id="const-cast"><a href="#const-cast" class="headerlink" title="const_cast"></a>const_cast</h3><p><code>const_cast</code> はコンパイル時に <code>const</code> ポインタをconstなしポインタとして解釈するよう指示するだけなので、特に不明点はない。</p>
 
 
