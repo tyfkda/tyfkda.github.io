@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-10-23T02:25:35.881Z</updated>
+  <updated>2025-11-10T14:03:12.930Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,35 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</title>
+    <link href="https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html"/>
+    <id>https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html</id>
+    <published>2025-11-09T23:06:07.000Z</published>
+    <updated>2025-11-10T14:03:12.930Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&amp;nbsp;&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光を考慮&lt;/a&gt;に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。&lt;/p&gt;
+&lt;div style=&quot;text-align:center&quot;&gt;
+&lt;img src=&quot;/assets/pt-nee-mis1000.webp&quot; alt=&quot;直接光とMISしたパストレーサー&quot; style=&quot;width:90%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;640x480, 1,000サンプル&amp;#x2F;ピクセル, 1分09秒, M1MacbookAir (8コア)&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
+    
+    <category term="probability" scheme="https://tyfkda.github.io/tags/probability/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Count Leading Zerosその他ビルトイン関数の実装</title>
     <link href="https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html"/>
     <id>https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html</id>
     <published>2025-09-01T10:00:00.000Z</published>
-    <updated>2025-10-23T02:25:35.881Z</updated>
+    <updated>2025-10-26T09:46:13.446Z</updated>
     
     
     <summary type="html">&lt;p&gt;コンパイラの主要なトピックでは全然ないけど、余興として自作Cコンパイラにビルトイン関数として&lt;code&gt;clz&lt;/code&gt;と&lt;code&gt;ctz&lt;/code&gt;と&lt;code&gt;popcount&lt;/code&gt;を実装した顛末。&lt;/p&gt;</summary>
@@ -38,13 +62,13 @@
     <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
     <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2025-10-23T02:25:52.168Z</updated>
+    <updated>2025-11-10T14:03:12.930Z</updated>
     
     
     <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
 これを明示的に光源計算することで改善できる。&lt;/p&gt;
 &lt;div style=&quot;text-align:center&quot;&gt;
-&lt;img src=&quot;/assets/pt-direct-lighting-dl1000.webp&quot; style=&quot;width:80%&quot; /&gt;
+&lt;img src=&quot;/assets/pt-direct-lighting-dl1000.webp&quot; alt=&quot;直接光計算したパストレーサー&quot; style=&quot;width:90%&quot; /&gt;
 &lt;/div&gt;</summary>
     
     
@@ -98,12 +122,15 @@
     <link href="https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html"/>
     <id>https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html</id>
     <published>2025-06-06T12:00:00.000Z</published>
-    <updated>2025-10-23T02:25:52.168Z</updated>
+    <updated>2025-11-10T14:03:12.929Z</updated>
     
     
     <summary type="html">&lt;p&gt;いかにもCGで作りましたっていうクッキリハッキリした反射ではなく、少し不完全な金属の光沢や表面のざらざら具合を表現するためのマテリアル表現をパストレーサーに組み込んでみた。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/pbr-material-pt/image-ggx.jpg&quot; alt=&quot;PBRマテリアルでパストレーシング&quot;&gt;&lt;/p&gt;
-&lt;p&gt;640x480, 25,000サンプル&amp;#x2F;ピクセル, 39.03秒, M1MacbookAir (8コア)&lt;/p&gt;</summary>
+&lt;div style=&quot;text-align:center&quot;&gt;
+&lt;img src=&quot;/assets/pbr-material-pt/image-ggx.jpg&quot; alt=&quot;PBRマテリアルでパストレーシング&quot; style=&quot;width:90%&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;640x480, 25,000サンプル&amp;#x2F;ピクセル, 39.03分, M1MacbookAir (8コア)&lt;/p&gt;</summary>
     
     
     
@@ -224,26 +251,6 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     
     
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</title>
-    <link href="https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html"/>
-    <id>https://tyfkda.github.io/blog/2025/01/13/jelly-solver.html</id>
-    <published>2025-01-13T10:00:00.000Z</published>
-    <updated>2025-10-20T01:24:43.420Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;「&lt;strong&gt;ゼリーのパズル&lt;/strong&gt;」というパズルゲームを初めてやった時は初期のステージからあまりの難しさに悶絶した。
-それだけに解けたときの満足感は半端ない。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="algorithm" scheme="https://tyfkda.github.io/tags/algorithm/"/>
-    
-    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
     
   </entry>
   

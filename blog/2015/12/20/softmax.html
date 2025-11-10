@@ -212,9 +212,8 @@ a^L_j = \frac{e^{z^L_j}}{\sum_k e^{z^L_k}}  \tag{78}
 %]]></script>
 
 <p>これを<em>ソフトマックス</em>関数と呼ぶ。</p>
-<p>シグモイド関数ではニューロン<script type="math/tex">j</script>の出力<script type="math/tex">a^L_j</script>は、</p>
-<script type="math/tex">j</script>への入力の合計<script type="math/tex">z^L_j</script>のみに依存していたが、
-<p>ソフトマックス関数では出力層全てのニューロンに関係する。</p>
+<p>シグモイド関数ではニューロン<script type="math/tex">j</script>の出力<script type="math/tex">a^L_j</script>は、<script type="math/tex">j</script>への入力の合計<script type="math/tex">z^L_j</script>のみに依存していたが、
+ソフトマックス関数では出力層全てのニューロンに関係する。</p>
 <script type="math/tex">a^L_j</script>は0~1の値を取り、すべての<script type="math/tex">j</script>での合計値は1となる。
 
 <p>これはニューラルネットワークを多クラス分類に使う時に、
@@ -230,9 +229,8 @@ C \equiv -\ln a^L_y
 <script type="math/tex">a^L_y</script> が0~1に限られているので、その対数の値は負となり、そのためコストは必ず0以上となる。
 <p>分類が正しく行われて<script type="math/tex">a^L_y</script>が1に近づくとコスト関数の値は0に近づき、
 そうでない場合には正の値になる。</p>
-<h3 id="コスト関数の微分"><a href="#コスト関数の微分" class="headerlink" title="コスト関数の微分"></a>コスト関数の微分</h3><p>上記のコスト関数のウェイトやバイアスによる偏微分は、</p>
-<a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出">誤差逆伝播法</a>と同様に、
-<p>ニューロンへの入力<script type="math/tex">z^L_j</script>でチェインルールを適用する：</p>
+<h3 id="コスト関数の微分"><a href="#コスト関数の微分" class="headerlink" title="コスト関数の微分"></a>コスト関数の微分</h3><p>上記のコスト関数のウェイトやバイアスによる偏微分は、<a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出">誤差逆伝播法</a>と同様に、
+ニューロンへの入力<script type="math/tex">z^L_j</script>でチェインルールを適用する：</p>
 <script type="math/tex; mode=display">% <![CDATA[
 
 \begin{eqnarray*}
@@ -283,14 +281,14 @@ a^L_j = \frac{e^{cz^L_j}}{\sum_k e^{cz^L_k}}  \tag{83}
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/26/feed-forward.html" title="多層パーセプトロンの出力値の計算（フィードフォワード）" rel="bookmark">多層パーセプトロンの出力値の計算（フィードフォワード）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/05/26/hira-kan-recog.html" title="転移学習で手書きのひらがな・漢字認識" rel="bookmark">転移学習で手書きのひらがな・漢字認識</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出" rel="bookmark">誤差逆伝播法の導出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用" rel="bookmark">MNISTにバッチ正規化を適用</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/12/19/cross-entropy.html" title="クロスエントロピー" rel="bookmark">クロスエントロピー</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/11/26/feed-forward.html" title="多層パーセプトロンの出力値の計算（フィードフォワード）" rel="bookmark">多層パーセプトロンの出力値の計算（フィードフォワード）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/05/26/hira-kan-recog.html" title="転移学習で手書きのひらがな・漢字認識" rel="bookmark">転移学習で手書きのひらがな・漢字認識</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li><li class="recent_post"><a href="/blog/2025/06/06/pbr-material-pathtracer.html">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li></ul>
                 </div>
             </div>
 

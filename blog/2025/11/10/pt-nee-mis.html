@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="&amp;nbsp;パストレーサーで直接光を考慮に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。
+
+
+
+
+640x480, 1,000サンプル&amp;#x2F;ピクセル, 1分09秒, M1MacbookAir (8コア)">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling) - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-11-10
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/graphics/">#graphics</a> <a href="/tags/probability/">#probability</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>&nbsp;<a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）">パストレーサーで直接光を考慮</a>に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。</p>
+<div style="text-align:center">
+<img src="/assets/pt-nee-mis1000.webp" alt="直接光とMISしたパストレーサー" style="width:90%" />
+</div>
+
+<p>640x480, 1,000サンプル&#x2F;ピクセル, 1分09秒, M1MacbookAir (8コア)</p>
+<span id="more"></span>
+
+<style>
+.youtube {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.youtube iframe {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
+<p>解説動画：</p>
+<div class="youtube"><iframe src="https://www.youtube.com/embed/4yJtE_GFuqU?si=6cOgmd8DphBrFVgt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+
+
+<h2 id="Next-Event-Estimation-NEE"><a href="#Next-Event-Estimation-NEE" class="headerlink" title="Next Event Estimation (NEE)"></a>Next Event Estimation (NEE)</h2><p>前回は確率密度関数(pdf)の合成というのを使って、直接光のサンプリングか・反射面の特性によるサンプリングか、のどちらか一方を固定の確率で選ぶという方式だった。
+どうもググった感じだと<strong>Next Event Estimation</strong>というのはどちらかを選ぶというのではなく、直接光の計算を行った上で従来のトレースも続けるので両方行うっぽい。</p>
+<ul>
+<li>前回調べたsmallpt-explicitが同様の方法を採っていた
+（重み付けが「BRDFサンプリングで光源だった場合には係数を0にする」という違いはある）</li>
+</ul>
+<h2 id="Multiple-Importance-Sampling（MIS）"><a href="#Multiple-Importance-Sampling（MIS）" class="headerlink" title="Multiple Importance Sampling（MIS）"></a>Multiple Importance Sampling（MIS）</h2><p>じゃあNEEを使用して両方トレースする場合どうやって合成するのかというのが疑問だが、
+それを行うのが<strong>多重重点的サンプリング</strong>（Multiple Importance Sampling、以降MIS）ということになる。</p>
+<p>合成pdfで選択する確率を先に固定で与えるのが問題なので、トレース時に互いの重要度を比較してその率に応じてどちらか片方をサンプルするのかと勝手に想像していたがどうやら違って、
+両方のサンプリング方法でサンプルした上で、ウェイトを<strong>おのおの</strong>計算する。</p>
+<h4 id="MIS具体例"><a href="#MIS具体例" class="headerlink" title="MIS具体例"></a>MIS具体例</h4><p>解説を読むとサンプリング方式がn通りだとかサンプル点がN個とか数式に二重のシグマやら、一般化されていて正直自分には理解できない。
+なので具体的に最小のケースを当てはめると、</p>
+<ol>
+<li>直接光サンプリングとBRDFサンプリングという2つのサンプリング方式を用いる</li>
+<li>サンプリング方式それぞれでサンプル点を1つずつピックアップ（計2つ）</li>
+<li>サンプル点それぞれに対して、各サンプリング方式でのpdfを算出しそれに従ってウェイトを計算する<ul>
+<li>直接光サンプリングで選んだサンプル1に対して直接光サンプリングでのpdfとBRDFサンプリングでのpdfを算出してウェイト計算<ul>
+<li>衝突点の面法線が光源方向とは逆向きだったり他の物体に遮られていたら、そもそも直接光の影響は受けない</li>
+</ul>
+</li>
+<li>BRDFサンプリングで選んだサンプル2に対しても同様<ul>
+<li>光源に当たった場合のみ、当たらなかった場合は光源サンプリング側のpdfが0となる</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ウェイトを加味した上ですべてを合計する</li>
+</ol>
+<p>という手順になる。</p>
+<p>pdfをどうやって求めるかは、光源サンプリング方式のpdfは光源を正方形とすれば<a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）">前回の計算式</a>（光源の直接サンプリング）、
+BRDFサンプリング方式のpdfは反射面がランバート拡散反射で入射角とのコサインに比例した重点的サンプリングを用いることと積分値が1.0になるように係数を求めると<script type="math/tex">\cos \theta / \pi</script>となる。</p>
+<h4 id="ウェイトの算出方法"><a href="#ウェイトの算出方法" class="headerlink" title="ウェイトの算出方法"></a>ウェイトの算出方法</h4><p>各サンプルごとに、各サンプリング方式でのpdfが<script type="math/tex">p_A</script>と<script type="math/tex">p_B</script>で、サンプル点がA方式から選ばれたものだとすると、ウェイトを<script type="math/tex">\frac{p_A^2}{p_A^2 + p_B^2}</script>と算出する（パワーヒューリスティック）。</p>
+<p>ファイアフライノイズが発生する原因として、寄与度が高い（光源）けど発生する確率密度が低い（拡散反射面でのサンプリング）場合に、pdfで除算すると結果的に稀に大きな値が発生することになり分散が増えノイズとなってしまう。
+上記のウェイトを使うと他によりよいサンプリング方式があってそっちのpdfが高ければ（光源サンプリングでは半球状よりも限られた範囲になるので高い）低いpdf側のウェイトは低く抑えられるので、値の分散が減らせると期待できる
+（理論的には分散の期待値が小さくなることから示される）。</p>
+<h2 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h2><p>smallptと合成pdfの適用を元にして改造：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 従来のintersectを修正し、距離上限を指定できるようにする</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">bool</span> <span class="title">intersect</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">double</span> &amp;t, <span class="type">int</span> &amp;id, <span class="type">double</span> max_dist=INFINITY)</span></span>&#123;</span><br><span class="line">  <span class="type">size_t</span> n=<span class="built_in">sizeof</span>(spheres)/<span class="built_in">sizeof</span>(Sphere); <span class="type">double</span> d; t=max_dist;</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">size_t</span> i=n;i&gt;<span class="number">0</span>;) <span class="keyword">if</span>((d=spheres[--i].<span class="built_in">intersect</span>(r))&amp;&amp;d&lt;t)&#123;t=d;id=i;&#125;</span><br><span class="line">  <span class="keyword">return</span> t&lt;max_dist;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 光源（正方形）</span></span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">light</span><span class="params">(Vec(<span class="number">50</span><span class="number">-16</span>,<span class="number">81.5</span>,<span class="number">81.6</span><span class="number">-16</span>), Vec(<span class="number">32</span>,<span class="number">0</span>,<span class="number">0</span>), Vec(<span class="number">0</span>,<span class="number">0</span>,<span class="number">32</span>), Vec(<span class="number">12</span>,<span class="number">12</span>,<span class="number">12</span>), Vec())</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">bool</span> <span class="title">is_light_visible</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">double</span> max_dist)</span> </span>&#123;</span><br><span class="line">  <span class="type">double</span> t; <span class="type">int</span> id;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">intersect</span>(r, t, id, max_dist))</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  <span class="comment">// <span class="doctag">TODO:</span> 光源が１つのみという前提ではない場合、他の光源によって遮られているかの確認が必要になる</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> Vec <span class="title">cosine_weighted_random_hemisphere</span><span class="params">(<span class="type">const</span> Vec&amp; n, <span class="type">unsigned</span> <span class="type">short</span> *Xi)</span> </span>&#123;</span><br><span class="line">  <span class="type">double</span> r1=<span class="number">2</span>*M_PI*<span class="built_in">erand48</span>(Xi), r2=<span class="built_in">erand48</span>(Xi), r2s=<span class="built_in">sqrt</span>(r2);</span><br><span class="line">  Vec w=n, u=((<span class="built_in">fabs</span>(w.x)&gt;<span class="number">.1</span>?<span class="built_in">Vec</span>(<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>):<span class="built_in">Vec</span>(<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>))%w).<span class="built_in">norm</span>(), v=w%u;</span><br><span class="line">  <span class="keyword">return</span> (u*<span class="built_in">cos</span>(r1)*r2s + v*<span class="built_in">sin</span>(r1)*r2s + w*<span class="built_in">sqrt</span>(<span class="number">1</span>-r2)).<span class="built_in">norm</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 多重重点的サンプリングの重み計算</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">double</span> <span class="title">mis_weight</span><span class="params">(<span class="type">double</span> pdf_a, <span class="type">double</span> pdf_b)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// // バランスヒューリスティック</span></span><br><span class="line">  <span class="comment">// double a = pdf_a;</span></span><br><span class="line">  <span class="comment">// double b = pdf_b;</span></span><br><span class="line">  <span class="comment">// パワーヒューリスティック</span></span><br><span class="line">  <span class="type">double</span> a = pdf_a * pdf_a;</span><br><span class="line">  <span class="type">double</span> b = pdf_b * pdf_b;</span><br><span class="line">  <span class="keyword">if</span> (a + b == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> a / (a + b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">double</span> <span class="title">calc_light_pdf</span><span class="params">(<span class="type">const</span> Vec&amp; dir, <span class="type">double</span> distance, <span class="type">const</span> Vec&amp; light_normal, <span class="type">double</span> light_area)</span> </span>&#123;</span><br><span class="line">  <span class="type">double</span> cos_light = -dir.<span class="built_in">dot</span>(light_normal);</span><br><span class="line">  <span class="keyword">if</span> (cos_light &lt;= <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  cos_light = <span class="built_in">fmax</span>(cos_light, <span class="number">1e-6</span>);  <span class="comment">// あまり小さい値はクリップして無限大防止</span></span><br><span class="line">  <span class="keyword">return</span> (distance * distance) / (cos_light * light_area);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">double</span> <span class="title">calc_lambert_pdf</span><span class="params">(<span class="type">const</span> Vec&amp; dir, <span class="type">const</span> Vec&amp; surface_normal)</span> </span>&#123;</span><br><span class="line">  <span class="type">double</span> cos_surface = dir.<span class="built_in">dot</span>(surface_normal);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">fmax</span>(cos_surface, <span class="number">0.0</span>) * M_1_PI;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> Vec <span class="title">radiance</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">int</span> depth, <span class="type">unsigned</span> <span class="type">short</span> *Xi)</span> </span>&#123;</span><br><span class="line">  <span class="function">Vec <span class="title">radiance</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">int</span> depth, <span class="type">unsigned</span> <span class="type">short</span> *Xi, <span class="type">double</span> &amp;t_out, <span class="type">bool</span> &amp;hit_light_out)</span></span>;</span><br><span class="line">  <span class="type">double</span> t_dummy; <span class="type">bool</span> hit_light_dummy;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">radiance</span>(r, depth, Xi, t_dummy, hit_light_dummy);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Vec <span class="title">radiance</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">int</span> depth, <span class="type">unsigned</span> <span class="type">short</span> *Xi, <span class="type">double</span> &amp;t_out, <span class="type">bool</span> &amp;hit_light_out)</span></span>&#123;</span><br><span class="line">  hit_light_out = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="type">double</span> t;                               <span class="comment">// distance to intersection</span></span><br><span class="line">  <span class="type">int</span> id=<span class="number">-1</span>;                              <span class="comment">// id of intersected object</span></span><br><span class="line">  <span class="built_in">intersect</span>(r, t, id);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="type">double</span> t_light = light.<span class="built_in">intersect</span>(r); t_light &lt; t) &#123;</span><br><span class="line">    t_out = t_light;</span><br><span class="line">    hit_light_out = r.d.<span class="built_in">dot</span>(light.n) &lt; <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> hit_light_out ? light.e : <span class="built_in">Vec</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  t_out = t;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">isfinite</span>(t)) &#123; <span class="comment">// if miss, return black</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Vec</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">const</span> Sphere &amp;obj = spheres[id];        <span class="comment">// the hit object</span></span><br><span class="line">  Vec x=r.o+r.d*t, n=(x-obj.p).<span class="built_in">norm</span>(), nl=n.<span class="built_in">dot</span>(r.d)&lt;<span class="number">0</span>?n:n*<span class="number">-1</span>, f=obj.c;</span><br><span class="line">  <span class="type">double</span> p = f.x&gt;f.y &amp;&amp; f.x&gt;f.z ? f.x : f.y&gt;f.z ? f.y : f.z; <span class="comment">// max refl</span></span><br><span class="line">  <span class="keyword">if</span> (++depth&gt;<span class="number">5</span>) &#123; <span class="keyword">if</span> (<span class="built_in">erand48</span>(Xi)&lt;p) f=f*(<span class="number">1</span>/p); <span class="keyword">else</span> <span class="keyword">return</span> obj.e; &#125; <span class="comment">//R.R.</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (obj.refl == DIFF)&#123;                  <span class="comment">// Ideal DIFFUSE reflection with MIS</span></span><br><span class="line">    Vec direct;</span><br><span class="line">    <span class="comment">// 直接光サンプリング(Next Event Estimation)</span></span><br><span class="line">    &#123;</span><br><span class="line">      Vec l_dir = light.<span class="built_in">random_sample</span>(Xi) - x;</span><br><span class="line">      <span class="type">double</span> t_direct = l_dir.<span class="built_in">length</span>();</span><br><span class="line">      l_dir = l_dir * (<span class="number">1.0</span> / t_direct);</span><br><span class="line">      <span class="type">double</span> pdf_light1 = <span class="built_in">calc_light_pdf</span>(l_dir, t_direct, light.n, light.area);</span><br><span class="line">      <span class="keyword">if</span> (pdf_light1 &gt; <span class="number">0</span> &amp;&amp; <span class="built_in">is_light_visible</span>(<span class="built_in">Ray</span>(x, l_dir), t_direct - <span class="number">1e-4</span>)) &#123;</span><br><span class="line">        <span class="type">double</span> pdf_brdf1 = <span class="built_in">calc_lambert_pdf</span>(l_dir, nl);</span><br><span class="line">        <span class="type">double</span> weight1 = <span class="built_in">mis_weight</span>(pdf_light1, pdf_brdf1);</span><br><span class="line">        <span class="type">double</span> cos_surface = <span class="built_in">fmax</span>(l_dir.<span class="built_in">dot</span>(nl), <span class="number">0.0</span>);</span><br><span class="line">        direct = f.<span class="built_in">mult</span>(light.e) * (M_1_PI * cos_surface * weight1 / pdf_light1);  <span class="comment">// f*M_1_PIがbrdf</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// BRDFサンプリング（ランバート）</span></span><br><span class="line">    Vec indirect;</span><br><span class="line">    &#123;</span><br><span class="line">      Vec i_dir = <span class="built_in">cosine_weighted_random_hemisphere</span>(nl, Xi);</span><br><span class="line">      <span class="function">Ray <span class="title">diff_ray</span><span class="params">(x, i_dir)</span></span>;</span><br><span class="line">      <span class="type">double</span> t_indirect; <span class="type">bool</span> hit_light_indirect;</span><br><span class="line">      Vec incoming_rad = <span class="built_in">radiance</span>(diff_ray, depth, Xi, t_indirect, hit_light_indirect);</span><br><span class="line">      <span class="type">double</span> pdf_brdf2 = <span class="built_in">calc_lambert_pdf</span>(i_dir, nl);</span><br><span class="line">      <span class="type">double</span> pdf_light2 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">if</span> (hit_light_indirect) &#123;  <span class="comment">// 光源にヒットした場合にはpdfを算出</span></span><br><span class="line">        pdf_light2 = <span class="built_in">calc_light_pdf</span>(i_dir, t_indirect, light.n, light.area);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 光源にヒットしなかった場合には方向が外れている、</span></span><br><span class="line">        <span class="comment">// またはなにかに遮られていて寄与0なので、光源サンプリングのpdfは0。</span></span><br><span class="line">        <span class="comment">// その場合ウェイトは1になり、そのまま加える形になる。</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="type">double</span> weight2 = <span class="built_in">mis_weight</span>(pdf_brdf2, pdf_light2);</span><br><span class="line">      indirect = f.<span class="built_in">mult</span>(incoming_rad) * weight2;  <span class="comment">// `(コサイン項/(pdf_brdf2*π))` が打ち消し合うので省略</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> obj.e + direct + indirect;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 以降、鏡面反射と透過材質の処理（元ソースに合流）</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>拡散反射の場合にのみNEE+MISを適用（鏡面反射や透過材質の場合は従来通り）</li>
+<li><code>mis_weight</code>関数で2つのpdfからウェイトを計算<ul>
+<li><code>calc_light_pdf</code>、<code>calc_lambert_pdf</code>でサンプル方向から確率密度を逆算</li>
+<li><code>mis_weight</code>呼び出しはサンプルごとに行う必要があり、上記では2回の呼び出しをまとめたりはできない</li>
+</ul>
+</li>
+<li>直接光のサンプリングでは<code>radiance</code>の再帰呼出ではなく、<code>is_light_visible</code>でシャドウレイを撃って遮られていなかったら、という具合に簡略化<ul>
+<li>光源は自己発光のみで反射光がない（アルベドが0）という想定</li>
+</ul>
+</li>
+<li>BRDFサンプリングで光源にヒットした場合に判別できるようにするために、<code>radiance</code>関数からの戻り値としてカラー値以外にも交点との距離と光源に当たったかを返せるよう引数に追加したオーバーロード関数に変更</li>
+<li>&nbsp;<a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）">合成pdf</a>の<code>Rectangle</code>や<code>Vec</code>の変更あたりも持ってくること</li>
+</ul>
+<h2 id="比較画像"><a href="#比較画像" class="headerlink" title="比較画像"></a>比較画像</h2><script src="https://unpkg.com/image-compare-viewer/dist/image-compare-viewer.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/image-compare-viewer/dist/image-compare-viewer.min.css" />
+
+<div id="image-compare" style="border-radius:8px">
+  <img src="/assets/pt-nee-mis-mixpdf2500.webp" style="image-rendering:pixelated" />
+  <img src="/assets/pt-nee-mis1000.webp" style="image-rendering:pixelated; height:100%; max-width:none !important" />
+</div>
+
+<script>
+  const element = document.getElementById("image-compare")
+  const options = {
+    smoothing: false,
+    preventScroll: true,
+    handleSize: 40,
+  }
+  const viewer = new ImageCompare(element, options).mount()
+</script>
+
+<p>左：合成pdf、右：NEE+MIS</p>
+<ul>
+<li>ノイズ軽減が効いた上で、ファイアフライノイズが相当軽減される！</li>
+<li>ピクセルあたりのサンプル数　左：合成pdfは2500spp、右：NEE+MISは1000spp<ul>
+<li>NEE+MISでは２方向をトレースする分時間が余計にかかるので、同じくらいの時間になるよう適当にサンプル数を調整</li>
+</ul>
+</li>
+</ul>
+<h2 id="考察・あれこれ"><a href="#考察・あれこれ" class="headerlink" title="考察・あれこれ"></a>考察・あれこれ</h2><ul>
+<li>MIS、数値トリック巧妙過ぎ…！<ul>
+<li>実際に理解するにはまず期待値を理解する必要がありそう</li>
+</ul>
+</li>
+<li>光源を小さくするとまだ結構ファイアフライノイズが発生する<ul>
+<li>鏡面反射やコースティクスなど、低pdfでも高寄与なパスがあるため？</li>
+<li>↑すべて拡散反射面にすると光源が小さくてもノイズは少なくてすむ</li>
+</ul>
+</li>
+<li>ウェイトの計算法は<strong>理論的にはバランスヒューリスティックが最適</strong>らしい、がパストレみたいに小さな範囲が大きな影響を及ぼす場合には<strong>パワーヒューリスティックは外れ値を抑える</strong>のでそっちの方がよい、とのこと</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://lisyarus.github.io/blog/posts/multiple-importance-sampling.html">Demystifying multiple importance sampling | lisyarus blog</a> わかりやすい解説。光源サンプリング、コサインウェイトサンプリングの他に、メタリック反射用のVNDFという3つ使っている。
+Veach’97にも言及。</li>
+<li><a href="https://rayspace.xyz/CG/contents/MIS/">多重重点的サンプリング - Computer Graphics - memoRANDOM</a></li>
+<li><a href="https://kinakomoti321.hatenablog.com/entry/2021/12/23/035717">NEEとMISの実装 (MIS編) - MochiMochi3D</a></li>
+<li><a href="https://speakerdeck.com/shocker_0x15/path-tracing">パストレーシング &#x2F; Path Tracing - Speaker Deck</a></li>
+<li><a href="https://www.kevinbeason.com/smallpt/">smallpt</a> 毎度ベースのパストレーサー</li>
+<li>論文：<a href="https://graphics.stanford.edu/papers/veach_thesis/">Robust Monte Carlo Methods for Light Transport Simulation</a> Veach97, MISの論文（長くてムズイ、読めてない）<ul>
+<li><a href="https://graphics.stanford.edu/papers/combine/">Optimally Combining Sampling Techniques for Monte Carlo Rendering</a> Veach95</li>
+</ul>
+</li>
+</ul>
+<h2 id="付録"><a href="#付録" class="headerlink" title="付録"></a>付録</h2><h4 id="複数光源の場合"><a href="#複数光源の場合" class="headerlink" title="複数光源の場合"></a>複数光源の場合</h4><p>光源が複数あるシーンを扱う場合には方法がいくつか考えられる：</p>
+<ol>
+<li>光源の1つのみをランダムに選んでサンプリング</li>
+<li>すべての光源をサンプリング</li>
+</ol>
+<p>光源1つのみを選ぶ方法では、BRDFサンプリングでその光源に当たった場合にはウェイトを乗算し、別の光源やその他に当たった場合にはウェイトを乗算せずにふつうに影響を加える、といった区別が必要になる。
+散乱点から見たときに２つの光源が重なっているような配置で奥の光源が選択された場合には、必ず手前の光源にヒットしてしまうので直接光としては影響を受けず、なのでウェイトも下げないことになる。</p>
+<p>またはウェイトを構わず適用して、直接光の影響を光源選択の割合でスケール1&#x2F;p倍してやればよい？
+その方がノイズが少なくなるように見える。</p>
+<p>すべての光源をサンプリングして影響を考慮する方法では、反射面でのサンプリングでどれかの光源に当たった場合にはその対象の光源サンプリングのpdfとの関係から算出したウェイトを乗ずればよい
+（この場合、光源の個数分の光源サンプリング＋BRDFサンプリングでMISしてることになる）。
+他の光源サンプリングのpdfを考慮しなくていいのは、光源領域外であるかシャドウレイで遮られるかで必ず対象外(pdf&#x3D;0)になるからだと思う。</p>
+<p>ノイズとしてはすべての光源をサンプリングした場合と光源をランダムに選んだ場合とで大差ないように見えたので、計算負荷としては光源ランダム選択方式でスケール1&#x2F;pがいいのかも。</p>
+<h4 id="MISはちゃんと真の値に収束するのか？"><a href="#MISはちゃんと真の値に収束するのか？" class="headerlink" title="MISはちゃんと真の値に収束するのか？"></a>MISはちゃんと真の値に収束するのか？</h4><p>MISがアンバイアスである理由を数式では理解できてないのだけど概念的には、例えば両サンプリング方式で「たまたま」全く同じサンプル点が選ばれたとすれば、その場合ウェイトの合計がぴったり1.0になるようにしているため、真の値に等しくなる。</p>
+<p>１回のトレース時に両方のサンプリング方式でまったく同じサンプル点が選ばれることはまずないだろうが、多数の試行を繰り返した場合に全体で見るとマッチするケースが対になるため、平均で均すと真の値に収束する。
+実際にはpdfが異なるため対応するサンプル同士の出現回数が異なるのだけど、お互いMISウェイト以外の自身のpdfによる除算（単体の重点的サンプリング）によって同じレベルに調整されるのでこちらでも釣り合いが取れている。</p>
+<p>光源方向ではない領域では光源サンプリング側のpdfが0となり、間接光サンプリングのウェイトが1でそのままになるので、その領域もバイアスは発生しない。</p>
+<h4 id="１サンプルモデル"><a href="#１サンプルモデル" class="headerlink" title="１サンプルモデル"></a>１サンプルモデル</h4><p>MISだからといって必ず複数サンプルする必要があるわけではないらしい。
+複数のサンプリング方式のうちの１つをランダムに選び、それだけを調べるということが可能
+（Veach97, 9.2.4 The one-sample model）。
+ランダムに選ぶ代わりにその確率で割ることで結果を持ち上げて辻褄を合わせる。</p>
+<p>&nbsp;<a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）">合成pdf</a>と感覚的には似ていて、MISのウェイトがかかるところだけが異なる。
+合成pdfよりはノイズは低いが普通のMISよりは劣る。
+あと確率の割合の決め方がやはり難しい、なので普通のMISを使うのがいいんじゃないかという感想。</p>
+<p>疑似コード：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">光源サンプリングの割合 = <span class="number">0.2</span>  <span class="comment">// この値はあらかじめ適切に決める必要がある</span></span><br><span class="line"><span class="keyword">if</span> (乱数 &lt; 光源サンプリングの割合) &#123;</span><br><span class="line">  direct = 黒</span><br><span class="line">  <span class="keyword">if</span> (シャドウレイが遮られない) &#123;</span><br><span class="line">    direct = 光源サンプリングの計算（<span class="variable constant_">MIS</span>ウェイト込み）</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> 自己発光 + direct * (<span class="number">1.0</span> / 光源サンプリングの割合)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">indirect = <span class="variable constant_">BRDF</span>サンプリングの計算（<span class="variable constant_">MIS</span>ウェイト込み）</span><br><span class="line"><span class="variable constant_">BRDF</span>サンプリングの割合 = <span class="number">1.0</span> - 光源サンプリングの割合</span><br><span class="line"><span class="keyword">return</span> 自己発光 + indirect * (<span class="number">1.0</span> / <span class="variable constant_">BRDF</span>サンプリングの割合)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>シャドウレイが遮られたら光源サンプリングの割合を0にしてBRDFサンプリングに流した方が無駄がなくていいかと思ったが、割合が変わってしまうため結果が異なってしまう<ul>
+<li>確率で選ぶより前にシャドウレイで調べるようにもできるが、それだと計算が半分にはなってない</li>
+</ul>
+</li>
+<li>上記のような用途ではなく、例えばBSDFで拡散・光沢・鏡面の各手法のランダム選択に使えるという話</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2025/09/01/impl-builtin-clz.html">前：Count Leading Zerosその他ビルトイン関数の実装<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）" rel="bookmark">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>
