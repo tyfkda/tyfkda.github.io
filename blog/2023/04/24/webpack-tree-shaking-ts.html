@@ -92,7 +92,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -201,7 +201,7 @@
 「Worklet側でも<code>import</code>されるコードをソースを手動で分離するか〜」と思ったが、<strong>TreeShaking</strong>という機能でできるということなのでやってみた。</p>
 <span id="more"></span>
 
-<h3 id="TypeScriptのコードでTreeShakingを有効にする"><a href="#TypeScriptのコードでTreeShakingを有効にする" class="headerlink" title="TypeScriptのコードでTreeShakingを有効にする"></a>TypeScriptのコードでTreeShakingを有効にする</h3><p><a href="https://webpack.js.org/guides/tree-shaking/">WebPackのTree Shakingの説明</a>によればwebpack.config.jsに<code>optimization: &#123;usedExports: true&#125;</code>と指定すればいいとのこと。
+<h3 id="TypeScriptのコードでTreeShakingを有効にする"><a href="#TypeScriptのコードでTreeShakingを有効にする" class="headerlink" title="TypeScriptのコードでTreeShakingを有効にする"></a>TypeScriptのコードでTreeShakingを有効にする</h3><p><a href="https://webpack.js.org/guides/tree-shaking/">WebPackのTree Shakingの説明</a>によればwebpack.config.jsに<code>optimization: {usedExports: true}</code>と指定すればいいとのこと。
 がやってみるとされなかった。
 他にもpackage.jsonに<code>&quot;sideEffects&quot;: false</code>を指定してみたりしたけど変わらず。</p>
 <p>ググったところ、TypeScriptから変換している場合にはtsconfig.jsonの<code>&quot;compilerOptions&quot;</code>内で<code>&quot;module&quot;: &quot;es6&quot;</code>とする必要があるとのこと：
@@ -217,7 +217,7 @@
 <p>TypeScriptのコードを<a href="https://www.npmjs.com/package/ts-node">ts-node</a>で動かしていたんだけどその場合も<code>&quot;es6&quot;</code>モジュールとしてコンパイルされ、それがnode.jsで動かせないっぽい。
 ワーニングに示されてる対応をしても動作しなかった。</p>
 <p>あれこれ調べたが、結局は<a href="https://www.npmjs.com/package/ts-node#commonjs">ts-nodeの説明</a>に書かれていた。
-曰く、tsconfig.jsonに追加で<code>&quot;ts-node&quot;: &#123;&quot;compilerOptions&quot;: &#123;&quot;module&quot;: &quot;CommonJS&quot;&#125;&#125;</code>と指定する：</p>
+曰く、tsconfig.jsonに追加で<code>&quot;ts-node&quot;: {&quot;compilerOptions&quot;: {&quot;module&quot;: &quot;CommonJS&quot;}}</code>と指定する：</p>
 <figure class="highlight json"><figcaption><span>[tsconfig.json]</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;compilerOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;module&quot;</span><span class="punctuation">:</span> <span class="string">&quot;es6&quot;</span><span class="punctuation">,</span></span><br><span class="line">    ...</span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  ...<span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ts-node&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;compilerOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;module&quot;</span><span class="punctuation">:</span> <span class="string">&quot;CommonJS&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>（他にはWebPackで使用するtsconfigのファイルを変更（<a href="https://mizchi.dev/202006101314-switch-tsconfig-on-webpack">webpack + ts-loader で使う tsconfig.json を動的に切り替える - mizdev</a>）、
@@ -257,7 +257,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li></ul>
                 </div>
             </div>
 

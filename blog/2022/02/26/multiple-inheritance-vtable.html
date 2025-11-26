@@ -92,7 +92,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -233,14 +233,14 @@
 <code>B</code> 側の仮想関数テーブルから <code>f</code> が呼び出された場合に渡ってくる <code>this_</code> は <code>B</code> なので、 <code>C</code> 内の <code>B</code> のメンバ開始位置 <code>vtable2</code> を指している。
 なので <code>B_TO_C</code> でポインタを戻す処理を挟んでから <code>c_f</code> に渡してやる
 （Compiler Explorerでは <code>jmp .LTHUNK0</code> となっていて、どこに飛んでいるのかは不明だが多分…）。</p>
-<h4 id="メイン部"><a href="#メイン部" class="headerlink" title="メイン部"></a>メイン部</h4><pre><code class="language-c">int main() &#123;
+<h4 id="メイン部"><a href="#メイン部" class="headerlink" title="メイン部"></a>メイン部</h4><pre><code class="language-c">int main() {
   C* p = malloc(sizeof(*p));
   c_ctor(p);
   afunc(C_TO_A(p));
   bfunc(C_TO_B(p));
   (*p-&gt;vtable-&gt;f)(p);
   free(p);
-&#125;
+}
 </code></pre>
 <p><code>afunc</code> や <code>bfunc</code> などの仮想関数じゃないメソッド呼び出しはコンパイル時に解決できるので、関数の直接呼び出しになる。
 <code>C</code> インスタンスに対する <code>f</code> の呼び出しは第一の親の <code>vtable</code> 経由になる。</p>
@@ -279,7 +279,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li></ul>
                 </div>
             </div>
 

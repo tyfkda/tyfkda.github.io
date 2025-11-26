@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="強化学習の題材としてファミコンのスーパーマリオをクリアさせるというのは見た目的におもしろいっちゃーおもしろいけど、正直右Bダッシュにジャンプを組み合わせればクリアするピンポイントを発見してそれっぽく学習したかのように見えてしまうのではないかという疑念があった（自分的には）。
+本当にまともに学習してるのかというのを試したくて、別の題材としてパックマンを動かしてみることにした。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/11/26/pacman-rl-sb3.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-11-26
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/nes/">#nes</a> <a href="/tags/reinforcement-learning/">#reinforcement learning</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>強化学習の題材として<a href="/blog/2024/08/07/smb-rl-sb3.html" title="スーパーマリオの強化学習を動かす（Stable Baselines 3）">ファミコンのスーパーマリオをクリアさせる</a>というのは見た目的におもしろいっちゃーおもしろいけど、正直右Bダッシュにジャンプを組み合わせればクリアするピンポイントを発見してそれっぽく学習したかのように見えてしまうのではないかという疑念があった（自分的には）。
+本当にまともに学習してるのかというのを試したくて、別の題材としてパックマンを動かしてみることにした。</p>
+<div style="text-align:center"><img src="/assets/pacman.png" alt="パックマンの強化学習" title="パックマンの強化学習" style="image-rendering:pixelated; width:90%; border-radius:8px; box-shadow:0 0 10px" /></div>
+
+<span id="more"></span>
+
+<p>とはいえパックマンは固定画面、わかりやすい色使い、死亡・クリア条件が明確、可能な行動が「上下左右または入力なし」と少ない、
+と直感的にはスーパーマリオに比べても単純だし余裕でステージクリアくらいするっしょと思っていた。</p>
+<h2 id="Gym-nasium-で任意のファミコンゲームを動かす方法"><a href="#Gym-nasium-で任意のファミコンゲームを動かす方法" class="headerlink" title="Gym(nasium)で任意のファミコンゲームを動かす方法"></a>Gym(nasium)で任意のファミコンゲームを動かす方法</h2><p><a href="https://github.com/Kautenja/gym-super-mario-bros">スーパーマリオのGym環境</a>がどのような構成かというと<a href="https://github.com/Kautenja/nes-py">nes-py</a>でファミコンをエミュレーションして、その出力画像を強化学習の観測できる環境として入力に渡す。</p>
+<p>強化学習の報酬はエミュレーションのRAMの内容からプレイヤーの位置や生死状態を判定して、強化学習フレームワークGymで動くように状態や報酬を返すということをしている。</p>
+<p>これをパックマンに置き換えるにはエミュレーションの部分はそのまま使えるが、報酬を決めるためのRAMのどのアドレスになんの情報を格納しているのかを調べる必要がある。</p>
+<p>あとリセット状態からタイトル画面を飛ばしてゲーム画面から学習を始めるようにするためにスタートボタンを押すという処理も書く必要がある。</p>
+<h3 id="ファミコン版パックマンのRAM内容"><a href="#ファミコン版パックマンのRAM内容" class="headerlink" title="ファミコン版パックマンのRAM内容"></a>ファミコン版パックマンのRAM内容</h3><p>ではということでマシン語の解析をやっていく。
+ファミコンは<a href="https://ja.wikipedia.org/wiki/MOS_6502">MOS 6502</a>というCPUが使われているので、そのマシンコードとしてバイナリファイルを逆アセンブルしてやる。</p>
+<p>NMIベクトル(<code>$fffa</code>)からの毎フレーム行われる処理を追ったり、パッドの入力（メモリ<code>$4016</code>の読み出し）から自機の動作を特定したり、BGの書き換え（<code>$2000</code>〜）からスコア情報を調べたり地道に追っていく。
+調べた結果RAMの内容をある程度特定した：</p>
+<table>
+<thead>
+<tr>
+<th align="left">RAM</th>
+<th align="left">内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">$001a</td>
+<td align="left">プレイヤーX座標（スプライト座標は-12）　$001bが小数部</td>
+</tr>
+<tr>
+<td align="left">$001c</td>
+<td align="left">プレイヤーY座標（スプライト座標は+3）　$001dが小数部</td>
+</tr>
+<tr>
+<td align="left">$001e~$002d</td>
+<td align="left">モンスター座標（各4バイト：0,1&#x3D;X、2,3&#x3D;Y）</td>
+</tr>
+<tr>
+<td align="left">$003f</td>
+<td align="left">ゲーム全体の状態（0,2&#x3D;タイトル、4&#x3D;ゲーム、6&#x3D;敵を食べてる、8&#x3D;プレイヤー死亡、10&#x3D;ゲームオーバー、12&#x3D;ステージクリア）</td>
+</tr>
+<tr>
+<td align="left">$0050</td>
+<td align="left">移動方向（0&#x3D;上、1&#x3D;左、2&#x3D;下、3&#x3D;右）</td>
+</tr>
+<tr>
+<td align="left">$0067</td>
+<td align="left">残機数</td>
+</tr>
+<tr>
+<td align="left">$0068</td>
+<td align="left">ステージ番号</td>
+</tr>
+<tr>
+<td align="left">$006a</td>
+<td align="left">残りクッキーの数（初期値：192）</td>
+</tr>
+<tr>
+<td align="left">$0070~$0075</td>
+<td align="left">スコア（各桁0~9、下位から）</td>
+</tr>
+</tbody></table>
+<p>RAMの内容がわかればあとはフレームごとに内容を読み出して報酬判定に利用するコードを書いてやればよい。</p>
+<h2 id="強化学習"><a href="#強化学習" class="headerlink" title="強化学習"></a>強化学習</h2><h3 id="パックマン報酬関数"><a href="#パックマン報酬関数" class="headerlink" title="パックマン報酬関数"></a>パックマン報酬関数</h3><p>エージェントを希望の行動に導くためには強化学習の報酬をどうするか。
+スーパーマリオでは<a href="https://github.com/Kautenja/gym-super-mario-bros/blob/bcb8f10c3e3676118a7364a68f5c0eb287116d7a/gym_super_mario_bros/smb_env.py#L395-L397">右移動量＋タイムペナルティ＋死亡ペナルティ</a>となっていた
+（ただし<a href="https://github.com/tyfkda/smb-rl-sb3/blob/6bc56a150c392f7d2ec37c1eb04ea6f000ea322e/mario_net.py#L60-L82">カスタマイズで置き換えている</a>）。
+それを元に以下のようにしてみた：</p>
+<ul>
+<li>スコア報酬：スコア増分（ただしそのままでは問題があったので多少調整）<ul>
+<li>エサを取り尽くして欲しいので<code>50</code>に上げ、逆にパワーエサはピンチに追い込まれてから食べて欲しいので<code>-300</code>のペナルティに</li>
+</ul>
+</li>
+<li>タイムペナルティ：毎フレーム<code>-1</code></li>
+<li>死亡ペナルティ：<code>-500</code></li>
+<li>ステージクリアボーナス：<code>+1000</code></li>
+</ul>
+<p>パワーエサを食べて無敵状態になると敵を連続して捕獲するごとにスコアが<code>200</code>点から倍々で最大<code>1600</code>点になるが、nes-pyでは<a href="https://github.com/Kautenja/nes-py/blob/b6f4e26a96cf1dc2329b3b45b9f785dd7dbb30c6/nes_py/nes_env.py#L309-L313"><code>reward_range</code>によって報酬が制限される</a>らしく、<code>-1000</code>〜<code>+1000</code>の範囲としてみた。</p>
+<ul>
+<li>ステージクリア優先というよりかは敵捕獲優先になりそうではあるが、パワーエサは4つしかなく何度も行えないので問題ないだろうと考えた</li>
+</ul>
+<h3 id="ネットワーク構成"><a href="#ネットワーク構成" class="headerlink" title="ネットワーク構成"></a>ネットワーク構成</h3><p>nes-pyでエミュレーションした結果の画像情報256x240x3を強化学習に食わせる際に、どのような前処理を施すかや、ネットワーク構成にするかには自由度がある。
+元のスーパーマリオでは前処理で84x84に縮小、モノクロ化して、CNNで畳み込んでいた。</p>
+<p>パックマンでは色を保持した方が認識しやすいんじゃなかろうかという推測からモノクロ化は適用しないようにした。
+また画面の右部分はスコア表示などで直接ゲームには関係ないのでクロップしてみた。</p>
+<div style="text-align:center"><img src="/assets/pacman84x84.png" alt="84x84縮小画像" title="84x84縮小画像" style="width:50%; image-rendering:pixelated; box-shadow:0 0 10px" /></div>
+
+<ul>
+<li>CNNは3段で特徴数は全て<code>64</code><ul>
+<li>プーリング層はなくて、畳み込みでだいたい縦横1&#x2F;4→1&#x2F;2→1&#x2F;2</li>
+<li>これはStable Baselines 3の<code>CnnPolicy</code>のデフォルトっぽい</li>
+</ul>
+</li>
+<li>活性化関数の前に<a href="/blog/2016/09/14/batch-norm-mnist.html" title="MNISTにバッチ正規化を適用">バッチ正規化</a>を入れてみた</li>
+<li>活性化関数：<code>ReLU</code></li>
+<li>全結合の特徴数は<code>512</code></li>
+<li>スキップフレーム4、フレームスタック4段</li>
+</ul>
+<h3 id="学習結果：❌"><a href="#学習結果：❌" class="headerlink" title="学習結果：❌"></a>学習結果：❌</h3><p>強化学習のコードは前回と同様にStable Baselines3で、アルゴリズムは一番性能がよさげだったPPOを使ってみた。
+が結果としては300万ステップ学習させてもステージクリアには至らず、エサを半分ほど食べるくらいにしかならなかった。</p>
+<ul>
+<li>不可解なのは敵から逃げるという行動をまったく学んでないように見える<ul>
+<li>報酬からスコアを除いたり割引率ガンマを減らしたりしてみたが効果はなかった</li>
+<li>そもそもエージェントが観測できるのは画面の映像情報だけなので、自分が操作してるのはどれとか取った行動がどう影響したかとか認識できてるのかも不明だし…</li>
+</ul>
+</li>
+<li>そのくせパワーエサを食べることだけは一丁前に学ぶのはなぜなのか<ul>
+<li>パワーエサにペナルティを与えたところ一応すぐには食べなくなる</li>
+</ul>
+</li>
+<li>学習が進むとステージ開始後の行動がほとんど固定されてしまうのがいまいち面白味がない…</li>
+</ul>
+<h4 id="試したこと"><a href="#試したこと" class="headerlink" title="試したこと"></a>試したこと</h4><ul>
+<li>隠れ層のニューロン数を増やしたり、段数を増やしたり</li>
+<li>入力画像をカラーじゃなくモノクロにしてみたり</li>
+<li>ネットワークの最後、全結合の後に<code>ReLU</code>を適用しているのが怪しい？か疑った、が別にこれでいいっぽい？</li>
+<li>単にスコア増加を報酬にすると敵を食べることを優先してしまうのかも？と思ってエサのみにしても変わらず</li>
+<li>死亡ペナルティで<code>-500</code>とか与えたのが極端で悪影響か？と減らしたり<code>0</code>にしたりしてみたがダメ</li>
+<li>タイムペナルティじゃなくて、長く生き延びる方がマシなんじゃないかと小さな報酬にしてみてもダメ</li>
+<li>スキップフレーム数が多いと繊細な判断ができないのかもと思って4から2に減らしてみたり</li>
+<li>スーパーマリオのような横スクロールとなにが違うかと考えたときに画面中でのプレイヤー位置が固定してたら認識しやすいんじゃないかと思い<a href="https://github.com/tyfkda/pacman-rl-sb3/blob/41ae7d1bbfa46629cde470117dc9f64e64c0ce46/pacman_net.py#L75-L89">プレイヤーを中心に画像を加工</a>して与えてみたが改善せず</li>
+<li>活性化関数：<code>ReLU</code>を<code>LeakyReLU</code>や<code>SiLU</code>(Swish)、また<code>FReLU</code>に変えてみたが結果は悪化</li>
+<li>バッチ正規化：あまり効果感じず</li>
+<li>Pointwise convolution、Global Average Pooling</li>
+</ul>
+<h2 id="グラディウスも試してみた"><a href="#グラディウスも試してみた" class="headerlink" title="グラディウスも試してみた"></a>グラディウスも試してみた</h2><p>パックマンさえクリアできないようでは歯がたたないだろうとは思うが、煮詰まってたこともありヒントになることもあるかもしれないと思いグラディウスも動かしてみることにした。</p>
+<div style="text-align:center"><img src="/assets/gradius.png" alt="グラディウスの強化学習" title="グラディウスの強化学習" style="image-rendering:pixelated; width:90%; border-radius:8px; box-shadow:0 0 10px" /></div>
+
+<p>グラディウスはいわゆる横スクロールシューティングゲームで、可能な行動は移動が上下左右斜めありの8方向と、ショットやパワーアップのボタン操作も組み合わせるとかなりの数になるのが強化学習としてはネックだろう。</p>
+<h3 id="グラディウスのRAM内容"><a href="#グラディウスのRAM内容" class="headerlink" title="グラディウスのRAM内容"></a>グラディウスのRAM内容</h3><p>解析結果から以下の通り：</p>
+<table>
+<thead>
+<tr>
+<th align="left">RAM</th>
+<th align="left">内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">$0000</td>
+<td align="left">ゲーム全体の状態（0,1&#x3D;タイトル、2&#x3D;デモ、3&#x3D;ゲーム開始、5&#x3D;ゲーム中）</td>
+</tr>
+<tr>
+<td align="left">$0019</td>
+<td align="left">ステージ番号</td>
+</tr>
+<tr>
+<td align="left">$0020</td>
+<td align="left">残機数</td>
+</tr>
+<tr>
+<td align="left">$0040</td>
+<td align="left">自機スピード</td>
+</tr>
+<tr>
+<td align="left">$0041</td>
+<td align="left">ミサイル有無</td>
+</tr>
+<tr>
+<td align="left">$0042</td>
+<td align="left">所持カプセル数</td>
+</tr>
+<tr>
+<td align="left">$0044</td>
+<td align="left">ショット種別（0&#x3D;ノーマル、1&#x3D;レーザー、2&#x3D;ダブル）</td>
+</tr>
+<tr>
+<td align="left">$0045</td>
+<td align="left">オプションの数</td>
+</tr>
+<tr>
+<td align="left">$0046</td>
+<td align="left">パリア耐久度</td>
+</tr>
+<tr>
+<td align="left">$0100</td>
+<td align="left">プレイヤーの状態（1&#x3D;通常、2&#x3D;死亡）</td>
+</tr>
+<tr>
+<td align="left">$0320</td>
+<td align="left">プレイヤーY座標</td>
+</tr>
+<tr>
+<td align="left">$0360</td>
+<td align="left">プレイヤーX座標</td>
+</tr>
+<tr>
+<td align="left">$07a0~$07b7</td>
+<td align="left">オプションX座標（リングバッファ：サイズ＝24、($0160のオプションカウンタ-オプション番号✖️11) % 24）</td>
+</tr>
+<tr>
+<td align="left">$07c0~$07d7</td>
+<td align="left">オプションY座標（同上）</td>
+</tr>
+<tr>
+<td align="left">$07e4~$07e6</td>
+<td align="left">1Pスコア（BCD表現、下位から、値は1&#x2F;10）</td>
+</tr>
+</tbody></table>
+<h3 id="グラディウスの強化学習での課題点"><a href="#グラディウスの強化学習での課題点" class="headerlink" title="グラディウスの強化学習での課題点"></a>グラディウスの強化学習での課題点</h3><p>グラディウスはスーパーマリオやパックマンと違う課題があるように思う。
+それは観測できる状態として得られる画面のピクセル情報からは自分の現在のパワーアップ状態が（直接は）把握できない。
+ということからして、「スピードは2個までに抑えておこう」とか「オプションやレーザーやミサイルをつけた方が有利」なんてことを学べると思えない。</p>
+<p>また行動としてショット撃つ・撃たないや、パワーアップする・しないを掛け合わせると行動数が膨れ上がって大変なことになる。
+行動の種類が多いと学習が難しそうなので、<a href="https://github.com/tyfkda/gradius-rl-sb3/blob/7204f8b8b60c2a25b0d2ed829d8324da6f9a3250/gradius_net.py#L95-L103">ショットの連射とパワーアップの選択は自動で行う</a>ようにして、移動方向のみを学習させるようにしてみた。</p>
+<h3 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h3><p>言わずもがな、ステージ１の地形の最初のあたりで敵の弾にやられる。
+長く学習させても敵や弾を避ける方向に動いてるようには見えず、ランダム動作と大差ない…。</p>
+<h2 id="今後のステップ"><a href="#今後のステップ" class="headerlink" title="今後のステップ"></a>今後のステップ</h2><p>強化学習のアルゴリズムの動作の理解も自作もできてない現状、手詰まり…。</p>
+<ul>
+<li>まずは敵から逃げることを学ばないことには始まらない<ul>
+<li>CNNがちゃんと自分や敵を認識してるのか、注目する箇所を可視化してみる</li>
+</ul>
+</li>
+<li>認識しやすいように敵を１色にしてみる？</li>
+<li>プレイヤーとエサとパワーエサが同じ色なのを変えてみる？</li>
+<li>DQNでAtariのMs.Pacmanを学習してるはずなのでどうやってるのか見てみる</li>
+</ul>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li>リポジトリ：<ul>
+<li>パックマン：<a href="https://github.com/tyfkda/pacman-rl-sb3">pacman-rl-sb3</a></li>
+<li>グラディウス：<a href="https://github.com/tyfkda/gradius-rl-sb3">gradius-rl-sb3</a></li>
+</ul>
+</li>
+<li><a href="https://github.com/tyfkda/nesemu/blob/a713534c454893cc2a7bbfdc94ff6234962b45df/tools/analyzer.ts">TypeScriptで書いた6502逆アセンブラ</a> アドレスにラベル名を指定できる</li>
+<li><a href="https://www.nintendo.co.jp/clv/manuals/ja/pdf/CLV-P-HABMJ.pdf">ファミコン版のパックマン取扱説明書</a></li>
+<li>過去記事：<ul>
+<li><a href="/blog/2024/08/07/smb-rl-sb3.html" title="スーパーマリオの強化学習を動かす（Stable Baselines 3）">スーパーマリオの強化学習を動かす（Stable Baselines 3）</a> 強化学習、Stable Baselines 3について</li>
+<li><a href="/blog/2024/05/31/reinforce-invert-double-pendulum.html" title="強化学習に再挑戦（二重倒立振子）">強化学習に再挑戦（二重倒立振子）</a> Pythonの環境整備について</li>
+</ul>
+</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2025/11/10/pt-nee-mis.html">前：パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/08/07/smb-rl-sb3.html" title="スーパーマリオの強化学習を動かす（Stable Baselines 3）" rel="bookmark">スーパーマリオの強化学習を動かす（Stable Baselines 3）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/04/06/nes-apu-dmc.html" title="ファミコンのDMCチャンネルの再現方法" rel="bookmark">ファミコンのDMCチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/07/07/nes-scrolling.html" title="ファミコンでのBGスクロール" rel="bookmark">ファミコンでのBGスクロール</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
+</body>
+</html>

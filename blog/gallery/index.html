@@ -89,7 +89,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -153,22 +153,26 @@
     }
 
     .card-container {
-        display: flex;
+        display: grid;
         justify-content: flex-start;
         position: relative;
-        flex-wrap: wrap;
         margin: 0 auto;
+        grid-template-columns: repeat(auto-fill, minmax(min(25vw, 400px),1fr));
     }
 
-    .card {
+    .card2 {
         position: relative;
+        width: 100%;
+        height: min(25vw, 400px);
+        aspect-ratio: 1;
+        padding: 4px;
+    }
+    .card {
         border:1px solid lightgray;
         border-radius:8px;
         overflow: hidden;
-        height: min(25vw, 400px);
-        aspect-ratio: 1;
-        margin: 4px;
-        flex-grow: 1;
+        width: 100%;
+        height: 100%;
     }
     .card img {
         object-fit: cover;
@@ -179,7 +183,7 @@
     .card img:hover {
         transform: scale(1.1);
     }
-    .card::before {
+    .card2::before {
         content: attr(data-hover);
         display: block;
         position: absolute;
@@ -197,7 +201,7 @@
         pointer-events: none;
         transition: opacity 0.3s ease;
     }
-    .card:hover::before {
+    .card2:hover::before {
         opacity: 1;
     }
 
@@ -205,12 +209,18 @@
         .gallery-container {
             padding: 0;
         }
-        .card {
-            height: 100vw;
+        .card-container {
+            grid-template-columns: 1fr;
+        }
+        .card2 {
+            height: auto;
+            aspect-ratio: auto;
             margin: 0;
+            padding: 8px 0;
+        }
+        .card {
             border-radius: 0;
             border: none;
-            margin: 8px 0;
         }
     }
 </style>
@@ -233,320 +243,320 @@
 <div class="gallery-container">
     <div class="card-container">
         
-            <div class="card" data-hover="PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)">
+            <div class="card2" data-hover="PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)"><div class="card">
                 <a href="/blog/2025/06/06/pbr-material-pathtracer.html">
                     <img src="/assets/pbr-material-pt/image-ggx.jpg" alt="PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)" title="PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="スーパーマリオの強化学習を動かす（Stable Baselines 3）">
+            <div class="card2" data-hover="スーパーマリオの強化学習を動かす（Stable Baselines 3）"><div class="card">
                 <a href="/blog/2024/08/07/smb-rl-sb3.html">
                     <img src="/assets/smb-rl-sb3/smb-rl-sb3.png" alt="スーパーマリオの強化学習を動かす（Stable Baselines 3）" title="スーパーマリオの強化学習を動かす（Stable Baselines 3）"
                         loading="lazy" style="image-rendering:pixelated">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="折れ線にフィットするベジェ曲線を求める方法">
+            <div class="card2" data-hover="折れ線にフィットするベジェ曲線を求める方法"><div class="card">
                 <a href="/blog/2024/03/12/fit-curve.html">
                     <img src="/assets/gallery/fit-curve.webp" alt="折れ線にフィットするベジェ曲線を求める方法" title="折れ線にフィットするベジェ曲線を求める方法"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="Roseスクリーンセーバーを再現">
+            <div class="card2" data-hover="Roseスクリーンセーバーを再現"><div class="card">
                 <a href="/blog/2024/01/27/rose-screen-saver.html">
                     <img src="/assets/gallery/rose.webp" alt="Roseスクリーンセーバーを再現" title="Roseスクリーンセーバーを再現"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="箱入り娘パズルを解く（幅優先探索）">
+            <div class="card2" data-hover="箱入り娘パズルを解く（幅優先探索）"><div class="card">
                 <a href="/blog/2024/01/09/hakoiri-solver.html">
                     <img src="/assets/hakoiri.png" alt="箱入り娘パズルを解く（幅優先探索）" title="箱入り娘パズルを解く（幅優先探索）"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="【WebGPU】全方位影と映り込みと">
+            <div class="card2" data-hover="【WebGPU】全方位影と映り込みと"><div class="card">
                 <a href="/blog/2023/11/29/paraboloid-shadow-envmap.html">
                     <img src="https://raw.githubusercontent.com/tyfkda/paraboloid_shadow_envmap/main/ss.jpg" alt="【WebGPU】全方位影と映り込みと" title="【WebGPU】全方位影と映り込みと"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="【WebGPU】Deferred RenderingとShadow Mappingと">
+            <div class="card2" data-hover="【WebGPU】Deferred RenderingとShadow Mappingと"><div class="card">
                 <a href="/blog/2023/11/09/deferred-shadow-mapping.html">
                     <img src="https://raw.githubusercontent.com/tyfkda/deferred_shadow_mapping/main/ss.jpg" alt="【WebGPU】Deferred RenderingとShadow Mappingと" title="【WebGPU】Deferred RenderingとShadow Mappingと"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="WebGPUで反応拡散系">
+            <div class="card2" data-hover="WebGPUで反応拡散系"><div class="card">
                 <a href="/blog/2023/10/10/webgpu-reaction-diffusion.html">
                     <img src="/assets/gallery/webgpu-reaction-diffusion.webp" alt="WebGPUで反応拡散系" title="WebGPUで反応拡散系"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="ペントミノパズルを解く（深さ優先探索法、Dancing Links法）">
+            <div class="card2" data-hover="ペントミノパズルを解く（深さ優先探索法、Dancing Links法）"><div class="card">
                 <a href="/blog/2023/05/12/pentomino-solver.html">
                     <img src="/assets/gallery/pentomino-solver.webp" alt="ペントミノパズルを解く（深さ優先探索法、Dancing Links法）" title="ペントミノパズルを解く（深さ優先探索法、Dancing Links法）"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="【WebAudio】スペクトラムアナライザーを作る">
+            <div class="card2" data-hover="【WebAudio】スペクトラムアナライザーを作る"><div class="card">
                 <a href="/blog/2023/03/11/spectrum-analyzer.html">
                     <img src="/assets/gallery/spectrum-analyzer.webp" alt="【WebAudio】スペクトラムアナライザーを作る" title="【WebAudio】スペクトラムアナライザーを作る"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="階段三角波と聞き比べ">
+            <div class="card2" data-hover="階段三角波と聞き比べ"><div class="card">
                 <a href="/blog/2021/05/03/quantized-tri-wave.html">
                     <img src="/assets/gallery/quantized-tri-wave.webp" alt="階段三角波と聞き比べ" title="階段三角波と聞き比べ"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)">
+            <div class="card2" data-hover="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)"><div class="card">
                 <a href="/blog/2020/10/26/simplify-line-segments.html">
                     <img src="/assets/gallery/simplify-line-segments.webp" alt="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)" title="折れ線を簡略化する方法(Ramer-Douglas-Peucker法)"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた">
+            <div class="card2" data-hover="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた"><div class="card">
                 <a href="/blog/2020/09/17/galangua.html">
                     <img src="/assets/galangua.png" alt="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた"
                         loading="lazy" style="image-rendering:pixelated">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="NANDでALUを実装">
+            <div class="card2" data-hover="NANDでALUを実装"><div class="card">
                 <a href="/blog/2018/10/13/nand-alu.html">
                     <img src="/assets/gallery/nand-alu.webp" alt="NANDでALUを実装" title="NANDでALUを実装"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="【Unity】Shader Graphでインテリアマッピング">
+            <div class="card2" data-hover="【Unity】Shader Graphでインテリアマッピング"><div class="card">
                 <a href="/blog/2018/09/23/interior-mapping.html">
                     <img src="/assets/interiormapping.jpg" alt="【Unity】Shader Graphでインテリアマッピング" title="【Unity】Shader Graphでインテリアマッピング"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="反応拡散系">
+            <div class="card2" data-hover="反応拡散系"><div class="card">
                 <a href="/blog/2017/07/01/reaction-diffusion.html">
                     <img src="/assets/gallery/reaction-diffusion.webp" alt="反応拡散系" title="反応拡散系"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="TensorFlowでひらがな・漢字文字認識">
+            <div class="card2" data-hover="TensorFlowでひらがな・漢字文字認識"><div class="card">
                 <a href="/blog/2016/08/17/tensorflow-cnn.html">
                     <img src="/assets/cnn-kanji.png" alt="TensorFlowでひらがな・漢字文字認識" title="TensorFlowでひらがな・漢字文字認識"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="黄金角">
+            <div class="card2" data-hover="黄金角"><div class="card">
                 <a href="/blog/2016/04/18/golden-angle.html">
                     <img src="/assets/gallery/golden-angle.webp" alt="黄金角" title="黄金角"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="メトロポリスサンプリングをカラー値に適用する">
+            <div class="card2" data-hover="メトロポリスサンプリングをカラー値に適用する"><div class="card">
                 <a href="/blog/2014/12/22/mlt-color.html">
                     <img src="/assets/gallery/mlt-color.webp" alt="メトロポリスサンプリングをカラー値に適用する" title="メトロポリスサンプリングをカラー値に適用する"
                         loading="lazy" style="image-rendering:pixelated">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="「OS自作入門」とりあえず完了">
+            <div class="card2" data-hover="「OS自作入門」とりあえず完了"><div class="card">
                 <a href="/blog/2014/02/23/fin-hariboteos.html">
                     <img src="/assets/haribote-fin.png" alt="「OS自作入門」とりあえず完了" title="「OS自作入門」とりあえず完了"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="ODEのジョイントで角度ばねを実現する">
+            <div class="card2" data-hover="ODEのジョイントで角度ばねを実現する"><div class="card">
                 <a href="/blog/2013/05/30/ode-damper-string.html">
                     <img src="/assets/snake.png" alt="ODEのジョイントで角度ばねを実現する" title="ODEのジョイントで角度ばねを実現する"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="８ｘ８ドットマトリクスで文字表示">
+            <div class="card2" data-hover="８ｘ８ドットマトリクスで文字表示"><div class="card">
                 <a href="/blog/2013/02/23/dot-matrix.html">
                     <img src="/assets/dot-matrix.jpg" alt="８ｘ８ドットマトリクスで文字表示" title="８ｘ８ドットマトリクスで文字表示"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="７セグ４桁表示（ダイナミック接続）">
+            <div class="card2" data-hover="７セグ４桁表示（ダイナミック接続）"><div class="card">
                 <a href="/blog/2013/02/21/7seg-dynamic.html">
                     <img src="/assets/japanino-7segx4.jpg" alt="７セグ４桁表示（ダイナミック接続）" title="７セグ４桁表示（ダイナミック接続）"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="Japaninoで7セグ制御">
+            <div class="card2" data-hover="Japaninoで7セグ制御"><div class="card">
                 <a href="/blog/2013/02/15/japanino-7seg.html">
                     <img src="/assets/japanino-7seg.jpg" alt="Japaninoで7セグ制御" title="Japaninoで7セグ制御"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="誤差拡散法にガンマ補正を施す">
+            <div class="card2" data-hover="誤差拡散法にガンマ補正を施す"><div class="card">
                 <a href="/blog/2013/01/10/error-diffusion-gamma.html">
                     <img src="/assets/lena-closeup-errdiffuse.png" alt="誤差拡散法にガンマ補正を施す" title="誤差拡散法にガンマ補正を施す"
                         loading="lazy" style="image-rendering:pixelated">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="WebGLで行列パレットスキニング、ブレンドウェイトあり">
+            <div class="card2" data-hover="WebGLで行列パレットスキニング、ブレンドウェイトあり"><div class="card">
                 <a href="/blog/2011/12/30/matrix-palette-skinning-blend.html">
                     <img src="/assets/gallery/matrix-palette-skinning-blend.webp" alt="WebGLで行列パレットスキニング、ブレンドウェイトあり" title="WebGLで行列パレットスキニング、ブレンドウェイトあり"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="フレネル反射">
+            <div class="card2" data-hover="フレネル反射"><div class="card">
                 <a href="/blog/2010/03/12/fresnel-reflection.html">
                     <img src="/assets/blog/fresnel-reflection2.png" alt="フレネル反射" title="フレネル反射"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="ガラス内部で距離による減衰">
+            <div class="card2" data-hover="ガラス内部で距離による減衰"><div class="card">
                 <a href="/blog/2010/02/23/glass-decay.html">
                     <img src="/assets/blog/glass-decay.png" alt="ガラス内部で距離による減衰" title="ガラス内部で距離による減衰"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="イメージベースドライティングでドラゴン描画">
+            <div class="card2" data-hover="イメージベースドライティングでドラゴン描画"><div class="card">
                 <a href="/blog/2010/02/10/ibl-dragon.html">
                     <img src="/assets/blog/ibl-dragon.png" alt="イメージベースドライティングでドラゴン描画" title="イメージベースドライティングでドラゴン描画"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="AABBTreeを組み込んで、レイトレでポリゴン描画">
+            <div class="card2" data-hover="AABBTreeを組み込んで、レイトレでポリゴン描画"><div class="card">
                 <a href="/blog/2010/02/07/aabb-tree.html">
                     <img src="/assets/blog/aabb-tree.png" alt="AABBTreeを組み込んで、レイトレでポリゴン描画" title="AABBTreeを組み込んで、レイトレでポリゴン描画"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="ユニフォームグリッドのトラバース">
+            <div class="card2" data-hover="ユニフォームグリッドのトラバース"><div class="card">
                 <a href="/blog/2010/01/29/uniformgrid.html">
                     <img src="/assets/gallery/uniformgrid.webp" alt="ユニフォームグリッドのトラバース" title="ユニフォームグリッドのトラバース"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="夕日が海に反射">
+            <div class="card2" data-hover="夕日が海に反射"><div class="card">
                 <a href="/blog/2009/11/22/sunset-ocean.html">
                     <img src="/assets/blog/sunset-ocean.png" alt="夕日が海に反射" title="夕日が海に反射"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="イメージベースドライティングを試してみる">
+            <div class="card2" data-hover="イメージベースドライティングを試してみる"><div class="card">
                 <a href="/blog/2009/11/16/image-based-lighting.html">
                     <img src="/assets/blog/image-based-lighting1.png" alt="イメージベースドライティングを試してみる" title="イメージベースドライティングを試してみる"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="水面">
+            <div class="card2" data-hover="水面"><div class="card">
                 <a href="/blog/2009/11/14/photonmapping-water.html">
                     <img src="/assets/blog/photonmapping-water2.png" alt="水面" title="水面"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="フォンシェーディングの法線補間は線形でいいんだっけ？">
+            <div class="card2" data-hover="フォンシェーディングの法線補間は線形でいいんだっけ？"><div class="card">
                 <a href="/blog/2009/11/13/phong-shading-normal.html">
                     <img src="/assets/blog/phong-shading-normal.png" alt="フォンシェーディングの法線補間は線形でいいんだっけ？" title="フォンシェーディングの法線補間は線形でいいんだっけ？"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="ハート型のコースティクス">
+            <div class="card2" data-hover="ハート型のコースティクス"><div class="card">
                 <a href="/blog/2009/10/25/cardioid-caustics.html">
                     <img src="/assets/blog/cardioid-caustics.jpg" alt="ハート型のコースティクス" title="ハート型のコースティクス"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="smallpm - Global Illumination in 132 lines of C++">
+            <div class="card2" data-hover="smallpm - Global Illumination in 132 lines of C++"><div class="card">
                 <a href="/blog/2009/10/15/smallpm.html">
                     <img src="/assets/blog/smallpm.jpg" alt="smallpm - Global Illumination in 132 lines of C++" title="smallpm - Global Illumination in 132 lines of C++"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="kd-treeの構築と近傍要素の抽出">
+            <div class="card2" data-hover="kd-treeの構築と近傍要素の抽出"><div class="card">
                 <a href="/blog/2009/10/10/build-kd-tree.html">
                     <img src="/assets/blog/build-kd-tree.png" alt="kd-treeの構築と近傍要素の抽出" title="kd-treeの構築と近傍要素の抽出"
                         loading="lazy" style="image-rendering:pixelated">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="分散レイトレの成果をパストレに組み込んでみる">
+            <div class="card2" data-hover="分散レイトレの成果をパストレに組み込んでみる"><div class="card">
                 <a href="/blog/2009/10/03/distributed-pathtracing.html">
                     <img src="/assets/blog/distributed-pathtracing4.png" alt="分散レイトレの成果をパストレに組み込んでみる" title="分散レイトレの成果をパストレに組み込んでみる"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="分散レイトレ">
+            <div class="card2" data-hover="分散レイトレ"><div class="card">
                 <a href="/blog/2009/09/28/distributed-raytracing.html">
                     <img src="/assets/blog/distributed-raytracing1.png" alt="分散レイトレ" title="分散レイトレ"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="屈折">
+            <div class="card2" data-hover="屈折"><div class="card">
                 <a href="/blog/2009/07/19/refraction.html">
                     <img src="/assets/gallery/refraction.webp" alt="屈折" title="屈折"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="鏡面反射">
+            <div class="card2" data-hover="鏡面反射"><div class="card">
                 <a href="/blog/2009/07/17/reflection.html">
                     <img src="/assets/gallery/reflection.webp" alt="鏡面反射" title="鏡面反射"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="影">
+            <div class="card2" data-hover="影"><div class="card">
                 <a href="/blog/2009/07/17/shadow.html">
                     <img src="/assets/gallery/shadow.webp" alt="影" title="影"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="ディフューズシェーディング">
+            <div class="card2" data-hover="ディフューズシェーディング"><div class="card">
                 <a href="/blog/2009/07/16/diffuse-shading.html">
                     <img src="/assets/gallery/diffuse-shading.webp" alt="ディフューズシェーディング" title="ディフューズシェーディング"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
-            <div class="card" data-hover="レイトレーサー基本のキ">
+            <div class="card2" data-hover="レイトレーサー基本のキ"><div class="card">
                 <a href="/blog/2009/07/16/raycast.html">
                     <img src="/assets/gallery/raycast.webp" alt="レイトレーサー基本のキ" title="レイトレーサー基本のキ"
                         loading="lazy" style="">
                 </a>
-            </div>
+            </div></div>
         
     </div>
 

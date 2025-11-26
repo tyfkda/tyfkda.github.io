@@ -91,7 +91,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -199,7 +199,7 @@
 <h3 id="サーバのソース"><a href="#サーバのソース" class="headerlink" title="サーバのソース"></a>サーバのソース</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// server.js</span></span><br><span class="line">(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="string">&#x27;use strict&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> multer = <span class="built_in">require</span>(<span class="string">&#x27;multer&#x27;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> app = <span class="title function_">express</span>()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// アップロードされるファイルの受け取り</span></span><br><span class="line">  <span class="keyword">const</span> upload = <span class="title function_">multer</span>(&#123;<span class="attr">dest</span>: <span class="string">&#x27;uploaded&#x27;</span>&#125;)</span><br><span class="line">  app.<span class="title function_">post</span>(<span class="string">&#x27;/upload&#x27;</span>, upload.<span class="title function_">single</span>(<span class="string">&#x27;upName&#x27;</span>), <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`originalname: <span class="subst">$&#123;req.file.originalname&#125;</span>`</span>)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`path: <span class="subst">$&#123;req.file.path&#125;</span>`</span>)</span><br><span class="line">    res.<span class="title function_">send</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123;<span class="attr">ok</span>: <span class="literal">true</span>&#125;))</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  app.<span class="title function_">use</span>(<span class="string">&#x27;/&#x27;</span>, express.<span class="title function_">static</span>(<span class="string">&#x27;.&#x27;</span>))  <span class="comment">// 静的ファイルのサーブ</span></span><br><span class="line">  app.<span class="title function_">listen</span>(<span class="number">8080</span>)  <span class="comment">// ポートを指定してサーバ起動</span></span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><code>multer(&#123;dest: アップロードされるファイルの格納先&#125;)</code> で、クライアントからアップロードされた時のファイルの格納先を指定する</li>
+<li><code>multer({dest: アップロードされるファイルの格納先})</code> で、クライアントからアップロードされた時のファイルの格納先を指定する</li>
 <li>クライアントからの送り先のURLと対応するメソッド（<code>app.post(&#39;/upload&#39;)</code>）に対して <code>upload.single(受け取るファイルの名前)</code>で指定すると、指定した格納先にファイルが保存された状態で、リクエスト情報<code>req.file</code>に<code>originalname</code>や<code>path</code>の情報が入ってくる<ul>
 <li>他の情報は<a href="https://github.com/expressjs/multer#file-information">File information</a>参照</li>
 </ul>
@@ -236,7 +236,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li></ul>
                 </div>
             </div>
 

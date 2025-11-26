@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-11-10T14:03:12.930Z</updated>
+  <updated>2025-11-26T10:16:55.200Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,32 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</title>
+    <link href="https://tyfkda.github.io/blog/2025/11/26/pacman-rl-sb3.html"/>
+    <id>https://tyfkda.github.io/blog/2025/11/26/pacman-rl-sb3.html</id>
+    <published>2025-11-26T10:00:00.000Z</published>
+    <updated>2025-11-26T10:16:55.200Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;強化学習の題材として&lt;a href=&quot;/blog/2024/08/07/smb-rl-sb3.html&quot; title=&quot;スーパーマリオの強化学習を動かす（Stable Baselines 3）&quot;&gt;ファミコンのスーパーマリオをクリアさせる&lt;/a&gt;というのは見た目的におもしろいっちゃーおもしろいけど、正直右Bダッシュにジャンプを組み合わせればクリアするピンポイントを発見してそれっぽく学習したかのように見えてしまうのではないかという疑念があった（自分的には）。
+本当にまともに学習してるのかというのを試したくて、別の題材としてパックマンを動かしてみることにした。&lt;/p&gt;
+&lt;div style=&quot;text-align:center&quot;&gt;&lt;img src=&quot;/assets/pacman.png&quot; alt=&quot;パックマンの強化学習&quot; title=&quot;パックマンの強化学習&quot; style=&quot;image-rendering:pixelated; width:90%; border-radius:8px; box-shadow:0 0 10px&quot; /&gt;&lt;/div&gt;</summary>
+    
+    
+    
+    
+    <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
+    
+    <category term="reinforcement learning" scheme="https://tyfkda.github.io/tags/reinforcement-learning/"/>
+    
+  </entry>
+  
+  <entry>
     <title>パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</title>
     <link href="https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html</id>
     <published>2025-11-09T23:06:07.000Z</published>
-    <updated>2025-11-10T14:03:12.930Z</updated>
+    <updated>2025-11-10T23:09:35.517Z</updated>
     
     
     <summary type="html">&lt;p&gt;&amp;nbsp;&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光を考慮&lt;/a&gt;に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。&lt;/p&gt;
@@ -45,7 +66,7 @@
     <link href="https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html"/>
     <id>https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html</id>
     <published>2025-09-01T10:00:00.000Z</published>
-    <updated>2025-10-26T09:46:13.446Z</updated>
+    <updated>2025-11-10T23:09:35.516Z</updated>
     
     
     <summary type="html">&lt;p&gt;コンパイラの主要なトピックでは全然ないけど、余興として自作Cコンパイラにビルトイン関数として&lt;code&gt;clz&lt;/code&gt;と&lt;code&gt;ctz&lt;/code&gt;と&lt;code&gt;popcount&lt;/code&gt;を実装した顛末。&lt;/p&gt;</summary>
@@ -62,7 +83,7 @@
     <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
     <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2025-11-10T14:03:12.930Z</updated>
+    <updated>2025-11-17T07:00:27.079Z</updated>
     
     
     <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
@@ -122,7 +143,7 @@
     <link href="https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html"/>
     <id>https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html</id>
     <published>2025-06-06T12:00:00.000Z</published>
-    <updated>2025-11-10T14:03:12.929Z</updated>
+    <updated>2025-11-10T23:09:35.516Z</updated>
     
     
     <summary type="html">&lt;p&gt;いかにもCGで作りましたっていうクッキリハッキリした反射ではなく、少し不完全な金属の光沢や表面のざらざら具合を表現するためのマテリアル表現をパストレーサーに組み込んでみた。&lt;/p&gt;
@@ -232,25 +253,6 @@ Mach-Oの実行ファイルも自分で生成できるようになればリン�
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
     
     <category term="optimization" scheme="https://tyfkda.github.io/tags/optimization/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>再帰下降法にさよなら！Prattパーサーで式解析を簡単かつ効果的に！</title>
-    <link href="https://tyfkda.github.io/blog/2025/02/01/pratt-parser.html"/>
-    <id>https://tyfkda.github.io/blog/2025/02/01/pratt-parser.html</id>
-    <published>2025-02-01T08:00:00.000Z</published>
-    <updated>2025-07-06T06:03:33.615Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;今までコンパイラでの式のパーサーに再帰下降法を使ってたが、&lt;a href=&quot;/blog/2019/12/22/crafting-interpreters.html&quot; title=&quot;Crafting Interpretersを読んだ&quot;&gt;Crafting Interpretersという本&lt;/a&gt;（以降CI本）でPrattパーサーという手法があることを知った。
-本では加えて直接バイトコードを生成しているため「文法に制限がある」みたいなことが書かれていたのを混同して不安があったが、
-試しにC言語の式のパースに使ってみて問題なく使えることがわかったのでもう今後は再帰下降法を使うのはやめるようPrattパーサーを布教したい。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
     
   </entry>
   

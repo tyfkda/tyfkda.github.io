@@ -92,7 +92,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -293,9 +293,9 @@
 <h4 id="モデルの保存"><a href="#モデルの保存" class="headerlink" title="モデルの保存"></a>モデルの保存</h4><p>転移学習で学習済みのモデルのウェイトを固定して最終段だけ学習するんだったらその最終段のウェイトだけ保存すれば容量を減らせてお得なんじゃないかと思ったが、そのようなメソッドはないらしい。</p>
 <p>別途最終段だけのモデルを作成して自分でウェイトをコピーして保存・実行環境で再構築すればできなくもないようだが面倒だし、MobileNetV3Smallだと10MB程度なので全体を保存することにした。
 （最終的には学習済み部分も固定じゃなく再学習することにしたので、どのみち全て保存することになった。）</p>
-<h4 id="モデルのコンバート"><a href="#モデルのコンバート" class="headerlink" title="モデルのコンバート"></a>モデルのコンバート</h4><p>学習したモデルをブラウザ・TFJSで動かすためには.h5のままではダメで、コンバートしてやる必要がある。</p>
-<a href="/blog/2022/05/05/keras-model-on-tfjs.html" title="Kerasで構築したモデルをTensorFlow.jsで動かす">Kerasで構築したモデルをTensorFlow.jsで動かす</a> で試したように `tensorflowjs_converter` を使う。
-<p>しかし <code>MobileNet</code> で使われている <code>Rescaling</code> というレイヤーがないといってエラーが出る：</p>
+<h4 id="モデルのコンバート"><a href="#モデルのコンバート" class="headerlink" title="モデルのコンバート"></a>モデルのコンバート</h4><p>学習したモデルをブラウザ・TFJSで動かすためには.h5のままではダメで、コンバートしてやる必要がある。
+&nbsp;<a href="/blog/2022/05/05/keras-model-on-tfjs.html" title="Kerasで構築したモデルをTensorFlow.jsで動かす">Kerasで構築したモデルをTensorFlow.jsで動かす</a> で試したように <code>tensorflowjs_converter</code> を使う。
+しかし <code>MobileNet</code> で使われている <code>Rescaling</code> というレイヤーがないといってエラーが出る：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">generic_utils.js:227 Uncaught (in promise) Error: Unknown layer: Rescaling. This may be due to one of the following reasons:</span><br><span class="line">1. The layer is defined in Python, in which case it needs to be ported to TensorFlow.js or your JavaScript code.</span><br><span class="line">2. The custom layer is defined in JavaScript, but is not registered properly with tf.serialization.registerClass().</span><br><span class="line">    at deserializeKerasObject (generic_utils.js:227:1)</span><br><span class="line">    at deserialize (serialization.js:25:34)</span><br><span class="line">    at fromConfig (models.js:861:38)</span><br><span class="line">    at deserializeKerasObject (generic_utils.js:258:1)</span><br><span class="line">    at deserialize (serialization.js:25:34)</span><br><span class="line">    at fromConfig (models.js:861:38)</span><br><span class="line">    at deserializeKerasObject (generic_utils.js:258:1)</span><br><span class="line">    at deserialize (serialization.js:25:34)</span><br><span class="line">    at loadLayersModelFromIOHandler (models.js:222:30)</span><br><span class="line">    at async main.ts:231:17</span><br></pre></td></tr></table></figure>
 
 <p><a href="https://github.com/tensorflow/tfjs/issues/3728#issuecomment-904830370">Error: Unknown layer: Rescaling. · Issue #3728 · tensorflow&#x2F;tfjs · GitHub</a>
@@ -424,7 +424,7 @@ Python では <code>numpy.argpartition</code> で取り出せたが、 TFJSに�
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li></ul>
                 </div>
             </div>
 

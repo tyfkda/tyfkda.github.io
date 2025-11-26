@@ -92,7 +92,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -207,13 +207,13 @@
 
 <p>source&#x2F;tags&#x2F;index.md が生成される。</p>
 <h3 id="内容の書き換え"><a href="#内容の書き換え" class="headerlink" title="内容の書き換え"></a>内容の書き換え</h3><p>Front matterに以下を指定：</p>
-<figure class="highlight md"><figcaption><span>source/tags/index.md</span></figcaption><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: All tags</span><br><span class="line"><span class="section">type: &quot;tags&quot;</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight md"><figcaption><span>source&#x2F;tags&#x2F;index.md</span></figcaption><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: All tags</span><br><span class="line"><span class="section">type: &quot;tags&quot;</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="メニューに追加"><a href="#メニューに追加" class="headerlink" title="メニューに追加"></a>メニューに追加</h3><p>テーマの_config.yml の <code>menu</code> に追加する：</p>
-<figure class="highlight yaml"><figcaption><span>themes/clean-blog/_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Header</span></span><br><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">Home:</span> <span class="string">/</span></span><br><span class="line">  <span class="attr">Archives:</span> <span class="string">/archives</span></span><br><span class="line">  <span class="attr">Tags:</span> <span class="string">/tags</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>themes&#x2F;clean-blog&#x2F;_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Header</span></span><br><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">Home:</span> <span class="string">/</span></span><br><span class="line">  <span class="attr">Archives:</span> <span class="string">/archives</span></span><br><span class="line">  <span class="attr">Tags:</span> <span class="string">/tags</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="タグ名でソート"><a href="#タグ名でソート" class="headerlink" title="タグ名でソート"></a>タグ名でソート</h3><p>そのままだと順不同だったので、ソートしてやる：</p>
-<figure class="highlight diff"><figcaption><span>themes/clean-blog/layout/page.ejs</span><a href="https://github.com/klugjo/hexo-theme-clean-blog/blob/master/layout/page.ejs#L32">page.ejs</a></figcaption><table><tr><td class="code"><pre><span class="line"><span class="deletion">-                &lt;% items.forEach(function(item)&#123; %&gt;</span></span><br><span class="line"><span class="addition">+                &lt;% items.sort(&#x27;name&#x27;).forEach(function(item)&#123; %&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight diff"><figcaption><span>themes&#x2F;clean-blog&#x2F;layout&#x2F;page.ejs</span><a href="https://github.com/klugjo/hexo-theme-clean-blog/blob/master/layout/page.ejs#L32">page.ejs</a></figcaption><table><tr><td class="code"><pre><span class="line"><span class="deletion">-                &lt;% items.forEach(function(item)&#123; %&gt;</span></span><br><span class="line"><span class="addition">+                &lt;% items.sort(&#x27;name&#x27;).forEach(function(item)&#123; %&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>あとは、<code>c++</code>とか<code>c#</code>とかのタグが作られていないのをどうにかしたい…。</p>
 
@@ -246,7 +246,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li></ul>
                 </div>
             </div>
 

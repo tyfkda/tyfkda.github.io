@@ -94,7 +94,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -210,7 +210,7 @@
 リアルなカメラっぽくしたかったら<a href="http://www.daionet.gr.jp/~masa/column/2007-10-01.html">Masaさんの講演資料</a>を見たほうがいいかな。</p>
 <h4 id="ぼやけた反射、半透明"><a href="#ぼやけた反射、半透明" class="headerlink" title="ぼやけた反射、半透明"></a>ぼやけた反射、半透明</h4><p>glossinessが最大の時は鏡面反射に、ちょっとぼやけたときはBlinn-PhongモデルだかPhongモデルだかに、完全に荒いときはLambertモデルみたいになって欲しい。</p>
 <p>これがなかなかそのものズバリ書いてあるものが見つからない。
-<a href="http://www.writing-renderer.org/raytracing-wiki/index.php/2%E6%AC%A1%E5%85%83%E4%B8%80%E6%A7%98%E5%88%86%E5%B8%83%E3%81%8B%E3%82%89%E5%8D%8A%E7%90%83%E4%B8%8A%E3%81%B8%E3%81%AE%E3%83%9E%E3%83%83%E3%83%97">http://www.writing-renderer.org/raytracing-wiki/index.php/2%E6%AC%A1%E5%85%83%E4%B8%80%E6%A7%98%E5%88%86%E5%B8%83%E3%81%8B%E3%82%89%E5%8D%8A%E7%90%83%E4%B8%8A%E3%81%B8%E3%81%AE%E3%83%9E%E3%83%83%E3%83%97</a>に書いてあったので鏡面反射ベクトルからcosθのべき乗でブラすようにやってみたらそれっぽくなったのでとりあえずそうしてみた。
+<a href="http://www.writing-renderer.org/raytracing-wiki/index.php/2%E6%AC%A1%E5%85%83%E4%B8%80%E6%A7%98%E5%88%86%E5%B8%83%E3%81%8B%E3%82%89%E5%8D%8A%E7%90%83%E4%B8%8A%E3%81%B8%E3%81%AE%E3%83%9E%E3%83%83%E3%83%97">2次元一様分布から半球上へのマップ</a>に書いてあったので鏡面反射ベクトルからcosθのべき乗でブラすようにやってみたらそれっぽくなったのでとりあえずそうしてみた。
 θは鏡面反射からの角度にしてるけど、これがBlinn-Phongモデルになってるのかどうか不明。</p>
 <p>またサンプリングの際にスケーリングさせるんだけど、cosθにしたらなんかそれっぽかったのでそうしてみたけど、まるで根拠なし。
 重点サンプリングされてるんだかなんだか、まるでわからなくなってきた。</p>
@@ -260,7 +260,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li></ul>
                 </div>
             </div>
 

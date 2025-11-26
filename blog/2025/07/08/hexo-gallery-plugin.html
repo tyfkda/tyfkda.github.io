@@ -94,7 +94,7 @@
     <link rel="icon" href="/favicon.ico">
     
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -211,7 +211,7 @@
 （後々<a href="https://hexo.io/ja/api/">API</a>の「拡張」に説明が書かれているのを知った）。</p>
 <ul>
 <li>単純なプラグインの場合、scritsディレクトリ内にJavaScriptのファイルを置く</li>
-<li>ページを生成するには<a href="https://hexo.io/ja/api/generator">ジェネレータ</a>で、<code>hexo.extend.generator.register(&#39;gallery&#39;, function(locals) &#123;...&#125;)</code>で登録する<ul>
+<li>ページを生成するには<a href="https://hexo.io/ja/api/generator">ジェネレータ</a>で、<code>hexo.extend.generator.register(&#39;gallery&#39;, function(locals) {...})</code>で登録する<ul>
 <li>コールバック関数から返すオブジェクトに<code>path</code>, <code>data</code>, <code>layout</code>の各キーに値を格納</li>
 <li>複数のページを生成する場合には配列にして返す</li>
 <li>引数<code>locals</code>にいろいろ入っていて、<code>locals.posts</code>が全てのポスト内容</li>
@@ -261,7 +261,7 @@
 <li><code>flex-grow</code>を指定すると最後の行が割り切れない場合に横に拡大されてしまうのを回避したい</li>
 </ul>
 </li>
-<li>マウスホバーで記事タイトルを表示：<code>&lt;div data-hover=&quot;タイトル&quot;&gt;</code>と指定しておき、<code>.card::before&#123;content:attr(data-hover); opacity:0&#125;</code>、<code>.card:hover::before&#123;opacity:1;&#125;</code>とする</li>
+<li>マウスホバーで記事タイトルを表示：<code>&lt;div data-hover=&quot;タイトル&quot;&gt;</code>と指定しておき、<code>.card::before{content:attr(data-hover); opacity:0}</code>、<code>.card:hover::before{opacity:1;}</code>とする</li>
 </ul>
 <p>できはともかく、画像がたくさん並ぶとなんかいろいろやってきたんだなって感じでよい。</p>
 
@@ -294,7 +294,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li><li class="recent_post"><a href="/blog/2025/06/20/openmp-shared_ptr.html">【C++】shared_ptrとOpenMPの相性が最悪な件</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li><li class="recent_post"><a href="/blog/2025/07/08/hexo-gallery-plugin.html">【Hexo】ギャラリープラグインを作ってみた</a></li></ul>
                 </div>
             </div>
 
