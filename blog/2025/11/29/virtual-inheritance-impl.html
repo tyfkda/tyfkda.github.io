@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="C++には仮想継承という仕組みがある。
+使ったこともこれから使う予定も、それ以前にC++自体を使う機会も乏しい実情。
+しかしながらどうやって実現されているのかには興味があるので調べてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【C++】仮想継承はどう実現されるか？"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【C++】仮想継承はどう実現されるか？ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/11/29/virtual-inheritance-impl.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【C++】仮想継承はどう実現されるか？</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-11-29
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/oop/">#oop</a> <a href="/tags/cplusplus/">#cplusplus</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>C++には仮想継承という仕組みがある。
+使ったこともこれから使う予定も、それ以前にC++自体を使う機会も乏しい実情。
+しかしながらどうやって実現されているのかには興味があるので調べてみた。</p>
+<span id="more"></span>
+
+<p>環境：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ g++ --version</span><br><span class="line">Apple clang version 17.0.0 (clang-1700.4.4.1)</span><br></pre></td></tr></table></figure>
+
+<h3 id="仮想継承とは？"><a href="#仮想継承とは？" class="headerlink" title="仮想継承とは？"></a>仮想継承とは？</h3><p>そもそも「<strong>仮想継承</strong>」とはなにか？
+C++では<em>仮想関数</em>という仕組みがあってそちらはオブジェクト指向言語の基本機能として日常的に使われる（ポリモーフィズム）と思うが、それとは異なり仮想継承というのはほとんど見たことも使ったこともない代物だと思う。</p>
+<p>仮想継承は<strong>C++特有の実装上の機能</strong>で、多重継承で発生する「ダイアモンド継承」での問題を解決するための仕組み。</p>
+<p>同じベースクラスから派生している複数の親を多重継承させた場合、ベースクラスの実体が複数できてしまって齟齬が発生してしまう。
+このケースで通常の継承の代わりに仮想継承を使うことでベースクラスの実体が１つに統合されて、重複されることにより起こる問題が解決できる：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Base</span> &#123;</span><br><span class="line">    <span class="type">int</span> base;</span><br><span class="line">    <span class="built_in">Base</span>() : <span class="built_in">base</span>(<span class="number">0</span>)  &#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dumpBase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Base    = &quot;</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; <span class="string">&quot;, &amp;base = &quot;</span> &lt;&lt; &amp;base &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Derive1</span> : <span class="keyword">public</span> Base &#123;  <span class="comment">// &lt;== これを virtual public に変更すると解決</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setOn1</span><span class="params">(<span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">        base = val;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;setON1: &quot;</span> &lt;&lt; base &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dumpDerive1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Derive1 = &quot;</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; endl;</span><br><span class="line">        <span class="built_in">dumpBase</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Derive2</span> : <span class="keyword">public</span> Base &#123;  <span class="comment">// &lt;== これを virtual public に変更すると解決</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">referOn2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;referOn2: &quot;</span> &lt;&lt; base &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dumpDerive2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Derive2 = &quot;</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; endl;</span><br><span class="line">        <span class="built_in">dumpBase</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Diamond</span> : <span class="keyword">public</span> Derive1, <span class="keyword">public</span> Derive2 &#123;  <span class="comment">// &lt;== ここは変更しなくてよい</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">setOn1</span>(<span class="number">123</span>);  <span class="comment">// セットしてるのに</span></span><br><span class="line">        <span class="built_in">referOn2</span>();   <span class="comment">// 反映されない！</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Diamond* d = <span class="keyword">new</span> <span class="built_in">Diamond</span>();</span><br><span class="line">    d-&gt;<span class="built_in">run</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置のアドレスを表示してみる</span></span><br><span class="line">    cout &lt;&lt; endl &lt;&lt; <span class="string">&quot;Diamond = &quot;</span> &lt;&lt; d &lt;&lt; <span class="string">&quot;, size=&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(*d) &lt;&lt; endl;</span><br><span class="line">    d-&gt;<span class="built_in">dumpDerive1</span>();</span><br><span class="line">    d-&gt;<span class="built_in">dumpDerive2</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// メモリ内容出力</span></span><br><span class="line">    cout &lt;&lt; endl &lt;&lt; hex;</span><br><span class="line">    <span class="keyword">auto</span> p = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">uint32_t</span>*&gt;(d);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; <span class="built_in">sizeof</span>(*d) / <span class="number">4</span>; i += <span class="number">2</span>) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">2</span>) &lt;&lt; (i * <span class="number">4</span>) &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; <span class="built_in">setfill</span>(<span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">        <span class="keyword">if</span> (i + <span class="number">1</span> &lt; <span class="built_in">sizeof</span>(*d) / <span class="number">4</span>)</span><br><span class="line">            cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">8</span>) &lt;&lt; (<span class="type">int</span>)p[i + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            cout &lt;&lt; std::<span class="built_in">string</span>(<span class="number">8</span>, <span class="string">&#x27; &#x27;</span>);</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; <span class="built_in">setw</span>(<span class="number">8</span>) &lt;&lt; (<span class="type">int</span>)p[i] &lt;&lt; endl &lt;&lt; <span class="built_in">setfill</span>(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上記で、<code>Diamond</code>インスタンスで<code>Derive1</code>側の<code>setOn1</code>メソッド経由で<code>Base::base</code>に値をセットしても、<code>Derive2</code>側の<code>referOn2</code>メソッドで取り出すとセットされてない、ということが起こる（別の実体だから）。
+これを<code>public Base</code>という継承を<code>virtual public Base</code>に変更すれば解決できる。</p>
+<p>多重継承している<code>Diamond</code>クラスではなく、単一継承の<code>Deive1</code>や<code>2</code>に仮想継承を指定する必要があるのが注意な点。</p>
+<p>そもそも多重継承やダイアモンド継承をすること自体がプログラム構成的に問題ある気がせんでもないが、まあそれはそれとして。
+動作的には<code>Base</code>クラスの実体を重複させたい場合なんてないだろうから継承のデフォルトを仮想継承にすればいいじゃんと思うが、速度的なデメリットのため副次的な扱いになってるんでしょう。</p>
+<h4 id="仮想継承した場合のメモリレイアウト"><a href="#仮想継承した場合のメモリレイアウト" class="headerlink" title="仮想継承した場合のメモリレイアウト"></a>仮想継承した場合のメモリレイアウト</h4><p>通常の継承の場合、親クラスの実体が子クラスの先頭に配置され、その後に子クラスのフィールドが配置される。
+多重継承させた場合も順に配置される。</p>
+<p>仮想継承でベースクラスが共有されるのはどうやって実現されているか？
+ポインタ値をダンプしてメモリレイアウトを見てみる：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">              +4       +0</span><br><span class="line">       +--------+--------+</span><br><span class="line">top +0 | 仮想関数テーブル   | Derive1の実体</span><br><span class="line">       +--------+--------+</span><br><span class="line">    +8 | 仮想関数テーブル   | Derive2の実体</span><br><span class="line">       +--------+--------+</span><br><span class="line">   +16 |        |   base | Baseの実体</span><br><span class="line">       +--------+--------+</span><br></pre></td></tr></table></figure>
+
+<p>多重継承している<code>Diamond</code>は親クラスの<code>Derive1</code>と<code>2</code>を順に配置、その後に自分自身のメンバ変数が配置される（あれば）。
+最後に仮想基底クラスの実体が配置される。</p>
+<p><code>Derive1</code>や<code>2</code>は仮想継承の親クラス<code>Base</code>の実体が直接配置されるのではなく、自分自身の仮想関数テーブルが置かれる
+（仮想関数がなくても自動的に生成されるっぽい）。
+仮想関数テーブルには型情報が含まれていて、親クラスの実体へのオフセットが得られる。</p>
+<p>例えば<code>Diamond</code>のインスタンスにおける<code>Derive1</code>の型情報の<code>Base</code>親クラスへのオフセットは<code>+16 (=16-0)</code>、
+<code>Derive2</code>の型情報のオフセットは<code>+8 (=16-8)</code>となる。</p>
+<h4 id="仮想継承した場合の親クラスアクセス"><a href="#仮想継承した場合の親クラスアクセス" class="headerlink" title="仮想継承した場合の親クラスアクセス"></a>仮想継承した場合の親クラスアクセス</h4><p>上記のメモリレイアウト通り、仮想継承した場合の親クラスへのアクセスは親インスタンスのポインタ計算に仮想関数テーブルの参照が挟まることになる。
+そのため通常の継承の場合のオフセットがコンパイル時に計算できるのと違って、実行時に一段メモリアクセスが入るので僅かながらペナルティがかかることになる。</p>
+<p><code>Diamond</code>のインスタンスから<code>Base</code>へのアクセスも仮想継承を経由するので、同様の処理が行われる。</p>
+<h4 id="no-rtti：可"><a href="#no-rtti：可" class="headerlink" title="no-rtti：可"></a>no-rtti：可</h4><p>前述の通り仮想継承を使用すると仮想関数テーブルに紐づいた型情報が使用される。
+これを型情報を無効にするコンパイラオプション<code>-fno-rtti</code>を指定したらどうなるか？</p>
+<p>結果としては問題なくコンパイル・実行できる。
+<code>typeid</code>に関わる情報は出力されないっぽいが継承関係に関わる情報は出力されるっぽく、仮想継承は問題なく動作する。</p>
+<h2 id="static-cast：利用不可"><a href="#static-cast：利用不可" class="headerlink" title="static_cast：利用不可"></a>static_cast：利用不可</h2><p>以前<a href="/blog/2022/10/05/cpp-cast.html" title="【C++】static_castとreinterpret_cast、またdynamic_castの違い">static_castとかを調べた</a>時は通常の継承しか考慮してなかった。
+仮想継承を使用している場合はどうなるのかと思ったらそもそもコンパイルエラーだった：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">Base* b = ...;  <span class="comment">// なんらかのベースポインタ</span></span><br><span class="line">Diamond* xxx = <span class="built_in">static_cast</span>&lt;Diamond*&gt;(b);</span><br><span class="line"><span class="comment">// error: cannot cast &#x27;Base *&#x27; to &#x27;Diamond *&#x27; via virtual base &#x27;Base&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>dynamic_cast</code>を使用する必要がある。</p>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2025/11/26/pacman-rl-sb3.html">前：【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/27/composition-over-inheritance.html" title="「継承より合成（委譲）」について" rel="bookmark">「継承より合成（委譲）」について</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/04/05/copy-gc.html" title="コピーGCをC++で実装する" rel="bookmark">コピーGCをC++で実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/10/05/cpp-cast.html" title="【C++】static_castとreinterpret_cast、またdynamic_castの違い" rel="bookmark">【C++】static_castとreinterpret_cast、またdynamic_castの違い</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/06/26/cpp-multi-value.html" title="【C++】関数から多値を返す" rel="bookmark">【C++】関数から多値を返す</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/03/12/lambda-is-a-functor.html" title="【C++】ラムダ式はファンクタだったのか…" rel="bookmark">【C++】ラムダ式はファンクタだったのか…</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+    
+</body>
+</html>
