@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -236,7 +265,7 @@
 <li>速度を直接変更する</li>
 </ul>
 </li>
-<li>ボール同士のコリジョンは二重ループですべてのペアについて調べる(<script type="math/tex">O(n^2)</script>)<ul>
+<li>ボール同士のコリジョンは二重ループですべてのペアについて調べる($$O(n^2)$$)<ul>
 <li>めり込んだ距離を押し戻すという処理をしている（質量に関係なく等分に）</li>
 <li>速度が衝突する方向か？という判定はしてない</li>
 </ul>
@@ -305,8 +334,8 @@
 </ul>
 </li>
 <li>拘束をソフトに：<ul>
-<li>PBD：補正量に定数 <script type="math/tex">k \in [0, 1]</script> を乗算（タイムステップによって硬さが変わってしまう）</li>
-<li>XPBD：<script type="math/tex">\lambda</script>計算時に<script type="math/tex">\alpha / \Delta t^2</script>を考慮</li>
+<li>PBD：補正量に定数 $$k \in [0, 1]$$ を乗算（タイムステップによって硬さが変わってしまう）</li>
+<li>XPBD：$$\lambda$$計算時に$$\alpha &#x2F; \Delta t^2$$を考慮</li>
 </ul>
 </li>
 <li>三角錐の体積を保持する拘束：ソフトボディ</li>
@@ -337,7 +366,7 @@
 </li>
 </ul>
 <h4 id="11-Finding-overlaps-among-thousands-of-objects-blazing-fast"><a href="#11-Finding-overlaps-among-thousands-of-objects-blazing-fast" class="headerlink" title="11 Finding overlaps among thousands of objects blazing fast"></a>11 Finding overlaps among thousands of objects blazing fast</h4><ul>
-<li>ナイーブに衝突判定すると<script type="math/tex">O(n^2)</script></li>
+<li>ナイーブに衝突判定すると$$O(n^2)$$</li>
 <li>レギュラーグリッド：空間を一定間隔の格子に分割する</li>
 <li>質点の半径をr、グリッドサイズh &#x3D; 2rとすると、隣接する格子だけチェックすればよい</li>
 <li>密集グリッド表現：パーティクル数のサイズの配列を別途用意<ul>
@@ -522,9 +551,5 @@
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

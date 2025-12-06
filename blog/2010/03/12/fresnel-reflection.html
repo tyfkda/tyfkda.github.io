@@ -10,8 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="屈折率\eta_iの物質から入射角\theta_iで屈折率\eta_tの物質に入るときの反射率はフレネル方程式で求められる。
-入射面に対する光の平行成分の反射率はr_{||} = \frac{\eta\cos\theta_i - \cos\theta_t}{\eta\cos\theta_i + \c">
+        <meta name="description" content="屈折率\(\eta_i\)の物質から入射角\(\theta_i\)で屈折率\(\eta_t\)の物質に入るときの反射率はフレネル方程式で求められる。
+入射面に対する光の平行成分の反射率は\(r_{||} &amp;#x3D; \frac{\eta\cos\theta_i - \cos\theta_t}{\e">
     
 
     <!--Author-->
@@ -92,6 +92,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -198,17 +227,16 @@
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
                 <p><img src="/assets/blog/fresnel-reflection1.png" alt="fresnel"></p>
-<p>屈折率<script type="math/tex">\eta_i</script>の物質から入射角<script type="math/tex">\theta_i</script>で屈折率<script type="math/tex">\eta_t</script>の物質に入るときの反射率は<a href="http://en.wikipedia.org/wiki/Fresnel_equations">フレネル方程式</a>で求められる。
-入射面に対する光の平行成分の反射率は<script type="math/tex">r_{||} = \frac{\eta\cos\theta_i - \cos\theta_t}{\eta\cos\theta_i + \cos\theta_t}</script>
-、直交成分の反射率は<script type="math/tex">r_{\perp} = \frac{\cos\theta_i - \eta\cos\theta_t}{\cos\theta_i + \eta\cos\theta_t}</script>
+<p>屈折率\(\eta_i\)の物質から入射角\(\theta_i\)で屈折率\(\eta_t\)の物質に入るときの反射率は<a href="http://en.wikipedia.org/wiki/Fresnel_equations">フレネル方程式</a>で求められる。
+入射面に対する光の平行成分の反射率は\(r_{||} &#x3D; \frac{\eta\cos\theta_i - \cos\theta_t}{\eta\cos\theta_i + \cos\theta_t}\)
+、直交成分の反射率は\(r_{\perp} &#x3D; \frac{\cos\theta_i - \eta\cos\theta_t}{\cos\theta_i + \eta\cos\theta_t}\)
 となる、らしい。
-偏光されてない光の場合の反射率<script type="math/tex">k_r</script>は<script type="math/tex">k_r = \frac{1}{2}\left(r_{||}^2 + r_{\perp}^2\right)</script>となる(sqrtいらないの？)。</p>
-<script type="math/tex">\eta</script>は<script type="math/tex">\eta = \frac{\eta_{t}}{\eta_{i}}</script>、屈折して出て行く角度<script type="math/tex">\theta_t</script>のcosは<script type="math/tex">\cos\theta_t = \sqrt{1 - \frac{1}{\eta^2}\left(1 - \cos^2\theta_i\right)}</script>で求められる。
-
+偏光されてない光の場合の反射率\(k_r\)は\(k_r &#x3D; \frac{1}{2}\left(r_{||}^2 + r_{\perp}^2\right)\)となる(sqrtいらないの？)。</p>
+<p>\(\eta\)は\(\eta &#x3D; \frac{\eta_{t}}{\eta_{i}}\)、屈折して出て行く角度\(\theta_t\)のcosは\(\cos\theta_t &#x3D; \sqrt{1 - \frac{1}{\eta^2}\left(1 - \cos^2\theta_i\right)}\)で求められる。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">float</span> <span class="title function_">fresnel_reflectance</span><span class="params">(<span class="type">float</span> cos_theta_i, <span class="type">float</span> eta_i, <span class="type">float</span> eta_t)</span> &#123;</span><br><span class="line">  <span class="type">float</span> <span class="variable">eta</span> <span class="operator">=</span> eta_t / eta_i;</span><br><span class="line">  <span class="type">float</span> <span class="variable">D</span> <span class="operator">=</span> <span class="number">1.0</span> - <span class="number">1.0</span> / sq(eta) * (<span class="number">1.0</span> - sq(cos_theta_i));</span><br><span class="line">  <span class="keyword">if</span> (D &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="type">float</span> <span class="variable">cos_theta_t</span> <span class="operator">=</span> sqrt(D);</span><br><span class="line">    <span class="type">float</span> <span class="variable">rp</span> <span class="operator">=</span> (eta * cos_theta_i - cos_theta_t) / (eta * cos_theta_i + cos_theta_t);</span><br><span class="line">    <span class="type">float</span> <span class="variable">rs</span> <span class="operator">=</span> (cos_theta_i - eta * cos_theta_t) / (cos_theta_i + eta * cos_theta_t);</span><br><span class="line">    <span class="type">float</span> <span class="variable">kr</span> <span class="operator">=</span> <span class="number">0.5</span> * (sq(rp) + sq(rs));</span><br><span class="line">    <span class="keyword">return</span> kr;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1.0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><img src="/assets/blog/fresnel-reflection2.png" alt="Balls under water"></p>
-<p>よくやる<a href="http://en.wikipedia.org/wiki/Schlick's_approximation">Schlickの近似</a>は<script type="math/tex">k_r \simeq F_\theta + (1 - F_\theta)(1 - \cos\theta_i)^5 , F_\theta = \frac{(\eta - 1)^2}{(\eta + 1)^2}</script></p>
+<p>よくやる<a href="http://en.wikipedia.org/wiki/Schlick's_approximation">Schlickの近似</a>は\(k_r \simeq F_\theta + (1 - F_\theta)(1 - \cos\theta_i)^5 , F_\theta &#x3D; \frac{(\eta - 1)^2}{(\eta + 1)^2}\)</p>
 <p><img src="/assets/blog/fresnel-reflection3.png" alt="error"></p>
 <p>個人的には、フレネル反射って効果がいまいち微妙であまりありがたみわからないんだよね…。</p>
 
@@ -311,9 +339,5 @@
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

@@ -95,6 +95,35 @@ A Practical Introduction to Metropolis Light Transport
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -208,7 +237,7 @@ A Practical Introduction to Metropolis Light Transport
 <h3 id="2-2-Color-Images"><a href="#2-2-Color-Images" class="headerlink" title="2.2 Color Images"></a>2.2 Color Images</h3><ul>
 <li>メトロポリスフレームワークはヒストグラムにカラー値を蓄積するよう再定義することで、簡単に
 カラー画像を扱うように拡張することができる</li>
-<li>カラーサンプルのルミナンスから <script type="math/tex">a(y|x)</script> を計算し、ヒストグラムに加算するカラー値は
+<li>カラーサンプルのルミナンスから \(a(y|x)\) を計算し、ヒストグラムに加算するカラー値は
 ルミナンスが1となるようにスケールする</li>
 <li>変異戦略と各サンプルのピクセル座標はカプセル化された。MLTでは、<code>DomainLocation</code>構造体は
 ピクセル位置だけじゃなく全てのライトパスも含むことになる。</li>
@@ -247,7 +276,7 @@ A Practical Introduction to Metropolis Light Transport
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/21/metropolis-light-transport.html" title="メトロポリス輸送の事始め" rel="bookmark">メトロポリス輸送の事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/01/27/rose-screen-saver.html" title="Roseスクリーンセーバーを再現" rel="bookmark">Roseスクリーンセーバーを再現</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/05/21/building-processing.html" title="Processingをビルドする" rel="bookmark">Processingをビルドする</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/21/metropolis-light-transport.html" title="メトロポリス輸送の事始め" rel="bookmark">メトロポリス輸送の事始め</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/01/27/rose-screen-saver.html" title="Roseスクリーンセーバーを再現" rel="bookmark">Roseスクリーンセーバーを再現</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
@@ -324,9 +353,5 @@ A Practical Introduction to Metropolis Light Transport
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

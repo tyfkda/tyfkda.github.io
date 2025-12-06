@@ -94,6 +94,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -206,58 +235,46 @@
 <span id="more"></span>
 
 <h3 id="ソフトマックス関数"><a href="#ソフトマックス関数" class="headerlink" title="ソフトマックス関数"></a>ソフトマックス関数</h3><p>出力層の活性関数をシグモイド関数ではなく、以下の様な形とする：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-a^L_j = \frac{e^{z^L_j}}{\sum_k e^{z^L_k}}  \tag{78}
-%]]></script>
-
+<p>$$
+a^L_j &#x3D; \frac{e^{z^L_j}}{\sum_k e^{z^L_k}}  \tag{78}
+$$</p>
 <p>これを<em>ソフトマックス</em>関数と呼ぶ。</p>
-<p>シグモイド関数ではニューロン<script type="math/tex">j</script>の出力<script type="math/tex">a^L_j</script>は、<script type="math/tex">j</script>への入力の合計<script type="math/tex">z^L_j</script>のみに依存していたが、
+<p>シグモイド関数ではニューロン\(j\)の出力\(a^L_j\)は、\(j\)への入力の合計\(z^L_j\)のみに依存していたが、
 ソフトマックス関数では出力層全てのニューロンに関係する。</p>
-<script type="math/tex">a^L_j</script>は0~1の値を取り、すべての<script type="math/tex">j</script>での合計値は1となる。
-
+<p>\(a^L_j\)は0~1の値を取り、すべての\(j\)での合計値は1となる。</p>
 <p>これはニューラルネットワークを多クラス分類に使う時に、
 出力がそれぞれのクラスである確率であると考えるときに便利。</p>
 <h3 id="ソフトマックス関数に対するコスト関数"><a href="#ソフトマックス関数に対するコスト関数" class="headerlink" title="ソフトマックス関数に対するコスト関数"></a>ソフトマックス関数に対するコスト関数</h3><p>出力層の活性関数にソフトマックス関数を適用するニューラルネットワークのコスト関数を、
-正解パターンである<script type="math/tex">a^L_y</script>だけを用いた</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
+正解パターンである\(a^L_y\)だけを用いた</p>
+<p>$$
 C \equiv -\ln a^L_y
-%]]></script>
-
+$$</p>
 <p>と置く。</p>
-<script type="math/tex">a^L_y</script> が0~1に限られているので、その対数の値は負となり、そのためコストは必ず0以上となる。
-<p>分類が正しく行われて<script type="math/tex">a^L_y</script>が1に近づくとコスト関数の値は0に近づき、
+<p>\(a^L_y\) が0~1に限られているので、その対数の値は負となり、そのためコストは必ず0以上となる。
+分類が正しく行われて\(a^L_y\)が1に近づくとコスト関数の値は0に近づき、
 そうでない場合には正の値になる。</p>
 <h3 id="コスト関数の微分"><a href="#コスト関数の微分" class="headerlink" title="コスト関数の微分"></a>コスト関数の微分</h3><p>上記のコスト関数のウェイトやバイアスによる偏微分は、<a href="/blog/2015/11/27/back-propagation.html" title="誤差逆伝播法の導出">誤差逆伝播法</a>と同様に、
-ニューロンへの入力<script type="math/tex">z^L_j</script>でチェインルールを適用する：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\delta^L_j = \frac{\partial C}{\partial z^L_j}
-    &=& \frac{\partial}{\partial z^L_j} \left\{ -\ln a^L_y \right\} \\
-    &=& - \frac{\partial}{\partial z^L_j} \left\{ \ln \frac{e^{z^L_y}}{\sum_k e^{z^L_k}} \right\} \\
-    &=& - \frac{\partial}{\partial z^L_j} \left\{ \ln e^{z^L_y} - \ln \sum_k e^{z^L_k} \right\} \\
-    &=& - \frac{\partial}{\partial z^L_j} \left\{ z^L_y - \ln \sum_k e^{z^L_k} \right\} \\
-    &=& - \frac{\partial}{\partial z^L_j} z^L_y + \frac{\partial}{\partial z^L_j} \left\{ \ln \sum_k e^{z^L_k} \right\} \\
-    &=& - \frac{\partial}{\partial z^L_j} z^L_y + \frac{e^{z^L_j}}{\sum_k e^{z^L_k}} \\
-    &=& - \frac{\partial}{\partial z^L_j} z^L_y + a^L_j \\
-\end{eqnarray*}
-%]]></script>
-
-<script type="math/tex">j = y</script>の場合、<script type="math/tex">\frac{\partial z^L_y}{\partial z^L_j}=1</script> より <script type="math/tex">\delta^L_j = a^L_j - 1</script> となる。
-
-<script type="math/tex">j \ne y</script>の場合、<script type="math/tex">\frac{\partial z^L_y}{\partial z^L_j}=0</script> より <script type="math/tex">\delta^L_j = a^L_j</script> となる。
-
-
-<h3 id="「ソフトマックス」という名前の由来"><a href="#「ソフトマックス」という名前の由来" class="headerlink" title="「ソフトマックス」という名前の由来"></a>「ソフトマックス」という名前の由来</h3><p>べき乗の項に正の定数<script type="math/tex">c</script>を掛けた</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-a^L_j = \frac{e^{cz^L_j}}{\sum_k e^{cz^L_k}}  \tag{83}
-%]]></script>
-
-<p>で<script type="math/tex">c</script>の極限を考えると、<script type="math/tex">z^L_j</script>の中で一番大きな値だけが1に、それ以外の値は0となり、最大値のみを有効にする関数と考えられる。</p>
-<p>それに比べれば、<script type="math/tex">c=1</script>の状態は<em>緩い最大化</em>と考えられる。</p>
+ニューロンへの入力\(z^L_j\)でチェインルールを適用する：</p>
+<p>$$
+\begin{align*}
+\delta^L_j &#x3D; \frac{\partial C}{\partial z^L_j}
+    &amp;&#x3D; \frac{\partial}{\partial z^L_j} \left\lbrace -\ln a^L_y \right\rbrace \\
+    &amp;&#x3D; - \frac{\partial}{\partial z^L_j} \left\lbrace \ln \frac{e^{z^L_y}}{\sum_k e^{z^L_k}} \right\rbrace \\
+    &amp;&#x3D; - \frac{\partial}{\partial z^L_j} \left\lbrace \ln e^{z^L_y} - \ln \sum_k e^{z^L_k} \right\rbrace \\
+    &amp;&#x3D; - \frac{\partial}{\partial z^L_j} \left\lbrace z^L_y - \ln \sum_k e^{z^L_k} \right\rbrace \\
+    &amp;&#x3D; - \frac{\partial}{\partial z^L_j} z^L_y + \frac{\partial}{\partial z^L_j} \left\lbrace \ln \sum_k e^{z^L_k} \right\rbrace \\
+    &amp;&#x3D; - \frac{\partial}{\partial z^L_j} z^L_y + \frac{e^{z^L_j}}{\sum_k e^{z^L_k}} \\
+    &amp;&#x3D; - \frac{\partial}{\partial z^L_j} z^L_y + a^L_j \\
+\end{align*}
+$$</p>
+<p>\(j &#x3D; y\)の場合、\(\frac{\partial z^L_y}{\partial z^L_j}&#x3D;1\) より \(\delta^L_j &#x3D; a^L_j - 1\) となる。</p>
+<p>\(j \ne y\)の場合、\(\frac{\partial z^L_y}{\partial z^L_j}&#x3D;0\) より \(\delta^L_j &#x3D; a^L_j\) となる。</p>
+<h3 id="「ソフトマックス」という名前の由来"><a href="#「ソフトマックス」という名前の由来" class="headerlink" title="「ソフトマックス」という名前の由来"></a>「ソフトマックス」という名前の由来</h3><p>べき乗の項に正の定数\(c\)を掛けた</p>
+<p>$$
+a^L_j &#x3D; \frac{e^{cz^L_j}}{\sum_k e^{cz^L_k}}  \tag{83}
+$$</p>
+<p>で\(c\)の極限を考えると、\(z^L_j\)の中で一番大きな値だけが1に、それ以外の値は0となり、最大値のみを有効にする関数と考えられる。</p>
+<p>それに比べれば、\(c&#x3D;1\)の状態は<em>緩い最大化</em>と考えられる。</p>
 
 
                 
@@ -358,9 +375,5 @@ a^L_j = \frac{e^{cz^L_j}}{\sum_k e^{cz^L_k}}  \tag{83}
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

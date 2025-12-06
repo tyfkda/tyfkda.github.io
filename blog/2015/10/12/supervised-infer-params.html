@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -200,14 +229,14 @@
 <span id="more"></span>
 
 <ul>
-<li>箱に<script type="math/tex">c</script>種類のサイコロ（<script type="math/tex">\omega_1</script>〜<script type="math/tex">\omega_c</script>）が大量に入っていて、それぞれの含有率（<script type="math/tex">\pi_i</script>）は不明</li>
-<li>サイコロの種類によって各目の出易さが違う（<script type="math/tex">\theta_{ik}</script>） （これも不明）</li>
-<li>箱からサイコロを取り出してそのサイコロの種類<script type="math/tex">s_t</script>を記録し、投げて出た目<script type="math/tex">x_t</script>を観測して元の箱に戻す、という操作を<script type="math/tex">n</script>回繰り返す<ul>
-<li>サイコロ<script type="math/tex">\omega_i</script>を取り出した回数は<script type="math/tex">n_i</script></li>
-<li>サイコロ<script type="math/tex">\omega_i</script>を投げて出た目が<script type="math/tex">v_k</script>であった回数は<script type="math/tex">n_{ik}</script></li>
+<li>箱に\(c\)種類のサイコロ（\(\omega_1\)〜\(\omega_c\)）が大量に入っていて、それぞれの含有率（\(\pi_i\)）は不明</li>
+<li>サイコロの種類によって各目の出易さが違う（\(\theta_{ik}\)） （これも不明）</li>
+<li>箱からサイコロを取り出してそのサイコロの種類\(s_t\)を記録し、投げて出た目\(x_t\)を観測して元の箱に戻す、という操作を\(n\)回繰り返す<ul>
+<li>サイコロ\(\omega_i\)を取り出した回数は\(n_i\)</li>
+<li>サイコロ\(\omega_i\)を投げて出た目が\(v_k\)であった回数は\(n_{ik}\)</li>
 </ul>
 </li>
-<li>観測結果から含有率（<script type="math/tex">\pi_i</script>）及び目の出易さ（<script type="math/tex">\theta_{ik}</script>）を最尤推定で推定せよ</li>
+<li>観測結果から含有率（\(\pi_i\)）及び目の出易さ（\(\theta_{ik}\)）を最尤推定で推定せよ</li>
 </ul>
 <h3 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h3><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># param_infer_supervised.rb</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span></span><br><span class="line">  <span class="comment"># πi: それぞれのサイコロが箱の中にどのような割合で混ざっているか</span></span><br><span class="line">  pi = [<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.5</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># θi: それぞれのサイコロを投げた時に表が出る確率</span></span><br><span class="line">  theta = [[<span class="number">0.8</span>, <span class="number">0.2</span>],</span><br><span class="line">           [<span class="number">0.6</span>, <span class="number">0.4</span>],</span><br><span class="line">           [<span class="number">0.3</span>, <span class="number">0.7</span>]]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 試行回数</span></span><br><span class="line">  n = <span class="number">100</span></span><br><span class="line">  nss = make_trial(n, pi, theta)</span><br><span class="line">  p nss</span><br><span class="line"></span><br><span class="line">  <span class="comment"># パラメータを最尤推定</span></span><br><span class="line">  ps, tss = infer_params_supervised(nss)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 結果表示</span></span><br><span class="line">  ps.size.times <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">    printf(<span class="string">&quot;%2d: %.2f: %s\n&quot;</span>, i, ps[i], tss[i].map &#123;|<span class="params">t</span>| sprintf(<span class="string">&#x27;%.2f&#x27;</span>, t)&#125;.join(<span class="string">&#x27;, &#x27;</span>))</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 教師付き学習の最尤推定でパラメータの推定を行う</span></span><br><span class="line"><span class="comment"># _ns_ :: サイコロの各種類・各目が出た回数 n_ik</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">infer_params_supervised</span>(<span class="params">nss</span>)</span><br><span class="line">  n = nss.flatten.sum  <span class="comment"># 総試行回数</span></span><br><span class="line">  nis = nss.map(&amp;<span class="symbol">:sum</span>)  <span class="comment"># 各サイコロの種類が取り出された回数</span></span><br><span class="line"></span><br><span class="line">  pi = nis.map <span class="keyword">do</span> |<span class="params">ni</span>|  <span class="comment"># 式(5.44): 最尤推定による各サイコロの含有率の推定値</span></span><br><span class="line">    ni.to_f / n  <span class="comment"># $\pi_i = \frac&#123;n_i&#125;&#123;n&#125;$</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  theta = nss.each_with_index.map <span class="keyword">do</span> |<span class="params">ns, i</span>|  <span class="comment"># 式(5.47): 最尤推定による各サイコロの出目の推定値</span></span><br><span class="line">    ns.map <span class="keyword">do</span> |<span class="params">nik</span>|</span><br><span class="line">      nik.to_f / nis[i]  <span class="comment"># $\theta_&#123;ik&#125; = \frac&#123;n_&#123;ik&#125;&#125;&#123;n_i&#125;$</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> pi, theta</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 箱からサイコロを取り出して投げる、という試行をn回行い、</span></span><br><span class="line"><span class="comment"># その結果サイコロの各種類の各目が出た回数を二重配列で返す</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">make_trial</span>(<span class="params">n, pi, theta</span>)</span><br><span class="line">  c = theta.size  <span class="comment"># サイコロの種類の数</span></span><br><span class="line">  m = theta[<span class="number">0</span>].size  <span class="comment"># 出る目の種類の数</span></span><br><span class="line">  nss = <span class="title class_">Array</span>.new(c) &#123; <span class="title class_">Array</span>.new(m) &#123;<span class="number">0</span>&#125; &#125;</span><br><span class="line">  n.times <span class="keyword">do</span></span><br><span class="line">    st = pick_dice(pi)</span><br><span class="line">    xt = roll_dice(theta[st])</span><br><span class="line">    nss[st][xt] += <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">return</span> nss</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 箱からサイコロを無作為に取り出す</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pick_dice</span>(<span class="params">pi</span>)</span><br><span class="line">  random_choise(pi)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># サイコロを投げてどの目が出たかを返す</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">roll_dice</span>(<span class="params">theta</span>)</span><br><span class="line">  random_choise(theta)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 確率でランダムに選び、選んだインデクスを返す</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">random_choise</span>(<span class="params">probs</span>)</span><br><span class="line">  r = rand</span><br><span class="line">  probs.each_with_index <span class="keyword">do</span> |<span class="params">p, i</span>|</span><br><span class="line">    <span class="keyword">return</span> i <span class="keyword">if</span> r &lt; p</span><br><span class="line">    r -= p</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">return</span> probs.size - <span class="number">1</span>  <span class="comment"># 誤差対策</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Array</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">sum</span></span><br><span class="line">    <span class="variable language_">self</span>.inject(<span class="symbol">:+</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">main</span><br><span class="line"></span><br><span class="line"><span class="comment"># 結果：</span></span><br><span class="line"><span class="comment">#[[9, 3], [23, 14], [13, 38]]</span></span><br><span class="line"><span class="comment"># 0: 0.12: 0.75, 0.25</span></span><br><span class="line"><span class="comment"># 1: 0.37: 0.62, 0.38</span></span><br><span class="line"><span class="comment"># 2: 0.51: 0.25, 0.75</span></span><br></pre></td></tr></table></figure>
 
@@ -312,9 +341,5 @@
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

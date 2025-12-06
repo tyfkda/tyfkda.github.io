@@ -92,6 +92,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -252,115 +281,92 @@
 問題点：精度は？</p>
 <h4 id="sin-cos"><a href="#sin-cos" class="headerlink" title="sin, cos"></a>sin, cos</h4><p>-π〜π の範囲でマクローリン展開。
 問題点：<code>fmod</code> 、 <code>for</code>ループ使用、速度、精度。</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\sin x &=& x - \frac{x^3}{3!} + \frac{x^5}{5!} + \cdots &=& \sum_{n=0}^{\infty} -1^n \frac{x^{2n+1}}{(2n+1)!} \\
-\cos x &=& 1 - \frac{x^2}{2!} + \frac{x^4}{4!} + \cdots &=& \sum_{n=0}^{\infty} -1^n \frac{x^{2n}}{2n!}
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+\sin x &amp;&#x3D; x - \frac{x^3}{3!} + \frac{x^5}{5!} + \cdots &amp; &amp;&#x3D; \sum_{n&#x3D;0}^{\infty} -1^n \frac{x^{2n+1}}{(2n+1)!} \\
+\cos x &amp;&#x3D; 1 - \frac{x^2}{2!} + \frac{x^4}{4!} + \cdots &amp; &amp;&#x3D; \sum_{n&#x3D;0}^{\infty} -1^n \frac{x^{2n}}{2n!}
+\end{align*}
+$$</p>
 <p>10項程度。</p>
 <h4 id="tan"><a href="#tan" class="headerlink" title="tan"></a>tan</h4><p><code>sin</code> &#x2F; <code>cos</code>。
 問題点：専用に用意する。</p>
 <h4 id="atan"><a href="#atan" class="headerlink" title="atan"></a>atan</h4><p>範囲を22.5度以内に絞ってマクローリン展開：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\tan^{-1} x &=& x - \frac{x^3}{3} + \frac{x^5}{5} - \frac{x^7}{7} + \cdots \\
-            &=& \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n+1}}{2n+1}
-\end{eqnarray*}
-%]]></script>
-
-<p>入力が <script type="math/tex">x</script> 、求める角度を <script type="math/tex">\theta</script> とすると、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\tan^{-1} x &=& \theta \\
-\tan \theta &=& x
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+\tan^{-1} x &amp;&#x3D; x - \frac{x^3}{3} + \frac{x^5}{5} - \frac{x^7}{7} + \cdots \\
+            &amp;&#x3D; \sum_{n&#x3D;0}^{\infty} (-1)^n \frac{x^{2n+1}}{2n+1}
+\end{align*}
+$$</p>
+<p>入力が \(x\) 、求める角度を \(\theta\) とすると、</p>
+<p>$$
+\begin{align*}
+\tan^{-1} x &amp;&#x3D; \theta \\
+\tan \theta &amp;&#x3D; x
+\end{align*}
+$$</p>
 <p>角度を絞るためにタンジェントの加法定理：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\tan(\alpha - \beta) &=& \frac{\tan \alpha - \tan \beta}{1 + \tan \alpha \tan \beta} \\
-                     &=& \frac{1 - \frac{\tan \beta}{\tan \alpha}}{\frac{1}{\tan \alpha} + \tan \beta}
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+\tan(\alpha - \beta) &amp;&#x3D; \frac{\tan \alpha - \tan \beta}{1 + \tan \alpha \tan \beta} \\
+                     &amp;&#x3D; \frac{1 - \frac{\tan \beta}{\tan \alpha}}{\frac{1}{\tan \alpha} + \tan \beta}
+\end{align*}
+$$</p>
 <p>を利用する。</p>
 <ul>
-<li><script type="math/tex">1 \lt x</script> の場合（45度以上）
-<ul>
-<li><script type="math/tex">\alpha=\frac{\pi}{2}</script> とすると <script type="math/tex">\tan \frac{\pi}{2} = \infty</script> から <script type="math/tex">\therefore \tan (\frac{\pi}{2} - \theta) = \frac{1}{x}</script></li>
+<li>\(1 \lt x\) の場合（45度以上）<ul>
+<li>\(\alpha&#x3D;\frac{\pi}{2}\) とすると \(\tan \frac{\pi}{2} &#x3D; \infty\) から \(\therefore \tan (\frac{\pi}{2} - \theta) &#x3D; \frac{1}{x}\)</li>
 </ul>
 </li>
-<li><script type="math/tex">\tan \frac{\pi}{8} \lt x \le 1</script> の場合（22.5度以上45度以下）
-<ul>
-<li><script type="math/tex">\alpha=\frac{\pi}{4}</script> とすると <script type="math/tex">\tan \frac{\pi}{4} = 1</script> から <script type="math/tex">\therefore \tan (\frac{\pi}{4} - \theta) = \frac{1 - x}{1 + x}</script></li>
+<li>\(\tan \frac{\pi}{8} \lt x \le 1\) の場合（22.5度以上45度以下）<ul>
+<li>\(\alpha&#x3D;\frac{\pi}{4}\) とすると \(\tan \frac{\pi}{4} &#x3D; 1\) から \(\therefore \tan (\frac{\pi}{4} - \theta) &#x3D; \frac{1 - x}{1 + x}\)</li>
 </ul>
 </li>
 </ul>
 <p>と変換して値の範囲を狭める。</p>
-<h4 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h4><script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-e^x &=& 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots \\
-    &=& \sum_{n=0}^{\infty} \frac{x^n}{n!}
-\end{eqnarray*}
-%]]></script>
-
+<h4 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h4><p>$$
+\begin{align*}
+e^x &amp;&#x3D; 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots \\
+    &amp;&#x3D; \sum_{n&#x3D;0}^{\infty} \frac{x^n}{n!}
+\end{align*}
+$$</p>
 <p>で求める。</p>
-<p>入力 <script type="math/tex">x</script> を整数部 <script type="math/tex">i</script> と小数部 <script type="math/tex">d</script> に分けて、 <script type="math/tex">e^x = e^{i+d} = e^i e^d</script> で <script type="math/tex">d</script> を0.0〜1.0の範囲に絞って <script type="math/tex">e^d</script> をマクローリン展開で求める。
-整数部 <script type="math/tex">e^i</script> は整数の指数計算のように2進数表現して求める。
+<p>入力 \(x\) を整数部 \(i\) と小数部 \(d\) に分けて、 \(e^x &#x3D; e^{i+d} &#x3D; e^i e^d\) で \(d\) を0.0〜1.0の範囲に絞って \(e^d\) をマクローリン展開で求める。
+整数部 \(e^i\) は整数の指数計算のように2進数表現して求める。
 負の場合は逆数にする。</p>
 <p>ちょっと値が大きかったらすぐに発散するので、整数部が<code>int</code>に収まらなかったらという心配はしなくてよいかも。</p>
-<h4 id="log"><a href="#log" class="headerlink" title="log"></a>log</h4><p>入力<script type="math/tex">x</script> を2のべき乗との積で0.5〜1.0の範囲に絞る：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\log x &=& \log (2^n \cdot d) \\
-       &=& \log 2^n + \log d \\
-       &=& n \log 2 + \log d
-\end{eqnarray*}
-%]]></script>
-
+<h4 id="log"><a href="#log" class="headerlink" title="log"></a>log</h4><p>入力\(x\) を2のべき乗との積で0.5〜1.0の範囲に絞る：</p>
+<p>$$
+\begin{align*}
+\log x &amp;&#x3D; \log (2^n \cdot d) \\
+       &amp;&#x3D; \log 2^n + \log d \\
+       &amp;&#x3D; n \log 2 + \log d
+\end{align*}
+$$</p>
 <p>このままマクローリン展開：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\log (1 + x) = x - \frac{x^2}{2} + \frac{x^3}{3} - \frac{x^4}{4} + \cdots
-%]]></script>
-
-<p>しても収束が遅くて打ち切り誤差がひどいので、 <script type="math/tex">x</script> の符号を反転した</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
--\log (1 - x) = x + \frac{x^2}{2} + \frac{x^3}{3} + \frac{x^4}{4} + \cdots
-%]]></script>
-
+<p>$$
+\log (1 + x) &#x3D; x - \frac{x^2}{2} + \frac{x^3}{3} - \frac{x^4}{4} + \cdots
+$$</p>
+<p>しても収束が遅くて打ち切り誤差がひどいので、 \(x\) の符号を反転した</p>
+<p>$$
+-\log (1 - x) &#x3D; x + \frac{x^2}{2} + \frac{x^3}{3} + \frac{x^4}{4} + \cdots
+$$</p>
 <p>との和を取ると偶数の項が消えて</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\log (1 + x) - \log (1 - x) = \log \frac{1 + x}{1 - x} = 2 \left( x + \frac{x^3}{3} + \frac{x^5}{5} + \cdots \right) \\
-%]]></script>
-
-<script type="math/tex">y = \frac{1 + x}{1 - x}</script> と置いて <script type="math/tex">x</script> について解いて、
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-1 + x &=& y \cdot (1 - x) \\
-x \cdot (y + 1) &=& y - 1 \\
-\therefore x &=& \frac{y - 1}{y + 1}
-\end{eqnarray*}
-%]]></script>
-
-<p>で求めた <script type="math/tex">x</script> を使って求めると2乗で減っていくのでマシになる。</p>
-<p>2じゃなくて <script type="math/tex">e</script> のべき乗にすれば <script type="math/tex">\log 2</script> との乗算が必要なくなるが、
+<p>$$
+\log (1 + x) - \log (1 - x) &#x3D; \log \frac{1 + x}{1 - x} &#x3D; 2 \left( x + \frac{x^3}{3} + \frac{x^5}{5} + \cdots \right)
+$$</p>
+<p>\(y &#x3D; \frac{1 + x}{1 - x}\) と置いて \(x\) について解いて、</p>
+<p>$$
+\begin{align*}
+1 + x &amp;&#x3D; y \cdot (1 - x) \\
+x \cdot (y + 1) &amp;&#x3D; y - 1 \\
+\therefore x &amp;&#x3D; \frac{y - 1}{y + 1}
+\end{align*}
+$$</p>
+<p>で求めた \(x\) を使って求めると2乗で減っていくのでマシになる。</p>
+<p>2じゃなくて \(e\) のべき乗にすれば \(\log 2\) との乗算が必要なくなるが、
 <a href="https://ja.wikipedia.org/wiki/IEEE_754">IEEE-754</a>表現が2のべき乗の形で持っていて簡単に得られるのでこちらのほうがいいかも。</p>
 <h4 id="pow"><a href="#pow" class="headerlink" title="pow"></a>pow</h4><p><code>exp</code> と同様に、小数部のみをマクローリン展開する。
-指数関数のマクローリン展開は <script type="math/tex">\sum_{n} \frac{\log ^n a}{n !} x^n</script> 。</p>
+指数関数のマクローリン展開は \(\sum_{n} \frac{\log ^n a}{n !} x^n\) 。</p>
 <p>問題点： <code>log</code> も使用するので処理が倍かかる。</p>
 <h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><ul>
 <li>コンピュータだから計算が得意、なのかと思っていたが数学関数は人間様の知恵で作り上げられたもので、それらを知らずにナイーブに実装すると精度も速度も実用となる数値計算はできたものではないというのが新たな発見だった。</li>
@@ -396,7 +402,7 @@ x \cdot (y + 1) &=& y - 1 \\
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/11/23/asm-on-mac.html" title="MacOS用アセンブリへの変更点" rel="bookmark">MacOS用アセンブリへの変更点</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/12/19/abs-bit-trick.html" title="整数の絶対値を得るビットトリック" rel="bookmark">整数の絶対値を得るビットトリック</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/12/31/3imp.html" title="3impメモ" rel="bookmark">3impメモ</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/06/28/archive-format.html" title="アーカイブファイルのフォーマット" rel="bookmark">アーカイブファイルのフォーマット</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/04/20/assign-free-variable.html" title="スクリプト言語での自由変数への代入の実装方法" rel="bookmark">スクリプト言語での自由変数への代入の実装方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/08/25/backend-more-registers.html" title="コンパイラでもっとレジスタを活用するために行った対策" rel="bookmark">コンパイラでもっとレジスタを活用するために行った対策</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
@@ -473,9 +479,5 @@ x \cdot (y + 1) &=& y - 1 \\
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

@@ -93,6 +93,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -217,30 +246,28 @@
 <thead>
 <tr>
 <th align="left"></th>
-<th align="left">コイン1 (<script type="math/tex">\omega_1</script>)</th>
-<th align="left">コイン2 (<script type="math/tex">\omega_2</script>)</th>
-<th align="left">コイン3 (<script type="math/tex">\omega_3</script>)</th>
+<th align="left">コイン1 (\(\omega_1\))</th>
+<th align="left">コイン2 (\(\omega_2\))</th>
+<th align="left">コイン3 (\(\omega_3\))</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left">含有率（<script type="math/tex">\pi</script>）</td>
+<td align="left">含有率（\(\pi\))</td>
 <td align="left">0.1</td>
 <td align="left">0.4</td>
 <td align="left">0.5</td>
 </tr>
 <tr>
-<td align="left">表が出る率（<script type="math/tex">\theta</script>）</td>
+<td align="left">表が出る率（\(\theta\))</td>
 <td align="left">0.8</td>
 <td align="left">0.6</td>
 <td align="left">0.3</td>
 </tr>
 </tbody></table>
 <p>計算方法はベイズの定理から、式(2・13)</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-P(\omega_i \lvert H) = \frac{\pi_i \theta_i}{\sum_{j=1}^3 \pi_j \theta_j}
-%]]></script>
-
+<p>$$
+P(\omega_i \lvert H) &#x3D; \frac{\pi_i \theta_i}{\sum_{j&#x3D;1}^3 \pi_j \theta_j}
+$$</p>
 <p>を用いる。</p>
 <h4 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h4><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coin_probability1.rb</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span></span><br><span class="line">  <span class="comment"># πi: それぞれのコインが箱の中にどのような割合で混ざっているか（事前確率）</span></span><br><span class="line">  pi = [<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.5</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># θi: それぞれのコインを投げた時に表が出る確率</span></span><br><span class="line">  theta = [<span class="number">0.8</span>, <span class="number">0.6</span>, <span class="number">0.3</span>]</span><br><span class="line"></span><br><span class="line">  calc_posterior_probability(pi, theta).each_with_index <span class="keyword">do</span> |<span class="params">post_prob, i</span>|</span><br><span class="line">    puts <span class="string">&quot;P(omega_<span class="subst">#&#123;i+<span class="number">1</span>&#125;</span> | H) = <span class="subst">#&#123;post_prob&#125;</span>&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 箱の中から取り出したコインを投げて表が出た時に、</span></span><br><span class="line"><span class="comment"># 取り出したコインがどれだったか、それぞれのコインの確率を求める</span></span><br><span class="line"><span class="comment"># _pi_ :: それぞれのコインが箱の中にどのような割合で混ざっているか、の配列</span></span><br><span class="line"><span class="comment"># _theta_ :: それぞれのコインを投げた時に表が出る確率、の配列</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calc_posterior_probability</span>(<span class="params">pi, theta</span>)</span><br><span class="line">  c = pi.size</span><br><span class="line">  <span class="comment"># P(H): コインの表が出る全体の確率を求める</span></span><br><span class="line">  head_prob = sigma(<span class="number">0</span>...c) <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">    pi[i] * theta[i]</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 表が出たという情報から、それぞれのコインが取り出された確率を求める</span></span><br><span class="line">  (<span class="number">0</span>...c).map <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">    pi[i] * theta[i] / head_prob</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Rangeに対してブロックを呼び出し、その結果の和を返す：∑</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sigma</span>(<span class="params">range, &amp;block</span>)</span><br><span class="line">  range.map <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">    block.call(i)</span><br><span class="line">  <span class="keyword">end</span>.inject(<span class="symbol">:+</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">main</span><br><span class="line"></span><br><span class="line"><span class="comment"># P(omega_1 | H) = 0.17021276595744686</span></span><br><span class="line"><span class="comment"># P(omega_2 | H) = 0.5106382978723404</span></span><br><span class="line"><span class="comment"># P(omega_3 | H) = 0.3191489361702128</span></span><br></pre></td></tr></table></figure>
 
@@ -248,19 +275,19 @@ P(\omega_i \lvert H) = \frac{\pi_i \theta_i}{\sum_{j=1}^3 \pi_j \theta_j}
 <thead>
 <tr>
 <th align="left"></th>
-<th align="left">コイン1 (<script type="math/tex">\omega_1</script>)</th>
-<th align="left">コイン2 (<script type="math/tex">\omega_2</script>)</th>
-<th align="left">コイン3 (<script type="math/tex">\omega_3</script>)</th>
+<th align="left">コイン1 (\(\omega_1\))</th>
+<th align="left">コイン2 (\(\omega_2\))</th>
+<th align="left">コイン3 (\(\omega_3\))</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left">取り出した段階　　<script type="math/tex">P(\omega_i) = \pi_i</script></td>
+<td align="left">取り出した段階　　\(P(\omega_i) &#x3D; \pi_i\)</td>
 <td align="left">0.1</td>
 <td align="left">0.4</td>
 <td align="left">0.5</td>
 </tr>
 <tr>
-<td align="left">投げて表が出た後　<script type="math/tex">P(\omega_i｜H)</script></td>
+<td align="left">投げて表が出た後　\(P(\omega_i｜H)\)</td>
 <td align="left">0.170…</td>
 <td align="left">0.510…</td>
 <td align="left">0.319…</td>
@@ -373,9 +400,5 @@ P(\omega_i \lvert H) = \frac{\pi_i \theta_i}{\sum_{j=1}^3 \pi_j \theta_j}
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

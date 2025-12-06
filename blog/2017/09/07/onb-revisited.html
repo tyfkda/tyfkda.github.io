@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -201,20 +230,19 @@
 
 <p>Revisitedというだけあって、Frisvadが提案した方法だと誤差が大きくなるケースがあるのを修正する、という内容。
 そちらも知らなかったのであたってみた。</p>
-<h3 id="ナイーブな方法"><a href="#ナイーブな方法" class="headerlink" title="ナイーブな方法"></a>ナイーブな方法</h3><p>1つの単位ベクトル <script type="math/tex">\vec{n}</script> から3次元の正規直交基底を求めるナイーブな方法は、平行しない適当なベクトルを選び、直交成分を取り出して正規化したものを <script type="math/tex">\vec{b1}</script> とし、また外積を取ったものを <script type="math/tex">\vec{b2}</script> として求める：</p>
+<h3 id="ナイーブな方法"><a href="#ナイーブな方法" class="headerlink" title="ナイーブな方法"></a>ナイーブな方法</h3><p>1つの単位ベクトル \(\vec{n}\) から3次元の正規直交基底を求めるナイーブな方法は、平行しない適当なベクトルを選び、直交成分を取り出して正規化したものを \(\vec{b1}\) とし、また外積を取ったものを \(\vec{b2}\) として求める：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">naive</span><span class="params">(<span class="type">const</span> Vec3f&amp; n, Vec3f&amp; b1, Vec3f&amp; b2)</span> &#123;</span><br><span class="line">  <span class="comment">// If n is near the x-axis, use the y-axis. Otherwise use the x-axis.</span></span><br><span class="line">  <span class="keyword">if</span> (n.x &gt; <span class="number">0.9f</span>) b1 = Vec3f(<span class="number">0.0f</span>, <span class="number">1.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">  <span class="keyword">else</span>            b1 = Vec3f(<span class="number">1.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">  b1 -= n * dot(b1, n);      <span class="comment">// Make b1 orthogonal to n</span></span><br><span class="line">  b1 *= rsqrt(dot(b1, b1));  <span class="comment">// Normalize b1</span></span><br><span class="line">  b2 = cross(n, b1);         <span class="comment">// Construct b2 using a cross product</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="Hughes-Moller法"><a href="#Hughes-Moller法" class="headerlink" title="Hughes-Möller法"></a>Hughes-Möller法</h3><p>適当なベクトルとして、 <script type="math/tex">\vec{n}</script> のx, y, z成分の中で絶対値が一番小さい成分を0として、残り2つを入れ替え、片方の符号を反転したものを選ぶと <script type="math/tex">\vec{n}</script> に直交する、ということを利用してナイーブな方法よりちょっとお得：</p>
+<h3 id="Hughes-Moller法"><a href="#Hughes-Moller法" class="headerlink" title="Hughes-Möller法"></a>Hughes-Möller法</h3><p>適当なベクトルとして、 \(\vec{n}\) のx, y, z成分の中で絶対値が一番小さい成分を0として、残り2つを入れ替え、片方の符号を反転したものを選ぶと \(\vec{n}\) に直交する、ということを利用してナイーブな方法よりちょっとお得：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">hughes_moeller</span><span class="params">(<span class="type">const</span> Vec3f&amp; n, Vec3f&amp; b1, Vec3f&amp; b2)</span> &#123;</span><br><span class="line">  <span class="comment">// Choose a vector orthogonal to n as the direction of b2.</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">fabs</span>(n.x) &gt; <span class="built_in">fabs</span>(n.z)) b2 = Vec3f(-n.y, n.x, <span class="number">0.0f</span>);</span><br><span class="line">  <span class="keyword">else</span>                       b2 = Vec3f(<span class="number">0.0f</span>, -n.z, n.y);</span><br><span class="line">  b2 *= rsqrt(dot(b2, b2));</span><br><span class="line">  b1 = cross(b2, n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="Frisvad法"><a href="#Frisvad法" class="headerlink" title="Frisvad法"></a>Frisvad法</h3><p>クォータニオンによる任意軸の回転を利用して、 <script type="math/tex">(0,0,1)</script> を回転させた基底を計算する。
+<h3 id="Frisvad法"><a href="#Frisvad法" class="headerlink" title="Frisvad法"></a>Frisvad法</h3><p>クォータニオンによる任意軸の回転を利用して、 \((0,0,1)\) を回転させた基底を計算する。
 正規化をしなくてすむのでお得：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Listing 2. New way of finding an orthonormal basis from a unit 3D vector.</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">frisvad</span><span class="params">(<span class="type">const</span> Vec3f&amp; n, Vec3f&amp; b1, Vec3f&amp; b2)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (n.z &lt; <span class="number">-0.9999999f</span>) &#123;  <span class="comment">// Handle the singularity</span></span><br><span class="line">    b1 = Vec3f(<span class="number">0.0f</span>, <span class="number">-1.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">    b2 = Vec3f(<span class="number">-1.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">const</span> <span class="type">float</span> a = <span class="number">1.0f</span> / (<span class="number">1.0f</span> + n.z);</span><br><span class="line">  <span class="type">const</span> <span class="type">float</span> b = -n.x * n.y * a;</span><br><span class="line">  b1 = Vec3f(<span class="number">1.0f</span> - n.x * n.x * a, b, -n.x);</span><br><span class="line">  b2 = Vec3f(b, <span class="number">1.0f</span> - n.y * n.y * a, -n.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="Frisvad法の問題点"><a href="#Frisvad法の問題点" class="headerlink" title="Frisvad法の問題点"></a>Frisvad法の問題点</h3><script type="math/tex">n_z</script> が-1に近づくと誤差がひどくなり、また行列式が負になることもある。
-
+<h3 id="Frisvad法の問題点"><a href="#Frisvad法の問題点" class="headerlink" title="Frisvad法の問題点"></a>Frisvad法の問題点</h3><p>\(n_z\) が-1に近づくと誤差がひどくなり、また行列式が負になることもある。</p>
 <h3 id="修正方法"><a href="#修正方法" class="headerlink" title="修正方法"></a>修正方法</h3><p>z成分が-1に近づくと問題が起きるが、そうでなければ問題ない。
-じゃあということでzが負の場合には逆に<script type="math/tex">(0,0,-1)</script>から任意軸回転させてやればよい：</p>
+じゃあということでzが負の場合には逆に\((0,0,-1)\)から任意軸回転させてやればよい：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">revisedONB</span><span class="params">(<span class="type">const</span> Vec3f &amp;n, Vec3f &amp;b1, Vec3f &amp;b2)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (n.z &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">float</span> a = <span class="number">1.0f</span> / (<span class="number">1.0f</span> - n.z);</span><br><span class="line">    <span class="type">const</span> <span class="type">float</span> b = n.x * n.y * a;</span><br><span class="line">    b1 = Vec3f(<span class="number">1.0f</span> - n.x * n.x * a, -b, n.x);</span><br><span class="line">    b2 = Vec3f(b, n.y * n.y*a - <span class="number">1.0f</span>, -n.y);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">float</span> a = <span class="number">1.0f</span> / (<span class="number">1.0f</span> + n.z);</span><br><span class="line">    <span class="type">const</span> <span class="type">float</span> b = -n.x * n.y * a;</span><br><span class="line">    b1 = Vec3f(<span class="number">1.0f</span> - n.x * n.x * a, b, -n.x);</span><br><span class="line">    b2 = Vec3f(b, <span class="number">1.0f</span> - n.y * n.y * a, -n.y);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>しかしこの変更によってFrisvad法より2倍も遅くなってしまう！
@@ -329,9 +357,5 @@
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

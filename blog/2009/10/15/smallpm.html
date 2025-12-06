@@ -93,6 +93,35 @@ Beeさんのsmallppmを元に作る。これなら何か間違ったときに確
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -229,7 +258,7 @@ Beeさんのsmallppmを元に作る。これなら何か間違ったときに確
 <li>推定用フォトンの数を増やすと如実に時間がかかるようになるのがヤバイ。断じてO(k + log n)ではない。kd-treeがうまく動いてるのかどうか疑問</li>
 <li>メモリ節約のため浮動小数型をfloatに変えると、精度不足のためか画像が乱れてしまったので断念</li>
 <li>一応ちゃんとsmallppmと同じような絵が出たので満足<ul>
-<li>自分の勘違いかわからないんですが、smallppmでは最終的にピクセルの放射輝度を求めるところ（<code>c[i]=c[i]+hp-&gt;flux*(1.0/(PI*hp-&gt;r2*num_photon*1000.0))</code>）で拡散面のBRDF <script type="math/tex">1/\pi</script>がかかってない？ように思うんですがどうでしょう？そのためこちらではシーン全体が暗くなってしまったので光源のパワーを<script type="math/tex">\pi</script>倍して帳尻を合わせてみました。</li>
+<li>自分の勘違いかわからないんですが、smallppmでは最終的にピクセルの放射輝度を求めるところ（<code>c[i]=c[i]+hp-&gt;flux*(1.0/(PI*hp-&gt;r2*num_photon*1000.0))</code>）で拡散面のBRDF \(1&#x2F;\pi\)がかかってない？ように思うんですがどうでしょう？そのためこちらではシーン全体が暗くなってしまったので光源のパワーを\(\pi\)倍して帳尻を合わせてみました。</li>
 </ul>
 </li>
 <li>OpenMPの<code>#pragma</code>はsmallppmにあわせて入れてみたけど、<del>動いてるのかどうか未確認</del> 確認済</li>
@@ -343,9 +372,5 @@ Beeさんのsmallppmを元に作る。これなら何か間違ったときに確
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

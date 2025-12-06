@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -207,31 +236,28 @@
 <p>Nビット同士の除算で簡単な順に、(i)符号なしの場合、(ii)符号ありで商を０に向かって丸める、(iii)符号ありで商を−∞に丸める、手順が書かれている。
 まずは(i)符号なしの場合を読む。</p>
 <h4 id="符号なしの場合、導出"><a href="#符号なしの場合、導出" class="headerlink" title="符号なしの場合、導出"></a>符号なしの場合、導出</h4><p>論文の4章に符号なしNビット同士の除算について書かれている。</p>
-<p>割る数を <script type="math/tex">d</script>（不変）、割られる数を <script type="math/tex">n</script>（可変）とした時の商を <script type="math/tex">q = \lfloor \frac{n}{d} \rfloor</script> として、<script type="math/tex">\lfloor \frac{n}{d} \rfloor = \lfloor \frac{m * n}{2^{N + l}} \rfloor</script> （4.1式）となる <script type="math/tex">m</script> を求めるための不等式の導出がわかりにくい…。</p>
-<p>まず <script type="math/tex">l</script> がなにかがこの時点では書かれてないように見える。
-後の図4.1に <script type="math/tex">l = \lceil \log_2 d \rceil</script> と書かれているので、割る数 <script type="math/tex">d</script> の <code>log2</code>（＝２の何乗以下か）を示しているぽい。</p>
-<script type="math/tex">n = d</script> とすると <script type="math/tex">2^{N + l} \le m * d</script> となる、というのは(4.1)式に代入すれば左辺が1で、それに等しくなるためには
-<script type="math/tex">m * d</script> が <script type="math/tex">2^{N+l}</script> 以上である必要がある、ということから不等式が導かれる。
-
+<p>割る数を \(d\)（不変）、割られる数を \(n\)（可変）とした時の商を \(q &#x3D; \lfloor \frac{n}{d} \rfloor\) として、\(\lfloor \frac{n}{d} \rfloor &#x3D; \lfloor \frac{m * n}{2^{N + l}} \rfloor\) （4.1式）となる \(m\) を求めるための不等式の導出がわかりにくい…。</p>
+<p>まず \(l\) がなにかがこの時点では書かれてないように見える。
+後の図4.1に \(l &#x3D; \lceil \log_2 d \rceil\) と書かれているので、割る数 \(d\) の <code>log2</code>（＝２の何乗以下か）を示しているぽい。</p>
+<p>\(n &#x3D; d\) とすると \(2^{N + l} \le m * d\) となる、というのは(4.1)式に代入すれば左辺が1で、それに等しくなるためには
+\(m * d\) が \(2^{N+l}\) 以上である必要がある、ということから不等式が導かれる。</p>
 <p>次の上限を抑える不等式も間をすっ飛ばしているので導出がわかりにくい…。
-その上 <script type="math/tex">n = q * d - 1</script> とするというのは、もともと <script type="math/tex">q = \lfloor \frac{n}{d} \rfloor</script> なので成り立つわけがなくおかしいので、
-変数名を <script type="math/tex">q</script> から例えば <script type="math/tex">i</script> に変えて <script type="math/tex">n = i * d - 1</script> などとする必要があるように思う。</p>
-<p>そうして代入すると左辺は <script type="math/tex">\lfloor \frac{i * d - 1}{d} \rfloor = \lfloor i - \frac{1}{d} \rfloor = i - 1</script>、
-右辺 <script type="math/tex">\lfloor \frac{m * (i * d - 1)}{2^{N + l}} \rfloor</script> が <script type="math/tex">i-1</script> となるためには分子が分母*iより小さくなる必要がある、という導出になる。</p>
-<script type="math/tex">d</script> を掛けて〜というのは、先ほどのに乗じた <script type="math/tex">2^{N+l} * (i * d) = 2^{N+l} * (i * d - 1 + 1) = 2^{N+l} * (i * d - 1) + 2^{N+l}</script>
-<p>となって、移項して <script type="math/tex">i * d - 1</script>　で括れば導出できる。</p>
+その上 \(n &#x3D; q * d - 1\) とするというのは、もともと \(q &#x3D; \lfloor \frac{n}{d} \rfloor\) なので成り立つわけがなくおかしいので、
+変数名を \(q\) から例えば \(i\) に変えて \(n &#x3D; i * d - 1\) などとする必要があるように思う。</p>
+<p>そうして代入すると左辺は \(\lfloor \frac{i * d - 1}{d} \rfloor &#x3D; \lfloor i - \frac{1}{d} \rfloor &#x3D; i - 1\)、
+右辺 \(\lfloor \frac{m * (i * d - 1)}{2^{N + l}} \rfloor\) が \(i-1\) となるためには分子が分母*iより小さくなる必要がある、という導出になる。</p>
+<p>\(d\) を掛けて〜というのは、先ほどのに乗じた \(2^{N+l} * (i * d) &#x3D; 2^{N+l} * (i * d - 1 + 1) &#x3D; 2^{N+l} * (i * d - 1) + 2^{N+l}\)
+となって、移項して \(i * d - 1\) で括れば導出できる。</p>
 <p>そんなこんなで定理4.2で不等式(4.3)とその証明が示されるが、あまり理解できず…。</p>
 <h4 id="符号なしの場合、アルゴリズム"><a href="#符号なしの場合、アルゴリズム" class="headerlink" title="符号なしの場合、アルゴリズム"></a>符号なしの場合、アルゴリズム</h4><p>図4.1 に必要な係数と演算方法が、またその改良を施した版が図4.2に示される。
-割る値 <script type="math/tex">d</script> とそれから算出した <script type="math/tex">m</script> によって場合わけされる
+割る値 \(d\) とそれから算出した \(m\) によって場合わけされる
 （<code>MULUH</code>＝Nビット同士の乗算結果2Nビットの上位Nビット（符号なし）、<code>SRL</code>＝論理右シフト）：</p>
 <ul>
-<li><script type="math/tex">d</script> が2のべき乗の場合
-<ul>
+<li>\(d\) が2のべき乗の場合<ul>
 <li>ビットシフトのみ： <code>q = SRL(n, l);</code></li>
 </ul>
 </li>
-<li><script type="math/tex">m \ge 2^N</script> の場合
-<ul>
+<li>\(m \ge 2^N\) の場合<ul>
 <li><code>t1 = MULUH(m - 2^N, n); q = SRL(t1 + SRL(n - t1, 1), sh_post - 1);</code></li>
 </ul>
 </li>
@@ -289,7 +315,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/gauss-rand.html" title="正規分布の乱数の生成方法" rel="bookmark">正規分布の乱数の生成方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/05/08/gauss-rand.html" title="正規分布の乱数の生成方法" rel="bookmark">正規分布の乱数の生成方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
@@ -366,9 +392,5 @@
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

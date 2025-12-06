@@ -10,22 +10,13 @@
 
     <!--Description-->
     
-        <meta name="description" content="周期２\piの関数を等間隔でN分割してそれぞれのサンプル点を
-% 
-
-、サンプル点での値をf_lとすると、離散フーリエ変換の係数は
-% 
-
-となる。
-複素表示を展開すると
-% 
-
-となる。
-逆変換サンプル点を復元する逆変換は、
-% 
-
-プログラム化Rubyの配列にベクトル演算を仕込む：
-class ">
+        <meta name="description" content="周期\(２\pi\)の関数を等間隔で\(N\)分割してそれぞれのサンプル点を
+$$
+\theta_l &amp;#x3D; \frac{2\pi}{N}, (l &amp;#x3D; 0, 1, 2 … N-1)
+$$
+、サンプル点での値を\(f_l\)とすると、離散フーリエ変換の係数は
+$$
+F_k &amp;#x3D;">
     
 
     <!--Author-->
@@ -106,6 +97,35 @@ class ">
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -213,41 +233,33 @@ class ">
             <div class="col-lg-9 col-md-9">
                 <span id="more"></span>
 
-<p>周期<script type="math/tex">２\pi</script>の関数を等間隔で<script type="math/tex">N</script>分割してそれぞれのサンプル点を</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\theta_l = \frac{2\pi}{N}, (l = 0, 1, 2 ... N-1)
-%]]></script>
-
-<p>、サンプル点での値を<script type="math/tex">f_l</script>とすると、離散フーリエ変換の係数は</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-F_k = \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i2\pi kl/N}
-%]]></script>
-
+<p>周期\(２\pi\)の関数を等間隔で\(N\)分割してそれぞれのサンプル点を</p>
+<p>$$
+\theta_l &#x3D; \frac{2\pi}{N}, (l &#x3D; 0, 1, 2 … N-1)
+$$</p>
+<p>、サンプル点での値を\(f_l\)とすると、離散フーリエ変換の係数は</p>
+<p>$$
+F_k &#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l e^{-i2\pi kl&#x2F;N}
+$$</p>
 <p>となる。</p>
 <p>複素表示を展開すると</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-F_k &=& \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i2\pi kl/N} \\
-    &=& \frac{1}{N} \sum_{l=0}^{N-1} \left\{ f_l \left( \cos(-2\pi kl/N) + i \sin(-2\pi kl/N) \right) \right\} \\
-    &=& \frac{1}{N} \sum_{l=0}^{N-1} \left\{ f_l \left( \cos(2\pi kl/N) - i \sin(2\pi kl/N) \right) \right\} \\
-    &=& \frac{1}{N} \sum_{l=0}^{N-1} f_l \cos(2\pi kl/N) - i\frac{1}{N} \sum_{l=0}^{N-1} f_l \sin(2\pi kl/N) \\
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+F_k &amp;&#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l e^{-i2\pi kl&#x2F;N} \\
+    &amp;&#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} \left\lbrace f_l \left( \cos(-2\pi kl&#x2F;N) + i \sin(-2\pi kl&#x2F;N) \right) \right\rbrace \\
+    &amp;&#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} \left\lbrace f_l \left( \cos(2\pi kl&#x2F;N) - i \sin(2\pi kl&#x2F;N) \right) \right\rbrace \\
+    &amp;&#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l \cos(2\pi kl&#x2F;N) - i\frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l \sin(2\pi kl&#x2F;N) \\
+\end{align*}
+$$</p>
 <p>となる。</p>
 <h3 id="逆変換"><a href="#逆変換" class="headerlink" title="逆変換"></a>逆変換</h3><p>サンプル点を復元する逆変換は、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-f_l &=& \sum_{k=0}^{N-1} F_k e^{i2\pi kl/N} \\
-    &=& \sum_{k=0}^{N-1} (Fr_k + i Fi_k) (\cos(2\pi kl/N) + i\sin(2\pi kl/N)) \\
-    &=& \sum_{k=0}^{N-1} (Fr_k \cos(2\pi kl/N) - Fi_k \sin(2\pi kl/N)) + i \sum_{k=0}^{N-1} (Fr_k \sin(2\pi kl/N) + Fi_k \cos(2\pi kl/N)) \\
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+f_l &amp;&#x3D; \sum_{k&#x3D;0}^{N-1} F_k e^{i2\pi kl&#x2F;N} \\
+    &amp;&#x3D; \sum_{k&#x3D;0}^{N-1} (Fr_k + i Fi_k) (\cos(2\pi kl&#x2F;N) + i\sin(2\pi kl&#x2F;N)) \\
+    &amp;&#x3D; \sum_{k&#x3D;0}^{N-1} (Fr_k \cos(2\pi kl&#x2F;N) - Fi_k \sin(2\pi kl&#x2F;N)) + i \sum_{k&#x3D;0}^{N-1} (Fr_k \sin(2\pi kl&#x2F;N) + Fi_k \cos(2\pi kl&#x2F;N)) \\
+\end{align*}
+$$</p>
 <h3 id="プログラム化"><a href="#プログラム化" class="headerlink" title="プログラム化"></a>プログラム化</h3><p>Rubyの配列にベクトル演算を仕込む：</p>
 <figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Array</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">vadd</span>(<span class="params">v2</span>)</span><br><span class="line">    <span class="variable language_">self</span>.zip(v2).map <span class="keyword">do</span> |<span class="params">a, b</span>|</span><br><span class="line">      a + b</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">vsub</span>(<span class="params">v2</span>)</span><br><span class="line">    <span class="variable language_">self</span>.zip(v2).map <span class="keyword">do</span> |<span class="params">a, b</span>|</span><br><span class="line">      a - b</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">vscale</span>(<span class="params">s</span>)</span><br><span class="line">    <span class="variable language_">self</span>.map <span class="keyword">do</span> |<span class="params">x</span>|</span><br><span class="line">      x * s</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">vlength</span>()</span><br><span class="line">    ll = <span class="variable language_">self</span>.inject(<span class="number">0</span>) <span class="keyword">do</span> |<span class="params">r, x</span>|</span><br><span class="line">      r + x ** <span class="number">2</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="title class_">Math</span>.sqrt(ll)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">dot</span>(<span class="params">v2</span>)</span><br><span class="line">    <span class="variable language_">self</span>.zip(v2).inject(<span class="number">0</span>) <span class="keyword">do</span> |<span class="params">r, x</span>|</span><br><span class="line">      r + x[<span class="number">0</span>] * x[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
@@ -369,9 +381,5 @@ f_l &=& \sum_{k=0}^{N-1} F_k e^{i2\pi kl/N} \\
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -188,25 +217,21 @@
 <p>今までの内容を組み合わせる。ルートプランニング（A*）、PID制御とそのパラメータの調整(twiddle)。</p>
 <h3 id="SLAM"><a href="#SLAM" class="headerlink" title="SLAM"></a>SLAM</h3><p><a href="http://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping">SLAM &#x3D; Simultaneous localization and mapping</a> 位置の推定とマッピングを同時に行う手法。未知の空間で、マッピングをしながら位置の推定を行う。</p>
 <h4 id="graph-SLAM"><a href="#graph-SLAM" class="headerlink" title="graph SLAM"></a>graph SLAM</h4><p>例えば、x0&#x3D;0として、そこから10移動した（つもりの）位置をx1としたとき</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
- x0 - x1 &=& -10, \\
--x0 + x1 &=& 10,
-\end{eqnarray*}
-%]]></script>
-
-<p>という行列の形にして、連立方程式を解くと<script type="math/tex">x0</script>, <script type="math/tex">x1</script>が求まる。センサーで標的までの距離が測れたとすると、<script type="math/tex">L0 - x0 = d</script> などという制約も行列に追加する。</p>
+<p>$$
+\begin{align*}
+ x0 - x1 &amp;&#x3D;&amp; -10, \\
+-x0 + x1 &amp;&#x3D;&amp; 10,
+\end{align*}
+$$</p>
+<p>という行列の形にして、連立方程式を解くと\(x0\), \(x1\)が求まる。センサーで標的までの距離が測れたとすると、\(L0 - x0 &#x3D; d\) などという制約も行列に追加する。</p>
 <p>面白いのは、センサーや移動で誤差があったとしても、制約に近い結果が求まる。</p>
 <h3 id="online-SLAM"><a href="#online-SLAM" class="headerlink" title="online SLAM"></a>online SLAM</h3><p>ロボットが長時間動いている場合、SLAMの位置履歴が膨大になり、計算に時間がかかってしまう。単に部分行列を取り出すだけではうまくいかない。online SLAMという方法で、全履歴を持っていなくても最後の位置と標的の制約行列に新しい移動制約とセンサーの制約を追加する方法がある。</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-new\Omega &=& \Omega^{'} - A^T B^{-1} A \\
-new\xi &=& \xi^{'} - A^T B^{-1} C
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+new\Omega &amp;&#x3D;&amp; \Omega^{‘} - A^T B^{-1} A \\
+new\xi &amp;&#x3D;&amp; \xi^{‘} - A^T B^{-1} C
+\end{align*}
+$$</p>
 <h3 id="QA"><a href="#QA" class="headerlink" title="QA"></a>QA</h3><ul>
 <li>landmarkが識別不能な場合どうするか？　<a href="http://en.wikipedia.org/wiki/RANSAC">ransack</a>という方法でうまく解決できる。</li>
 <li>landmarkの数が予めわかってない場合は？　image stitching</li>
@@ -318,9 +343,5 @@ new\xi &=& \xi^{'} - A^T B^{-1} C
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="続・わかりやすい　パターン認識第５章　教師付き学習と教師なし学習5.5 教師なし学習の実習 (p.95)例題5.2(p.83)での教師付き学習でのパラメータの推定の教師の存在を取り払い、例題5.3(p.86)を「教師なし学習アルゴリズム（p.93）」でパラメータの推定を行う">
+        <meta name="description" content="続・わかりやすい　パターン認識第５章　教師付き学習と教師なし学習5.5 教師なし学習の実習 (p.95)&amp;nbsp;例題5.2(p.83)での教師付き学習でのパラメータの推定の教師の存在を取り払い、例題5.3(p.86)を「教師なし学習アルゴリズム（p.93）」でパラメータの推定を行う">
     
 
     <!--Author-->
@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -196,18 +225,18 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <h1 id="続・わかりやすい-パターン認識"><a href="#続・わかりやすい-パターン認識" class="headerlink" title="続・わかりやすい　パターン認識"></a>続・わかりやすい　パターン認識</h1><h2 id="第５章-教師付き学習と教師なし学習"><a href="#第５章-教師付き学習と教師なし学習" class="headerlink" title="第５章　教師付き学習と教師なし学習"></a>第５章　教師付き学習と教師なし学習</h2><h3 id="5-5-教師なし学習の実習-p-95"><a href="#5-5-教師なし学習の実習-p-95" class="headerlink" title="5.5 教師なし学習の実習 (p.95)"></a>5.5 教師なし学習の実習 (p.95)</h3><a href="/blog/2015/10/12/supervised-infer-params.html" title="教師付き学習でパラメータの推定">例題5.2(p.83)での教師付き学習でのパラメータの推定</a>の教師の存在を取り払い、例題5.3(p.86)を「教師なし学習アルゴリズム（p.93）」でパラメータの推定を行う
-
+                <h1 id="続・わかりやすい-パターン認識"><a href="#続・わかりやすい-パターン認識" class="headerlink" title="続・わかりやすい　パターン認識"></a>続・わかりやすい　パターン認識</h1><h2 id="第５章-教師付き学習と教師なし学習"><a href="#第５章-教師付き学習と教師なし学習" class="headerlink" title="第５章　教師付き学習と教師なし学習"></a>第５章　教師付き学習と教師なし学習</h2><h3 id="5-5-教師なし学習の実習-p-95"><a href="#5-5-教師なし学習の実習-p-95" class="headerlink" title="5.5 教師なし学習の実習 (p.95)"></a>5.5 教師なし学習の実習 (p.95)</h3><p>&nbsp;<a href="/blog/2015/10/12/supervised-infer-params.html" title="教師付き学習でパラメータの推定">例題5.2(p.83)での教師付き学習でのパラメータの推定</a>の教師の存在を取り払い、例題5.3(p.86)を「教師なし学習アルゴリズム（p.93）」でパラメータの推定を行う</p>
 <span id="more"></span>
 
 <p>例題5.3：</p>
 <ul>
-<li>箱に見分けの付かない<script type="math/tex">c</script>種類のサイコロ（<script type="math/tex">\omega_1</script>〜<script type="math/tex">\omega_c</script>）が大量に入っていて、それぞれの含有率（<script type="math/tex">\pi_i</script>）は不明</li>
-<li>サイコロの種類によって各目の出易さが違う（<script type="math/tex">\theta_{ik}</script>） （これも不明）</li>
-<li>箱からサイコロを取り出して投げ、出た目<script type="math/tex">x_t</script>を観測して元の箱に戻す、という操作を<script type="math/tex">n</script>回繰り返す</li>
-<li>観測結果から含有率（<script type="math/tex">\pi_i</script>）及び目の出易さ（<script type="math/tex">\theta_{ik}</script>）を最尤推定で推定せよ</li>
+<li>箱に見分けの付かない\(c\)種類のサイコロ（\(\omega_1\)〜\(\omega_c\)）が大量に入っていて、それぞれの含有率（\(\pi_i\)）は不明</li>
+<li>サイコロの種類によって各目の出易さが違う（\(\theta_{ik}\)） （これも不明）</li>
+<li>箱からサイコロを取り出して投げ、出た目\(x_t\)を観測して元の箱に戻す、という操作を\(n\)回繰り返す</li>
+<li>観測結果から含有率（\(\pi_i\)）及び目の出易さ（\(\theta_{ik}\)）を最尤推定で推定せよ</li>
 </ul>
-<p>上記の例題に対する教師なし学習の実験として、3種類のサイコロ、目は奇数か偶数の2種類、<script type="math/tex">\theta</script>は既知で<script type="math/tex">\pi</script>のみを推定する。教師なしなので観測結果は出た目（<script type="math/tex">\vec{x}</script>）だけで、各回に投げたサイコロがどのサイコロだったか（<script type="math/tex">\vec{s}</script>）は不明とする（実際には使用するのはサイコロの目それぞれの出現回数を集計した <script type="math/tex">\vec{r}</script> だけ）。</p>
+<p>上記の例題に対する教師なし学習の実験として、3種類のサイコロ、目は奇数か偶数の2種類、\(\theta\)は既知で\(\pi\)のみを推定する。
+教師なしなので観測結果は出た目（\(\vec{x}\)）だけで、各回に投げたサイコロがどのサイコロだったか（\(\vec{s}\)）は不明とする（実際には使用するのはサイコロの目それぞれの出現回数を集計した \(\vec{r}\) だけ）。</p>
 <h3 id="変数表"><a href="#変数表" class="headerlink" title="変数表"></a>変数表</h3><table>
 <thead>
 <tr>
@@ -218,38 +247,38 @@
 </thead>
 <tbody><tr>
 <td align="center">サイコロの種類</td>
-<td align="center"><script type="math/tex">\omega_1, \omega_2, \ldots, \omega_c</script></td>
-<td align="center"><script type="math/tex">c</script>種類　ループ変数<script type="math/tex">i</script></td>
+<td align="center">\(\omega_1, \omega_2, \ldots, \omega_c\)</td>
+<td align="center">\(c\)種類　ループ変数\(i\)</td>
 </tr>
 <tr>
 <td align="center">各サイコロの目（共通）</td>
-<td align="center"><script type="math/tex">v_1, v_2, \ldots, v_m</script></td>
-<td align="center"><script type="math/tex">m</script>種類　ループ変数<script type="math/tex">k</script></td>
+<td align="center">\(v_1, v_2, \ldots, v_m\)</td>
+<td align="center">\(m\)種類　ループ変数\(k\)</td>
 </tr>
 <tr>
-<td align="center"><script type="math/tex">n</script>回振った各サイコロの種類の時系列データ</td>
-<td align="center"><script type="math/tex">s_1, s_2, \ldots, s_n</script></td>
-<td align="center">各要素<script type="math/tex">s_t</script>はサイコロの種類、なので<script type="math/tex">\omega_1</script>〜<script type="math/tex">\omega_c</script>のどれか　（教師なしなので知ることはできない）</td>
+<td align="center">\(n\)回振った各サイコロの種類の時系列データ</td>
+<td align="center">\(s_1, s_2, \ldots, s_n\)</td>
+<td align="center">各要素\(s_t\)はサイコロの種類、なので\(\omega_1\)〜\(\omega_c\)のどれか　（教師なしなので知ることはできない）</td>
 </tr>
 <tr>
-<td align="center"><script type="math/tex">n</script>回振って出たサイコロの目の時系列データ</td>
-<td align="center"><script type="math/tex">x_1, x_2, \ldots, x_n</script></td>
-<td align="center">各要素<script type="math/tex">x_t</script>はサイコロの目、なので<script type="math/tex">v_1</script>〜<script type="math/tex">v_m</script>のどれか　ループ変数<script type="math/tex">t</script></td>
+<td align="center">\(n\)回振って出たサイコロの目の時系列データ</td>
+<td align="center">\(x_1, x_2, \ldots, x_n\)</td>
+<td align="center">各要素\(x_t\)はサイコロの目、なので\(v_1\)〜\(v_m\)のどれか　ループ変数\(t\)</td>
 </tr>
 <tr>
-<td align="center"><script type="math/tex">n</script>回の試行でサイコロの各目が何回出たかの集計</td>
-<td align="center"><script type="math/tex">r_1, r_2, \ldots, r_m</script></td>
-<td align="center"><script type="math/tex">\vec{x}</script>より集計できる</td>
+<td align="center">\(n\)回の試行でサイコロの各目が何回出たかの集計</td>
+<td align="center">\(r_1, r_2, \ldots, r_m\)</td>
+<td align="center">\(\vec{x}\)より集計できる</td>
 </tr>
 <tr>
 <td align="center">箱の中のサイコロの含有率（<strong>未知</strong>）</td>
-<td align="center"><script type="math/tex">\pi_1, \pi_2, \ldots, \pi_c</script></td>
-<td align="center"><script type="math/tex">c</script>種類　定義により<script type="math/tex">\pi_i = P(\omega_i)</script></td>
+<td align="center">\(\pi_1, \pi_2, \ldots, \pi_c\)</td>
+<td align="center">\(c\)種類　定義により\(\pi_i &#x3D; P(\omega_i)\)</td>
 </tr>
 <tr>
 <td align="center">各サイコロを投げて各目が出る確率（<strong>未知</strong>（本来は、しかし5.5では既知として扱う））</td>
-<td align="center"><script type="math/tex">\theta_{ik}</script></td>
-<td align="center"><script type="math/tex">i</script>がサイコロの種類、<script type="math/tex">k</script>が目の種類</td>
+<td align="center">\(\theta_{ik}\)</td>
+<td align="center">\(i\)がサイコロの種類、\(k\)が目の種類</td>
 </tr>
 </tbody></table>
 <p>変数と添字が多くてわけわからなくなるんだよね…</p>
@@ -262,22 +291,20 @@
 <p>例題5.3で求められている最適なパラメータは、すでに式(5.53)で示されており、あえて上記繰返し演算を適用する必要はない</p>
 </blockquote>
 <p>と書かれている。なので式(5.53)から求めてみる：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-P(v_k) = \sum_{i=1}^c \pi_i \cdot \theta_{ik} = \frac{r_k}{n}
+<p>$$
+P(v_k) &#x3D; \sum_{i&#x3D;1}^c \pi_i \cdot \theta_{ik} &#x3D; \frac{r_k}{n}
 \tag{5.53}
-%]]></script>
-
+$$</p>
 <p>書き下すと</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\pi_1 \cdot \theta_{1,odd} + \pi_2 \cdot \theta_{2,odd} + \pi_3 \cdot \theta_{3,odd} &=& \frac{r_{odd}}{n} \\
-\pi_1 \cdot \theta_{1,even} + \pi_2 \cdot \theta_{2,even} + \pi_3 \cdot \theta_{3,even} &=& \frac{r_{even}}{n}
-\end{eqnarray*}
-%]]></script>
-
-<p><code>srand(0)</code> で試した所、１万回中 <script type="math/tex">r_{odd} = 4793</script>、<script type="math/tex">r_{even} = 5207</script> だった。未知の変数は <script type="math/tex">pi</script> の3、方程式は2つなので一意に解けない。仮に <script type="math/tex">\pi_1 = 0.1139</script> とわかったとして計算すると、 <script type="math/tex">\pi_2 = 0.4078</script>, <script type="math/tex">\pi_3 = 0.4783</script> となり、繰り返し計算で求めた値と近い値が得られた。</p>
+<p>$$
+\begin{align*}
+\pi_1 \cdot \theta_{1,odd} + \pi_2 \cdot \theta_{2,odd} + \pi_3 \cdot \theta_{3,odd} &amp;&#x3D; \frac{r_{odd}}{n} \\
+\pi_1 \cdot \theta_{1,even} + \pi_2 \cdot \theta_{2,even} + \pi_3 \cdot \theta_{3,even} &amp;&#x3D; \frac{r_{even}}{n}
+\end{align*}
+$$</p>
+<p><code>srand(0)</code> で試した所、１万回中 \(r_{odd} &#x3D; 4793\)、\(r_{even} &#x3D; 5207\) だった。
+未知の変数は \(pi\) の3、方程式は2つなので一意に解けない。
+仮に \(\pi_1 &#x3D; 0.1139\) とわかったとして計算すると、 \(\pi_2 &#x3D; 0.4078\), \(\pi_3 &#x3D; 0.4783\) となり、繰り返し計算で求めた値と近い値が得られた。</p>
 
 
                 
@@ -378,9 +405,5 @@ P(v_k) = \sum_{i=1}^c \pi_i \cdot \theta_{ik} = \frac{r_k}{n}
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

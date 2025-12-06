@@ -95,6 +95,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -207,116 +236,90 @@
 展開した形で書き下してみます。</p>
 <span id="more"></span>
 
-<h3 id="フィードフォワードの添字表記"><a href="#フィードフォワードの添字表記" class="headerlink" title="フィードフォワードの添字表記"></a>フィードフォワードの添字表記</h3><p>レイヤー<script type="math/tex">l</script>のニューロン<script type="math/tex">j</script>に流入する値の合計<script type="math/tex">z^l_j</script>は、前の層のニューロンからの出力</p>
-<script type="math/tex">a^{l-1}_k</script>にウェイト<script type="math/tex">w^l_{jk}</script>を掛けたものを足しあわせたものにバイアス値
-<script type="math/tex">b^l_j</script>を加えたもの：
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-z^l_j = \sum_k w^l_{jk} a^{l-1}_k + b^l_j
-%]]></script>
-
-<p>それを活性関数<script type="math/tex">\sigma</script>で活性化された、ニューロンからの出力<script type="math/tex">a^l_j</script>は：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-a^l_j = \sigma(z^l_j)
-%]]></script>
-
+<h3 id="フィードフォワードの添字表記"><a href="#フィードフォワードの添字表記" class="headerlink" title="フィードフォワードの添字表記"></a>フィードフォワードの添字表記</h3><p>レイヤー\(l\)のニューロン\(j\)に流入する値の合計\(z^l_j\)は、前の層のニューロンからの出力
+\(a_k^{l-1}\)にウェイト\(w_{jk}^l\)を掛けたものを足しあわせたものにバイアス値
+\(b_j^l\)を加えたもの：</p>
+<p>$$
+z^l_j &#x3D; \sum_k w^l_{jk} a^{l-1}_k + b^l_j
+$$</p>
+<p>それを活性関数\(\sigma\)で活性化された、ニューロンからの出力\(a^l_j\)は：</p>
+<p>$$
+a^l_j &#x3D; \sigma(z^l_j)
+$$</p>
 <p>とします。</p>
-<p>ただし一番最初の入力層（<script type="math/tex">l=1</script>）の活性値は入力値とします（<script type="math/tex">a^1_j = x_j</script>）。</p>
+<p>ただし一番最初の入力層（\(l&#x3D;1\)）の活性値は入力値とします（\(a^1_j &#x3D; x_j\)）。</p>
 <h3 id="フィードフォワードのベクトル表記"><a href="#フィードフォワードのベクトル表記" class="headerlink" title="フィードフォワードのベクトル表記"></a>フィードフォワードのベクトル表記</h3><p>ベクトル表記で書くと、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\mathbf{z}^l &=& \mathbf{W}^l \mathbf{a}^{l-1} + \mathbf{b}^l \\
-\mathbf{a}^l &=& \sigma(\mathbf{z}^l)
-\end{eqnarray*}
-%]]></script>
-
-<p>ベクトル<script type="math/tex">\mathbf{x}</script>, <script type="math/tex">\mathbf{z}^l</script>, <script type="math/tex">\mathbf{a}^l</script>, <script type="math/tex">\mathbf{b}^l</script>
+<p>$$
+\begin{align*}
+\mathbf{z}^l &amp;&#x3D; \mathbf{W}^l \mathbf{a}^{l-1} + \mathbf{b}^l \\
+\mathbf{a}^l &amp;&#x3D; \sigma(\mathbf{z}^l)
+\end{align*}
+$$</p>
+<p>ベクトル\(\mathbf{x}\), \(\mathbf{z}^l\), \(\mathbf{a}^l\), \(\mathbf{b}^l\)
 はすべて列ベクトル、
-ウェイト行列<script type="math/tex">\mathbf{W}^l</script>は層<script type="math/tex">l</script>のニューロン<script type="math/tex">j</script>に対するウェイトを
+ウェイト行列\(\mathbf{W}^l\)は層\(l\)のニューロン\(j\)に対するウェイトを
 行ベクトルとして並べたもの。</p>
 <h3 id="展開形"><a href="#展開形" class="headerlink" title="展開形"></a>展開形</h3><p>マトリクスやベクトルの成分まで明示すると、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{pmatrix}z^l_1 \\ z^l_2 \\ \vdots \\ z^l_J \end{pmatrix} =
+<p>$$
+\begin{pmatrix}z^l_1 \\ z^l_2 \\ \vdots \\ z^l_J \end{pmatrix} &#x3D;
 \begin{bmatrix}
-  w^l_{11} & w^l_{12} & w^l_{13} & \cdots & w^l_{1K} \\
-  w^l_{21} & w^l_{22} & w^l_{23} & \cdots & w^l_{2K} \\
-  \vdots   & \vdots   & \vdots   & \ddots & \vdots   \\
-  w^l_{J1} & w^l_{J2} & w^l_{J3} & \cdots & w^l_{JK}
+  w^l_{11} &amp; w^l_{12} &amp; w^l_{13} &amp; \cdots &amp; w^l_{1K} \\
+  w^l_{21} &amp; w^l_{22} &amp; w^l_{23} &amp; \cdots &amp; w^l_{2K} \\
+  \vdots   &amp; \vdots   &amp; \vdots   &amp; \ddots &amp; \vdots   \\
+  w^l_{J1} &amp; w^l_{J2} &amp; w^l_{J3} &amp; \cdots &amp; w^l_{JK}
 \end{bmatrix}
-
 \begin{pmatrix}a^{l-1}_1 \\ a^{l-1}_2 \\ \vdots \\ a^{l-1}_K \end{pmatrix} +
 \begin{pmatrix}b^l_1 \\ b^l_2 \\ \vdots \\ b^l_J \end{pmatrix},
-%]]></script>
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{pmatrix}a^l_1 \\ a^l_2 \\ \vdots \\ a^l_J \end{pmatrix} =
+$$</p>
+<p>$$
+\begin{pmatrix}a^l_1 \\ a^l_2 \\ \vdots \\ a^l_J \end{pmatrix} &#x3D;
 \begin{pmatrix}\sigma(z^l_1) \\ \sigma(z^l_2) \\ \vdots \\ \sigma(z^l_J) \end{pmatrix}
-%]]></script>
-
-
+$$</p>
 <h3 id="例：３層での計算例"><a href="#例：３層での計算例" class="headerlink" title="例：３層での計算例"></a>例：３層での計算例</h3><p>入力層、隠れ層、出力層の３層の場合の計算例を示します。
 層ごとのニューロンの数はそれぞれ4, 3, 2とします：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\mathbf{a}^1 &=& \mathbf{x} \\
+<p>$$
+\begin{align*}
+\mathbf{a}^1 &amp;&#x3D; \mathbf{x} \\
 \\
-\mathbf{z}^2 &=& \mathbf{W}^2 \mathbf{a}^1 + \mathbf{b}^2 \\
-\mathbf{a}^2 &=& \sigma(\mathbf{z}^2) \\
+\mathbf{z}^2 &amp;&#x3D; \mathbf{W}^2 \mathbf{a}^1 + \mathbf{b}^2 \\
+\mathbf{a}^2 &amp;&#x3D; \sigma(\mathbf{z}^2) \\
 \\
-\mathbf{z}^3 &=& \mathbf{W}^3 \mathbf{a}^2 + \mathbf{b}^3 \\
-\mathbf{a}^3 &=& \sigma(\mathbf{z}^3) \\
-\end{eqnarray*}
-%]]></script>
-
+\mathbf{z}^3 &amp;&#x3D; \mathbf{W}^3 \mathbf{a}^2 + \mathbf{b}^3 \\
+\mathbf{a}^3 &amp;&#x3D; \sigma(\mathbf{z}^3) \\
+\end{align*}
+$$</p>
 <p>展開して書くと、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{pmatrix}a^1_1 \\ a^1_2 \\ a^1_3 \\ a^1_4 \end{pmatrix} =
+<p>$$
+\begin{pmatrix}a^1_1 \\ a^1_2 \\ a^1_3 \\ a^1_4 \end{pmatrix} &#x3D;
 \begin{pmatrix}x_1 \\ x_2 \\ x_3 \\ x_4 \end{pmatrix}
-%]]></script>
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{pmatrix}z^2_1 \\ z^2_2 \\ z^2_3 \end{pmatrix} =
+$$</p>
+<p>$$
+\begin{pmatrix}z^2_1 \\ z^2_2 \\ z^2_3 \end{pmatrix} &#x3D;
 \begin{bmatrix}
-  w^2_{11} & w^2_{12} & w^2_{13} & w^2_{14} \\
-  w^2_{21} & w^2_{22} & w^2_{23} & w^2_{24} \\
-  w^2_{31} & w^2_{32} & w^2_{33} & w^2_{34}
+  w^2_{11} &amp; w^2_{12} &amp; w^2_{13} &amp; w^2_{14} \\
+  w^2_{21} &amp; w^2_{22} &amp; w^2_{23} &amp; w^2_{24} \\
+  w^2_{31} &amp; w^2_{32} &amp; w^2_{33} &amp; w^2_{34}
 \end{bmatrix}
-
 \begin{pmatrix}a^1_1 \\ a^1_2 \\ a^1_3 \\ a^1_4 \end{pmatrix} +
 \begin{pmatrix}b^2_1 \\ b^2_2 \\ b^2_3 \end{pmatrix},
-%]]></script>
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{pmatrix}a^2_1 \\ a^2_2 \\ a^2_3 \end{pmatrix} =
+$$</p>
+<p>$$
+\begin{pmatrix}a^2_1 \\ a^2_2 \\ a^2_3 \end{pmatrix} &#x3D;
 \begin{pmatrix}\sigma(z^2_1) \\ \sigma(z^2_2) \\ \sigma(z^l_3) \end{pmatrix}
-%]]></script>
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{pmatrix}z^3_1 \\ z^3_2 \end{pmatrix} =
+$$</p>
+<p>$$
+\begin{pmatrix}z^3_1 \\ z^3_2 \end{pmatrix} &#x3D;
 \begin{bmatrix}
-  w^3_{11} & w^3_{12} & w^3_{13} \\
-  w^3_{21} & w^3_{22} & w^3_{23} \\
+  w^3_{11} &amp; w^3_{12} &amp; w^3_{13} \\
+  w^3_{21} &amp; w^3_{22} &amp; w^3_{23} \\
 \end{bmatrix}
-
 \begin{pmatrix}a^2_1 \\ a^2_2 \\ a^2_3 \end{pmatrix} +
 \begin{pmatrix}b^3_1 \\ b^3_2 \end{pmatrix},
-%]]></script>
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{pmatrix}a^3_1 \\ a^3_2 \\ a^3_3 \end{pmatrix} =
+$$</p>
+<p>$$
+\begin{pmatrix}a^3_1 \\ a^3_2 \end{pmatrix} &#x3D;
 \begin{pmatrix}\sigma(z^3_1) \\ \sigma(z^3_2) \end{pmatrix}
-%]]></script>
+$$</p>
 
 
                 
@@ -417,9 +420,5 @@ a^l_j = \sigma(z^l_j)
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

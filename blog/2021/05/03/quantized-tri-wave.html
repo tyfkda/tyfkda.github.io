@@ -93,6 +93,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -209,22 +238,20 @@
 <a href="https://developer.mozilla.org/ja/docs/Web/API/BaseAudioContext/createPeriodicWave">createPeriodicWave()</a>で波形を生成し、
 オシレータの<a href="https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode/setPeriodicWave">setPeriodicWave</a>で指定すればよい
 （フーリエ展開すると段差で大きく振動するので、その影響は別途検証する必要があるかも…）。</p>
-<p>周期を1、階段の段数を <script type="math/tex">d</script> とするとフーリエ級数展開の係数は、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-a_n &=& 2 \sum_{j=0}^{2 d} k_j \frac{1}{2 n \pi} \left\{ \sin \left( 2 n \pi \frac{j+1}{2d} \right) - \sin \left( 2 n \pi \frac{j}{2d} \right) \right\}, \\
-      k_j &=& \left\{
+<p>周期を1、階段の段数を \(d\) とするとフーリエ級数展開の係数は、</p>
+<p>$$
+\begin{align*}
+a_n &amp;&#x3D; 2 \sum_{j&#x3D;0}^{2 d} k_j \frac{1}{2 n \pi} \left\lbrace \sin \left\lparen 2 n \pi \frac{j+1}{2d} \right\rparen - \sin \left\lparen 2 n \pi \frac{j}{2d} \right\rparen \right\rbrace, \\
+      k_j &amp;&#x3D; \left\lbrace
           \begin{array}{ll}
-            j < d \cdots 1 - \frac{2j}{d-1} \\
+            j &lt; d \cdots 1 - \frac{2j}{d-1} \\
             j \ge d \cdots -1 + \frac{2(j-d)}{d-1}
           \end{array}
         \right.
-\end{eqnarray*}
-%]]></script>
-
+\end{align*}
+$$</p>
 <p>となる
-（直流成分<script type="math/tex">a_0=0</script>、<script type="math/tex">b_n</script>はsinを-cosにしたもの…と思ったが結局すべて0だった）。</p>
+（直流成分\(a_0&#x3D;0\)、\(b_n\)はsinを-cosにしたもの…と思ったが結局すべて0だった）。</p>
 <p>聞き比べてみると階段状のほうが倍音が強くて尖った音に聞こえ、特に音が低いときに顕著
 （ドラクエ３の名前入力時など無音なはずのところでノイズ音が聞こえるのはこれが原因）。</p>
 <p>階段の段数を減らして２段にすると矩形波に、フーリエ級数の足し合わせる項の数を数を減らすとサイン波になるということで、聞こえ方もそれらの中間という感じになっている。</p>
@@ -258,7 +285,7 @@ a_n &=& 2 \sum_{j=0}^{2 d} k_j \frac{1}{2 n \pi} \left\{ \sin \left( 2 n \pi \fr
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/04/06/nes-apu-dmc.html" title="ファミコンのDMCチャンネルの再現方法" rel="bookmark">ファミコンのDMCチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/01/square-duty.html" title="矩形波のデューティ比を変化させる" rel="bookmark">矩形波のデューティ比を変化させる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/07/07/nes-scrolling.html" title="ファミコンでのBGスクロール" rel="bookmark">ファミコンでのBGスクロール</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2021/03/07/nes-apu-noise.html" title="ファミコンのノイズチャンネルの再現方法" rel="bookmark">ファミコンのノイズチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2018/10/10/node-sdl2-audio.html" title="node.js/SDL2でオーディオ再生" rel="bookmark">node.js/SDL2でオーディオ再生</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/04/06/nes-apu-dmc.html" title="ファミコンのDMCチャンネルの再現方法" rel="bookmark">ファミコンのDMCチャンネルの再現方法</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2016/11/01/square-duty.html" title="矩形波のデューティ比を変化させる" rel="bookmark">矩形波のデューティ比を変化させる</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/07/07/nes-scrolling.html" title="ファミコンでのBGスクロール" rel="bookmark">ファミコンでのBGスクロール</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
@@ -335,9 +362,5 @@ a_n &=& 2 \sum_{j=0}^{2 d} k_j \frac{1}{2 n \pi} \left\{ \sin \left( 2 n \pi \fr
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

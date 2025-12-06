@@ -94,6 +94,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -208,53 +237,42 @@
 <h3 id="正則化"><a href="#正則化" class="headerlink" title="正則化"></a>正則化</h3><p>もっとも一般的に使われる正則化のテクニック：<em>重み減衰</em>、または<em>L2正則化</em></p>
 <p>コスト関数に正則化項と呼ばれる追加の項を足す。</p>
 <p>正則化されたクロスエントロピーコスト関数：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-C = -\frac{1}{n} \sum_{xj} \left[ y_j \ln a^L_j + (1 - y_j) \ln (1 - a^L_j) \right] + \frac{\lambda}{2n} \sum_w w^2.  \tag{85}
-%]]></script>
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-C = C_0 + \frac{\lambda}{2n} \sum_w w^2.  \tag{87}
-%]]></script>
-
-<p>2番目が項が追加されたもので、すべてのウェイトの二乗の和を<script type="math/tex">\lambda / 2n</script>でスケール。</p>
+<p>$$
+C &#x3D; -\frac{1}{n} \sum_{xj} \left[ y_j \ln a^L_j + (1 - y_j) \ln (1 - a^L_j) \right] + \frac{\lambda}{2n} \sum_w w^2.  \tag{85}
+$$</p>
+<p>$$
+C &#x3D; C_0 + \frac{\lambda}{2n} \sum_w w^2.  \tag{87}
+$$</p>
+<p>2番目が項が追加されたもので、すべてのウェイトの二乗の和を\(\lambda &#x2F; 2n\)でスケール。</p>
 <p>正則化項はバイアスを含まない</p>
-<script type="math/tex">\lambda > 0</script>は*正則化パラメータ*
-
+<p>\(\lambda &gt; 0\)は<em>正則化パラメータ</em></p>
 <p>他のコスト関数、例えば二乗誤差などの場合でも同様</p>
 <p>直感的に正則化の効果は、ネットワークが小さい重みを好むようになる</p>
 <p>偏微分：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\frac{\partial C}{\partial w} &=& \frac{\partial C_0}{\partial w} + \frac{\lambda}{n} w  \tag{88}  \\
-\frac{\partial C}{\partial b} &=& \frac{\partial C_0}{\partial b}  \tag{89}
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+\frac{\partial C}{\partial w} &amp;&#x3D; \frac{\partial C_0}{\partial w} + \frac{\lambda}{n} w  \tag{88} \\
+\frac{\partial C}{\partial b} &amp;&#x3D; \frac{\partial C_0}{\partial b}  \tag{89}
+\end{align*}
+$$</p>
 <p>重みの学習ルールは次のようになる：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-w & \rightarrow w - \eta \frac{\partial C_0}{\partial w} - \frac{\eta \lambda}{n} w  \tag{91} \\
-  & = \left(1 - \frac{\eta \lambda}{n} \right) w - \eta \frac{\partial C_0}{\partial w}  \tag{92}
-\end{eqnarray*}
-%]]></script>
-
-<p>通常の勾配降下学習ルールで、最初に重みを係数<script type="math/tex">1 - \frac{\eta \lambda}{n}</script>で理スケールしたものと同じ。
+<p>$$
+\begin{align*}
+w &amp; \rightarrow w - \eta \frac{\partial C_0}{\partial w} - \frac{\eta \lambda}{n} w  \tag{91} \\
+  &amp; &#x3D; \left(1 - \frac{\eta \lambda}{n} \right) w - \eta \frac{\partial C_0}{\partial w}  \tag{92}
+\end{align*}
+$$</p>
+<p>通常の勾配降下学習ルールで、最初に重みを係数\(1 - \frac{\eta \lambda}{n}\)で理スケールしたものと同じ。
 このリスケールを<em>重み減衰</em>と呼ぶ。</p>
 <p>正則化は過学習を防ぎ分類精度を高めるが、それ以外にも経験的には、局所最適化に陥らずに安定した結果になりやすい。</p>
 <p>なぜ正則化が過学習を防ぐか？の直感的な解釈</p>
 <h4 id="L1正則化"><a href="#L1正則化" class="headerlink" title="L1正則化"></a>L1正則化</h4><p><a href="http://neuralnetworksanddeeplearning.com/chap3.html#other_techniques_for_regularization">正則化のその他のテクニック</a></p>
 <p>L1正則化は、コスト関数を次のように変更する：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-C = C_0 + \frac{\lambda}{n} \sum_w |w|.  \tag{95}
-%]]></script>
-
-<p>重みの学習は、<script type="math/tex">w</script>の符号によって<script type="math/tex">\eta \lambda / n</script>だけ0に向かわせる。</p>
-<p>L2正則化と比べると、<script type="math/tex">w</script>が大きい時には相対的に少なく、小さい時には多く0に向かうことになる。</p>
+<p>$$
+C &#x3D; C_0 + \frac{\lambda}{n} \sum_w |w|.  \tag{95}
+$$</p>
+<p>重みの学習は、\(w\)の符号によって\(\eta \lambda &#x2F; n\)だけ0に向かわせる。</p>
+<p>L2正則化と比べると、\(w\)が大きい時には相対的に少なく、小さい時には多く0に向かうことになる。</p>
 <p>結果的にL1正則化は少しの重要度の高い結合に集中し、他の重みは0に向かうようになる。</p>
 
 
@@ -356,9 +374,5 @@ C = C_0 + \frac{\lambda}{n} \sum_w |w|.  \tag{95}
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

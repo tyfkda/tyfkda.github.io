@@ -93,6 +93,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -211,33 +240,26 @@
 </blockquote>
 <a href="/blog/2015/09/02/multiple-coin-toss.html" title="同じコインを複数回投げた結果から、どのコインだったかの確率">コイン投げの例</a> でのベイズ誤り確率を求めてみる（式(3.24)~(3.35)）。
 
-<p>コインを <script type="math/tex">n</script> 回投げて <script type="math/tex">r</script> 回表が出るときの誤り確率</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-e_B(r) = \min_i \{1 - P_n(\omega_i \lvert r) \}
+<p>コインを \(n\) 回投げて \(r\) 回表が出るときの誤り確率</p>
+<p>$$
+e_B(r) &#x3D; \min_i \left\lbrace1 - P_n(\omega_i \lvert r) \right\rbrace
 \tag{3.28}
-%]]></script>
-
+$$</p>
 <p>で、全体の誤り確率は</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-e_B = \sum_{r=0}^n e_B(r) P_n(r)
+<p>$$
+e_B &#x3D; \sum_{r&#x3D;0}^n e_B(r) P_n(r)
 \tag{3.31}
-%]]></script>
-
+$$</p>
 <p>となる。</p>
-<script type="math/tex">P_n(r)</script> は各コインの出現確率 <script type="math/tex">\pi_i</script> と、そのコインの表が出る確率 <script type="math/tex">\theta_i</script> と、
-<p>式(2.26)（<script type="math/tex">P_n(r; \theta) = {}_nC_r\theta^r(1 - \theta)^{n-r}</script> 、ベルヌーイ分布）
+<p>\(P_n(r)\) は各コインの出現確率 \(\pi_i\) と、そのコインの表が出る確率 \(\theta_i\) と、
+式(2.26)（\(P_n(r; \theta) &#x3D; {}_nC_r\theta^r(1 - \theta)^{n-r}\) 、ベルヌーイ分布）
 から計算する：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-P_n(r) &=& \sum_{i=1}^3 P_n(r \lvert \omega_i) P(\omega_i) \\
-       &=& \sum_{i=1}^3 {}_nC_r \theta_i^r (1 - \theta_i)^{n-r} \pi_i
-\end{eqnarray*}
-%]]></script>
-
-
+<p>$$
+\begin{align*}
+P_n(r) &amp;&#x3D; \sum_{i&#x3D;1}^3 P_n(r \lvert \omega_i) P(\omega_i) \\
+       &amp;&#x3D; \sum_{i&#x3D;1}^3 {}_nC_r \theta_i^r (1 - \theta_i)^{n-r} \pi_i
+\end{align*}
+$$</p>
 <h3 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h3><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># bayes_error.rb</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span></span><br><span class="line">  <span class="comment"># πi: それぞれのコインが箱の中にどのような割合で混ざっているか</span></span><br><span class="line">  pi = [<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.5</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># θi: それぞれのコインを投げた時に表が出る確率</span></span><br><span class="line">  theta = [<span class="number">0.8</span>, <span class="number">0.6</span>, <span class="number">0.3</span>]</span><br><span class="line"></span><br><span class="line">  n = <span class="number">10</span></span><br><span class="line">  eb = sigma(<span class="number">0</span>..n) <span class="keyword">do</span> |<span class="params">r</span>|</span><br><span class="line">    <span class="comment"># コインをn回投げて表がr回出た時に、投げたコインが1~3であった確率</span></span><br><span class="line">    probs = calc_posterior_probability_n(pi, theta, n, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># ベイズ決定則で、確率が最大のものを選択する</span></span><br><span class="line">    max = probs.max</span><br><span class="line"></span><br><span class="line">    <span class="comment"># コイン1~3をn回投げた時に表がr回出る確率</span></span><br><span class="line">    pnr = sigma(<span class="number">0</span>...pi.size) <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">      bernoulli_distribution(n, r, theta[i]) * pi[i]</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#puts &quot;*** #&#123;r&#125;&quot;</span></span><br><span class="line">    <span class="comment">#puts &quot;#&#123;r&#125;: #&#123;max&#125;, #&#123;1 - max&#125;, #&#123;pnr&#125;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># r回表が出る時に判定を間違う確率と、r回表が出るということが起こる確率を掛ける</span></span><br><span class="line">    ebr = (<span class="number">1</span> - max) * pnr</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  puts eb</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.2 より</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calc_posterior_probability_n</span>(<span class="params">pi, theta, n, r</span>)</span><br><span class="line">  m = pi.size</span><br><span class="line">  head_prob = (<span class="number">0</span>...m).map <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">    pi[i] * (theta[i] ** r) * ((<span class="number">1</span> - theta[i]) ** (n - r))</span><br><span class="line">  <span class="keyword">end</span>.inject(<span class="symbol">:+</span>)</span><br><span class="line"></span><br><span class="line">  (<span class="number">0</span>...m).map <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">    (pi[i] * (theta[i] ** r) * ((<span class="number">1</span> - theta[i]) ** (n - r))) / head_prob</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ベルヌーイ分布</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">bernoulli_distribution</span>(<span class="params">n, r, theta</span>)</span><br><span class="line">  combi(n, r) * (theta ** r) * ((<span class="number">1</span> - theta) ** (n - r))</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 組み合わせ nCr</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">combi</span>(<span class="params">n, r</span>)</span><br><span class="line">  fact(n) / (fact(n - r) * fact(r))</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 階乗 n!</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fact</span>(<span class="params">n</span>)</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">if</span> n &lt;= <span class="number">1</span></span><br><span class="line">  (<span class="number">1</span>..n).inject(<span class="symbol">:*</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Rangeに対してブロックを呼び出し、その結果の和を返す：∑</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sigma</span>(<span class="params">range, &amp;block</span>)</span><br><span class="line">  range.map <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">    block.call(i)</span><br><span class="line">  <span class="keyword">end</span>.inject(<span class="symbol">:+</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">main</span><br><span class="line"></span><br><span class="line"><span class="comment"># n=10   =&gt; 0.22259161014</span></span><br><span class="line"><span class="comment"># n=100  =&gt; 0.006150932942506893</span></span><br></pre></td></tr></table></figure>
 
 
@@ -339,9 +361,5 @@ P_n(r) &=& \sum_{i=1}^3 P_n(r \lvert \omega_i) P(\omega_i) \\
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

@@ -92,6 +92,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -202,44 +231,32 @@
 
 <span id="more"></span>
 
-<script type="math/tex; mode=display">% <![CDATA[
-
-\omega_N = e^{i 2\pi/N}
-%]]></script>
-
+<p>$$
+\omega_N &#x3D; e^{i 2\pi&#x2F;N}
+$$</p>
 <p>とすると</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-F_k &=& \frac{1}{N} \sum_{l=0}^{N-1} f_l e^{-i 2\pi kl/N} \\
-    &=& \frac{1}{N} \sum_{l=0}^{N-1} f_l(\omega_N)^{-kl} \\
-\end{eqnarray*}
-%]]></script>
-
-<p>&nbsp;<script type="math/tex">\overline{\omega_N} = \omega_N^{-1}</script> より（上バーは<a href="https://ja.wikipedia.org/wiki/%E8%A4%87%E7%B4%A0%E5%85%B1%E5%BD%B9">複素数の共役</a>をあらわす）</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
- = \frac{1}{N} \sum_{l=0}^{N-1} f_l \overline{\omega_N^{kl} }
-%]]></script>
-
-<script type="math/tex">\overline{ab} = \overline{a} \cdot \overline{b}</script> より
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
- &=& \frac{1}{N} \overline{\overline{ \sum_{l=0}^{N-1} f_l \overline{\omega_N^{kl} } }} \\
- &=& \frac{1}{N} \overline{ \sum_{l=0}^{N-1} \overline{f_l} \omega_N^{kl} } \\
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+F_k &amp;&#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l e^{-i 2\pi kl&#x2F;N} \\
+    &amp;&#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l(\omega_N)^{-kl} \\
+\end{align*}
+$$</p>
+<p>&nbsp;\(\overline{\omega_N} &#x3D; \omega_N^{-1}\) より（上バーは<a href="https://ja.wikipedia.org/wiki/%E8%A4%87%E7%B4%A0%E5%85%B1%E5%BD%B9">複素数の共役</a>をあらわす）</p>
+<p>$$
+ &#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l \overline{\omega_N^{kl} }
+$$</p>
+<p>\(\overline{ab} &#x3D; \overline{a} \cdot \overline{b}\) より</p>
+<p>$$
+\begin{align*}
+ &amp;&#x3D; \frac{1}{N} \overline{\overline{ \sum_{l&#x3D;0}^{N-1} f_l \overline{\omega_N^{kl} } }} \\
+ &amp;&#x3D; \frac{1}{N} \overline{ \sum_{l&#x3D;0}^{N-1} \overline{f_l} \omega_N^{kl} } \\
+\end{align*}
+$$</p>
 <p>となる。</p>
-<script type="math/tex">b_k = \sum_{l=0}^{N-1} a_l \omega_N^{kl}</script> , <script type="math/tex">a_l = \overline{f_l}</script> とすれば、
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-F_k = \overline{b_k} / N.
-%]]></script>
-
+<p>\(b_k &#x3D; \sum_{l&#x3D;0}^{N-1} a_l \omega_N^{kl}\) , \(a_l &#x3D; \overline{f_l}\) とすれば、</p>
+<p>$$
+F_k &#x3D; \overline{b_k} &#x2F; N.
+$$</p>
 <h3 id="プログラム化"><a href="#プログラム化" class="headerlink" title="プログラム化"></a>プログラム化</h3><p>Rubyの<a href="https://docs.ruby-lang.org/ja/latest/class/Complex.html">Complex</a>を使って</p>
 <figure class="highlight rb"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;complex&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 原始N乗根</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">primitiveNthRoot</span>(<span class="params">n, k=<span class="number">1</span></span>)</span><br><span class="line">  t = <span class="number">2</span> * <span class="title class_">Math</span><span class="symbol">:</span><span class="symbol">:PI</span> * k / n</span><br><span class="line">  <span class="title class_">Complex</span>(<span class="title class_">Math</span>.cos(t), <span class="title class_">Math</span>.sin(t))</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 係数計算</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calcb</span>(<span class="params">a, k</span>)</span><br><span class="line">  n = a.length</span><br><span class="line">  (<span class="number">0</span>...n).inject(<span class="title class_">Complex</span>(<span class="number">0</span>, <span class="number">0</span>)) <span class="keyword">do</span> |<span class="params">r, l</span>|</span><br><span class="line">    wklN = primitiveNthRoot(n, k * l)</span><br><span class="line">    r + a[l] * wklN</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 離散フーリエ変換</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dft</span>(<span class="params">fs</span>)</span><br><span class="line">  n = fs.length</span><br><span class="line">  a = fs.map&#123;|<span class="params">fl</span>| <span class="title class_">Complex</span>(fl, <span class="number">0</span>)&#125;</span><br><span class="line">  b = (<span class="number">0</span>...n).map &#123;|<span class="params">k</span>| calcb(a, k)&#125;</span><br><span class="line">  b.map &#123;|<span class="params">be</span>| be.conjugate / n&#125;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">p dft([<span class="number">1</span>,<span class="number">7</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">0</span>,<span class="number">5</span>,<span class="number">0</span>,<span class="number">8</span>])</span><br></pre></td></tr></table></figure>
 
@@ -349,9 +366,5 @@ F_k = \overline{b_k} / N.
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

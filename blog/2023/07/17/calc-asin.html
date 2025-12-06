@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -199,54 +228,45 @@
                 <p>以前数学関数を自前で実装する一環で<a href="/blog/2020/12/30/fp-compiler.html" title="コンパイラを浮動小数点数に対応させる（それと数学関数を実装）">atanは実装した</a>が、欠けていた逆三角関数<code>asin</code>を実装したかった。</p>
 <span id="more"></span>
 
-<h3 id="マクローリン展開"><a href="#マクローリン展開" class="headerlink" title="マクローリン展開"></a>マクローリン展開</h3><p>まずはなんの工夫もなくマクローリン展開を使ってみる。</p>
-<script type="math/tex">\arcsin x</script> の微分を求めるには、<script type="math/tex">y = \arcsin x</script> とおくと逆関数だから <script type="math/tex">x = \sin y</script> となり、全微分 <script type="math/tex">dx = (\sin y)^\prime dy = \cos y dy</script> から
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\frac{dy}{dx} &=& \frac{1}{\cos y} = \frac{1}{\sqrt{1 - \sin^2 y}} \\
-              &=& \frac{1}{\sqrt{1 - x^2}}
-\end{eqnarray*}
-%]]></script>
-
+<h3 id="マクローリン展開"><a href="#マクローリン展開" class="headerlink" title="マクローリン展開"></a>マクローリン展開</h3><p>まずはなんの工夫もなくマクローリン展開を使ってみる。
+\(\arcsin x\) の微分を求めるには、\(y &#x3D; \arcsin x\) とおくと逆関数だから \(x &#x3D; \sin y\) となり、全微分 \(dx &#x3D; (\sin y)^\prime dy &#x3D; \cos y dy\) から、</p>
+<p>$$
+\begin{align*}
+\frac{dy}{dx} &amp;&#x3D; \frac{1}{\cos y} &#x3D; \frac{1}{\sqrt{1 - \sin^2 y}} \\
+              &amp;&#x3D; \frac{1}{\sqrt{1 - x^2}}
+\end{align*}
+$$</p>
 <p>以降は愚直に微分すると</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\left( \arcsin x \right) ^{\prime \prime} &=& x \cdot \left( 1 - x^2 \right)^{3/2} \\
-\left( \arcsin x \right) ^{\prime \prime \prime} &=& \left( 2x^2 + 1 \right) \cdot \left( 1 - x^2 \right)^{5/2}
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+\left( \arcsin x \right) ^{\prime \prime} &amp;&#x3D; x \cdot \left( 1 - x^2 \right)^{3&#x2F;2} \\
+\left( \arcsin x \right) ^{\prime \prime \prime} &amp;&#x3D; \left( 2x^2 + 1 \right) \cdot \left( 1 - x^2 \right)^{5&#x2F;2}
+\end{align*}
+$$</p>
 <p>（以下略）となる。</p>
 <p>微分した関数を使ってマクローリン展開すると一般項は、偶数項が0となり奇数項だけ残り</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-f(x) &=& \arcsin x \\
-  &=& x + \frac{1}{6}x^3 + \frac{3}{40}x^5 + \frac{5}{112}x^7 + \frac{35}{1152}x^9 + \frac{63}{2816}x^{11} + \cdots \\
-  &=& x + \frac{1}{3} \left( \frac{1}{2} \right) x^3 + \frac{1}{5} \left( \frac{3 \cdot 1}{4 \cdot 2} \right) x^5 + \frac{1}{7} \left( \frac{5 \cdot 3 \cdot 1}{6 \cdot 4 \cdot 2} \right) x^7 + \cdots   \\
-  &=& \sum_{n=0}^\infty \frac{1}{4^n (2 n + 1)} \binom{2n}{n} x^{2n + 1}
-\end{eqnarray*}
-%]]></script>
-
-<p>（<script type="math/tex">\binom{n}{k}</script> は組み合わせ <script type="math/tex">{}_n C_k = \frac{n!}{(n - k)! k!} </script>）。</p>
+<p>$$
+\begin{align*}
+f(x) &amp;&#x3D; \arcsin x \\
+  &amp;&#x3D; x + \frac{1}{6}x^3 + \frac{3}{40}x^5 + \frac{5}{112}x^7 + \frac{35}{1152}x^9 + \frac{63}{2816}x^{11} + \cdots \\
+  &amp;&#x3D; x + \frac{1}{3} \left( \frac{1}{2} \right) x^3 + \frac{1}{5} \left( \frac{3 \cdot 1}{4 \cdot 2} \right) x^5 + \frac{1}{7} \left( \frac{5 \cdot 3 \cdot 1}{6 \cdot 4 \cdot 2} \right) x^7 + \cdots   \\
+  &amp;&#x3D; \sum_{n&#x3D;0}^\infty \frac{1}{4^n (2 n + 1)} \binom{2n}{n} x^{2n + 1}
+\end{align*}
+$$</p>
+<p>（\(\binom{n}{k}\) は組み合わせ \({}_n C_k &#x3D; \frac{n!}{(n - k)! k!} \)）。</p>
 <h3 id="精度をマシにしたい"><a href="#精度をマシにしたい" class="headerlink" title="精度をマシにしたい"></a>精度をマシにしたい</h3><p>マクローリン展開ということもありx&#x3D;0付近では精度はいいが、遠ざかるにつれ精度が悪くなる。
 単に項の数を増やしても精度が上がらなかった。
-逆正弦関数なのでx&#x3D;1ではジャスト<script type="math/tex">\pi/2</script>を返して欲しい。
-じゃあx&#x3D;1でテイラー展開するか、と思ったが微分した関数に1を与えると0除算で<script type="math/tex">\infty</script>なので求められない。</p>
+逆正弦関数なのでx&#x3D;1ではジャスト\(\pi&#x2F;2\)を返して欲しい。
+じゃあx&#x3D;1でテイラー展開するか、と思ったが微分した関数に1を与えると0除算で\(\infty\)なので求められない。</p>
 <p>ググってみると<a href="https://math.stackexchange.com/a/1837723">Finding the Taylor series of $\arcsin(1-x)$ - Mathematics Stack Exchange</a>
 が見つかった。
 それによると</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\arcsin(1 − x) = \frac{\pi}{2} − \sqrt{2}𝑥^{1/2} − \frac{\sqrt{2}}{12} x^{3/2} + O(x^{5/2})
-%]]></script>
-
+<p>$$
+\arcsin(1 − x) &#x3D; \frac{\pi}{2} − \sqrt{2}𝑥^{1&#x2F;2} − \frac{\sqrt{2}}{12} x^{3&#x2F;2} + O(x^{5&#x2F;2})
+$$</p>
 <p>とのこと。
 これを使えばx&#x3D;1付近の値を求められる。</p>
-<h4 id="項を増やしたい（sympy使用、失敗編）"><a href="#項を増やしたい（sympy使用、失敗編）" class="headerlink" title="項を増やしたい（sympy使用、失敗編）"></a>項を増やしたい（sympy使用、失敗編）</h4><p>誤差が<script type="math/tex">x^{5/2}</script>のオーダーでは心許ないので、もっと項を増やしたい。
+<h4 id="項を増やしたい（sympy使用、失敗編）"><a href="#項を増やしたい（sympy使用、失敗編）" class="headerlink" title="項を増やしたい（sympy使用、失敗編）"></a>項を増やしたい（sympy使用、失敗編）</h4><p>誤差が\(x^{5&#x2F;2}\)のオーダーでは心許ないので、もっと項を増やしたい。
 ちょっと手計算で微分を計算してみたが早々に計算間違いをしでかしたので、ググって<a href="https://www.sympy.org/en/index.html">sympy</a>というPython上で変数を使った微分ができるライブラリがあることを知った：</p>
 <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> scipy <span class="keyword">as</span> sc</span><br><span class="line"><span class="keyword">import</span> sympy <span class="keyword">as</span> sy</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.misc <span class="keyword">import</span> derivative</span><br><span class="line"></span><br><span class="line">sy.init_printing(order=<span class="string">&#x27;grevlex&#x27;</span>)</span><br><span class="line"></span><br><span class="line">x = sy.symbols(<span class="string">&#x27;x&#x27;</span>, real=<span class="literal">True</span>)</span><br><span class="line">t = sy.symbols(<span class="string">&#x27;t&#x27;</span>, real=<span class="literal">True</span>)  <span class="comment"># t = sqrt(x)</span></span><br><span class="line">y = sy.asin(<span class="number">1</span> - t ** <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">    deriv = sy.simplify(sy.diff(y, t, n))  <span class="comment"># n階微分</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;\n### <span class="subst">&#123;n&#125;</span>&#x27;</span>)</span><br><span class="line">    display(deriv.subs([(t, sy.sqrt(x))]))  <span class="comment"># t = sqrt(x)を代入</span></span><br><span class="line">    display(deriv.subs([(t, <span class="number">0</span>)]))  <span class="comment"># t=0を代入する</span></span><br></pre></td></tr></table></figure>
 
@@ -255,10 +275,10 @@ f(x) &=& \arcsin x \\
 </ul>
 <p>微分を手計算しなくていいのすごい！
 でt&#x3D;0を代入してみると<code>NaN</code>になってしまった。
-分母に<script type="math/tex">-(x^2-1)^2+1</script>があって0を代入するから0除算で♾️に発散してしまうからダメか…（と勘違いして別の方法を探した）。</p>
+分母に\(-(x^2-1)^2+1\)があって0を代入するから0除算で♾️に発散してしまうからダメか…（と勘違いして別の方法を探した）。</p>
 <h4 id="テイラー展開を試す"><a href="#テイラー展開を試す" class="headerlink" title="テイラー展開を試す"></a>テイラー展開を試す</h4><p>x&#x3D;0だけで展開してるし、x&#x3D;1では傾きが無限大で展開できないので、もう少し違う点をいくつか持っておいて展開すればいいんじゃないか？
 と試してみたが、結局1付近では精度が悪かった。</p>
-<h4 id="二分探索を試す"><a href="#二分探索を試す" class="headerlink" title="二分探索を試す"></a>二分探索を試す</h4><p>級数展開が使えないならどうしたものか…と見ていたらxが正の場合には<script type="math/tex">x \le \arcsin x \le \frac{\pi}{2} x</script>のようなので、二分探索はどうかと考えた。
+<h4 id="二分探索を試す"><a href="#二分探索を試す" class="headerlink" title="二分探索を試す"></a>二分探索を試す</h4><p>級数展開が使えないならどうしたものか…と見ていたらxが正の場合には\(x \le \arcsin x \le \frac{\pi}{2} x\)のようなので、二分探索はどうかと考えた。
 <code>asin</code>は単調増加なので中点の<code>sin</code>の値を計算してその値より大きいか小さいかで探索していく：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">double</span> <span class="title function_">my_asin_bisect</span><span class="params">(<span class="type">double</span> x)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (x &lt; <span class="number">-1</span> || x &gt; <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> NAN;</span><br><span class="line">  <span class="keyword">if</span> (x &lt; <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> -<span class="built_in">asin</span>(-x);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Binary search</span></span><br><span class="line">  <span class="type">double</span> min = x, max = M_PI_2 * x;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">16</span>; ++i) &#123;</span><br><span class="line">    <span class="type">double</span> m = (min + max) * <span class="number">0.5</span>;</span><br><span class="line">    <span class="type">double</span> y = <span class="built_in">sin</span>(m);</span><br><span class="line">    <span class="keyword">if</span> (x &gt;= y)</span><br><span class="line">      min = m;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      max = m;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> (min + max) * <span class="number">0.5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -266,48 +286,41 @@ f(x) &=& \arcsin x \\
 <code>sin(m)</code>も独自実装ではマクローリン展開なので相当重そうだけど、最悪計算できるだけマシだからこれでもいいか…と一瞬思った。</p>
 <h3 id="Wolfram-Alphaで係数を調べる"><a href="#Wolfram-Alphaで係数を調べる" class="headerlink" title="Wolfram|Alphaで係数を調べる"></a>Wolfram|Alphaで係数を調べる</h3><p>その後ググってるとWolfram|Alphaでもっと項の係数を調べられた：
 <a href="https://www.wolframalpha.com/input?i=taylor+series+arcsin(1-x)&lang=ja">taylor series arcsin(1-x) - Wolfram|Alpha</a>
-一般項はわからないけど誤差が<script type="math/tex">x^{11}</script>なら十分か、と思った。</p>
+一般項はわからないけど誤差が\(x^{11}\)なら十分か、と思った。</p>
 <p>ていうか係数は∞にならずに計算できるんだっけ？と気づいた。
-どうもsympyでうまく約分できてないだけで、１階微分<script type="math/tex">\frac{-2}{\sqrt{2 - x^2}}</script>から計算していけばちゃんと計算できた。</p>
-<h4 id="組み合わせる"><a href="#組み合わせる" class="headerlink" title="組み合わせる"></a>組み合わせる</h4><p>二分探索で計算するよりも、x&#x3D;0近辺では<script type="math/tex">\arcsin x</script>、x&#x3D;1近辺では<script type="math/tex">\arcsin (1-x)</script>のマクローリン展開を使うのが精度がよかった。
+どうもsympyでうまく約分できてないだけで、１階微分\(\frac{-2}{\sqrt{2 - x^2}}\)から計算していけばちゃんと計算できた。</p>
+<h4 id="組み合わせる"><a href="#組み合わせる" class="headerlink" title="組み合わせる"></a>組み合わせる</h4><p>二分探索で計算するよりも、x&#x3D;0近辺では\(\arcsin x\)、x&#x3D;1近辺では\(\arcsin (1-x)\)のマクローリン展開を使うのが精度がよかった。
 項をどこまで計算するかによるけどx&#x3D;0.55あたりで切り替えるのがよさそうで、誤差は最大で<code>1.0e-10</code>のオーダーだった。</p>
 <h3 id="muslのソースを見てみる"><a href="#muslのソースを見てみる" class="headerlink" title="muslのソースを見てみる"></a>muslのソースを見てみる</h3><p>答え合わせ的にオープンソースのライブラリ、muslのソースを見てみた：<a href="https://github.com/cloudius-systems/musl/blob/00733dd1cf791d13ff6155509cf139a5f7b2eecb/src/math/asin.c#L12">musl&#x2F;src&#x2F;math&#x2F;asin.c at master · cloudius-systems&#x2F;musl</a>
 コメントによれば、</p>
 <ul>
-<li><script type="math/tex">R(x^2)</script>を<script type="math/tex">x^3</script>以降の有理近似（誤差2^-58.75以下）</li>
-<li>[0, 0.5] では <script type="math/tex">x + x \cdot x^2 \cdot R(x^2)</script></li>
-<li>[0.5, 1] では <script type="math/tex">\frac{\pi}{2} - 2 \arcsin {\sqrt{(1 - x) / 2}}</script></li>
+<li>\(R(x^2)\)を\(x^3\)以降の有理近似（誤差2^-58.75以下）</li>
+<li>[0, 0.5] では \(x + x \cdot x^2 \cdot R(x^2)\)</li>
+<li>[0.5, 1] では \(\frac{\pi}{2} - 2 \arcsin {\sqrt{(1 - x) &#x2F; 2}}\)</li>
 </ul>
 <p>と書かれている。[0.5, 1.0]の場合の計算式</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\arcsin x = \frac{\pi}{2} - 2 \arcsin {\sqrt{\frac{1 - x}{2}}}
-%]]></script>
-
+<p>$$
+\arcsin x &#x3D; \frac{\pi}{2} - 2 \arcsin {\sqrt{\frac{1 - x}{2}}}
+$$</p>
 <p>という公式 <del>がどうやったら導けるのか結局わからなかった…。</del>
-（これはsinの半角の公式 <script type="math/tex">\sin^2 \frac{\theta}{2} = \frac{1 - \cos \theta}{2}</script> を使うようで、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\sin^2 \frac{\theta}{2} &=& \frac{1 - \cos \theta}{2} \\
-\therefore \theta &=& 2 \arcsin \sqrt{\frac{1 - \cos \theta}{2}}
-\end{eqnarray*}
-%]]></script>
-
-<script type="math/tex">\cos \theta = x</script> とおき、 <script type="math/tex">\arccos x = \pi / 2 - \arcsin x</script> を使って
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\theta = \arccos x &=& 2 \arcsin \sqrt{\frac{1 - x}{2}} \\
-\frac{\pi}{2} - \arcsin x &=& 2 \arcsin \sqrt{\frac{1 - x}{2}} \\
-\arcsin x &=& \frac{\pi}{2} - 2 \arcsin \sqrt{\frac{1 - x}{2}}
-\end{eqnarray*}
-%]]></script>
-
+（これはsinの半角の公式 \(\sin^2 \frac{\theta}{2} &#x3D; \frac{1 - \cos \theta}{2}\) を使うようで、</p>
+<p>$$
+\begin{align*}
+\sin^2 \frac{\theta}{2} &amp;&#x3D; \frac{1 - \cos \theta}{2} \\
+\therefore \theta &amp;&#x3D; 2 \arcsin \sqrt{\frac{1 - \cos \theta}{2}}
+\end{align*}
+$$</p>
+<p>\(\cos \theta &#x3D; x\) とおき、 \(\arccos x &#x3D; \pi &#x2F; 2 - \arcsin x\) を使って</p>
+<p>$$
+\begin{align*}
+\theta &#x3D; \arccos x &amp;&#x3D; 2 \arcsin \sqrt{\frac{1 - x}{2}} \\
+\frac{\pi}{2} - \arcsin x &amp;&#x3D; 2 \arcsin \sqrt{\frac{1 - x}{2}} \\
+\arcsin x &amp;&#x3D; \frac{\pi}{2} - 2 \arcsin \sqrt{\frac{1 - x}{2}}
+\end{align*}
+$$</p>
 <p>xが0.5より大きければ平方根の値は0.5以下になるのでその範囲の計算で求められる。）</p>
 <p>muslはMITライセンスとのことなので、使用する分には問題なさそう。</p>
-<h3 id="arccosは？"><a href="#arccosは？" class="headerlink" title="arccosは？"></a>arccosは？</h3><p>arcsinを使って、 <script type="math/tex">\frac{\pi}{2} - \arcsin x</script> で求められる。</p>
+<h3 id="arccosは？"><a href="#arccosは？" class="headerlink" title="arccosは？"></a>arccosは？</h3><p>arcsinを使って、 \(\frac{\pi}{2} - \arcsin x\) で求められる。</p>
 <h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
 <li><a href="https://github.com/tyfkda/xcc/blob/000a14cc62b5205bfc297a5c93936676f45c4770/libsrc/math/asin.c#L4">ソース</a></li>
 <li><a href="https://toy1972.hatenablog.com/entry/2019/11/10/162658">逆正弦関数の級数展開 - 数式で独楽する</a></li>
@@ -413,9 +426,5 @@ f(x) &=& \arcsin x \\
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

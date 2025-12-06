@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -199,14 +228,12 @@
                 <p>正規分布（ガウス分布）の乱数を作り出す方法として、Box-Muller法というものがあるらしい。XとYを一様乱数として</p>
 <span id="more"></span>
 
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-Z_1 &=& \sqrt{−2 \log X} \cos 2\pi Y \\
-Z_2 &=& \sqrt{−2 \log X} \sin 2\pi Y
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+Z_1 &amp;&#x3D; \sqrt{−2 \log X} \cos 2\pi Y \\
+Z_2 &amp;&#x3D; \sqrt{−2 \log X} \sin 2\pi Y
+\end{align*}
+$$</p>
 <p>でZ1とZ2に2つの独立した正規分布の乱数が得られるとか。sinとcosを使っているのに独立してるとか、不思議。コードにするとこんな感じか：</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Random</span></span><br><span class="line">  <span class="variable">@@gnext</span> = <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">self</span>.gauss</span><br><span class="line">    <span class="keyword">if</span> <span class="variable">@@gnext</span></span><br><span class="line">      r = <span class="variable">@@gnext</span></span><br><span class="line">      <span class="variable">@@gnext</span> = <span class="literal">nil</span></span><br><span class="line">      <span class="keyword">return</span> r</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      x = rand</span><br><span class="line">      y = rand</span><br><span class="line">      sqrt_minus_2_logx = <span class="title class_">Math</span>.sqrt(-<span class="number">2</span> * <span class="title class_">Math</span>.log(x))</span><br><span class="line">      two_pi_y = <span class="number">2</span> * <span class="title class_">Math</span><span class="symbol">:</span><span class="symbol">:PI</span> * y</span><br><span class="line">      z1 = sqrt_minus_2_logx * <span class="title class_">Math</span>.cos(two_pi_y)</span><br><span class="line">      z2 = sqrt_minus_2_logx * <span class="title class_">Math</span>.sin(two_pi_y)</span><br><span class="line">      <span class="variable">@@gnext</span> = z2</span><br><span class="line">      <span class="keyword">return</span> z1</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
@@ -235,7 +262,7 @@ Z_2 &=& \sqrt{−2 \log X} \sin 2\pi Y
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
@@ -312,9 +339,5 @@ Z_2 &=& \sqrt{−2 \log X} \sin 2\pi Y
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

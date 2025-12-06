@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -210,38 +239,34 @@
 <li>「reset」ボタンで、拡張重みベクトルをランダムの位置からやり直す</li>
 </ul>
 <h3 id="パーセプトロンの学習規則"><a href="#パーセプトロンの学習規則" class="headerlink" title="パーセプトロンの学習規則"></a>パーセプトロンの学習規則</h3><ol>
-<li>重みベクトル <script type="math/tex">\mathbf{w}</script> の初期値を適当に設定する。</li>
-<li><script type="math/tex">\chi</script> の中から学習パターンを一つ選ぶ。</li>
-<li>識別関数 <script type="math/tex">g(x) = \mathbf{w}^t \mathbf{x}</script> によって識別を行い、正しく判定できなかった場合のみ次のように重みベクトル <script type="math/tex">\mathbf{w}</script> を修正し、新しい重みベクトル <script type="math/tex">\mathbf{w}^\prime</script> を作る。</li>
+<li>重みベクトル \(\mathbf{w}\) の初期値を適当に設定する。</li>
+<li>\(\chi\) の中から学習パターンを一つ選ぶ。</li>
+<li>識別関数 \(g(x) &#x3D; \mathbf{w}^t \mathbf{x}\) によって識別を行い、正しく判定できなかった場合のみ次のように重みベクトル \(\mathbf{w}\) を修正し、新しい重みベクトル \(\mathbf{w}^\prime\) を作る。</li>
 </ol>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\mathbf{w}^\prime =
-\cases{
+<p>$$
+\mathbf{w}^\prime &#x3D;
+\begin{cases}
 \mathbf{w} + \rho \cdot \mathbf{x} 　（\omega_1 のパターンに対して g(\mathbf{x}) \le 0 となったとき） (2.26) \\
 \mathbf{w} - \rho \cdot \mathbf{x} 　（\omega_2 のパターンに対して g(\mathbf{x}) \ge 0 となったとき） (2.27)
-}
-%]]></script>
-
+\end{cases}
+$$</p>
 <ol start="4">
-<li>上の処理(2), (3)を <script type="math/tex">\chi</script> の全パターンに対して繰り返す。</li>
-<li><script type="math/tex">\chi</script> の全パターンを正しく識別できたら終了。誤りがあるときは2に戻る。</li>
+<li>上の処理(2), (3)を \(\chi\) の全パターンに対して繰り返す。</li>
+<li>\(\chi\) の全パターンを正しく識別できたら終了。誤りがあるときは2に戻る。</li>
 </ol>
 <h3 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h3><p>上記の学習規則をJavaScriptで書くとこんな感じ：</p>
 <p>perceptron_learning.js</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 学習パターンを識別関数に適用して誤識別した場合、パーセプトロンの学習規則に基づき重みを調整する</span></span><br><span class="line"><span class="comment">//   ws : 拡張重みベクトル</span></span><br><span class="line"><span class="comment">//   xs : 拡張特徴ベクトル</span></span><br><span class="line"><span class="comment">//   c  : クラス (0 or 1)</span></span><br><span class="line"><span class="comment">//   rho: 学習係数ρ</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">learn</span>(<span class="params">ws, xs, c, rho</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> g = <span class="title function_">dot</span>(ws, xs);  <span class="comment">// 識別関数gを計算</span></span><br><span class="line">  <span class="keyword">if</span> (c == <span class="number">0</span> &amp;&amp; g &lt;= <span class="number">0</span>) &#123;  <span class="comment">// クラスω1を誤識別</span></span><br><span class="line">    <span class="title function_">madd</span>(ws, rho, xs);  <span class="comment">// w&#x27; = w + ρx</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c != <span class="number">0</span> &amp;&amp; g &gt;= <span class="number">0</span>) &#123;  <span class="comment">// クラスω2を誤識別</span></span><br><span class="line">    <span class="title function_">madd</span>(ws, -rho, xs);  <span class="comment">// w&#x27; = w - ρx</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内積</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">dot</span>(<span class="params">a, b</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> l = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; a.<span class="property">length</span>; ++i)</span><br><span class="line">    l += a[i] * b[i];</span><br><span class="line">  <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 係数付き加算</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">madd</span>(<span class="params">a, p, b</span>) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; a.<span class="property">length</span>; ++i)</span><br><span class="line">    a[i] += p * b[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="多クラスの場合"><a href="#多クラスの場合" class="headerlink" title="多クラスの場合"></a>多クラスの場合</h3><blockquote>
-<p>多クラス（<script type="math/tex">c \gt 2</script>）への拡張は、<script type="math/tex">\omega_i</script>に属するパターンを<script type="math/tex">\omega_j</script>と誤ったとき、もしくは識別結果として<script type="math/tex">\omega_i</script>と<script type="math/tex">\omega_j</script>の双方が候補となったとき（<script type="math/tex">i \ne j</script>）、重みベクトルの修正を</p>
+<p>多クラス（\(c \gt 2\)）への拡張は、\(\omega_i\)に属するパターンを\(\omega_j\)と誤ったとき、もしくは識別結果として\(\omega_i\)と\(\omega_j\)の双方が候補となったとき（\(i \ne j\)）、重みベクトルの修正を</p>
 </blockquote>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\mathbf{w_i}^\prime &=& \mathbf{w_i} + \rho \cdot \mathbf{x} \\
-\mathbf{w_j}^\prime &=& \mathbf{w_j} - \rho \cdot \mathbf{x}  \tag{2.27}
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+\mathbf{w_i}^\prime &amp;&#x3D; \mathbf{w_i} + \rho \cdot \mathbf{x} \\
+\mathbf{w_j}^\prime &amp;&#x3D; \mathbf{w_j} - \rho \cdot \mathbf{x}  \tag{2.27}
+\end{align*}
+$$</p>
 <p>とのこと。</p>
 
 
@@ -343,9 +368,5 @@
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

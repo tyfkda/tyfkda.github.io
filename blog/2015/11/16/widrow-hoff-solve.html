@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -201,85 +230,65 @@
 <span id="more"></span>
 
 <p>学習パターンと教師ベクトルは「閉じた形の解」と同じだが、列ベクトルの形式で、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\mathbf{x_1} &=& \begin{pmatrix}1 \\ 1.2\end{pmatrix}, \\
-\mathbf{x_2} &=& \begin{pmatrix}1 \\ 0.2\end{pmatrix}, \\
-\mathbf{x_3} &=& \begin{pmatrix}1 \\ -0.2\end{pmatrix}, \\
-\mathbf{x_4} &=& \begin{pmatrix}1 \\ -0.5\end{pmatrix}, \\
-\mathbf{x_5} &=& \begin{pmatrix}1 \\ -1.0\end{pmatrix}, \\
-\mathbf{x_6} &=& \begin{pmatrix}1 \\ -1.5\end{pmatrix}, \\
-\mathbf{b_1} = \mathbf{b_2} = \mathbf{b_3} &=& \begin{pmatrix}1 \\ 0\end{pmatrix}, \\
-\mathbf{b_4} = \mathbf{b_5} = \mathbf{b_6} &=& \begin{pmatrix}0 \\ 1\end{pmatrix},
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+\mathbf{x_1} &amp;&#x3D; \begin{pmatrix}1 \\ 1.2\end{pmatrix}, \\
+\mathbf{x_2} &amp;&#x3D; \begin{pmatrix}1 \\ 0.2\end{pmatrix}, \\
+\mathbf{x_3} &amp;&#x3D; \begin{pmatrix}1 \\ -0.2\end{pmatrix}, \\
+\mathbf{x_4} &amp;&#x3D; \begin{pmatrix}1 \\ -0.5\end{pmatrix}, \\
+\mathbf{x_5} &amp;&#x3D; \begin{pmatrix}1 \\ -1.0\end{pmatrix}, \\
+\mathbf{x_6} &amp;&#x3D; \begin{pmatrix}1 \\ -1.5\end{pmatrix}, \\
+\mathbf{b_1} &#x3D; \mathbf{b_2} &#x3D; \mathbf{b_3} &amp;&#x3D; \begin{pmatrix}1 \\ 0\end{pmatrix}, \\
+\mathbf{b_4} &#x3D; \mathbf{b_5} &#x3D; \mathbf{b_6} &amp;&#x3D; \begin{pmatrix}0 \\ 1\end{pmatrix},
+\end{align*}
+$$</p>
 <p>とする。</p>
 <p>パターンごとに</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\mathbf{W}^\prime &=& \mathbf{W} - \rho \mathbf{X}_p \mathbf{\epsilon}_p^t \tag{3.31} \\
-\mathbf{\epsilon}_p &=& g(\mathbf{x}_p) - \mathbf{b}_p \tag{3.3} \\
-           &=& \mathbf{W}^t \mathbf{X}_p - \mathbf{b}_p
-\end{eqnarray*}
-%]]></script>
-
-<p>として <script type="math/tex">\mathbf{W}</script> を更新する（<strong>Widrow-Hoffの学習規則</strong>）。</p>
-<script type="math/tex">\mathbf{W}</script> の初期値は適当に、
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\mathbf{W} =
+<p>$$
+\begin{align*}
+\mathbf{W}^\prime &amp;&#x3D; \mathbf{W} - \rho \mathbf{X}_p \mathbf{\epsilon}_p^t \tag{3.31} \\
+\mathbf{\epsilon}_p &amp;&#x3D; g(\mathbf{x}_p) - \mathbf{b}_p \tag{3.3} \\
+           &amp;&#x3D; \mathbf{W}^t \mathbf{X}_p - \mathbf{b}_p
+\end{align*}
+$$</p>
+<p>として \(\mathbf{W}\) を更新する（<strong>Widrow-Hoffの学習規則</strong>）。</p>
+<p>\(\mathbf{W}\) の初期値は適当に、</p>
+<p>$$
+\mathbf{W} &#x3D;
 \begin{bmatrix}
-\begin{pmatrix}1 \\ 1\end{pmatrix} &
+\begin{pmatrix}1 \\ 1\end{pmatrix} &amp;
 \begin{pmatrix}1 \\ 1\end{pmatrix}
 \end{bmatrix}
-%]]></script>
-
+$$</p>
 <p>として、計算してみる。</p>
-<h3 id="1-パターン１に適用"><a href="#1-パターン１に適用" class="headerlink" title="(1) パターン１に適用"></a>(1) パターン１に適用</h3><script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\mathbf{W}^\prime &=&
-\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
-- 0.4
+<h3 id="1-パターン１に適用"><a href="#1-パターン１に適用" class="headerlink" title="(1) パターン１に適用"></a>(1) パターン１に適用</h3><p>$$
+\begin{align*}
+\mathbf{W}^\prime &amp;&#x3D;
+\begin{bmatrix} 1 &amp; 1 \\ 1 &amp; 1 \end{bmatrix} - 0.4
 \begin{pmatrix}1 \\ 1.2\end{pmatrix}
-\left(
-\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
+\left\lparen
+\begin{bmatrix} 1 &amp; 1 \\ 1 &amp; 1 \end{bmatrix}
+\begin{pmatrix}1 \\ 1.2\end{pmatrix} - \begin{pmatrix}1 \\ 0\end{pmatrix}
+\right\rparen^t \\
+&amp;&#x3D;
+\begin{bmatrix} 1 &amp; 1 \\ 1 &amp; 1 \end{bmatrix} - 0.4
 \begin{pmatrix}1 \\ 1.2\end{pmatrix}
-- \begin{pmatrix}1 \\ 0\end{pmatrix}
-\right)^t \\
-
-&=&
-\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
-- 0.4
-\begin{pmatrix}1 \\ 1.2\end{pmatrix}
-\begin{pmatrix}1.2 & 2.2\end{pmatrix} \\
-
-&=&
-\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
-- 0.4
-\begin{bmatrix} 1.2 & 2.2 \\ 1.44 & 2.64 \end{bmatrix} \\
-
-&=&
-\begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}
-- \begin{bmatrix} 0.48 & 0.88 \\ 0.576 & 1.056 \end{bmatrix} \\
-
-&=&
-\begin{bmatrix} 0.52 & 0.12 \\ 0.424 & -0.056 \end{bmatrix}
-\end{eqnarray*}
-%]]></script>
-
+\begin{pmatrix}1.2 &amp; 2.2\end{pmatrix} \\
+&amp;&#x3D;
+\begin{bmatrix} 1 &amp; 1 \\ 1 &amp; 1 \end{bmatrix} - 0.4
+\begin{bmatrix} 1.2 &amp; 2.2 \\ 1.44 &amp; 2.64 \end{bmatrix} \\
+&amp;&#x3D;
+\begin{bmatrix} 1 &amp; 1 \\ 1 &amp; 1 \end{bmatrix} - \begin{bmatrix} 0.48 &amp; 0.88 \\ 0.576 &amp; 1.056 \end{bmatrix} \\
+&amp;&#x3D;
+\begin{bmatrix} 0.52 &amp; 0.12 \\ 0.424 &amp; -0.056 \end{bmatrix}
+\end{align*}
+$$</p>
 <p>以後パターン２〜６も同様に計算して一周させると、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\mathbf{W}^\prime =
-\begin{bmatrix} 0.68368057 & 0.50155838 \\ 0.40088957 & -0.30792911 \end{bmatrix}
-%]]></script>
-
-<p>となり、識別の値 <script type="math/tex">x= -0.256937622954</script> となる。</p>
+<p>$$
+\mathbf{W}^\prime &#x3D;
+\begin{bmatrix} 0.68368057 &amp; 0.50155838 \\ 0.40088957 &amp; -0.30792911 \end{bmatrix}
+$$</p>
+<p>となり、識別の値 \(x&#x3D; -0.256937622954\) となる。</p>
 <a href="/blog/2015/11/06/widrow-hoff-closed-form.html" title="「誤差評価に基づく学習」の「閉じた形の解」で例題を解いてみる">閉じた形</a>で求めた結果と近い値が得られている。
 
 
@@ -384,9 +393,5 @@
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

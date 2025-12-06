@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -201,33 +230,27 @@
 
 <iframe src="/assets/raytrace/refraction.html" width="100%" height="256"></iframe>
 
-<p>屈折ベクトル<script type="math/tex">\vec{r}</script>は、<script type="math/tex">\vec{n}</script>を法線ベクトル、<script type="math/tex">\vec{e}</script>を法線と垂直のベクトルとすると</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\vec{r} = \vec{e} \sin \theta_2 - \vec{n} \cos \theta_2
-%]]></script>
-
+<p>屈折ベクトル\(\vec{r}\)は、\(\vec{n}\)を法線ベクトル、\(\vec{e}\)を法線と垂直のベクトルとすると</p>
+<p>$$
+\vec{r} &#x3D; \vec{e} \sin \theta_2 - \vec{n} \cos \theta_2
+$$</p>
 <p>光が屈折率の異なる物質に入射するとき、入射する光の角度と出て行く角度の間にスネルの法則：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\eta_1 \sin \theta_1 = \eta_2 \sin \theta_2
-%]]></script>
-
+<p>$$
+\eta_1 \sin \theta_1 &#x3D; \eta_2 \sin \theta_2
+$$</p>
 <p>が成り立つ。</p>
 <p><img src="/assets/raytrace/refraction.png" alt="refraction"></p>
-<p>また 、<script type="math/tex">\cos \theta_1 = (-\vec{v}) \cdot \vec{n}</script>、<script type="math/tex">\vec{e} = \frac{\vec{v} - (\vec{v} \cdot \vec{n}) \vec{n}}{\sin \theta_1}</script></p>
-<p>よって屈折ベクトル<script type="math/tex">\vec{r}</script>は</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\vec{r} &=& \vec{e} \sin \theta_2 - \vec{n} \cos \theta_2 \\
-        &=& \left( \frac{\vec{v} - (\vec{v} \cdot \vec{n}) \vec{n}}{\sin \theta_1} \right) \left( \frac{\eta_1}{\eta_2} \sin \theta_1 \right) - \vec{n} \sqrt{1 - \sin ^2 \theta_2} \\
-        &=& \left( \vec{v} - (\vec{v} \cdot \vec{n}) \vec{n} \right) \left( \frac{\eta_1}{\eta_2} \right) - \vec{n} \sqrt{1 - \left( \frac{\eta_1}{\eta_2} \sin \theta_1 \right)^2} \\
-        &=& \frac{\eta_1}{\eta_2} \left( \vec{v} - (\vec{v} \cdot \vec{n}) \vec{n} \right) - \vec{n} \sqrt{1 - \left( \frac{\eta_1}{\eta_2} \right)^2 \left( 1 - \cos ^2 \theta_1 \right)} \\
-        &=& \frac{\eta_1}{\eta_2} \left( \vec{v} - (\vec{v} \cdot \vec{n}) \vec{n} \right) - \vec{n} \sqrt{1 - \left( \frac{\eta_1}{\eta_2} \right)^2 \left( 1 - \left( \vec{v} \cdot \vec{n} \right)^2 \right)} \\
-\end{eqnarray*}
-%]]></script>
-
+<p>また 、\(\cos \theta_1 &#x3D; (-\vec{v}) \cdot \vec{n}\)、\(\vec{e} &#x3D; \frac{\vec{v} - (\vec{v} \cdot \vec{n}) \vec{n}}{\sin \theta_1}\)、
+よって屈折ベクトル\(\vec{r}\)は</p>
+<p>$$
+\begin{align*}
+\vec{r} &amp;&#x3D; \vec{e} \sin \theta_2 - \vec{n} \cos \theta_2 \\
+        &amp;&#x3D; \left( \frac{\vec{v} - (\vec{v} \cdot \vec{n}) \vec{n}}{\sin \theta_1} \right) \left( \frac{\eta_1}{\eta_2} \sin \theta_1 \right) - \vec{n} \sqrt{1 - \sin ^2 \theta_2} \\
+        &amp;&#x3D; \left( \vec{v} - (\vec{v} \cdot \vec{n}) \vec{n} \right) \left( \frac{\eta_1}{\eta_2} \right) - \vec{n} \sqrt{1 - \left( \frac{\eta_1}{\eta_2} \sin \theta_1 \right)^2} \\
+        &amp;&#x3D; \frac{\eta_1}{\eta_2} \left( \vec{v} - (\vec{v} \cdot \vec{n}) \vec{n} \right) - \vec{n} \sqrt{1 - \left( \frac{\eta_1}{\eta_2} \right)^2 \left( 1 - \cos ^2 \theta_1 \right)} \\
+        &amp;&#x3D; \frac{\eta_1}{\eta_2} \left( \vec{v} - (\vec{v} \cdot \vec{n}) \vec{n} \right) - \vec{n} \sqrt{1 - \left( \frac{\eta_1}{\eta_2} \right)^2 \left( 1 - \left( \vec{v} \cdot \vec{n} \right)^2 \right)} \\
+\end{align*}
+$$</p>
 <ul>
 <li><a href="http://ja.wikipedia.org/wiki/%E5%B1%88%E6%8A%98%E7%8E%87">屈折率</a>は、ダイヤモンドの 2.417 にしてみた</li>
 <li>手抜きで球の表面から入るときだけじゃなくて出るときにもちゃんと屈折させないとそれらしくならなかった</li>
@@ -334,9 +357,5 @@
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

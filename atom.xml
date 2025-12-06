@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-11-29T13:01:14.178Z</updated>
+  <updated>2025-12-01T01:34:36.506Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2025/11/29/virtual-inheritance-impl.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/29/virtual-inheritance-impl.html</id>
     <published>2025-11-29T01:04:56.000Z</published>
-    <updated>2025-11-29T13:01:14.178Z</updated>
+    <updated>2025-12-01T01:34:36.506Z</updated>
     
     
     <summary type="html">&lt;p&gt;C++には仮想継承という仕組みがある。
@@ -31,9 +31,9 @@
     
     
     
-    <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
-    
     <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
+    
+    <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
     
   </entry>
   
@@ -42,7 +42,7 @@
     <link href="https://tyfkda.github.io/blog/2025/11/26/pacman-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/26/pacman-rl-sb3.html</id>
     <published>2025-11-26T10:00:00.000Z</published>
-    <updated>2025-11-29T00:26:30.535Z</updated>
+    <updated>2025-12-01T01:34:36.502Z</updated>
     
     
     <summary type="html">&lt;p&gt;強化学習の題材として&lt;a href=&quot;/blog/2024/08/07/smb-rl-sb3.html&quot; title=&quot;スーパーマリオの強化学習を動かす（Stable Baselines 3）&quot;&gt;ファミコンのスーパーマリオをクリアさせる&lt;/a&gt;というのは見た目的におもしろいっちゃーおもしろいけど、正直右Bダッシュにジャンプを組み合わせればクリアするピンポイントを発見してそれっぽく学習したかのように見えてしまうのではないかという疑念があった（自分的には）。
@@ -63,7 +63,7 @@
     <link href="https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html</id>
     <published>2025-11-09T23:06:07.000Z</published>
-    <updated>2025-11-28T04:24:43.186Z</updated>
+    <updated>2025-12-06T04:24:39.510Z</updated>
     
     
     <summary type="html">&lt;p&gt;&amp;nbsp;&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光を考慮&lt;/a&gt;に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。&lt;/p&gt;
@@ -87,7 +87,7 @@
     <link href="https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html"/>
     <id>https://tyfkda.github.io/blog/2025/09/01/impl-builtin-clz.html</id>
     <published>2025-09-01T10:00:00.000Z</published>
-    <updated>2025-11-28T02:58:33.025Z</updated>
+    <updated>2025-12-01T01:34:36.500Z</updated>
     
     
     <summary type="html">&lt;p&gt;コンパイラの主要なトピックでは全然ないけど、余興として自作Cコンパイラにビルトイン関数として&lt;code&gt;clz&lt;/code&gt;と&lt;code&gt;ctz&lt;/code&gt;と&lt;code&gt;popcount&lt;/code&gt;を実装した顛末。&lt;/p&gt;</summary>
@@ -104,7 +104,7 @@
     <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
     <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2025-11-29T00:26:26.096Z</updated>
+    <updated>2025-12-06T04:24:39.510Z</updated>
     
     
     <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
@@ -127,7 +127,7 @@
     <link href="https://tyfkda.github.io/blog/2025/07/08/hexo-gallery-plugin.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/08/hexo-gallery-plugin.html</id>
     <published>2025-07-08T12:00:00.000Z</published>
-    <updated>2025-11-28T02:58:33.023Z</updated>
+    <updated>2025-12-01T01:34:36.500Z</updated>
     
     
     <summary type="html">&lt;p&gt;今さらブログを書いたところで生成AIにパクられて検索に食われるだけなのでオワコン気味ではあるが、
@@ -147,7 +147,7 @@
     <link href="https://tyfkda.github.io/blog/2025/06/20/openmp-shared_ptr.html"/>
     <id>https://tyfkda.github.io/blog/2025/06/20/openmp-shared_ptr.html</id>
     <published>2025-06-20T13:00:00.000Z</published>
-    <updated>2025-07-06T07:59:16.774Z</updated>
+    <updated>2025-12-01T01:13:20.153Z</updated>
     
     
     <summary type="html">&lt;p&gt;久しぶりにC++でプログラムを書いて、その時に生ポインタの代わりに&lt;code&gt;shared_ptr&lt;/code&gt;を使うように変更したところとんでもなく遅くなってしまうことがあり、導入できなかった。&lt;/p&gt;</summary>
@@ -164,7 +164,7 @@
     <link href="https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html"/>
     <id>https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html</id>
     <published>2025-06-06T12:00:00.000Z</published>
-    <updated>2025-11-28T02:58:33.029Z</updated>
+    <updated>2025-12-01T01:34:36.502Z</updated>
     
     
     <summary type="html">&lt;p&gt;いかにもCGで作りましたっていうクッキリハッキリした反射ではなく、少し不完全な金属の光沢や表面のざらざら具合を表現するためのマテリアル表現をパストレーサーに組み込んでみた。&lt;/p&gt;
@@ -186,7 +186,7 @@
     <link href="https://tyfkda.github.io/blog/2025/03/13/vite-build-tool.html"/>
     <id>https://tyfkda.github.io/blog/2025/03/13/vite-build-tool.html</id>
     <published>2025-03-13T09:00:00.000Z</published>
-    <updated>2025-07-06T07:59:16.785Z</updated>
+    <updated>2025-12-01T01:13:20.165Z</updated>
     
     
     <summary type="html">&lt;p&gt;ずっと以前から&lt;a href=&quot;/blog/2015/12/10/gulp-es6.html&quot; title=&quot;gulp+ES6でフロントエンド開発&quot;&gt;Gulpなど&lt;/a&gt;やWebpackを使ってブラウザ上で動くウェブアプリを作っていたが、&lt;a href=&quot;https://ja.vitejs.dev/&quot;&gt;Vite&lt;/a&gt;に載せ替えてみた。&lt;/p&gt;</summary>
@@ -203,7 +203,7 @@
     <link href="https://tyfkda.github.io/blog/2025/03/08/macho-exe.html"/>
     <id>https://tyfkda.github.io/blog/2025/03/08/macho-exe.html</id>
     <published>2025-03-08T03:00:00.000Z</published>
-    <updated>2025-07-06T06:03:33.594Z</updated>
+    <updated>2025-12-01T01:13:20.148Z</updated>
     
     
     <summary type="html">&lt;style&gt;

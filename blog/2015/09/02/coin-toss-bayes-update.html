@@ -93,6 +93,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -206,16 +235,14 @@
 <iframe src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=tyfkda-22&o=9&p=8&l=as1&m=amazon&f=ifr&ref=tf_til&asins=427421530X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 <br/>
 
-<p>　<a href="/blog/2015/09/02/multiple-coin-toss.html" title="同じコインを複数回投げた結果から、どのコインだったかの確率">コインを複数回投げた場合</a>では<script type="math/tex">n</script>回投げ終わって<script type="math/tex">r</script>回表が出た、という具合にすべての結果が出た後で各コインである確率を計算したが、今回は1回投げるごとに逐次更新していく（ベイズ更新）。</p>
-<p>　<script type="math/tex">n-1</script>回目の事後確率 <script type="math/tex">P(\omega_i \lvert x^{(n-1)})</script> を<script type="math/tex">n</script>回目の事前確率として、新たに得られたコインの面から事後確率を更新する：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-P(\omega_i \lvert x^{(n)}) &=& \frac{P(x_n \lvert \omega_i)}{P(x^{(n)})} P(\omega_i \lvert x^{(n-1)}) \\
-P(x^{(n)}) &=& \sum_{j=1}^3 P(\omega_j \lvert x^{(n-1)}) P(x_n \lvert \omega_j)
-\end{eqnarray*}
-%]]></script>
-
+<p>　<a href="/blog/2015/09/02/multiple-coin-toss.html" title="同じコインを複数回投げた結果から、どのコインだったかの確率">コインを複数回投げた場合</a>では\(n\)回投げ終わって\(r\)回表が出た、という具合にすべての結果が出た後で各コインである確率を計算したが、今回は1回投げるごとに逐次更新していく（ベイズ更新）。</p>
+<p>　\(n-1\)回目の事後確率 \(P(\omega_i \lvert x^{(n-1)})\) を\(n\)回目の事前確率として、新たに得られたコインの面から事後確率を更新する：</p>
+<p>$$
+\begin{align*}
+P(\omega_i \lvert x^{(n)}) &amp;&#x3D; \frac{P(x_n \lvert \omega_i)}{P(x^{(n)})} P(\omega_i \lvert x^{(n-1)}) \\
+P(x^{(n)}) &amp;&#x3D; \sum_{j&#x3D;1}^3 P(\omega_j \lvert x^{(n-1)}) P(x_n \lvert \omega_j)
+\end{align*}
+$$</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coin_probability3.rb</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BayesUpdater</span></span><br><span class="line">  <span class="built_in">attr_reader</span> <span class="symbol">:probs</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">initialize</span>(<span class="params">pi, theta</span>)</span><br><span class="line">    <span class="variable">@probs</span> = pi.dup</span><br><span class="line">    <span class="variable">@theta</span> = theta</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># n回目の試行がxnだった場合に、確率を更新する</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">update</span>(<span class="params">xn</span>)</span><br><span class="line">    c = <span class="variable">@probs</span>.size</span><br><span class="line">    <span class="comment"># n-1回目までの観測結果に対して、今回の目が出るトータルの確率</span></span><br><span class="line">    <span class="comment"># P(x^&#123;(n)&#125;) = ∑_&#123;j=1&#125;^3 P(ω_j|x^&#123;(n-1)&#125;) P(x_n|ω_j)</span></span><br><span class="line">    prob = sigma(<span class="number">0</span>...c) <span class="keyword">do</span> |<span class="params">j</span>|</span><br><span class="line">      <span class="variable">@probs</span>[j] * (xn * <span class="variable">@theta</span>[j] + (<span class="number">1</span> - xn) * (<span class="number">1</span> - <span class="variable">@theta</span>[j]))</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 各コインに対して、今回の目が出る確率を更新</span></span><br><span class="line">    c.times <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">      <span class="variable">@probs</span>[i] *= (xn * <span class="variable">@theta</span>[i] + (<span class="number">1</span> - xn) * (<span class="number">1</span> - <span class="variable">@theta</span>[i])) / prob</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span></span><br><span class="line">  <span class="comment"># πi: それぞれのコインが箱の中にどのような割合で混ざっているか</span></span><br><span class="line">  pi = [<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.5</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># θi: それぞれのコインを投げた時に表が出る確率</span></span><br><span class="line">  theta = [<span class="number">0.8</span>, <span class="number">0.6</span>, <span class="number">0.3</span>]</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 10回投げた結果が10回中7回表（HHHHTHHTHT）だった場合</span></span><br><span class="line">  <span class="comment">#bayes_updater = BayesUpdater.new(pi, theta)</span></span><br><span class="line">  <span class="comment">#[1, 1, 1, 1, 0, 1, 1, 0, 1, 0].each do |x|</span></span><br><span class="line">  <span class="comment">#  bayes_updater.update(x)</span></span><br><span class="line">  <span class="comment">#  p bayes_updater.probs</span></span><br><span class="line">  <span class="comment">#end</span></span><br><span class="line"></span><br><span class="line">  bayes_updater = <span class="title class_">BayesUpdater</span>.new(pi, theta)</span><br><span class="line">  n = <span class="number">100</span></span><br><span class="line">  <span class="comment"># 0番目のコインをn回投げてみる</span></span><br><span class="line">  t = theta[<span class="number">0</span>]</span><br><span class="line">  head_count = <span class="number">0</span></span><br><span class="line">  n.times <span class="keyword">do</span></span><br><span class="line">    x = rand &lt; t ? <span class="number">1</span> : <span class="number">0</span></span><br><span class="line">    bayes_updater.update(x)</span><br><span class="line">    head_count += x</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  puts <span class="string">&quot;Head: <span class="subst">#&#123;head_count&#125;</span>/<span class="subst">#&#123;n&#125;</span>&quot;</span></span><br><span class="line">  p bayes_updater.probs</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Rangeに対してブロックを呼び出し、その結果の和を返す：∑</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sigma</span>(<span class="params">range, &amp;block</span>)</span><br><span class="line">  range.map <span class="keyword">do</span> |<span class="params">i</span>|</span><br><span class="line">    block.call(i)</span><br><span class="line">  <span class="keyword">end</span>.inject(<span class="symbol">:+</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">main</span><br><span class="line"></span><br><span class="line"><span class="comment"># Head: 81/100</span></span><br><span class="line"><span class="comment"># [0.9998409538483062, 0.00015904615169388522, 3.409780749699365e-24]</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="10回投げて7回表が出る時の確率の遷移"><a href="#10回投げて7回表が出る時の確率の遷移" class="headerlink" title="10回投げて7回表が出る時の確率の遷移"></a>10回投げて7回表が出る時の確率の遷移</h4><table>
@@ -395,9 +422,5 @@ P(x^{(n)}) &=& \sum_{j=1}^3 P(\omega_j \lvert x^{(n-1)}) P(x_n \lvert \omega_j)
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

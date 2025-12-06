@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -201,129 +230,110 @@
 
 <p>例題は<a href="/blog/2015/10/13/perceptron-learning-1d.html" title="パーセプトロンの学習規則を1次元のデータに対して試してみる">以前パーセプトロンの学習規則を使って試した</a>、2.3節「パーセプトロンの学習規則」(p.18)で、特徴が１次元の６個のパターンを２クラスに分類する例。</p>
 <p>添字が多くてイメージがわかないので、まずは展開して計算してみる。</p>
-<h3 id="学習パターン"><a href="#学習パターン" class="headerlink" title="学習パターン"></a>学習パターン</h3><p>学習パターン <script type="math/tex">\mathbf{X}</script></p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\mathbf{X} = \begin{bmatrix}
-\begin{pmatrix}1 & 1.2\end{pmatrix} \\
-\begin{pmatrix}1 & 0.2\end{pmatrix} \\
-\begin{pmatrix}1 & -0.2\end{pmatrix} \\
-\begin{pmatrix}1 & -0.5\end{pmatrix} \\
-\begin{pmatrix}1 & -1.0\end{pmatrix} \\
-\begin{pmatrix}1 & -1.5\end{pmatrix}
+<h3 id="学習パターン"><a href="#学習パターン" class="headerlink" title="学習パターン"></a>学習パターン</h3><p>学習パターン \(\mathbf{X}\)</p>
+<p>$$
+\mathbf{X} &#x3D; \begin{bmatrix}
+\begin{pmatrix}1 &amp; 1.2\end{pmatrix} \\
+\begin{pmatrix}1 &amp; 0.2\end{pmatrix} \\
+\begin{pmatrix}1 &amp; -0.2\end{pmatrix} \\
+\begin{pmatrix}1 &amp; -0.5\end{pmatrix} \\
+\begin{pmatrix}1 &amp; -1.0\end{pmatrix} \\
+\begin{pmatrix}1 &amp; -1.5\end{pmatrix}
 \end{bmatrix}
-%]]></script>
-
+$$</p>
 <ul>
 <li>行ベクトルが各パターン（列の数はバイアスの分を加えるので、1+特徴次元数&#x3D;2）で、行数はパターン数(&#x3D;6)</li>
 </ul>
-<h3 id="教師マトリクス"><a href="#教師マトリクス" class="headerlink" title="教師マトリクス"></a>教師マトリクス</h3><p>教師マトリクス <script type="math/tex">\mathbf{b}</script></p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\mathbf{b} = \begin{bmatrix}
-\begin{pmatrix}1 & 0\end{pmatrix} \\
-\begin{pmatrix}1 & 0\end{pmatrix} \\
-\begin{pmatrix}1 & 0\end{pmatrix} \\
-\begin{pmatrix}0 & 1\end{pmatrix} \\
-\begin{pmatrix}0 & 1\end{pmatrix} \\
-\begin{pmatrix}0 & 1\end{pmatrix}
+<h3 id="教師マトリクス"><a href="#教師マトリクス" class="headerlink" title="教師マトリクス"></a>教師マトリクス</h3><p>教師マトリクス \(\mathbf{b}\)</p>
+<p>$$
+\mathbf{b} &#x3D; \begin{bmatrix}
+\begin{pmatrix}1 &amp; 0\end{pmatrix} \\
+\begin{pmatrix}1 &amp; 0\end{pmatrix} \\
+\begin{pmatrix}1 &amp; 0\end{pmatrix} \\
+\begin{pmatrix}0 &amp; 1\end{pmatrix} \\
+\begin{pmatrix}0 &amp; 1\end{pmatrix} \\
+\begin{pmatrix}0 &amp; 1\end{pmatrix}
 \end{bmatrix}
-%]]></script>
-
+$$</p>
 <ul>
 <li>行ベクトルが各クラスでの教師信号で、行数はパターン数(&#x3D;6)、列数はクラス数&#x3D;2</li>
-<li>パターンがクラス<script type="math/tex">i</script>に属していれば列<script type="math/tex">i</script>が<script type="math/tex">1</script>、それ以外は<script type="math/tex">0</script>という教師信号</li>
+<li>パターンがクラス\(i\)に属していれば列\(i\)が\(1\)、それ以外は\(0\)という教師信号</li>
 </ul>
-<h3 id="識別関数のウェイト"><a href="#識別関数のウェイト" class="headerlink" title="識別関数のウェイト"></a>識別関数のウェイト</h3><script type="math/tex; mode=display">% <![CDATA[
-
-\mathbf{W} = \begin{bmatrix}
+<h3 id="識別関数のウェイト"><a href="#識別関数のウェイト" class="headerlink" title="識別関数のウェイト"></a>識別関数のウェイト</h3><p>$$
+\mathbf{W} &#x3D; \begin{bmatrix}
 \begin{pmatrix}
 w_{10} \\
 w_{11}
-\end{pmatrix} &
-
+\end{pmatrix} &amp;
 \begin{pmatrix}
 w_{20} \\
 w_{21}
 \end{pmatrix}
 \end{bmatrix}
-%]]></script>
-
+$$</p>
 <ul>
 <li>求めるべき値</li>
 <li>列ベクトルが各識別関数のウェイト（1+特徴次元数&#x3D;2）で、列の数は分類したいクラスの数(&#x3D;2)</li>
 </ul>
 <h3 id="識別関数のウェイトを閉じた形で求める"><a href="#識別関数のウェイトを閉じた形で求める" class="headerlink" title="識別関数のウェイトを閉じた形で求める"></a>識別関数のウェイトを閉じた形で求める</h3><p>全クラス、全パターンの識別関数に対する教師信号との二乗誤差$J$を、各ウェイトベクトルで偏微分した値を０と置いて、最小解を求める。</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-(\mathbf{X}^t \mathbf{X}) \mathbf{W} = \mathbf{X}^t \mathbf{b} \tag{3.21}
-%]]></script>
-
+<p>$$
+(\mathbf{X}^t \mathbf{X}) \mathbf{W} &#x3D; \mathbf{X}^t \mathbf{b} \tag{3.21}
+$$</p>
 <p>から計算：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-
-\left(
+<p>$$
+\begin{align*}
+\left\lparen
 \begin{bmatrix}
-1 & 1 & 1 & 1 & 1 & 1 \\
-1.2 & 0.2 & -0.2 & -0.5 & -1.0 & -1.5
+1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 \\
+1.2 &amp; 0.2 &amp; -0.2 &amp; -0.5 &amp; -1.0 &amp; -1.5
 \end{bmatrix}
-
 \begin{bmatrix}
-1 & 1.2 \\
-1 & 0.2 \\
-1 & -0.2 \\
-1 & -0.5 \\
-1 & -1.0 \\
-1 & -1.5
+1 &amp; 1.2 \\
+1 &amp; 0.2 \\
+1 &amp; -0.2 \\
+1 &amp; -0.5 \\
+1 &amp; -1.0 \\
+1 &amp; -1.5
 \end{bmatrix}
-\right)
-\mathbf{W} &=&
-
+\right\rparen
+\mathbf{W} &amp;&#x3D;
 \begin{bmatrix}
-1 & 1 & 1 & 1 & 1 & 1 \\
-1.2 & 0.2 & -0.2 & -0.5 & -1.0 & -1.5
+1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 \\
+1.2 &amp; 0.2 &amp; -0.2 &amp; -0.5 &amp; -1.0 &amp; -1.5
 \end{bmatrix}
-
 \begin{bmatrix}
-1 & 0 \\
-1 & 0 \\
-1 & 0 \\
-0 & 1 \\
-0 & 1 \\
-0 & 1
+1 &amp; 0 \\
+1 &amp; 0 \\
+1 &amp; 0 \\
+0 &amp; 1 \\
+0 &amp; 1 \\
+0 &amp; 1
 \end{bmatrix} \\
-
 \begin{bmatrix}
-6 & -1.8 \\
--1.8 & 5.02
+6 &amp; -1.8 \\
+-1.8 &amp; 5.02
 \end{bmatrix}
-\mathbf{W} &=&
+\mathbf{W} &amp;&#x3D;
 \begin{bmatrix}
-3 & 3 \\
-1.2 & -3
+3 &amp; 3 \\
+1.2 &amp; -3
 \end{bmatrix} \\
-
-\therefore \mathbf{W} &=&
+\therefore \mathbf{W} &amp;&#x3D;
 \begin{bmatrix}
-0.640625 & 0.359375 \\
-0.46875 & -0.46875
+0.640625 &amp; 0.359375 \\
+0.46875 &amp; -0.46875
 \end{bmatrix}
-\end{eqnarray*}
-%]]></script>
-
+\end{align*}
+$$</p>
 <p>これによって</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-(w_{10} - w_{20}) \cdot 1 + (w_{11} - w_{21}) x &=& 0 \\
-(0.640625 - 0.359375) + (0.46875 + 0.46875) x &=& 0 \\
-\therefore x &=& -0.3
-\end{eqnarray*}
-%]]></script>
-
-<p>となり、<script type="math/tex">x3=-0.2</script> と <script type="math/tex">x4=-0.5</script> との間で識別する値が学習できている。</p>
+<p>$$
+\begin{align*}
+(w_{10} - w_{20}) \cdot 1 + (w_{11} - w_{21}) x &amp;&#x3D; 0 \\
+(0.640625 - 0.359375) + (0.46875 + 0.46875) x &amp;&#x3D; 0 \\
+\therefore x &amp;&#x3D; -0.3
+\end{align*}
+$$</p>
+<p>となり、\(x3&#x3D;-0.2\) と \(x4&#x3D;-0.5\) との間で識別する値が学習できている。</p>
 <h3 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h3><p>PythonのNumPyを使って、プログラムで計算してみる：</p>
 <p>learn_error_close.py</p>
 <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coding: UTF-8</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">  <span class="comment"># パターン行列</span></span><br><span class="line">  X = np.matrix([[<span class="number">1.</span>, <span class="number">1.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">0.2</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">0.5</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">1.0</span>],</span><br><span class="line">                 [<span class="number">1.</span>, -<span class="number">1.5</span>]])</span><br><span class="line">  <span class="comment"># パターンごとの、クラスiに属するかどうかの教師行列</span></span><br><span class="line">  b = np.matrix([[<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>],</span><br><span class="line">                 [<span class="number">0.</span>, <span class="number">1.</span>]])</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 識別関数のウェイトを求める</span></span><br><span class="line">  W = learn_error_close(X, b)</span><br><span class="line">  <span class="built_in">print</span> <span class="string">&#x27;W:&#x27;</span></span><br><span class="line">  <span class="built_in">print</span> W</span><br><span class="line"></span><br><span class="line">  x = -(W[<span class="number">0</span>, <span class="number">0</span>] - W[<span class="number">0</span>, <span class="number">1</span>]) / (W[<span class="number">1</span>, <span class="number">0</span>] - W[<span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">  <span class="built_in">print</span> <span class="string">&#x27;x=&#x27;</span>, x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 「誤差評価に基づく学習」の「閉じた形の解」</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">learn_error_close</span>(<span class="params">X, b</span>):</span><br><span class="line">  W = np.linalg.solve(X.T * X, X.T * b)</span><br><span class="line">  <span class="keyword">return</span> W</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># W:</span></span><br><span class="line"><span class="comment"># [[ 0.640625  0.359375]</span></span><br><span class="line"><span class="comment">#  [ 0.46875  -0.46875 ]]</span></span><br><span class="line"><span class="comment"># x= -0.3</span></span><br></pre></td></tr></table></figure>
@@ -427,9 +437,5 @@ w_{21}
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

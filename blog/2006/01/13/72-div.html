@@ -14,16 +14,21 @@
 利率ｘ%のとき、元金の２倍になるのに何年かかるか計算するのに、72&amp;#x2F;ｘ で大まかに求められるという法則だ。
 なぜかを考えてみた。
 まず、複利でｘ%でｎ年たつと２倍になる、と置く
-% 
-
+$$
+\left(1+\frac{x}{100}\right)^n &amp;#x3D; 2
+$$
 両辺の対数をとる
-% 
-
+$$
+\ln\left\lbrace \left(1+\frac{x}{100}\right)^n \right\rbrace &amp;#x3D; \ln 2
+$$
 ｎ乗の対数は掛け算に出すことができる
-% 
-
+$$
+n \cdot \ln\left\lbrace 1+\frac{x}{100} \right\rbrace &amp;#x3D; \ln 2
+$$
 移項してｎ＝…にもっていく
-%">
+$$
+n &amp;#x3D; \frac{\ln 2}{\ln \left(1+\frac{x}{100}\right)}
+$$">
     
 
     <!--Author-->
@@ -104,6 +109,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -199,79 +233,64 @@
 利率ｘ%のとき、元金の２倍になるのに何年かかるか計算するのに、72&#x2F;ｘ で大まかに求められるという法則だ。
 なぜかを考えてみた。</p>
 <p>まず、複利でｘ%でｎ年たつと２倍になる、と置く</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-(1+\frac{x}{100})^n = 2
-%]]></script>
-
+<p>$$
+\left(1+\frac{x}{100}\right)^n &#x3D; 2
+$$</p>
 <p>両辺の対数をとる</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\ln\{(1+\frac{x}{100})^n\} = \ln 2
-%]]></script>
-
+<p>$$
+\ln\left\lbrace \left(1+\frac{x}{100}\right)^n \right\rbrace &#x3D; \ln 2
+$$</p>
 <p>ｎ乗の対数は掛け算に出すことができる</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-n \cdot \ln\{1+\frac{x}{100}\} = \ln 2
-%]]></script>
-
+<p>$$
+n \cdot \ln\left\lbrace 1+\frac{x}{100} \right\rbrace &#x3D; \ln 2
+$$</p>
 <p>移項してｎ＝…にもっていく</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-n = \frac{\ln 2}{\ln(1+\frac{x}{100})}
-%]]></script>
-
+<p>$$
+n &#x3D; \frac{\ln 2}{\ln \left(1+\frac{x}{100}\right)}
+$$</p>
 <span id="more"></span>
 
 <p>上式で厳密に求めることができるが、簡単にするため</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-f(x) = \ln(1+\frac{x}{100})
-%]]></script>
-
+<p>$$
+f(x) &#x3D; \ln\left(1+\frac{x}{100}\right)
+$$</p>
 <p>を<a href="http://ja.wikipedia.org/wiki/%E3%83%9E%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%AA%E3%83%B3%E5%B1%95%E9%96%8B">マクローリン展開</a>する。
 マクローリン展開：</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(0)}{n!} (x)^n = f(0) + f^{\prime}(0) x + ...
-%]]></script>
-
+<p>$$
+f(x) &#x3D; \sum_{n&#x3D;0}^{\infty} \frac{f^{(n)}(0)}{n!} (x)^n &#x3D; f(0) + f^{\prime}(0) x + …
+$$</p>
 <p>第２項まで求める。
 第１項の係数</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-f(0) = \ln(1) = 0
-%]]></script>
-
-<p>第２項の係数：f’ を求めて、f’(0) を計算</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-f^{\prime}(x) = \ln(1+\frac{x}{100}) ^{\prime} = \frac{1}{1+\frac{x}{100}} \cdot (1+\frac{x}{100})^{\prime} = \frac{1}{1+\frac{x}{100}} \cdot \frac{1}{100}
-%]]></script>
-<script type="math/tex; mode=display">% <![CDATA[
-
-f^{\prime}(0) = \frac{1}{100}
-%]]></script>
-
+<p>$$
+\begin{align*}
+f(0) &amp;&#x3D; \ln(1) \\ &amp;&#x3D; 0
+\end{align*}
+$$</p>
+<p>第２項の係数：\(f^\prime(x)\) を求めて、それに\(x&#x3D;0\)を代入して\(f^\prime(0)\) を計算</p>
+<p>$$
+\begin{align*}
+f^{\prime}(x) &amp;&#x3D; \ln\left(1+\frac{x}{100}\right) ^{\prime} \\
+ &amp;&#x3D; \frac{1}{1+\frac{x}{100}} \cdot \left(1+\frac{x}{100}\right)^{\prime} \\
+ &amp;&#x3D; \frac{1}{1+\frac{x}{100}} \cdot \frac{1}{100}
+\end{align*}
+$$
+$$
+\therefore f^{\prime}(0) &#x3D; \frac{1}{100}
+$$</p>
 <p>上の結果から、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-f(x) = \frac{1}{100} \cdot x + ...
-%]]></script>
-
-<script type="math/tex">n=...</script> の式に <script type="math/tex">f(x)</script> の結果を入れると
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-n = \frac{\ln 2}{f(x)} = \frac{\ln 2}{\frac{1}{100} \cdot x}
-%]]></script>
-<script type="math/tex">\ln 2 = 0.6931...</script> から
-<script type="math/tex; mode=display">% <![CDATA[
-
-n = \frac{69.31}{x}
-%]]></script>
-
+<p>$$
+f(x) &#x3D; \frac{1}{100} \cdot x + …
+$$</p>
+<p>\(n&#x3D;…\) の式に \(f(x)\) の結果を入れると</p>
+<p>$$
+\begin{align*}
+n &amp;&#x3D; \frac{\ln 2}{f(x)} \\ &amp;&#x3D; \frac{\ln 2}{\frac{1}{100} \cdot x}
+\end{align*}
+$$</p>
+<p>\(\ln 2 &#x3D; 0.6931…\) から</p>
+<p>$$
+n &#x3D; \frac{69.31}{x}
+$$</p>
 <p>でおおまかに求めることができる。</p>
 <p>69は割り算しにくいので、近い値で3でも4でも割れる72にしたんではないだろうか。
 72だと、x&#x3D;0ではなくx&#x3D;8 近辺で誤差が最小になる。</p>
@@ -375,9 +394,5 @@ n = \frac{69.31}{x}
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

@@ -94,6 +94,35 @@ A Practical In">
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -231,15 +260,13 @@ A Practical In">
 <p>なんちゃらかんちゃら…</p>
 <h4 id="遷移関数を定義する"><a href="#遷移関数を定義する" class="headerlink" title="遷移関数を定義する"></a>遷移関数を定義する</h4><ul>
 <li>関数 <em>K</em> は <em>暫定遷移関数 T</em> （または <em>変異戦略</em> と呼ばれる）を使って定義される</li>
-<li><script type="math/tex">T(y \vert x)</script> は、現在のサンプル位置 <script type="math/tex">x</script> から次のサンプル位置の提案として <script type="math/tex">y</script> が選ばれる
+<li>\(T(y \vert x)\) は、現在のサンプル位置 \(x\) から次のサンプル位置の提案として \(y\) が選ばれる
 確率</li>
-<li>確率 <script type="math/tex">a(y \vert x)</script> で <script type="math/tex">x</script> から <script type="math/tex">y</script> へ遷移し、<script type="math/tex">1 - a(y \vert x)</script> で <script type="math/tex">x</script> に留まる</li>
+<li>確率 \(a(y \vert x)\) で \(x\) から \(y\) へ遷移し、\(1 - a(y \vert x)\) で \(x\) に留まる</li>
 </ul>
-<script type="math/tex; mode=display">% <![CDATA[
-
-a(y|x) = \min \left( 1, \frac{f(y)T(x|y)}{f(x)T(y|x)} \right)
-%]]></script>
-
+<p>$$
+a(y|x) &#x3D; \min \left( 1, \frac{f(y)T(x|y)}{f(x)T(y|x)} \right)
+$$</p>
 <ul>
 <li>図2の<code>makeHistogram</code>関数はメトロポリス輸送を使って画像をコピーする</li>
 <li>すごく単純な変異戦略で、一様確率で画像のランダム位置を選ぶ</li>
@@ -272,7 +299,7 @@ Javaに書き直してみる：</p>
                             <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2014/12/22/mlt-color.html"><span class="glyphicon glyphicon-chevron-left"></span>次：メトロポリスサンプリングをカラー値に適用する</a></li>
                         
                         
-                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2014/12/10/xcodeproj-copy-bundle-resources.html">前：xcodeprojでXcodeのターゲットのCopy Bundle Resourcesにファイルを追加する<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2014/12/10/xcodeproj-other-linker-flags.html">前：xcodeprojでXcodeのターゲットのOther Linker Flagsに"-ObjC"を追加する<span class="glyphicon glyphicon-chevron-right"></span></a></li>
                         
                     </ul>
                 
@@ -286,7 +313,7 @@ Javaに書き直してみる：</p>
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/22/mlt-color.html" title="メトロポリスサンプリングをカラー値に適用する" rel="bookmark">メトロポリスサンプリングをカラー値に適用する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/01/27/rose-screen-saver.html" title="Roseスクリーンセーバーを再現" rel="bookmark">Roseスクリーンセーバーを再現</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/05/21/building-processing.html" title="Processingをビルドする" rel="bookmark">Processingをビルドする</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/12/22/mlt-color.html" title="メトロポリスサンプリングをカラー値に適用する" rel="bookmark">メトロポリスサンプリングをカラー値に適用する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/01/27/rose-screen-saver.html" title="Roseスクリーンセーバーを再現" rel="bookmark">Roseスクリーンセーバーを再現</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
@@ -363,9 +390,5 @@ Javaに書き直してみる：</p>
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

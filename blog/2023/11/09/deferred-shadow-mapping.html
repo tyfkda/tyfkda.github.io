@@ -92,6 +92,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -349,23 +378,19 @@ WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US
 <p>シャドウマップに描かれたデプス値と、フラグメントシェーダー内で光源座標系に変換したZ値がどうなってるかを調べることにした。</p>
 <h4 id="パースペクティブ射影行列・同次座標系"><a href="#パースペクティブ射影行列・同次座標系" class="headerlink" title="パースペクティブ射影行列・同次座標系"></a>パースペクティブ射影行列・同次座標系</h4><p>これは射影行列を理解する必要があると思いググって、<a href="https://light11.hatenadiary.com/entry/2018/06/10/233954">【Unity】プロジェクション行列は掛けるだけじゃなくてw除算しなきゃダメだよという話 - LIGHT11</a>からたどって<a href="http://marupeke296.com/DXG_No70_perspective.html">その70 完全ホワイトボックスなパースペクティブ射影変換行列</a>を読んでみた。</p>
 <p>理解したところだとパースペクティブ射影変換後の座標は</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\begin{pmatrix}x^\prime \\ y^\prime \\ z^\prime \\ w^\prime \end{pmatrix} &=& ProjMat \times \begin{pmatrix} x \\ y \\ z \\ 1 \end{pmatrix} \\
- &=& \begin{pmatrix} \left( \cot(fov/2) / aspect \right) \cdot x \\ \cot(fov/2) \cdot y \\ fZ \cdot \frac{z - nZ}{fZ - nZ} \\ z \end{pmatrix}
-\end{eqnarray*}
-%]]></script>
-
-<p>となって、<script type="math/tex">z^\prime</script>を<script type="math/tex">w^\prime</script>で割ると、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-\frac{z^\prime}{w^\prime} &=& fZ \cdot \frac{z - nZ}{fZ - nZ} \cdot \frac{1}{z} \\
- &=& \frac{fZ}{fZ - nZ} \cdot \left( 1 -  \frac{nZ}{z} \right)
-\end{eqnarray*}
-%]]></script>
-
+<p>$$
+\begin{align*}
+\begin{pmatrix}x^\prime \\ y^\prime \\ z^\prime \\ w^\prime \end{pmatrix} &amp;&#x3D; ProjMat \times \begin{pmatrix} x \\ y \\ z \\ 1 \end{pmatrix} \\
+ &amp;&#x3D; \begin{pmatrix} \left( \cot(fov&#x2F;2) &#x2F; aspect \right) \cdot x \\ \cot(fov&#x2F;2) \cdot y \\ fZ \cdot \frac{z - nZ}{fZ - nZ} \\ z \end{pmatrix}
+\end{align*}
+$$</p>
+<p>となって、\(z^\prime\)を\(w^\prime\)で割ると、</p>
+<p>$$
+\begin{align*}
+\frac{z^\prime}{w^\prime} &amp;&#x3D; fZ \cdot \frac{z - nZ}{fZ - nZ} \cdot \frac{1}{z} \\
+ &amp;&#x3D; \frac{fZ}{fZ - nZ} \cdot \left( 1 -  \frac{nZ}{z} \right)
+\end{align*}
+$$</p>
 <p>となる。最終的なデプス値は意図通りにnearZの時0.0、farZの時に1.0となる。
 この計算はシャドウマップ作成時とDeferred Lighting時が同じ計算なので数値的には問題ないが、
 平行投影の場合は元Zに対して線型だったのに対して、パースペクティブ投影の場合には元Zに反比例した値となっている。
@@ -529,9 +554,5 @@ WebGPUで半透明を行うには、<a href="https://developer.mozilla.org/en-US
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

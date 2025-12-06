@@ -91,6 +91,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -199,7 +228,7 @@
                 <p>Haskellのリモート勉強会<a href="https://remotehs.doorkeeper.jp/events/48817">Remote.hs #05 アルゴリズムでパズルを解こう</a>というものに参加してみた。今回のお題はナップサック問題だった。</p>
 <span id="more"></span>
 
-<h3 id="総当り法で解く"><a href="#総当り法で解く" class="headerlink" title="総当り法で解く"></a>総当り法で解く</h3><p>アイテムを含む／含まない場合のすべてについて条件を満たすかチェックして、有効な場合について価値が最大になる組み合わせを調べれば、とりあえずは望みの答えが求まる（計算量は<script type="math/tex">O(2^n)</script>なので、要素が増えると計算量が爆発する）。
+<h3 id="総当り法で解く"><a href="#総当り法で解く" class="headerlink" title="総当り法で解く"></a>総当り法で解く</h3><p>アイテムを含む／含まない場合のすべてについて条件を満たすかチェックして、有効な場合について価値が最大になる組み合わせを調べれば、とりあえずは望みの答えが求まる（計算量は\(O(2^n)\)なので、要素が増えると計算量が爆発する）。
 手始めにこの方法を使って力任せに解いてみる。</p>
 <p>品物の組み合わせを列挙する関数は必要になるたびに再帰で実装しようとして毎回コンパイルエラーで苦労する。
 今回もなんとか実装した後で初めて知ったんだけど、<code>Data.List</code>の<a href="http://hackage.haskell.org/package/base-4.9.0.0/docs/Data-List.html#v:subsequences">subsequences</a>という関数でリストの要素のすべての組み合わせを列挙できた。
@@ -223,17 +252,17 @@
 <p>ナップサック問題にDPをあてはめるには総当りでの考え方とは逆に、品物の全パターンではなく容量の全パターンを軸に考える。
 0から最大容量のそれぞれの場合で価値が最大になるにはどういう組み合わせにすればいいか、というのを品物を１個ずつ調べていく。</p>
 <p>初期状態は品物を１つも追加してない状態で、各容量すべてを価値０と置く。
-ある段階まで計算が終わってるとして次の品物（価値<script type="math/tex">v</script>、容量<script type="math/tex">c</script>）を考える。
-各容量は、その品物を追加しなかった場合である「その容量でのその時点の最高価値」と、した場合の「容量-<script type="math/tex">c</script>のその時点の最高価値」+<script type="math/tex">v</script>（ただし容量が<script type="math/tex">c</script>より少ない場合にはその品物を加える事ができないので０）の２つを比べて、大きい方を選択する（言葉で説明するの難しい…）。
+ある段階まで計算が終わってるとして次の品物（価値\(v\)、容量\(c\)）を考える。
+各容量は、その品物を追加しなかった場合である「その容量でのその時点の最高価値」と、した場合の「容量-\(c\)のその時点の最高価値」+\(v\)（ただし容量が\(c\)より少ない場合にはその品物を加える事ができないので０）の２つを比べて、大きい方を選択する（言葉で説明するの難しい…）。
 この手順をすべての品物に対して行うと、最大容量での価値が望みの解答になっている（これでどうして求まるのかも直感的には分かりづらい…）。</p>
-<p>プログラムにするにはさらにひねる必要があって、<script type="math/tex">c</script>少ない容量をルックアップする代わりに前に0を挿入してやった：</p>
+<p>プログラムにするにはさらにひねる必要があって、\(c\)少ない容量をルックアップする代わりに前に0を挿入してやった：</p>
 <figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="title">knapsackDP</span> :: <span class="type">Capacity</span> -&gt; [<span class="type">Item</span>] -&gt; [<span class="type">Item</span>]</span><br><span class="line"><span class="title">knapsackDP</span> maxCapacity = snd . last . foldl step initial</span><br><span class="line">  <span class="keyword">where</span> initial = replicate (maxCapacity + <span class="number">1</span>) empty</span><br><span class="line">        empty = (<span class="number">0</span>, [])  <span class="comment">-- (value, items)</span></span><br><span class="line">        step previous item = zipWith chooseValuable itemIncluded notIncluded</span><br><span class="line">          <span class="keyword">where</span> itemIncluded = shift ++ map addItem previous</span><br><span class="line">                notIncluded = previous</span><br><span class="line">                addItem (v, items) = (v +  value item, item : items)</span><br><span class="line">                chooseValuable a b = maximumBy (compare `on` fst) [a, b]</span><br><span class="line">                shift = replicate (capacity item) empty</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>初期状態は <code>initial</code></li>
 <li>１ステップすすめる関数 <code>step</code> で、 <code>zipWith chooseValuable itemIncluded notIncluded</code> で、アイテムを含めた場合と含めない場合の価値の高い方を選択</li>
 <li>それを <code>foldl</code> ですべての品物に対して行って、<code>last</code>で最大容量のときの最終的な価値が得られる</li>
-<li>計算量は<script type="math/tex">O(N \times C)</script>、メモリ消費量は<script type="math/tex">C</script><ul>
+<li>計算量は\(O(N \times C)\)、メモリ消費量は\(C\)<ul>
 <li>上記のコードがHaskell処理系でそのように振る舞うかは検証してない</li>
 </ul>
 </li>
@@ -264,7 +293,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/03/12/fit-curve.html" title="折れ線にフィットするベジェ曲線を求める方法" rel="bookmark">折れ線にフィットするベジェ曲線を求める方法</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/03/12/fit-curve.html" title="折れ線にフィットするベジェ曲線を求める方法" rel="bookmark">折れ線にフィットするベジェ曲線を求める方法</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
@@ -341,9 +370,5 @@
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

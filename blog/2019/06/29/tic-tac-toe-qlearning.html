@@ -92,6 +92,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -221,23 +250,21 @@
 ということを何度も繰り返してやることで、徐々に正しい価値が推定される。
 （理論的には<a href="https://ja.wikipedia.org/wiki/%E3%83%99%E3%83%AB%E3%83%9E%E3%83%B3%E6%96%B9%E7%A8%8B%E5%BC%8F">ベルマン方程式</a>だのなんだのから導かれるということなんだけど、よく理解していないので割愛…。）</p>
 <p>Q学習（TD法）では</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
+<p>$$
 \begin{align}
-Q(s, a) & \mathrel{+}= \alpha (r + \gamma Q(s^\prime, a^\prime) - Q(s, a)), \\
-a^\prime & = \mathop{\rm argmax} Q(s^\prime) \\
+Q(s, a) &amp; \mathrel{+}&#x3D; \alpha (r + \gamma Q(s^\prime, a^\prime) - Q(s, a)), \\
+a^\prime &amp; &#x3D; \mathop{\rm argmax} Q(s^\prime) \\
 \end{align}
-%]]></script>
-
+$$</p>
 <p>という式になる。
-日本語にすると、現在の状態<script type="math/tex">s</script>で行動<script type="math/tex">a</script>をとった場合の価値は、
-報酬<script type="math/tex">r</script>と次の状態<script type="math/tex">s^\prime</script>での最適な行動<script type="math/tex">a^\prime</script>の価値<script type="math/tex">Q(s^\prime, a^\prime)</script>を割引係数<script type="math/tex">\gamma</script>で割り引いたものと考えられるので、
-その値に向けて現在の値との差を学習率<script type="math/tex">\alpha</script>で近づけてやる、ということになるかな。</p>
+日本語にすると、現在の状態\(s\)で行動\(a\)をとった場合の価値は、
+報酬\(r\)と次の状態\(s^\prime\)での最適な行動\(a^\prime\)の価値\(Q(s^\prime, a^\prime)\)を割引係数\(\gamma\)で割り引いたものと考えられるので、
+その値に向けて現在の値との差を学習率\(\alpha\)で近づけてやる、ということになるかな。</p>
 <p>最適な行動だけをしていると行き詰まってしまうので、他にいい手がないか探すために一定の確率でランダムな行動を選択する（ε-貪欲法）。</p>
 <h3 id="施行"><a href="#施行" class="headerlink" title="施行"></a>施行</h3><p>空いているマスのうちのどれかに打つというのを対戦相手として、</p>
 <ul>
-<li>学習率 <script type="math/tex">\alpha</script>：0.5</li>
-<li>割引係数 <script type="math/tex">\gamma</script>：0.999</li>
+<li>学習率 \(\alpha\)：0.5</li>
+<li>割引係数 \(\gamma\)：0.999</li>
 <li>探索割合ε：5%</li>
 </ul>
 <p>で10万回ほどトライアウトしたところ、ほぼ完全に学習できた。</p>
@@ -388,9 +415,5 @@ a^\prime & = \mathop{\rm argmax} Q(s^\prime) \\
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>

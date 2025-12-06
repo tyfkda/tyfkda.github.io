@@ -95,6 +95,35 @@
     <link rel="icon" href="/favicon.ico">
     
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
 
 
@@ -364,98 +393,80 @@ JavaScriptとから現在時刻をユニフォームで渡して、シェーダ�
 <hr>
 <p>&nbsp;</p>
 <h3 id="補足"><a href="#補足" class="headerlink" title="補足"></a>補足</h3><p><a href="http://gamedevelop.eu/en/tutorials/dual-paraboloid-shadow-mapping.htm">Game Programming - Dual Paraboloid Shadow Mapping</a>や”View-independent Environment Maps”などの解説を見てすんなり理解できるほどかしこくないので、式の展開を逐一追う必要がある。</p>
-<h4 id="放物面のパラメータの導出"><a href="#放物面のパラメータの導出" class="headerlink" title="放物面のパラメータの導出"></a>放物面のパラメータの導出</h4><p>放物面は <script type="math/tex">f(x, y) = \frac{1}{2} - \frac{1}{2} \left(x^2 + y^2 \right)</script>というパラメータを用いる。
+<h4 id="放物面のパラメータの導出"><a href="#放物面のパラメータの導出" class="headerlink" title="放物面のパラメータの導出"></a>放物面のパラメータの導出</h4><p>放物面は \(f(x, y) &#x3D; \frac{1}{2} - \frac{1}{2} \left(x^2 + y^2 \right)\)というパラメータを用いる。
 このパラメータはどうやって求めるのか？</p>
 <p>ZXの２次元で考える。
-放物線の定義によって<script type="math/tex">x^2 = 4pz</script>の焦点位置は<script type="math/tex">p</script>となる。</p>
-<script type="math/tex">x = \pm 1</script>で<script type="math/tex">z</script>が焦点と同じ値であれば、焦点を原点に合わせたときに<script type="math/tex">x</script>が-1〜+1で半球状から投影できることになる。
-<p>ということで方程式を解くと、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-x^2 &=& 4pz \\
-1^2 &=& 4p \cdot p \\
-\therefore p &=& \pm \frac{1}{2}
-\end{eqnarray*}
-%]]></script>
-
-<p>上に凸にするために負の場合を取って<script type="math/tex">z = -\frac{1}{2} x^2</script>、そして焦点を原点に合わせることで説明通りの式になる。</p>
+放物線の定義によって\(x^2 &#x3D; 4pz\)の焦点位置は\(p\)となる。
+\(x &#x3D; \pm 1\)で\(z\)が焦点と同じ値であれば、焦点を原点に合わせたときに\(x\)が-1〜+1で半球状から投影できることになる。
+ということで方程式を解くと、</p>
+<p>$$
+\begin{align*}
+x^2 &amp;&#x3D; 4pz \\
+1^2 &amp;&#x3D; 4p \cdot p \\
+\therefore p &amp;&#x3D; \pm \frac{1}{2}
+\end{align*}
+$$</p>
+<p>上に凸にするために負の場合を取って\(z &#x3D; -\frac{1}{2} x^2\)、そして焦点を原点に合わせることで説明通りの式になる。</p>
 <h4 id="放物面との交点座標の導出１"><a href="#放物面との交点座標の導出１" class="headerlink" title="放物面との交点座標の導出１"></a>放物面との交点座標の導出１</h4><p>半球をマッピングするために、ワールド座標を放物面にマッピングするための座標変換をする必要がある。
 どういう仕組みかよくわからないので追ってみる。</p>
-<p>対象の座標への方向<script type="math/tex">\vec{v}</script>と放物面が交差する座標を求める。
-ZX平面で考えて、Z軸からの角度を<script type="math/tex">\theta</script>とすると方向ベクトルは<script type="math/tex">v_z = \cos \theta</script>、<script type="math/tex">v_x = \sin \theta</script>。
-これらの比と放物面の交点座標<script type="math/tex">(z, x)</script>の比は同じになるので、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-v_z : v_x &=& z : x  && \text{方向ベクトルと交点の比が等しい} \\
-\cos \theta : \sin \theta &=& \frac{1}{2} - \frac{1}{2} x^2 : x  && \text{代入} \\
-\cos \theta \cdot x &=& \left( \frac{1}{2} - \frac{1}{2} x^2 \right) \cdot \sin \theta  && \text{たすき掛け} \\
-\cos \theta \cdot x &=& \frac{1}{2} \sin \theta - \frac{1}{2} \sin \theta \cdot x^2  && \text{分配法則} \\
-\sin \theta \cdot x^2 + 2 \cos \theta \cdot x - \sin \theta &=& 0  && \text{両辺に2をかけて左辺に移項} \\
-\end{eqnarray*}
-%]]></script>
-
-<script type="math/tex">x</script>の２次方程式に対して解の公式を適用、プラスの方を考えて、
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{eqnarray*}
-x &=& \frac{-2 \cos \theta + \sqrt{(2 \cos \theta)^2 + 4 \cdot \sin \theta \cdot \sin \theta}}{2 \sin \theta}  && \text{解の公式に代入} \\
-  &=& \frac{-2 \cos \theta + 2 \sqrt{\cos^2 \theta + \sin^2 \theta}}{2 \sin \theta}  && \text{ルートの中を展開して4を外に} \\
-  &=& \frac{1 - \cos \theta}{\sin \theta}  && \text{2を約分、ルートの中は1} \\
-  &=& \frac{1 - \cos \theta}{\sin \theta} \cdot \frac{\sin \theta}{\sin \theta} = \frac{1 - \cos \theta}{\sin^2 \theta} \cdot \sin \theta  &&  \sin \theta/\sin \theta \text{を乗算} \\
-  &=& \frac{1 - \cos \theta}{1 - \cos^2 \theta} \cdot \sin \theta  &&  \sin^2\theta=1-\cos^2\theta \\
-  &=& \frac{1 - \cos \theta}{(1 + \cos \theta) (1 - \cos \theta)} \cdot \sin \theta  && \text{分母を因数分解} \\
-  &=& \frac{\sin \theta}{1 + \cos \theta}  && \text{約分} \\
-\end{eqnarray*}
-%]]></script>
-
-<script type="math/tex">\sin\theta, \cos\theta</script>から元の方向ベクトルに戻すと
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-x = \frac{v_x}{1 + v_z}
-%]]></script>
-
-<p>ZXの２次元で考えていたがY軸も考えるには、<script type="math/tex">v_z</script>と<script type="math/tex">v_{xy}</script>の角度を<script type="math/tex">\theta</script>とすれば、軸の取り方だけでどの向きでも同じなので結局、交点座標のxyは</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\left\{
+<p>対象の座標への方向\(\vec{v}\)と放物面が交差する座標を求める。
+ZX平面で考えて、Z軸からの角度を\(\theta\)とすると方向ベクトルは\(v_z &#x3D; \cos \theta\)、\(v_x &#x3D; \sin \theta\)。
+これらの比と放物面の交点座標\((z, x)\)の比は同じになるので、</p>
+<p>$$
+\begin{align*}
+v_z : v_x &amp;&#x3D; z : x  &amp;&amp; \text{方向ベクトルと交点の比が等しい} \\
+\cos \theta : \sin \theta &amp;&#x3D; \frac{1}{2} - \frac{1}{2} x^2 : x  &amp;&amp; \text{代入} \\
+\cos \theta \cdot x &amp;&#x3D; \left( \frac{1}{2} - \frac{1}{2} x^2 \right) \cdot \sin \theta  &amp;&amp; \text{たすき掛け} \\
+\cos \theta \cdot x &amp;&#x3D; \frac{1}{2} \sin \theta - \frac{1}{2} \sin \theta \cdot x^2  &amp;&amp; \text{分配法則} \\
+\sin \theta \cdot x^2 + 2 \cos \theta \cdot x - \sin \theta &amp;&#x3D; 0  &amp;&amp; \text{両辺に2をかけて左辺に移項} \\
+\end{align*}
+$$</p>
+<p>\(x\)の２次方程式に対して解の公式を適用、プラスの方を考えて、</p>
+<p>$$
+\begin{align*}
+x &amp;&#x3D; \frac{-2 \cos \theta + \sqrt{(2 \cos \theta)^2 + 4 \cdot \sin \theta \cdot \sin \theta}}{2 \sin \theta}  &amp;&amp; \text{解の公式に代入} \\
+  &amp;&#x3D; \frac{-2 \cos \theta + 2 \sqrt{\cos^2 \theta + \sin^2 \theta}}{2 \sin \theta}  &amp;&amp; \text{ルートの中を展開して4を外に} \\
+  &amp;&#x3D; \frac{1 - \cos \theta}{\sin \theta}  &amp;&amp; \text{2を約分、ルートの中は1} \\
+  &amp;&#x3D; \frac{1 - \cos \theta}{\sin \theta} \cdot \frac{\sin \theta}{\sin \theta} &#x3D; \frac{1 - \cos \theta}{\sin^2 \theta} \cdot \sin \theta  &amp;&amp;  \sin \theta&#x2F;\sin \theta \text{を乗算} \\
+  &amp;&#x3D; \frac{1 - \cos \theta}{1 - \cos^2 \theta} \cdot \sin \theta  &amp;&amp;  \sin^2\theta&#x3D;1-\cos^2\theta \\
+  &amp;&#x3D; \frac{1 - \cos \theta}{(1 + \cos \theta) (1 - \cos \theta)} \cdot \sin \theta  &amp;&amp; \text{分母を因数分解} \\
+  &amp;&#x3D; \frac{\sin \theta}{1 + \cos \theta}  &amp;&amp; \text{約分} \\
+\end{align*}
+$$</p>
+<p>\(\sin\theta, \cos\theta\)から元の方向ベクトルに戻すと</p>
+<p>$$
+x &#x3D; \frac{v_x}{1 + v_z}
+$$</p>
+<p>ZXの２次元で考えていたがY軸も考えるには、\(v_z\)と\(v_{xy}\)の角度を\(\theta\)とすれば、軸の取り方だけでどの向きでも同じなので結局、交点座標のxyは</p>
+<p>$$
+\left\lbrace
 \begin{array}{ll}
-x &=& \frac{v_x}{1 + v_z} \\
-y &=& \frac{v_y}{1 + v_z}
+x &amp;&#x3D; \frac{v_x}{1 + v_z} \\
+y &amp;&#x3D; \frac{v_y}{1 + v_z}
 \end{array}
 \right .
-%]]></script>
-
+$$</p>
 <p>となる。
-求まった<script type="math/tex">(x, y)</script>が放物面との交点なので、それをテクスチャ座標uvに変換するには-1〜+1を0~1に線形変換すればよい。</p>
+求まった\((x, y)\)が放物面との交点なので、それをテクスチャ座標uvに変換するには-1〜+1を0~1に線形変換すればよい。</p>
 <h4 id="交点座標の導出方法２"><a href="#交点座標の導出方法２" class="headerlink" title="交点座標の導出方法２"></a>交点座標の導出方法２</h4><p>“Game Programming - Dual Paraboloid Shadow Mapping”ではまたちょっと違う導出をしている。
 放物面で反射したベクトルがZ軸に平行する<code>(0, 0, 1)</code>になることを利用して、法線は方向ベクトルと<code>(0, 0, 1)</code>を加算・正規化した値になる。
 で法線は面の傾きに直角、傾きは偏微分ということから計算する。</p>
-<p>放物面<script type="math/tex">(x, y, 0.5 - 0.5 (x^2 + y^2))^T</script>の傾きは偏微分で、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-T_x = \begin{pmatrix} 1 \\ 0 \\ -x \end{pmatrix},
-T_y = \begin{pmatrix} 0 \\ 1 \\ -y \end{pmatrix}
-%]]></script>
-
+<p>放物面\((x, y, 0.5 - 0.5 (x^2 + y^2))^T\)の傾きは偏微分で、</p>
+<p>$$
+T_x &#x3D; \begin{pmatrix} 1 \\ 0 \\ -x \end{pmatrix},
+T_y &#x3D; \begin{pmatrix} 0 \\ 1 \\ -y \end{pmatrix}
+$$</p>
 <p>直角は外積で算出すると</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-T_x \times T_y =
-\begin{pmatrix} 0 \cdot -y - 1 \cdot -x \\ -x \cdot 0 - (-y) \cdot 1 \\ 1 \cdot 1 - 0 \cdot 0 \end{pmatrix} =
+<p>$$
+T_x \times T_y &#x3D;
+\begin{pmatrix} 0 \cdot -y - 1 \cdot -x \\ -x \cdot 0 - (-y) \cdot 1 \\ 1 \cdot 1 - 0 \cdot 0 \end{pmatrix} &#x3D;
 \begin{pmatrix} x \\ y \\ 1 \end{pmatrix}
-%]]></script>
-
-<p>これが方向ベクトル<script type="math/tex">\vec{v}</script>と<script type="math/tex">(0, 0, 1)^T</script>の加算と同じ方向なので、</p>
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{pmatrix} v_x \\ v_y \\ v_z + 1 \end{pmatrix} / \! / \begin{pmatrix} x \\ y \\ 1 \end{pmatrix}
-%]]></script>
-
-<p>z成分が1になるよう<script type="math/tex">v_z + 1</script>で割って見比べれば<script type="math/tex">x = v_x / (v_z + 1)</script>、<script type="math/tex">y = v_y / (v_z + 1)</script> が求まる（導出１と同じ）。</p>
+$$</p>
+<p>これが方向ベクトル\(\vec{v}\)と\((0, 0, 1)^T\)の加算と同じ方向なので、</p>
+<p>$$
+\begin{pmatrix} v_x \\ v_y \\ v_z + 1 \end{pmatrix} &#x2F;&#x2F; \begin{pmatrix} x \\ y \\ 1 \end{pmatrix}
+$$</p>
+<p>z成分が1になるよう\(v_z + 1\)で割って見比べれば\(x &#x3D; v_x &#x2F; (v_z + 1)\)、\(y &#x3D; v_y &#x2F; (v_z + 1)\) が求まる（導出１と同じ）。</p>
 <h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
 <li><a href="http://gamedevelop.eu/en/tutorials/dual-paraboloid-shadow-mapping.htm">Game Programming - Dual Paraboloid Shadow Mapping</a>　反射の法線ベクトルから交点を算出</li>
 <li><a href="https://t-pot.com/program/55_dpem/index.html">t-pot『動的双放物面環境マッピング』</a>　昔はシェーダーもアセンブリだったんだなぁ…</li>
@@ -588,9 +599,5 @@ T_x \times T_y =
 <!-- Disqus Comments -->
 
 
-
-    
-    <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-AMS-MML_SVG"></script>
-    
 </body>
 </html>
