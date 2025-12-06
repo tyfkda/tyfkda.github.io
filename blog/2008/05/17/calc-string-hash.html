@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="ハッシュの概念はわかる、けど実際のところどんなもんかよくわかってない…。特に文字列のハッシュ値をどうやって計算してるのかと、ハッシュ値が衝突したときにどうするのかと、バッファのサイズをどうするのか。なのでいくつかの処理系を調べてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="文字列のハッシュ値の計算"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>文字列のハッシュ値の計算 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2008/05/17/calc-string-hash.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>文字列のハッシュ値の計算</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2008-05-17
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/algorithm/">#algorithm</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>ハッシュの概念はわかる、けど実際のところどんなもんかよくわかってない…。特に文字列のハッシュ値をどうやって計算してるのかと、ハッシュ値が衝突したときにどうするのかと、バッファのサイズをどうするのか。なのでいくつかの処理系を調べてみた。</p>
+<span id="more"></span>
+
+<h3 id="Gauche"><a href="#Gauche" class="headerlink" title="Gauche"></a>Gauche</h3><p><a href="http://practical-scheme.net/gauche/index-j.html">Gauche</a></p>
+<p>ソースを<code>hash</code>でgrepしたらそれらしい部分が見つかった。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* General hash function */</span></span><br><span class="line">u_long <span class="title function_">Scm_Hash</span><span class="params">(ScmObj obj)</span></span><br><span class="line">&#123;</span><br><span class="line">    u_long hashval;</span><br><span class="line">    <span class="keyword">if</span> (!SCM_PTRP(obj)) &#123;</span><br><span class="line">        SMALL_INT_HASH(hashval, (u_long)SCM_WORD(obj));</span><br><span class="line">        <span class="keyword">return</span> hashval;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SCM_NUMBERP(obj)) &#123;</span><br><span class="line">        <span class="keyword">return</span> Scm_EqvHash(obj);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SCM_STRINGP(obj)) &#123;</span><br><span class="line">        <span class="keyword">goto</span> string_hash;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">string_hash:</span><br><span class="line">  &#123;</span><br><span class="line">      <span class="type">const</span> <span class="type">char</span> *p;</span><br><span class="line">      <span class="type">const</span> ScmStringBody *b = SCM_STRING_BODY(obj);</span><br><span class="line">      p = SCM_STRING_BODY_START(b);</span><br><span class="line">      STRING_HASH(hashval, p, SCM_STRING_BODY_SIZE(b));</span><br><span class="line">      <span class="keyword">return</span> hashval;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*============================================================</span></span><br><span class="line"><span class="comment"> * Hash functions</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Hash function calculates 32bit hash value from the given object.</span></span><br><span class="line"><span class="comment">   HASH2INDEX macro maps the hash value to the bucket number.</span></span><br><span class="line"><span class="comment">   (On 64 bit architecture, it&#x27;s OK to calculate 64bit, but the</span></span><br><span class="line"><span class="comment">   upper bits are discarded by HASH2INDEX to maintain compatibility. */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* For String</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Usually, &quot;shift+add&quot; scheme for string hasing works well.  But</span></span><br><span class="line"><span class="comment"> * I found that it works well only if you take the lower bits.</span></span><br><span class="line"><span class="comment"> * Unfortunately, we need to take higher bits for multiplicative</span></span><br><span class="line"><span class="comment"> * hashing of integers and addresses.  So, in HASH2INDEX function,</span></span><br><span class="line"><span class="comment"> * I take both lower bits and higher bits.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STRING_HASH(hv, chars, size)                                    \</span></span><br><span class="line"><span class="meta">    do &#123;                                                                \</span></span><br><span class="line"><span class="meta">        int i_ = (size);                                                \</span></span><br><span class="line"><span class="meta">        (hv) = 0;                                                       \</span></span><br><span class="line"><span class="meta">        while (i_-- &gt; 0) &#123;                                              \</span></span><br><span class="line"><span class="meta">            (hv) = ((hv)&lt;&lt;5) - (hv) + ((unsigned char)*chars++);        \</span></span><br><span class="line"><span class="meta">        &#125;                                                               \</span></span><br><span class="line"><span class="meta">    &#125; while (0)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>h = h * 31 + c</code></li>
+<li>どっかで、Javaも <code>31 * h + c</code> だと聞いたような</li>
+<li>コメントに、ハッシュの上位はあまりよくない、ので <code>HASH2INDEX</code> を使う、と書いてある：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* HASH2INDEX</span></span><br><span class="line"><span class="comment">   Map a hash value to bucket number.</span></span><br><span class="line"><span class="comment">   We fix the word length to 32bits, since the multiplication</span></span><br><span class="line"><span class="comment">   constant above is fixed. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH2INDEX(tabsiz, bits, hashval) \</span></span><br><span class="line"><span class="meta">    (((hashval)+((hashval)&gt;&gt;(32-(bits)))) &amp; ((tabsiz) - 1))</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Lua"><a href="#Lua" class="headerlink" title="Lua"></a>Lua</h3><p><a href="http://www.lua.org/">Lua</a></p>
+<p>ltable.cというソースがあるのでそれを見てみる。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">## returns the `main&#x27; position of an element in a table (that is, the index</span></span><br><span class="line"><span class="comment">## of its hash value)</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="type">static</span> Node *<span class="title function_">mainposition</span> <span class="params">(<span class="type">const</span> Table *t, <span class="type">const</span> TValue *key)</span> &#123;</span><br><span class="line">  <span class="keyword">switch</span> (ttype(key)) &#123;</span><br><span class="line">    <span class="keyword">case</span> LUA_TNUMBER:</span><br><span class="line">      <span class="keyword">return</span> hashnum(t, nvalue(key));</span><br><span class="line">    <span class="keyword">case</span> LUA_TSTRING:</span><br><span class="line">      <span class="keyword">return</span> hashstr(t, rawtsvalue(key));</span><br><span class="line">    <span class="keyword">case</span> LUA_TBOOLEAN:</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> hashstr(t,str)  hashpow2(t, (str)-&gt;tsv.hash)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> hashpow2(t,n)      (gnode(t, lmod((n), sizenode(t))))</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> gnode(t,i)        (&amp;(t)-&gt;node[i])</span></span><br></pre></td></tr></table></figure>
+
+<p>ここはすでに計算済みの値を参照してるだけっぽい。<code>(str)-&gt;tsv.hash</code> に代入しているところを探す：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">TString *<span class="title function_">luaS_newlstr</span> <span class="params">(lua_State *L, <span class="type">const</span> <span class="type">char</span> *str, <span class="type">size_t</span> l)</span> &#123;</span><br><span class="line">  GCObject *o;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> h = cast(<span class="type">unsigned</span> <span class="type">int</span>, l);  <span class="comment">/* seed */</span></span><br><span class="line">  <span class="type">size_t</span> step = (l&gt;&gt;<span class="number">5</span>)+<span class="number">1</span>;  <span class="comment">/* if string is too long, don&#x27;t hash all its chars */</span></span><br><span class="line">  <span class="type">size_t</span> l1;</span><br><span class="line">  <span class="keyword">for</span> (l1=l; l1&gt;=step; l1-=step)  <span class="comment">/* compute hash */</span></span><br><span class="line">    h = h ^ ((h&lt;&lt;<span class="number">5</span>)+(h&gt;&gt;<span class="number">2</span>)+cast(<span class="type">unsigned</span> <span class="type">char</span>, str[l1<span class="number">-1</span>]));</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>h = h ^ ((h&lt;&lt;5)+(h&gt;&gt;2) + c)</code></li>
+<li>あまり長い文字列の場合飛ばし飛ばしにするのはいい案かも、この場合は最大31回の計算で済む</li>
+<li>文字列の後ろからなめてくのは、後ろの文字ほどかき混ぜられるのでいい案かも</li>
+</ul>
+<h3 id="Ruby"><a href="#Ruby" class="headerlink" title="Ruby"></a>Ruby</h3><p><a href="http://www.ruby-lang.org/ja/">Ruby</a></p>
+<p><code>intern</code> だろうと目星をつけて、ソースを grep。うへ～たくさん。定義してるところを探すには…。結局のところ、<code>rb_intern3</code> になるらしい。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ID</span><br><span class="line"><span class="title function_">rb_intern3</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *name, <span class="type">long</span> len, rb_encoding *enc)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *m = name;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *e = m + len;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>うわっ、長い！追っかけてみて、結局頭の部分</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (st_lookup(global_symbols.sym_id, str, (<span class="type">st_data_t</span> *)&amp;id))</span><br><span class="line">    <span class="keyword">return</span> id;</span><br></pre></td></tr></table></figure>
+
+<p>でテーブル参照。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span></span><br><span class="line"><span class="title function_">st_lookup</span><span class="params">(st_table *table, <span class="keyword">register</span> <span class="type">st_data_t</span> key, <span class="type">st_data_t</span> *value)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> hash_val, bin_pos;</span><br><span class="line">    <span class="keyword">register</span> st_table_entry *ptr;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (table-&gt;entries_packed) &#123;</span><br><span class="line">        <span class="type">int</span> i;</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; table-&gt;num_entries; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((<span class="type">st_data_t</span>)table-&gt;bins[i*<span class="number">2</span>] == key) &#123;</span><br><span class="line">                <span class="keyword">if</span> (value !=<span class="number">0</span>) *value = (<span class="type">st_data_t</span>)table-&gt;bins[i*<span class="number">2</span>+<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    hash_val = do_hash(key, table);</span><br><span class="line">    FIND_ENTRY(table, ptr, hash_val, bin_pos);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ptr == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (value != <span class="number">0</span>)  *value = ptr-&gt;record;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> do_hash(key,table) (unsigned int)(*(table)-&gt;type-&gt;hash)((key))</span></span><br></pre></td></tr></table></figure>
+
+<p><code>st_table</code>はハッシュ値の計算を外から設定できるようになってるらしい。<code>global_symbols.sym_id</code> はどうやって初期化してるのか。parse.c:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line"><span class="title function_">Init_sym</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    global_symbols.sym_id = st_init_table_with_size(&amp;symhash, <span class="number">1000</span>);</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">st_hash_type</span> <span class="title">symhash</span> =</span> &#123;</span><br><span class="line">    rb_str_hash_cmp,</span><br><span class="line">    rb_str_hash,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span></span><br><span class="line"><span class="title function_">rb_str_hash</span><span class="params">(VALUE str)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> hash((<span class="type">const</span> <span class="type">void</span> *)RSTRING_PTR(str), RSTRING_LEN(str), <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* MurmurHash described in [http://murmurhash.googlepages.com/](http://murmurhash.googlepages.com/) */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span></span><br><span class="line"><span class="title function_">hash</span><span class="params">(<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> * data, <span class="type">int</span> len, <span class="type">unsigned</span> <span class="type">int</span> h)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">unsigned</span> <span class="type">int</span> m = <span class="number">0x7fd652ad</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> r = <span class="number">16</span>;</span><br><span class="line"></span><br><span class="line">    h += <span class="number">0xdeadbeef</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (len &gt;= <span class="number">4</span>) &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> !UNALIGNED_WORD_ACCESS</span></span><br><span class="line">        <span class="type">int</span> align = (VALUE)data &amp; <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">if</span> (align) &#123;</span><br><span class="line">            <span class="type">uint32_t</span> t = <span class="number">0</span>, d = <span class="number">0</span>;</span><br><span class="line">            <span class="type">int</span> sl, sr, pack;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">switch</span> (align) &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> WORDS_BIGENDIAN</span></span><br><span class="line">              <span class="keyword">case</span> <span class="number">1</span>: t |= data[<span class="number">2</span>];</span><br><span class="line">              <span class="keyword">case</span> <span class="number">2</span>: t |= data[<span class="number">1</span>] &lt;&lt; <span class="number">8</span>;</span><br><span class="line">              <span class="keyword">case</span> <span class="number">3</span>: t |= data[<span class="number">0</span>] &lt;&lt; <span class="number">16</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">              <span class="keyword">case</span> <span class="number">1</span>: t |= data[<span class="number">2</span>] &lt;&lt; <span class="number">16</span>;</span><br><span class="line">              <span class="keyword">case</span> <span class="number">2</span>: t |= data[<span class="number">1</span>] &lt;&lt; <span class="number">8</span>;</span><br><span class="line">              <span class="keyword">case</span> <span class="number">3</span>: t |= data[<span class="number">0</span>];</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> WORDS_BIGENDIAN</span></span><br><span class="line">            t &gt;&gt;= (<span class="number">8</span> * align) - <span class="number">8</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">            t &lt;&lt;= (<span class="number">8</span> * align);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">            data += <span class="number">4</span>-align;</span><br><span class="line">            len -= <span class="number">4</span>-align;</span><br><span class="line"></span><br><span class="line">            sl = <span class="number">8</span> * (<span class="number">4</span>-align);</span><br><span class="line">            sr = <span class="number">8</span> * align;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (len &gt;= <span class="number">4</span>) &#123;</span><br><span class="line">                d = *(<span class="type">uint32_t</span> *)data;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> WORDS_BIGENDIAN</span></span><br><span class="line">                t = (t &lt;&lt; sr) | (d &gt;&gt; sl);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">                t = (t &gt;&gt; sr) | (d &lt;&lt; sl);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">                h += t;</span><br><span class="line">                h *= m;</span><br><span class="line">                h ^= h &gt;&gt; r;</span><br><span class="line">                t = d;</span><br><span class="line"></span><br><span class="line">                data += <span class="number">4</span>;</span><br><span class="line">                len -= <span class="number">4</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            pack = len &lt; align ? len : align;</span><br><span class="line">            d = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">switch</span> (pack) &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> WORDS_BIGENDIAN</span></span><br><span class="line">              <span class="keyword">case</span> <span class="number">3</span>: d |= data[<span class="number">2</span>] &lt;&lt; <span class="number">8</span>;</span><br><span class="line">              <span class="keyword">case</span> <span class="number">2</span>: d |= data[<span class="number">1</span>] &lt;&lt; <span class="number">16</span>;</span><br><span class="line">              <span class="keyword">case</span> <span class="number">1</span>: d |= data[<span class="number">0</span>] &lt;&lt; <span class="number">24</span>;</span><br><span class="line">              <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">                h += (t &lt;&lt; sr) | (d &gt;&gt; sl);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">              <span class="keyword">case</span> <span class="number">3</span>: d |= data[<span class="number">2</span>] &lt;&lt; <span class="number">16</span>;</span><br><span class="line">              <span class="keyword">case</span> <span class="number">2</span>: d |= data[<span class="number">1</span>] &lt;&lt; <span class="number">8</span>;</span><br><span class="line">              <span class="keyword">case</span> <span class="number">1</span>: d |= data[<span class="number">0</span>];</span><br><span class="line">              <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">                h += (t &gt;&gt; sr) | (d &lt;&lt; sl);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">                h *= m;</span><br><span class="line">                h ^= h &gt;&gt; r;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            data += pack;</span><br><span class="line">            len -= pack;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">do</span> &#123;</span><br><span class="line">                h += *(<span class="type">uint32_t</span> *)data;</span><br><span class="line">                h *= m;</span><br><span class="line">                h ^= h &gt;&gt; r;</span><br><span class="line"></span><br><span class="line">                data += <span class="number">4</span>;</span><br><span class="line">                len -= <span class="number">4</span>;</span><br><span class="line">            &#125; <span class="keyword">while</span> (len &gt;= <span class="number">4</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span>(len) &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> WORDS_BIGENDIAN</span></span><br><span class="line">      <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">        h += data[<span class="number">2</span>] &lt;&lt; <span class="number">8</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        h += data[<span class="number">1</span>] &lt;&lt; <span class="number">16</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        h += data[<span class="number">0</span>] &lt;&lt; <span class="number">24</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">      <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">        h += data[<span class="number">2</span>] &lt;&lt; <span class="number">16</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        h += data[<span class="number">1</span>] &lt;&lt; <span class="number">8</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        h += data[<span class="number">0</span>];</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        h *= m;</span><br><span class="line">        h ^= h &gt;&gt; r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    h *= m;</span><br><span class="line">    h ^= h &gt;&gt; <span class="number">10</span>;</span><br><span class="line">    h *= m;</span><br><span class="line">    h ^= h &gt;&gt; <span class="number">17</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="http://murmurhash.googlepages.com/">MurmurHash</a></li>
+</ul>
+<p>とりあえずハッシュ値の計算はこんな感じ。</p>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                            <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2008/09/01/shortest_path_problem.html"><span class="glyphicon glyphicon-chevron-left"></span>次：ダイクストラ法</a></li>
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2008/03/21/easy-dsl.html">前：Rubyで簡単DSL<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2019/03/23/binssearch.html" title="整列済み配列への挿入位置を二分探索" rel="bookmark">整列済み配列への挿入位置を二分探索</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/03/12/fit-curve.html" title="折れ線にフィットするベジェ曲線を求める方法" rel="bookmark">折れ線にフィットするベジェ曲線を求める方法</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

@@ -31,9 +31,9 @@
     
     
     
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
-    
     <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
+    
+    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   
@@ -63,7 +63,7 @@
     <link href="https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html</id>
     <published>2025-11-09T23:06:07.000Z</published>
-    <updated>2025-12-06T04:24:39.510Z</updated>
+    <updated>2025-12-06T08:15:06.987Z</updated>
     
     
     <summary type="html">&lt;p&gt;&amp;nbsp;&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光を考慮&lt;/a&gt;に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。&lt;/p&gt;
@@ -104,7 +104,7 @@
     <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
     <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2025-12-06T04:24:39.510Z</updated>
+    <updated>2025-12-06T08:15:06.986Z</updated>
     
     
     <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。

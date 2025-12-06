@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="超前衛的ゲームプログラミング方法論Ⅱ - 純粋関数型雑記帳に習って、遅延リストでキーの状態をリストとして作成してそれを処理するテストをHSDLを使って書いてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="【Haskell】unsafeInterleaveIOでゲームループ"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>【Haskell】unsafeInterleaveIOでゲームループ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2007/09/28/unsafeinterleaveio-hsdl.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>【Haskell】unsafeInterleaveIOでゲームループ</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2007-09-28
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/haskell/">#haskell</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="http://d.hatena.ne.jp/tanakh/20040803#p1">超前衛的ゲームプログラミング方法論Ⅱ - 純粋関数型雑記帳</a>に習って、遅延リストでキーの状態をリストとして作成してそれを処理するテストをHSDLを使って書いてみた。</p>
+<span id="more"></span>
+
+<p>きれいな処理してるだろ…嘘みたいだろ…<a href="http://haskell.org/ghc/docs/latest/html/libraries/base/Data-IORef.html">IORef</a> を使わずに状態処理してるんだぜ…それ</p>
+<figure class="highlight hs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span> Main <span class="keyword">where</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Multimedia.SDL</span><br><span class="line"><span class="keyword">import</span> System.IO.Unsafe (<span class="title">unsafeInterleaveIO</span>)</span><br><span class="line"><span class="keyword">import</span> Control.Concurrent (<span class="title">threadDelay</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">wndTitle</span> = <span class="string">&quot;delayed-stream test&quot;</span></span><br><span class="line"><span class="title">wndWidth</span> = <span class="number">256</span></span><br><span class="line"><span class="title">wndHeight</span> = <span class="number">240</span></span><br><span class="line"><span class="title">wndBpp</span> = <span class="number">32</span></span><br><span class="line"></span><br><span class="line"><span class="title">frameRate</span> = <span class="number">60</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 描画コマンド</span></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="type">Scr</span> = <span class="type">Surface</span> -&gt; <span class="type">IO</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- エントリ</span></span><br><span class="line"><span class="title">main</span> :: <span class="type">IO</span> ()</span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    sdlInit [<span class="type">VIDEO</span>]</span><br><span class="line">    setCaption wndTitle wndTitle</span><br><span class="line">    sur &lt;- setVideoMode wndWidth wndHeight wndBpp [<span class="type">HWSURFACE</span>, <span class="type">DOUBLEBUF</span>, <span class="type">ANYFORMAT</span>]</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">        strm &lt;- delayedStream (<span class="number">1000000</span> `div` frameRate) fetch</span><br><span class="line">        <span class="keyword">let</span> scrs = process $ map snd $ takeWhile notQuit strm</span><br><span class="line">        mapM_ (\scr -&gt; scr sur) scrs</span><br><span class="line">    sdlQuit</span><br><span class="line"></span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        <span class="comment">-- 環境のフェッチ</span></span><br><span class="line">        fetch = <span class="keyword">do</span></span><br><span class="line">            quit &lt;- checkSDLEvent</span><br><span class="line">            ks &lt;- getKeyState</span><br><span class="line">            return (quit, ks)</span><br><span class="line">        notQuit = not . fst</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 遅延ストリーム</span></span><br><span class="line"><span class="comment">-- microsec 秒ごとに func を実行したアクションの結果をリストとして返す</span></span><br><span class="line"><span class="title">delayedStream</span> :: <span class="type">Int</span> -&gt; <span class="type">IO</span> a -&gt; <span class="type">IO</span> [a]</span><br><span class="line"><span class="title">delayedStream</span> microsec func = unsafeInterleaveIO $ <span class="keyword">do</span></span><br><span class="line">    threadDelay microsec</span><br><span class="line">    x &lt;- func</span><br><span class="line">    xs &lt;- delayedStream microsec func</span><br><span class="line">    return $ x:xs</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SDL のイベントを処理</span></span><br><span class="line"><span class="comment">-- 終了イベントがきたら True を返す</span></span><br><span class="line"><span class="title">checkSDLEvent</span> = <span class="keyword">do</span></span><br><span class="line">    ev &lt;- pollEvent</span><br><span class="line">    <span class="keyword">case</span> ev <span class="keyword">of</span></span><br><span class="line">        <span class="type">Just</span> <span class="type">QuitEvent</span>    -&gt; return <span class="type">True</span></span><br><span class="line">        <span class="type">Just</span> (<span class="type">KeyboardEvent</span> &#123; kbPress = <span class="type">True</span>, kbKeysym = <span class="type">Keysym</span> &#123; ksSym = ks, ksMod = km &#125; &#125;)</span><br><span class="line">            | ks == <span class="type">SDLK_ESCAPE</span> -&gt; return <span class="type">True</span></span><br><span class="line">            | ks == <span class="type">SDLK_F4</span> &amp;&amp; (<span class="type">KMOD_LALT</span> `elem` km || <span class="type">KMOD_RALT</span> `elem` km) -&gt; return <span class="type">True</span></span><br><span class="line">        <span class="type">Nothing</span>    -&gt; return <span class="type">False</span></span><br><span class="line">        _        -&gt; checkSDLEvent</span><br><span class="line"></span><br><span class="line"><span class="comment">----</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 状態</span></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">GameState</span> = <span class="type">GameState</span> &#123; <span class="title">x</span> :: <span class="type">Int</span>, <span class="title">y</span> :: <span class="type">Int</span>, <span class="title">cnt</span> :: <span class="type">Int</span> &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 初期状態</span></span><br><span class="line"><span class="title">initialState</span> = <span class="type">GameState</span> &#123; x = <span class="number">100</span>, y = <span class="number">100</span>, cnt = <span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- キー入力を処理して描画コマンドを返す</span></span><br><span class="line"><span class="title">process</span> :: [[<span class="type">SDLKey</span>]] -&gt; [<span class="type">Scr</span>]</span><br><span class="line"><span class="title">process</span> = loop initialState</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        loop gs [] = []</span><br><span class="line">        loop gs (ks:kss) = scr&#x27; : loop gs&#x27; kss</span><br><span class="line">            <span class="keyword">where</span> (scr&#x27;, gs&#x27;) = update ks gs</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 更新</span></span><br><span class="line"><span class="title">update</span> :: [<span class="type">SDLKey</span>] -&gt; <span class="type">GameState</span> -&gt; (<span class="type">Scr</span>, <span class="type">GameState</span>)</span><br><span class="line"><span class="title">update</span> ks gs = (render gs&#x27;, gs&#x27;)</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        gs&#x27; = <span class="type">GameState</span> &#123; x = x&#x27;, y = y&#x27;, cnt = cnt&#x27; &#125;</span><br><span class="line">        x&#x27; = x gs - (pressed <span class="type">SDLK_LEFT</span>) + (pressed <span class="type">SDLK_RIGHT</span>)</span><br><span class="line">        y&#x27; = y gs - (pressed <span class="type">SDLK_UP</span>) + (pressed <span class="type">SDLK_DOWN</span>)</span><br><span class="line">        cnt&#x27; = cnt gs + <span class="number">1</span></span><br><span class="line">        pressed k = <span class="keyword">if</span> k `elem` ks <span class="keyword">then</span> <span class="number">1</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 描画</span></span><br><span class="line"><span class="title">render</span> :: <span class="type">GameState</span> -&gt; <span class="type">Scr</span></span><br><span class="line"><span class="title">render</span> gs sur = <span class="keyword">do</span></span><br><span class="line">    clearBG</span><br><span class="line">    renderPlayer</span><br><span class="line">    flipSurface sur</span><br><span class="line">    return ()</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        clearBG = fillRect sur <span class="type">Nothing</span> (fromInteger $ toInteger (cnt gs))</span><br><span class="line">        renderPlayer = fillRect sur (<span class="type">Just</span> $ <span class="type">Rect</span> (x gs) (y gs) <span class="number">16</span> <span class="number">16</span>) <span class="number">0xff0000</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>アプリ側は IO モナドなし！</li>
+<li>描画周りも<a href="http://d.hatena.ne.jp/tanakh/20040804#p1">超前衛的ゲームプログラミング方法論Ⅲ</a>を参考に、描画コマンドを返すようにして処理</li>
+<li>処理の重さにかかわらず <a href="http://haskell.org/ghc/docs/latest/html/libraries/base/Control-Concurrent.html#v%3AthreadDelay"><code>threadDelay</code></a> で一定時間時間待ちしてるだけなので、そこはもうすこしうまくやる必要がある</li>
+<li>アプリの終了までを処理するのに、遅延リストに対して<code>takeWhile notQuit strm</code>とできるのがすげー</li>
+<li>キーのリストを処理する側での終端チェック <code>(loop gs ［］ = ［］)</code> がメンドイ。これを回避するために、<code>main</code> の中の <code>do</code> を <a href="http://haskell.org/ghc/docs/latest/html/libraries/base/Control-Exception.html#6"><code>try</code></a> で囲って例外をキャッチしてしまえば捕捉できる。しかし開発中には他の実行時エラーも捕捉してしまうという諸刃の剣。</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                            <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2007/11/25/packed-struct.html"><span class="glyphicon glyphicon-chevron-left"></span>次：【Ruby】PackedStruct</a></li>
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2007/08/18/unsafeInterleaveIO.html">前：【Haskell】unsafeInterleaveIO<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/02/22/dijkstra-haskell.html" title="【Haskell】ダイクストラ法を実装する" rel="bookmark">【Haskell】ダイクストラ法を実装する</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2013/03/08/ghc-mod.html" title="Haskellの型注釈を自動挿入" rel="bookmark">Haskellの型注釈を自動挿入</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/07/10/ghc-mod-emacs.html" title="emacsでghc-modを使う" rel="bookmark">emacsでghc-modを使う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/10/02/hs-gameobj.html" title="【Haskell】オブジェクトリスト" rel="bookmark">【Haskell】オブジェクトリスト</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/09/21/hs-tetris.html" title="Haskell で○トリス作った" rel="bookmark">Haskell で○トリス作った</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li><li class="recent_post"><a href="/blog/2025/07/24/pt-direct-lighting.html">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
