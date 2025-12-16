@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-12-01T01:34:36.506Z</updated>
+  <updated>2025-12-16T04:10:48.641Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ライトトレーシングが完全に一致した（拡散反射のみ）</title>
+    <link href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
+    <id>https://tyfkda.github.io/blog/2025/12/16/light-tracing.html</id>
+    <published>2025-12-16T10:00:00.000Z</published>
+    <updated>2025-12-16T04:10:48.641Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光の計算&lt;/a&gt;をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
+ただ光源が覆われた間接照明のようなシーンではほぼ失敗して無効化されてしまうという課題がある。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
+    
+  </entry>
   
   <entry>
     <title>【C++】仮想継承はどう実現されるか？</title>
@@ -31,9 +49,9 @@
     
     
     
-    <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
-    
     <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
+    
+    <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
     
   </entry>
   
@@ -63,7 +81,7 @@
     <link href="https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html</id>
     <published>2025-11-09T23:06:07.000Z</published>
-    <updated>2025-12-06T08:15:06.987Z</updated>
+    <updated>2025-12-08T07:29:06.199Z</updated>
     
     
     <summary type="html">&lt;p&gt;&amp;nbsp;&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光を考慮&lt;/a&gt;に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。&lt;/p&gt;
@@ -104,7 +122,7 @@
     <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
     <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2025-12-06T08:15:06.986Z</updated>
+    <updated>2025-12-08T07:29:06.198Z</updated>
     
     
     <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
@@ -195,64 +213,6 @@
     
     
     <category term="javascript" scheme="https://tyfkda.github.io/tags/javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Mach-Oを力任せに解析＆再現、Macの実行ファイルを自作しちゃる！</title>
-    <link href="https://tyfkda.github.io/blog/2025/03/08/macho-exe.html"/>
-    <id>https://tyfkda.github.io/blog/2025/03/08/macho-exe.html</id>
-    <published>2025-03-08T03:00:00.000Z</published>
-    <updated>2025-12-01T01:13:20.148Z</updated>
-    
-    
-    <summary type="html">&lt;style&gt;
-.code-container {
-  /* height: 600px;
-  overflow-y: scroll; */
-  overflow-y: hidden;
-  overflow-x: scroll;
-  border: 1px solid black;
-  border-radius: 8px;
-}
-.gist ::selection {
-  color: white !important;
-  background-color: green !important;
-}
-
-.gist table tr {
-  background-color: rgba(220,220,220,0.2) !important;
-}
-.blob-num {
-  display: none;
-}
-.gist-meta {
-  display: none;
-}
-.gist-file {
-  border-bottom: none !important;
-}
-table.highlight tr td,table.highlight tr td span {
-  font-size: 15px !important;
-  font-family: &quot;SFMono-Regular&quot;,Consolas,&quot;Liberation Mono&quot;,Menlo,Courier,monospace !important;
-}
-.gist tr:first-child td {
-  padding-top: 12px !important;
-}
-.gist tr:last-child td {
-  padding-bottom: 12px !important;
-}
-&lt;/style&gt;
-
-&lt;p&gt;自作したリンカーはELFは扱えるがMacOSで使われるMach-O形式には対応できてない。
-Mach-Oの実行ファイルも自分で生成できるようになればリンカーにも適用できて嬉しい。
-なので調べてみようという試み。&lt;/p&gt;
-&lt;p&gt;環境：Apple M1(aarch64), macOS Sequoia 15.3.1, Apple clang version 16.0.0&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="binary" scheme="https://tyfkda.github.io/tags/binary/"/>
     
   </entry>
   

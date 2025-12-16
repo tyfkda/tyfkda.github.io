@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="以前パストレーサーで直接光の計算をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
+ただ光源が覆われた間接照明のようなシーンではほぼ失敗して無効化されてしまうという課題がある。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ライトトレーシングが完全に一致した（拡散反射のみ）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ライトトレーシングが完全に一致した（拡散反射のみ） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ライトトレーシングが完全に一致した（拡散反射のみ）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2025-12-16
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/graphics/">#graphics</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>以前<a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）">パストレーサーで直接光の計算</a>をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
+ただ光源が覆われた間接照明のようなシーンではほぼ失敗して無効化されてしまうという課題がある。</p>
+<span id="more"></span>
+
+<p>そういう場合のために双方向パストレーシングという手法があるが、いきなり実装するのは難しいのでまず<strong>ライトトレーシング</strong>にチャレンジしてみた。</p>
+<div style="text-align:center">
+<img src="/assets/light_tracer.webp" alt="ライトトレーサー" style="width:90%" />
+</div>
+
+<p>640x480, 1,000,000,000サンプル, 3分56秒, M1MacbookAir (8コア)</p>
+<h2 id="ライトトレーシングとは？"><a href="#ライトトレーシングとは？" class="headerlink" title="ライトトレーシングとは？"></a>ライトトレーシングとは？</h2><p>レイトレーシングやパストレーシング（Path Tracing、以降パストレ）ではカメラ（視点）からレイを飛ばす。
+実際の物理挙動としては追跡方向が逆なんだけど、そうすることで必ず視界に入る影響のみを追跡するので効率的に計算できるという利点がある。</p>
+<p>ライトトレーシング（Light Tracing、以降ライトレ）では実世界と同様に光源からレイを飛ばしてトレースして、カメラへの影響を計算する。
+カメラに映らない領域を追跡してしまい無駄になる可能性が高いが、光源が覆われていて視点側からは偶然に到達するのが難しいようなシーンの場合に効果があることもあるだろう。</p>
+<ul>
+<li>コースティクスの追跡が得意、という利点もある</li>
+</ul>
+<h3 id="カメラへの影響をどうやって加えるか？"><a href="#カメラへの影響をどうやって加えるか？" class="headerlink" title="カメラへの影響をどうやって加えるか？"></a>カメラへの影響をどうやって加えるか？</h3><p>「カメラに実体を持たせて、レイが交差判定でヒットしたら影響を考慮する」、というのが実世界に即したナイーブな計算方法だと思う。
+ただそれだと起きる確率が低いから収束に時間がかかりそう。
+双方向パストレへの準備も考えてパスを強制的に特定の方向につなげる場合の計算をさせたいので、
+パストレでの直接光計算と似た感じでカメラに向けて直接レイを飛ばすようにする。</p>
+<p>交点からカメラに向かってレイを飛ばして、遮られなければ第一段階突破。
+そして仮想的なカメラの投影面（イメージセンサー）を考えて、レイがどのピクセル相当位置に当たるかを求めてそれが有効であれば影響を加える。</p>
+<ul>
+<li>シーン内にカメラの実体はなく、レイとの直接の交差判定は行わない</li>
+<li>カメラは理想化した<strong>ピンホールカメラ</strong>で、大きさのない一点で表す（レンズはなく、従って屈折とか焦点もなし）</li>
+</ul>
+<p>パスをカメラ方向に結ぶ際に、直接光の計算と同じように交点の半球状での向きに対する確率密度を考慮する必要があるかと思ったが、それはなくていいっぽい？</p>
+<ul>
+<li>理由を考えるに、パストレの場合は一方向のみのトレースを（逆向きに）していて通常のトレースと別に光源方向を調べてしまうと二方向からの影響になってしまうのを調整する必要があるのに対し、
+ライトレでは光源から発した光の経路をトレースしてるので分岐させても反射特性の係数を掛けて弱まっているので問題ない？</li>
+</ul>
+<h3 id="積分値の求め方"><a href="#積分値の求め方" class="headerlink" title="積分値の求め方"></a>積分値の求め方</h3><p>パストレでは各ピクセルの色を求めるために何回もレイを撃って平均を計算している。
+これはモンテカルロ積分による数値積分を行っているということになる。
+期待値＝積分結果を求めるためにサンプル数で除算する。</p>
+<p>ライトレではどうやるか、ピクセルごとのレイのヒット回数をカウントしてそれで平均するのかと思ったがどうやらそうではないらしい。
+パストレではサンプリング処理がピクセルごとに行われるのに対して、ライトレでは光源からレイを撃つだけなのでピクセルごとにはならず、イメージセンサー全体への影響という期待値を計算していることになるっぽい。
+なので各ピクセルすべてを、撃ったレイの数で除算する。</p>
+<ul>
+<li>直感的には割る数が大きくなりすぎるんじゃない？と思うんだけど、次の「カメラ内部の係数」で釣り合いが取れる</li>
+<li>パストレではサンプル数がピクセルごと(Sample Per Pixel, spp)なのに対し、
+ライトレでは光源から撃つ全体のレイの数、ということからも明らかか（わかってみれば）</li>
+</ul>
+<h3 id="カメラ内部の係数"><a href="#カメラ内部の係数" class="headerlink" title="カメラ内部の係数"></a>カメラ内部の係数</h3><p>パストレの直接光の計算では光源の発する放射輝度に対して距離の二乗で除算することで影響を求めていた。
+ライトレも同じ感じかと思ったらどうやらそれだけではダメですごく苦労した。
+どうやら確率密度の変数変換を行う必要があるらしい。</p>
+<p>なぜかというとカメラの各センサーがどのくらい受光するかを求める必要があって、
+でそれにはカメラに入射した方向ではなく投影面の二次元平面上での積分に変換する必要があるとかなんとか
+（隠されたプライマリレイのpdfを考慮する必要があるらしい→付録）。</p>
+<ul>
+<li>そういう説明はなかなか解説されてないのとパストレでは存在しないので、そんな必要があるということ自体を認識するのに非常に苦労した…</li>
+</ul>
+<h3 id="反射面ごとの係数"><a href="#反射面ごとの係数" class="headerlink" title="反射面ごとの係数"></a>反射面ごとの係数</h3><p>光源のトレースをカメラにつなく際には、光の入射方向とカメラへの方向から材質の反射特性(BRDF)を計算して掛けてやればよいはず？
+（でもうまくいかず。拡散反射ではいいが鏡面反射や透過材質ではなんかおかしい…）</p>
+<h4 id="拡散反射"><a href="#拡散反射" class="headerlink" title="拡散反射"></a>拡散反射</h4><p>ランバート反射のBRDFは入射・出射方向に関わらずあらゆる方向に対して\(1 &#x2F; \pi\)となる。
+その計算方法でパストレの計算結果とたぶん完全に一致した（目測）。</p>
+<h4 id="鏡面反射"><a href="#鏡面反射" class="headerlink" title="鏡面反射"></a>鏡面反射</h4><p>smallptでは鏡面反射や屈折材質が完全に滑らかで、反射によるブレがない像が作られる。
+ライトレでカメラに接続する場合には完全に滑らかだとその方向になる可能性が<strong>全く</strong>ないので、影響を与えられず真っ黒になってしまう。
+なのでブレを含む材質にする必要がある。</p>
+<p>ちょっと手抜きでBlinn-Phong：ハーフベクトルのべき乗を使ってみたが、どうにも計算が合わなかった。
+拡散反射では必要なかった、法線とカメラベクトルの内積値と、法線とライトベクトルの内積値で除算する必要があり？
+またそれでも<code>shininess</code>を下げて粗い表面にすると球の縁が明るくなってしまう。</p>
+<p>行き詰まったので代わりに<a href="/blog/2025/06/06/pbr-material-pathtracer.html" title="PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)">PBRマテリアル</a>でのメタリックに変更してみたところ、それなりにそれっぽい結果になった。
+ただ遮蔽項<code>G</code>はカメラ（出射）方向とライト（入射）方向の両方向で計算すると滑らかな場合に暗くなりすぎ、カメラ方向だけにすると粗い場合におかしくなる。
+まったく適当だがブレンドさせるようにしてみた。</p>
+<h4 id="透過材質"><a href="#透過材質" class="headerlink" title="透過材質"></a>透過材質</h4><p>透過材質の場合に扱われるフレネル反射や全反射は鏡面反射と同じ処理を行うとして、屈折の場合を計算したいがこれもよくわからなかった。
+透過材質の場合のBRDF(BSDF)で簡易的に使えるモデル？がよくわからなかった。
+Blinn-Phongでブラそうにも反射じゃないからハーフベクトルが求められない。
+適当に屈折後のベクトルの法線方向以外を反転させた方向から入射したものが反射した、と考えてみることにした。</p>
+<p>BRDF(BSDF)を掛ける必要があると思うが
+Blinn-PhongのBRDFといわれるものを使ってもうまくいかず。
+なぜか修正PhongのBRDFを用いたところ、ちょっと暗いがそれほど不自然にならなくなったので、それにしてみた（さらに結果を適当に&#x2F;2している）。
+この辺まったく理論的に則ってない…。</p>
+<h2 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h2><p>例によってsmallptを参考に、ライトトレーシング方式に変更：<a href="https://gist.github.com/tyfkda/b14d1e00dd794738b1dde77125dedad2">gist</a></p>
+<div style="height:80vh; overflow:scroll; border:2px solid lightgray; border-radius:4px">
+<script src="https://gist.github.com/tyfkda/b14d1e00dd794738b1dde77125dedad2.js"></script>
+</div>
+
+<ul>
+<li>レイの追跡：<code>main</code>関数から呼び出す<code>shot_light</code>関数内でループ処理</li>
+<li><code>connect_to_camera</code>で交点からカメラに接続し、スクリーン（センサー）に蓄積</li>
+<li>光源からのレイの飛ばし方：光源の球体表面から半球状にコサイン分布<ul>
+<li>開始点からもカメラに接続して、光源自体が明るく見えるようにする</li>
+</ul>
+</li>
+<li>鏡面反射や透過材質はレイのトレース時は完全に滑らかな反射・屈折で、カメラに接続する際だけブレを入れている</li>
+<li>smallptの変更が必要な項目：<ul>
+<li>カメラが実際には壁の奥にいてプライマリレイを飛ばす際に補正しているという問題があるので、<code>Frnt</code>の壁の<code>+170</code>を<code>+296</code>にする</li>
+<li>光源が天井を貫く巨大な球になっていて都合が悪いので、smallptのexplit版と同様に室内に収まる小さな球に変更する</li>
+<li><code>Vec</code>クラスに<code>length</code>メソッドを追加、<code>norm</code>メソッドを副作用なしに、<code>cross</code>メソッドを<code>const</code>に</li>
+</ul>
+</li>
+<li>OpenMPでの並列化：<ul>
+<li>当初出力画像用のバッファ１画面分だけで各スレッドで結果を書き込む部分に<code>#pragma omp critical</code>を指定して競合を回避させたが、それだとシングルスレッドより遅かった。スレッドごとにバッファを分けて最後に合成することでマルチスレッドの恩恵を受けられた</li>
+<li><code>#pragma omp parallel</code>はループ１回ごとにタスクキューになって空いたスレッドから順に取り出して処理するものかと想像していたが、どうも単に回数をスレッド数で分割して処理するっぽい？</li>
+</ul>
+</li>
+</ul>
+<h2 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h2><ul>
+<li>ライトレの実際の実装や解説がなかなかなくて（あっても理解できなくて）苦労した…</li>
+<li>カメラへの接続はBRDFを掛けるんじゃないのか？計算方法が結局完全には理解できず…ここは未解決の課題として残った</li>
+<li>パストレで光源を見にいくことをNext Event Estimation(NEE)と呼んだが、ライトレでカメラを見にいくこともNEEというらしい</li>
+<li>しかしこう、ライトレはパストレと同じ問題（レンダリング方程式）に対する逆のアプローチなので当然とはいえ、ちゃんと計算結果が同じ結果に収束する（であろう）ことが確認できたのには感心した！</li>
+</ul>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li><a href="https://www.kevinbeason.com/smallpt/">smallpt</a> 毎度ベースのパストレーサー</li>
+<li><a href="https://kagamin.net/hole/edubpt/index.htm">edubpt</a>：<a href="https://github.com/githole/edubpt">ソース</a>、<a href="https://speakerdeck.com/hole/edubpt">解説</a>あり<ul>
+<li>ライトトレーシングの実装もあるが双方向パストレの一部としての実装なので、理解が追いついてない<ul>
+<li>カメラを実体として扱っていて、NEEはしてない？</li>
+<li>薄レンズも組み込んであり、さらに理解が追いつかない</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://agraphicsguynotes.com/posts/the_missing_primary_ray_pdf_in_path_tracing/">The Missing Primary Ray PDF in Path Tracing · A Graphics Guy’s Note</a> パストレーサーではインポータンス関数の係数でプライマリレイのpdfが隠されているが、ライトトレーサーではそうはいかないという解説</li>
+<li>PBRT book: <a href="https://www.pbr-book.org/3ed-2018/Light_Transport_III_Bidirectional_Methods/The_Path-Space_Measurement_Equation#SamplingCameras">16.1.1 Sampling Cameras</a> 対応する箇所はここか？これに当たるしかないのだが理解できない</li>
+<li>スライドpdf: <a href="https://graphics.cg.uni-saarland.de/courses/ris-2024/slides/10-Bidirectional_path_tracing.pdf">Bidirectional path tracing</a>, Saarland University<ul>
+<li>“Jacobian for a pinhole camera”, “Integral formulation for a light tracer”の説明スライドあり</li>
+</ul>
+</li>
+</ul>
+<h4 id="BRDF"><a href="#BRDF" class="headerlink" title="BRDF"></a>BRDF</h4><ul>
+<li><a href="https://zenn.dev/mebiusbox/books/619c81d2fbeafd/viewer/014e76#%F0%9F%93%8C-phong-%E3%83%A2%E3%83%87%E3%83%AB">鏡面BRDF｜基礎からはじめる物理ベースレンダリング</a><ul>
+<li><a href="https://www.farbrausch.de/~fg/stuff/phong.pdf">Phong Normalization Factor derivation</a> Blinn-Phongの正規化係数<ul>
+<li>定積分を確認した：<a href="https://ja.wolframalpha.com/input?i=%E5%AE%9A%E7%A9%8D%E5%88%86&assumption=%7B%22F%22,+%22Integral%22,+%22rangeend%22%7D+-%3E%22pi/2%22&assumption=%7B%22C%22,+%22%E5%AE%9A%E7%A9%8D%E5%88%86%22%7D+-%3E+%7B%22Calculator%22,+%22dflt%22%7D&assumption=%7B%22F%22,+%22Integral%22,+%22integrand%22%7D+-%3E%222pi(cos(t/2))%5En+cos(t)+sin(t)%22&assumption=%7B%22F%22,+%22Integral%22,+%22variable%22%7D+-%3E%22t%22&assumption=%7B%22F%22,+%22Integral%22,+%22rangestart%22%7D+-%3E%220%22">WolframAlpha</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>物理ベースレンダリングの基礎｜基礎からはじめる物理ベースレンダリング：Chapter 01
+物理ベースレンダリングの基礎：<a href="https://zenn.dev/mebiusbox/books/619c81d2fbeafd/viewer/239ee2#%F0%9F%93%8C-%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%83%95%E3%82%A1%E3%82%BB%E3%83%83%E3%83%88-brdf">📌 マイクロファセット BRDF</a> GGX含むマイクロファセット鏡面反射のBRDF</li>
+</ul>
+<h2 id="付録"><a href="#付録" class="headerlink" title="付録"></a>付録</h2><h3 id="カメラ内部の確率密度"><a href="#カメラ内部の確率密度" class="headerlink" title="カメラ内部の確率密度"></a>カメラ内部の確率密度</h3><p><a href="https://agraphicsguynotes.com/posts/the_missing_primary_ray_pdf_in_path_tracing/">The Missing Primary Ray PDF in Path Tracing · A Graphics Guy’s Note</a>のPrimary Ray PDF節より：</p>
+<p>出力する画像の縦幅を\(h\)、縦の視野角を\(fov\)とすると、仮想的な投影面への距離\(d\)は、</p>
+<p>$$
+\begin{align*}
+d : \frac{h}{2} &amp;&#x3D; \cos\left\lparen\frac{fov}{2}\right\rparen : \sin\left\lparen\frac{fov}{2}\right\rparen \\
+    d &amp;&#x3D; \frac{h}{2 \tan\left\lparen\frac{fov}{2}\right\rparen}
+\end{align*}
+$$</p>
+<p>任意のピクセル内の位置とカメラの視線方向との角度を\(\theta\)とすると、斜辺の距離\(r\)は</p>
+<p>$$
+r &#x3D; \frac{d}{\cos \theta}
+$$</p>
+<p>各ピクセルの面積は1なのでピクセル上のサンプリング点の面積も1、なのでサンプリングの立体角のpdfは</p>
+<p>$$
+\begin{align*}
+pdf_w &amp;&#x3D; \frac{r^2}{\cos \theta} \\
+      &amp;&#x3D; \frac{d^2}{\cos^3 \theta} \\
+      &amp;&#x3D; \left\lbrace \frac{h}{2 tan\left\lparen\frac{fov}{2}\right\rparen} \right\rbrace^2 \frac{1}{\cos^3 \theta}
+\end{align*}
+$$</p>
+<ul>
+<li>前半の項は画像サイズと視野角が決まれば固定なので、あらかじめ（または後で）処理できる</li>
+<li>参照サイトによれば最終的にはcosの3乗じゃなくて4乗らしいがもう１つはなんの分かわからず…</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">前：【C++】仮想継承はどう実現されるか？<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射のみ）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
