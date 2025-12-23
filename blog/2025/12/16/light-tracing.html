@@ -250,7 +250,7 @@
 <p>交点からカメラに向かってレイを飛ばして、遮られなければ第一段階突破。
 そして仮想的なカメラの投影面（イメージセンサー）を考えて、レイがどのピクセル相当位置に当たるかを求めてそれが有効であれば影響を加える。</p>
 <ul>
-<li>シーン内にカメラの実体はなく、レイとの直接の交差判定は行わない</li>
+<li>シーン内にカメラの実体はなく、トレース時にはレイとの直接の交差判定は行わない</li>
 <li>カメラは理想化した<strong>ピンホールカメラ</strong>で、大きさのない一点で表す（レンズはなく、従って屈折とか焦点もなし）</li>
 </ul>
 <p>パスをカメラ方向に結ぶ際に、直接光の計算と同じように交点の半球状での向きに対する確率密度を考慮する必要があるかと思ったが、それはなくていいっぽい？</p>
@@ -262,7 +262,7 @@
 これはモンテカルロ積分による数値積分を行っているということになる。
 期待値＝積分結果を求めるためにサンプル数で除算する。</p>
 <p>ライトレではどうやるか、ピクセルごとのレイのヒット回数をカウントしてそれで平均するのかと思ったがどうやらそうではないらしい。
-パストレではサンプリング処理がピクセルごとに行われるのに対して、ライトレでは光源からレイを撃つだけなのでピクセルごとにはならず、イメージセンサー全体への影響という期待値を計算していることになるっぽい。
+パストレではサンプリング処理が実質的にピクセルごとに行われているのに対して、ライトレでは光源からレイを撃つだけなのでピクセルごとにはならず、イメージセンサー全体への影響という期待値を計算していることになるっぽい。
 なので各ピクセルすべてを、撃ったレイの数で除算する。</p>
 <ul>
 <li>直感的には割る数が大きくなりすぎるんじゃない？と思うんだけど、次の「カメラ内部の係数」で釣り合いが取れる</li>
@@ -276,7 +276,7 @@
 でそれにはカメラに入射した方向ではなく投影面の二次元平面上での積分に変換する必要があるとかなんとか
 （隠されたプライマリレイのpdfを考慮する必要があるらしい→付録）。</p>
 <ul>
-<li>そういう説明はなかなか解説されてないのとパストレでは存在しないので、そんな必要があるということ自体を認識するのに非常に苦労した…</li>
+<li>そういう説明はなかなか解説されてないのと、パストレの実装でもレンダリング方程式でも出てこないので、そんな必要があるということ自体を認識するのに非常に苦労した…</li>
 </ul>
 <h3 id="反射面ごとの係数"><a href="#反射面ごとの係数" class="headerlink" title="反射面ごとの係数"></a>反射面ごとの係数</h3><p>光源のトレースをカメラにつなく際には、光の入射方向とカメラへの方向から材質の反射特性(BRDF)を計算して掛けてやればよいはず？
 （でもうまくいかず。拡散反射ではいいが鏡面反射や透過材質ではなんかおかしい…）</p>
@@ -300,7 +300,7 @@ Blinn-PhongのBRDFといわれるものを使ってもうまくいかず。
 なぜか修正PhongのBRDFを用いたところ、ちょっと暗いがそれほど不自然にならなくなったので、それにしてみた（さらに結果を適当に&#x2F;2している）。
 この辺まったく理論的に則ってない…。</p>
 <h2 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h2><p>例によってsmallptを参考に、ライトトレーシング方式に変更：<a href="https://gist.github.com/tyfkda/b14d1e00dd794738b1dde77125dedad2">gist</a></p>
-<div style="height:80vh; overflow:scroll; border:2px solid lightgray; border-radius:4px">
+<div style="height:80vh; overflow:scroll; border:2px solid lightgray; border-radius:4px; resize:both; max-height:max-content; min-width:100%">
 <script src="https://gist.github.com/tyfkda/b14d1e00dd794738b1dde77125dedad2.js"></script>
 </div>
 
@@ -319,7 +319,7 @@ Blinn-PhongのBRDFといわれるものを使ってもうまくいかず。
 </ul>
 </li>
 <li>OpenMPでの並列化：<ul>
-<li>当初出力画像用のバッファ１画面分だけで各スレッドで結果を書き込む部分に<code>#pragma omp critical</code>を指定して競合を回避させたが、それだとシングルスレッドより遅かった。スレッドごとにバッファを分けて最後に合成することでマルチスレッドの恩恵を受けられた</li>
+<li>当初出力画像用のバッファ１画面分だけで各スレッドで結果を書き込む部分にだけ<code>#pragma omp critical</code>を指定して競合を回避させたが、それだとシングルスレッドより遅かった。スレッドごとにバッファを分けて最後に合成することでマルチスレッドの恩恵を受けられた</li>
 <li><code>#pragma omp parallel</code>はループ１回ごとにタスクキューになって空いたスレッドから順に取り出して処理するものかと想像していたが、どうも単に回数をスレッド数で分割して処理するっぽい？</li>
 </ul>
 </li>
@@ -403,7 +403,7 @@ $$</p>
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出" rel="bookmark">kd-treeの構築と近傍要素の抽出</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->

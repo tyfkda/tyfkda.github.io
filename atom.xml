@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-12-16T04:10:48.641Z</updated>
+  <updated>2025-12-22T23:53:37.184Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
     <id>https://tyfkda.github.io/blog/2025/12/16/light-tracing.html</id>
     <published>2025-12-16T10:00:00.000Z</published>
-    <updated>2025-12-16T04:10:48.641Z</updated>
+    <updated>2025-12-22T23:53:37.184Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光の計算&lt;/a&gt;をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
@@ -39,7 +39,7 @@
     <link href="https://tyfkda.github.io/blog/2025/11/29/virtual-inheritance-impl.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/29/virtual-inheritance-impl.html</id>
     <published>2025-11-29T01:04:56.000Z</published>
-    <updated>2025-12-01T01:34:36.506Z</updated>
+    <updated>2025-12-19T08:11:36.992Z</updated>
     
     
     <summary type="html">&lt;p&gt;C++には仮想継承という仕組みがある。
@@ -49,9 +49,9 @@
     
     
     
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
-    
     <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
+    
+    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   
@@ -60,7 +60,7 @@
     <link href="https://tyfkda.github.io/blog/2025/11/26/pacman-rl-sb3.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/26/pacman-rl-sb3.html</id>
     <published>2025-11-26T10:00:00.000Z</published>
-    <updated>2025-12-01T01:34:36.502Z</updated>
+    <updated>2025-12-19T08:11:36.982Z</updated>
     
     
     <summary type="html">&lt;p&gt;強化学習の題材として&lt;a href=&quot;/blog/2024/08/07/smb-rl-sb3.html&quot; title=&quot;スーパーマリオの強化学習を動かす（Stable Baselines 3）&quot;&gt;ファミコンのスーパーマリオをクリアさせる&lt;/a&gt;というのは見た目的におもしろいっちゃーおもしろいけど、正直右Bダッシュにジャンプを組み合わせればクリアするピンポイントを発見してそれっぽく学習したかのように見えてしまうのではないかという疑念があった（自分的には）。
@@ -81,7 +81,7 @@
     <link href="https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html</id>
     <published>2025-11-09T23:06:07.000Z</published>
-    <updated>2025-12-08T07:29:06.199Z</updated>
+    <updated>2025-12-19T08:11:36.984Z</updated>
     
     
     <summary type="html">&lt;p&gt;&amp;nbsp;&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光を考慮&lt;/a&gt;に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。&lt;/p&gt;
@@ -122,7 +122,7 @@
     <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
     <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2025-12-08T07:29:06.198Z</updated>
+    <updated>2025-12-19T08:11:36.984Z</updated>
     
     
     <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
