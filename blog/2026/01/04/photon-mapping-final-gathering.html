@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="相当昔にフォトンマッピングを動かしたことがあるが、放射するフォトン数が少ないと斑点ノイズが発生してしまっていた。
+これを低減させるファイナルギャザリングを実装してみる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="フォトンマッピングでファイナルギャザリングを適用"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>フォトンマッピングでファイナルギャザリングを適用 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2026/01/04/photon-mapping-final-gathering.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>フォトンマッピングでファイナルギャザリングを適用</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2026-01-04
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/graphics/">#graphics</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>相当昔に<a href="/blog/2009/10/15/smallpm.html" title="smallpm - Global Illumination in 132 lines of C++">フォトンマッピング</a>を動かしたことがあるが、放射するフォトン数が少ないと斑点ノイズが発生してしまっていた。
+これを低減させるファイナルギャザリングを実装してみる。</p>
+<span id="more"></span>
+
+<h2 id="フォトンマッピングとは？"><a href="#フォトンマッピングとは？" class="headerlink" title="フォトンマッピングとは？"></a>フォトンマッピングとは？</h2><p>光源からフォトンを飛ばして交点を記録した<strong>フォトンマップ</strong>（以降PM）を作成し、画像生成時の各ピクセルの色を求める際に利用する。</p>
+<p>（双方向）パストレーサーに比べての利点は、集光模様（コースティクス）を綺麗に描画できることでしょう。</p>
+<h4 id="単純なフォトンマッピングの問題点"><a href="#単純なフォトンマッピングの問題点" class="headerlink" title="単純なフォトンマッピングの問題点"></a>単純なフォトンマッピングの問題点</h4><p>ピクセルの色を求める際にカメラからの交点位置に対してPMから輝度推定すると、推定には一定量のフォトンを近傍から探すためフォトン数が少ないと斑点ノイズが発生してしまう：</p>
+<p><img src="/assets/blog/photon-mapping1.png" alt="フォトンマッピングで発生する斑点ノイズ"></p>
+<p>この問題に対して<strong>ファイナルギャザリング</strong>で対応する。</p>
+<h2 id="ファイナルギャザリングとは？"><a href="#ファイナルギャザリングとは？" class="headerlink" title="ファイナルギャザリングとは？"></a>ファイナルギャザリングとは？</h2><p>正直「ファイナルギャザリング」というのがなにを指すのかいまいちはっきりしないけど言葉的には「最後にかき集める」ということで、
+輝度計算をPMだけで行うのではなく直接照明＋間接照明＋集光模様に分けて計算することにして、
+間接照明を周りからかき集めることから命名してるのだと思う。</p>
+<h3 id="書籍「フォトンマッピング」での解説"><a href="#書籍「フォトンマッピング」での解説" class="headerlink" title="書籍「フォトンマッピング」での解説"></a>書籍「フォトンマッピング」での解説</h3><p>フォトンマッピングの開祖たるHenrik Wann Jensen氏の書かれた書籍の和訳本「<a href="https://amzn.to/4jyeEvN">フォトンマッピング</a>」を読み返してみた
+（本にはファイナルギャザリング（以降FG）という単語自体は出てこないようで、索引にもない）。</p>
+<p>９章「実践的な２段階アルゴリズム」でレンダリング方程式を、</p>
+<ol>
+<li>直接照明</li>
+<li>鏡面反射</li>
+<li>集光模様</li>
+<li>間接照明</li>
+</ol>
+<p>の４つに分けて計算することが提示される。</p>
+<h4 id="9-3-第１段階：フォトンの追跡"><a href="#9-3-第１段階：フォトンの追跡" class="headerlink" title="9.3 第１段階：フォトンの追跡"></a>9.3 第１段階：フォトンの追跡</h4><p>フォトンの記録を<strong>集光模様PM</strong>と<strong>大域PM</strong>に分ける。</p>
+<ul>
+<li>集光模様PMには光源から放射され鏡面反射または透過してから拡散面に到達したフォトンを格納　（光伝達の表記法：<code>LS+D</code>）</li>
+<li>大域PMには拡散面にぶつかるすべてのフォトンを格納、ということで集光模様PMに格納されるフォトンも格納する　（<code>L(S|D)*D</code>）</li>
+</ul>
+<h4 id="9-4-第２段階：描画"><a href="#9-4-第２段階：描画" class="headerlink" title="9.4 第２段階：描画"></a>9.4 第２段階：描画</h4><p>４つに分けた各計算法が記述されている（が説明がいまいちわかりづらい…）。</p>
+<ul>
+<li>直接照明：影光線を使って直接計算</li>
+<li>鏡面反射：反射先で計算</li>
+<li>集光模様：集光模様PMで推定</li>
+<li>拡散反射：何本もサンプル光線を利用して間接照明を正確に計算、サンプル光線での近似計算には大域PMから推定</li>
+</ul>
+<p>この<strong>拡散反射を正確に計算するための分散光線追跡法</strong>（Distributed Ray Tracing、半球状を多数サンプリング）がFGということになるだろう。</p>
+<h3 id="すべての経路が追跡されるかの確認"><a href="#すべての経路が追跡されるかの確認" class="headerlink" title="すべての経路が追跡されるかの確認"></a>すべての経路が追跡されるかの確認</h3><p>この方法で正しいかどうか、あらゆる光伝達経路が網羅されるかを確認する必要がある。</p>
+<p>拡散面での計算は直接照明＋間接照明＋集光模様PMで、直接照明は<code>LD</code>、集光模様PMは<code>LS+D</code>となる。</p>
+<p>間接照明はFGで<code>DS*D</code>、FG先のPM推定で<code>L(S|D)*D</code>ということで、つなげると<code>L(S|D)*DS*D</code>になる（PM推定最後の<code>D</code>とFG最初の<code>D</code>は同じもののため１つにまとめる）。</p>
+<p>これらを視点から辿る逆向きの経路<code>DS*E</code>とつなげると、</p>
+<table>
+<thead>
+<tr>
+<th align="left">タイプ</th>
+<th align="left">光経路</th>
+<th align="left">備考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">直接照明</td>
+<td align="left"><code>LDS*E</code></td>
+<td align="left">拡散面1回</td>
+</tr>
+<tr>
+<td align="left">集光模様</td>
+<td align="left"><code>LS+DS*E</code></td>
+<td align="left">鏡面反射後に拡散面1回</td>
+</tr>
+<tr>
+<td align="left">間接照明</td>
+<td align="left"><code>L(S|D)*DS*DS*E</code></td>
+<td align="left">拡散面2回以上</td>
+</tr>
+</tbody></table>
+<p>という具合で、任意の経路<code>L(S|D)*E</code>が必ずどれか１つだけに当てはまるようになっている。</p>
+<ul>
+<li>今回は点光源のみのため視点からのトレースで光源にはぶつからないので、光源を直接見る経路<code>LS*E</code>は存在しないので扱ってない<ul>
+<li>光源が大きさを持ち拡散面を経ずに到達する場合、光源の色を返すようにする必要がある</li>
+<li>同じくFGで<code>S</code>経由で光源にぶつかる場合は黒を返す必要がある（そのような経路は集光模様PMに含まれるため）</li>
+</ul>
+</li>
+</ul>
+<h2 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h2><p>てなわけでみっちり実装：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> estimate=<span class="number">10</span>, estimate_caustic=<span class="number">5</span>;</span><br><span class="line">std::vector&lt;Photon*&gt; g_photons, g_caustic_photons; KDTree g_kdtree, g_caustic_kdtree;</span><br><span class="line"><span class="function">Vec <span class="title">estimate_flux</span><span class="params">(KDTree &amp;tree, <span class="type">const</span> Vec&amp; x, <span class="type">const</span> Vec&amp; albedo, <span class="type">int</span> count)</span> </span>&#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">char</span>* buf = (<span class="type">unsigned</span> <span class="type">char</span>*)(<span class="built_in">alloca</span>(<span class="built_in">sizeof</span>(Photon*)*count + <span class="built_in">sizeof</span>(<span class="type">double</span>)*count));</span><br><span class="line">  Photon** b=(Photon**)(buf); <span class="type">double</span>* rr=(<span class="type">double</span>*)(buf + <span class="built_in">sizeof</span>(Photon*)*count);</span><br><span class="line">  tree.<span class="built_in">nearest</span>(b,rr,count,x,<span class="number">1e20</span>); Vec flux; <span class="type">const</span> <span class="type">double</span> fr=<span class="number">1.0</span>/M_PI;</span><br><span class="line">  <span class="type">int</span> j,k; <span class="keyword">for</span> (j=k=<span class="number">0</span>; j&lt;count; k=j++) &#123; Photon* q=b[j]; <span class="keyword">if</span> (!q) <span class="keyword">break</span>;</span><br><span class="line">    flux=flux+q-&gt;fl*fr; &#125; <span class="keyword">return</span> flux.<span class="built_in">mul</span>(albedo)*(<span class="number">1.0</span>/(M_PI*rr[k])); &#125;</span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">RayType</span> &#123; PHOTON_EMITTED, PHOTON_CAUSTIC, PHOTON_DIFFUSED, EYE_GATHER, EYE_ESTIMATE &#125;;</span><br><span class="line"><span class="function">Vec <span class="title">trace</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">int</span> dpt, RayType raytype, <span class="type">const</span> Vec &amp;fl, <span class="type">int</span> i)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> Vec <span class="title">direct</span><span class="params">(<span class="type">const</span> Vec&amp; x, <span class="type">const</span> Vec&amp; n, <span class="type">const</span> Vec&amp; albedo)</span> </span>&#123;</span><br><span class="line">  Vec d = LightPos - x; <span class="type">double</span> dist2 = d.<span class="built_in">sqlen</span>(), dist = <span class="built_in">sqrt</span>(dist2); d = d.<span class="built_in">norm</span>();</span><br><span class="line">  <span class="type">double</span> t; <span class="type">int</span> id; <span class="function">Ray <span class="title">shadowRay</span><span class="params">(x, d)</span></span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">intersect</span>(shadowRay, t, id) &amp;&amp; t &lt; dist - <span class="number">1e-4</span>) <span class="keyword">return</span> <span class="built_in">Vec</span>();</span><br><span class="line">  Vec brdf = albedo * M_1_PI; <span class="type">double</span> NoD = std::<span class="built_in">max</span>(<span class="number">0.0</span>, n.<span class="built_in">dot</span>(d));</span><br><span class="line">  <span class="keyword">return</span> LightPow.<span class="built_in">mul</span>(brdf) * (NoD / (<span class="number">4</span>*M_PI*dist2));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> Vec <span class="title">indirect</span><span class="params">(<span class="type">const</span> Vec&amp; x, <span class="type">const</span> Vec&amp; n, <span class="type">const</span> Vec&amp; albedo, <span class="type">int</span> i)</span> </span>&#123;</span><br><span class="line">  Vec w = n, u = ((<span class="built_in">fabs</span>(w.x)&gt;<span class="number">.1</span>?<span class="built_in">Vec</span>(<span class="number">0</span>,<span class="number">1</span>):<span class="built_in">Vec</span>(<span class="number">1</span>))%w).<span class="built_in">norm</span>(), v = w%u;</span><br><span class="line">  <span class="type">double</span> r1=<span class="number">2</span>*M_PI*<span class="built_in">hal</span>(<span class="number">0</span>, i), r2=<span class="built_in">hal</span>(<span class="number">1</span>, i), r2s=<span class="built_in">sqrt</span>(r2);</span><br><span class="line">  Vec d = (u*<span class="built_in">cos</span>(r1)*r2s + v*<span class="built_in">sin</span>(r1)*r2s + w*<span class="built_in">sqrt</span>(<span class="number">1</span>-r2)).<span class="built_in">norm</span>();</span><br><span class="line">  Vec flux = <span class="built_in">trace</span>(<span class="built_in">Ray</span>(x+d*<span class="number">1e-4</span>, d), <span class="number">1</span>, EYE_ESTIMATE, <span class="built_in">Vec</span>(), i);</span><br><span class="line">  <span class="keyword">return</span> flux.<span class="built_in">mul</span>(albedo);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Vec <span class="title">trace</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">int</span> dpt, RayType raytype, <span class="type">const</span> Vec &amp;fl, <span class="type">int</span> i)</span> </span>&#123;</span><br><span class="line">  <span class="type">double</span> t;<span class="type">int</span> id,d3=++dpt*<span class="number">3</span>; <span class="keyword">if</span>((dpt&gt;=<span class="number">20</span>)||!<span class="built_in">intersect</span>(r,t,id)) <span class="keyword">return</span> <span class="built_in">Vec</span>();</span><br><span class="line">  <span class="type">const</span> Sphere&amp;obj=sph[id]; <span class="type">const</span> Vec x=r.o+r.d*t,n=(x-obj.p).<span class="built_in">norm</span>(),&amp;f=obj.c;</span><br><span class="line">  Vec nl=n.<span class="built_in">dot</span>(r.d)&lt;<span class="number">0</span>?n:n*<span class="number">-1</span>; <span class="keyword">if</span> (obj.refl == DIFF) &#123;</span><br><span class="line">    <span class="keyword">if</span> (raytype==EYE_GATHER) <span class="keyword">return</span> <span class="built_in">direct</span>(x,nl,f) + <span class="built_in">indirect</span>(x,nl,f,i) + <span class="built_in">estimate_flux</span>(g_caustic_kdtree,x,f,estimate_caustic);</span><br><span class="line">    <span class="keyword">if</span> (raytype==EYE_ESTIMATE) <span class="keyword">return</span> <span class="built_in">estimate_flux</span>(g_kdtree,x,f,estimate);</span><br><span class="line">    Photon* q=<span class="keyword">new</span> Photon; q-&gt;x=x; q-&gt;fl=fl; <span class="type">double</span> p=<span class="built_in">fmax</span>(f.x,<span class="built_in">fmax</span>(f.y,f.z));</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> omp critical</span></span><br><span class="line">    &#123;</span><br><span class="line">      g_photons.<span class="built_in">push_back</span>(q);</span><br><span class="line">      <span class="keyword">if</span> (raytype == PHOTON_CAUSTIC) g_caustic_photons.<span class="built_in">push_back</span>(q);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">hal</span>(d3<span class="number">+1</span>,i)&gt;=p)<span class="keyword">return</span> <span class="built_in">Vec</span>();</span><br><span class="line">    <span class="type">double</span> r1=<span class="number">2.</span>*M_PI*<span class="built_in">hal</span>(d3<span class="number">-1</span>,i), r2=<span class="built_in">hal</span>(d3<span class="number">+0</span>,i), r2s=<span class="built_in">sqrt</span>(r2);</span><br><span class="line">    Vec &amp;w=nl, u=((<span class="built_in">fabs</span>(w.x)&gt;<span class="number">.1</span>?<span class="built_in">Vec</span>(<span class="number">0</span>,<span class="number">1</span>):<span class="built_in">Vec</span>(<span class="number">1</span>))%w).<span class="built_in">norm</span>(), v=w%u;</span><br><span class="line">    Vec d = (u*<span class="built_in">cos</span>(r1)*r2s + v*<span class="built_in">sin</span>(r1)*r2s + w*<span class="built_in">sqrt</span>(<span class="number">1</span>-r2));</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">trace</span>(<span class="built_in">Ray</span>(x,d),dpt,PHOTON_DIFFUSED,f.<span class="built_in">mul</span>(fl)*(<span class="number">1.</span>/p),i);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (raytype == PHOTON_EMITTED) raytype = PHOTON_CAUSTIC;</span><br><span class="line">  <span class="keyword">if</span> (obj.refl == SPEC) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">trace</span>(<span class="built_in">Ray</span>(x,r.d-n*<span class="number">2</span>*n.<span class="built_in">dot</span>(r.d)),dpt,raytype,f.<span class="built_in">mul</span>(fl),i).<span class="built_in">mul</span>(f);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;Ray <span class="built_in">lr</span>(x,r.d-n*<span class="number">2.0</span>*n.<span class="built_in">dot</span>(r.d)); <span class="type">bool</span> into = (n.<span class="built_in">dot</span>(nl)&gt;<span class="number">0.0</span>);</span><br><span class="line">    <span class="type">double</span> nc = <span class="number">1.0</span>, nt=<span class="number">1.5</span>, nnt = into?nc/nt:nt/nc, ddn = r.d.<span class="built_in">dot</span>(nl), cos2t;</span><br><span class="line">    <span class="keyword">if</span> ((cos2t=<span class="number">1</span>-nnt*nnt*(<span class="number">1</span>-ddn*ddn))&lt;<span class="number">0</span>) <span class="keyword">return</span> <span class="built_in">trace</span>(lr,dpt,raytype,fl,i);</span><br><span class="line">    Vec td = (r.d*nnt - n*((into?<span class="number">1</span>:<span class="number">-1</span>)*(ddn*nnt+<span class="built_in">sqrt</span>(cos2t)))).<span class="built_in">norm</span>();</span><br><span class="line">    <span class="type">double</span> a=nt-nc, b=nt+nc, R0=a*a/(b*b), c = <span class="number">1</span>-(into?-ddn:td.<span class="built_in">dot</span>(n));</span><br><span class="line">    <span class="type">double</span> Re=R0+(<span class="number">1</span>-R0)*c*c*c*c*c,P=Re;<span class="function">Ray <span class="title">rr</span><span class="params">(x,td)</span></span>;Vec rfl=f.<span class="built_in">mul</span>(fl);</span><br><span class="line">    <span class="keyword">return</span> raytype&gt;=EYE_GATHER ? (<span class="built_in">trace</span>(lr,dpt,raytype,fl,i)*Re + <span class="built_in">trace</span>(rr,dpt,raytype,fl,i)*(<span class="number">1</span>-Re)).<span class="built_in">mul</span>(f)</span><br><span class="line">                                : <span class="built_in">hal</span>(d3<span class="number">-1</span>,i)&lt;P ?<span class="built_in">trace</span>(lr,dpt,raytype,rfl,i) :<span class="built_in">trace</span>(rr,dpt,raytype,rfl,i);&#125;&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">uint32_t</span> <span class="title">hash2d</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> x, <span class="type">unsigned</span> <span class="type">int</span> y)</span> </span>&#123;<span class="keyword">return</span> (x * <span class="number">0x3504f333</span>) ^ (y * <span class="number">0xf1bbcdcb</span>) * <span class="number">741103597</span>;&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span> </span>&#123; <span class="type">int</span> w=<span class="number">1024</span>, h=<span class="number">768</span>, samps=<span class="number">1000</span>, FG=<span class="number">20</span>;</span><br><span class="line">  argc&gt;<span class="number">1</span>&amp;&amp;(samps=<span class="built_in">atoi</span>(argv[<span class="number">1</span>])); argc&gt;<span class="number">2</span>&amp;&amp;(FG=<span class="built_in">atoi</span>(argv[<span class="number">2</span>]));</span><br><span class="line">  argc&gt;<span class="number">3</span>&amp;&amp;(estimate=<span class="built_in">atoi</span>(argv[<span class="number">3</span>])); argc&gt;<span class="number">4</span>&amp;&amp;(estimate_caustic=<span class="built_in">atoi</span>(argv[<span class="number">4</span>]));</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> omp parallel for schedule(dynamic, 1)</span></span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;samps; ++i) &#123; Ray r; Vec f;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">omp_get_thread_num</span>() == <span class="number">0</span>)</span><br><span class="line">      <span class="built_in">fprintf</span>(stderr,<span class="string">&quot;\rPhotonPass %5.2f%%&quot;</span>,<span class="number">100.</span>*i/samps);</span><br><span class="line">    <span class="built_in">genp</span>(&amp;r,&amp;f,i); <span class="built_in">trace</span>(r,<span class="number">0</span>,PHOTON_EMITTED,f*(<span class="number">1.0</span>/samps),i<span class="number">+1</span>); &#125;</span><br><span class="line">  <span class="built_in">fprintf</span>(stderr, <span class="string">&quot;\n#photons:%zu, #caustic:%zu\nBuilding kd-tree...\n&quot;</span>, g_photons.<span class="built_in">size</span>(), g_caustic_photons.<span class="built_in">size</span>());</span><br><span class="line">  <span class="keyword">if</span> (!g_photons.<span class="built_in">empty</span>()) g_kdtree.<span class="built_in">build</span>(&amp;g_photons[<span class="number">0</span>], g_photons.<span class="built_in">size</span>());</span><br><span class="line">  <span class="keyword">if</span> (!g_caustic_photons.<span class="built_in">empty</span>()) g_caustic_kdtree.<span class="built_in">build</span>(&amp;g_caustic_photons[<span class="number">0</span>], g_caustic_photons.<span class="built_in">size</span>());</span><br><span class="line">  <span class="function">Ray <span class="title">cam</span><span class="params">(Vec(<span class="number">50</span>,<span class="number">52</span>,<span class="number">295.6</span>), Vec(<span class="number">0</span>,<span class="number">-0.042612</span>,<span class="number">-1</span>).norm())</span></span>;</span><br><span class="line">  Vec cx=<span class="built_in">Vec</span>(w*<span class="number">.5135</span>/h), cy=(cx%cam.d).<span class="built_in">norm</span>()*<span class="number">.5135</span>, *cc=<span class="keyword">new</span> Vec[w*h];</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> omp parallel for schedule(dynamic, 1)</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> y=<span class="number">0</span>; y&lt;h; ++y) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">omp_get_thread_num</span>() == <span class="number">0</span>)</span><br><span class="line">      <span class="built_in">fprintf</span>(stderr, <span class="string">&quot;\rHitPointPass %5.2f%%&quot;</span>, <span class="number">100.0</span>*y/h);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x=<span class="number">0</span>; x&lt;w; ++x) &#123; Vec r; <span class="type">int</span> i=y*w+x;</span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> fg=<span class="number">0</span>; fg&lt;FG||fg==<span class="number">0</span>; ++fg) &#123; <span class="type">int</span> j=<span class="built_in">hash2d</span>(x,y)+fg<span class="number">+1</span>;</span><br><span class="line">        <span class="type">double</span> dx=<span class="built_in">hal</span>(<span class="number">0</span>,j), dy=<span class="built_in">hal</span>(<span class="number">1</span>,j<span class="number">+1</span>);</span><br><span class="line">        Vec d = (cx * ((x+dx)/w<span class="number">-.5</span>) + cy * (-(y+dy)/h<span class="number">+.5</span>) + cam.d).<span class="built_in">norm</span>();</span><br><span class="line">        r=r+<span class="built_in">trace</span>(<span class="built_in">Ray</span>(cam.o+d*<span class="number">140</span>,d),<span class="number">0</span>,FG&gt;<span class="number">0</span>?EYE_GATHER:EYE_ESTIMATE,<span class="built_in">Vec</span>(),j);&#125;</span><br><span class="line">      cc[i]=r*(<span class="number">1.0</span>/std::<span class="built_in">max</span>(FG,<span class="number">1</span>));&#125;&#125;</span><br><span class="line">  FILE* f = <span class="built_in">fopen</span>(<span class="string">&quot;image.ppm&quot;</span>,<span class="string">&quot;w&quot;</span>); <span class="built_in">fprintf</span>(f,<span class="string">&quot;P3\n%d %d\n%d\n&quot;</span>,w,h,<span class="number">255</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;w*h; ++i) &#123; <span class="type">const</span> Vec&amp; c = cc[i];</span><br><span class="line">    <span class="built_in">fprintf</span>(f,<span class="string">&quot;%d %d %d &quot;</span>, <span class="built_in">toInt</span>(c.x), <span class="built_in">toInt</span>(c.y), <span class="built_in">toInt</span>(c.z));&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>前回との共通部分は<a href="/blog/2009/10/15/smallpm.html" title="smallpm - Global Illumination in 132 lines of C++">以前のコード</a>から持ってくること</li>
+<li>FGのメイン部分：<code>trace</code>関数内、拡散反射面の箇所：<ul>
+<li>カメラパスでレイのタイプを<code>EYE_GATHER</code>と<code>EYE_ESTIMATE</code>で判別できるようにしておき、</li>
+<li><code>GATHER</code>の場合は直接照明＋間接照明＋集光模様PM<ul>
+<li>間接照明に<code>ESTIMATE</code>レイを撃つ</li>
+</ul>
+</li>
+<li><code>ESTIMATE</code>の場合は大域PMから求める</li>
+</ul>
+</li>
+<li>直接照明<code>direct</code>では<code>LightPow</code>に対してBRDFである<code>1.0/PI</code>とコサイン項と、距離減衰<code>1.0/(4*PI*dist2)</code>を乗ずる</li>
+<li>PMから放射輝度を推定する際には放射したフォトン数で除算する必要がある<ul>
+<li>以前は最後に一括して除算していたが、今回の計算では直接照明の結果には適用してはいけないので、あらかじめ光源が放射するフォトンの放射輝度を除算してしまっている</li>
+</ul>
+</li>
+<li>間接照明以外にもアンチエイリアス・Glossy光沢反射・半影なども扱うことも考えて、  間接照明計算でループするのではなくメイン側でループさせてみる</li>
+<li>元々smallppmを元にしていたので乱数は使わずに<code>hal</code>ハルトン数列を利用している<ul>
+<li>フォトンの放射時にはフォトン番号によって偏りなくバラけてくれるが、今回カメラパスで単純にピクセル位置＋FG回数だとパターンが見えてしまった
+　→ 2D座標に対する適当なハッシュ関数で回避</li>
+<li>そのため正の値となるよう<code>hal</code>関数の引数<code>j</code>を<code>unsigned int</code>にする</li>
+</ul>
+</li>
+<li>その他、改善項目：<ul>
+<li>KDTree構築時に完全にソートする必要はないため<a href="https://cpprefjp.github.io/reference/algorithm/nth_element.html"><code>nth_element</code></a>が使える（O(n)だとか）</li>
+<li><code>log_2</code>の計算に<code>__builtin_clz</code>が使える（GCC拡張。C++には<a href="https://cpprefjp.github.io/reference/bit/countl_zero.html"><code>countl_zero</code></a>があるがC++20が必要なのと<code>unsigned</code>じゃないと怒られる）</li>
+</ul>
+</li>
+<li>集光模様PMのみを可視化した結果：ガラス球の屈折だけじゃなく鏡面球による散らばりでフォトンが散乱したものがマップされるため、推定に用いる個数を少なくすると壁や天井にFG適用前と同様の斑点ノイズが発生するのが盲点だった
+（ただし直接光に比べれば影響は少ないので合成すれば目立たない）</li>
+</ul>
+<div style="text-align:center">
+<img src="/assets/photon-mapping-final-gather.webp" alt="集光模様マップ" style="width:90%" />
+</div>
+
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li>書籍：<a href="https://amzn.to/4jyeEvN">フォトンマッピング: 実写に迫るコンピュ-タグラフィックス</a> とてもいい本（でも説明は難しい）</li>
+<li><a href="https://blog.teastat.uk/post/2021/12/final-gathering/">Final gatheringについて - teastat</a><ul>
+<li>フォトンマッピングのメモリ的な制約がprogressive photon mappingで解決できる、とのことで現在ではあまりFGは使われてないのかもしれない</li>
+<li><a href="https://zenn.dev/yumcyawiz/scraps/c18f2bf6fa8941">Photon Mappingの実装の記録</a><ul>
+<li>青い本（Jensen本）に書かれている「集光PMに格納したら追跡を打ち切る」ことを実践しているが、光の経路を想像するに追跡を続けて大域PMに記録した方がいいような？</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://github.com/githole/simple-photonmap/tree/simple-photonmap-finalgather">githole&#x2F;simple-photonmap: 日本語コメントつきフォトンマップ法。</a> FGのブランチがある<ul>
+<li>集光模様PMを使用せずにFGしてコースティクスがちゃんと出てるのは<code>REFRACTION</code>で光源にヒットした場合に<code>emission</code>を返しているからっぽい、
+光源はそんなに大きくないのによく綺麗に出るなと思う</li>
+</ul>
+</li>
+<li>過去記事：<ul>
+<li><a href="/blog/2009/10/15/smallpm.html" title="smallpm - Global Illumination in 132 lines of C++">smallpm - Global Illumination in 132 lines of C++</a></li>
+<li><a href="/blog/2009/10/12/photon-mapping.html" title="フォトンマッピングを試す">フォトンマッピングを試す</a></li>
+<li><a href="/blog/2009/10/10/build-kd-tree.html" title="kd-treeの構築と近傍要素の抽出">kd-treeの構築と近傍要素の抽出</a></li>
+</ul>
+</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2025/12/16/light-tracing.html">前：ライトトレーシングが完全に一致した（拡散反射のみ）<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射のみ）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2026 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

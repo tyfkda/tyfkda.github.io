@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2025-12-22T23:53:37.184Z</updated>
+  <updated>2026-01-04T13:47:35.569Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,29 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>フォトンマッピングでファイナルギャザリングを適用</title>
+    <link href="https://tyfkda.github.io/blog/2026/01/04/photon-mapping-final-gathering.html"/>
+    <id>https://tyfkda.github.io/blog/2026/01/04/photon-mapping-final-gathering.html</id>
+    <published>2026-01-04T14:00:00.000Z</published>
+    <updated>2026-01-04T13:47:35.569Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;相当昔に&lt;a href=&quot;/blog/2009/10/15/smallpm.html&quot; title=&quot;smallpm - Global Illumination in 132 lines of C++&quot;&gt;フォトンマッピング&lt;/a&gt;を動かしたことがあるが、放射するフォトン数が少ないと斑点ノイズが発生してしまっていた。
+これを低減させるファイナルギャザリングを実装してみる。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
+    
+  </entry>
+  
+  <entry>
     <title>ライトトレーシングが完全に一致した（拡散反射のみ）</title>
     <link href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
     <id>https://tyfkda.github.io/blog/2025/12/16/light-tracing.html</id>
     <published>2025-12-16T10:00:00.000Z</published>
-    <updated>2025-12-22T23:53:37.184Z</updated>
+    <updated>2025-12-29T01:50:23.031Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光の計算&lt;/a&gt;をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
@@ -49,9 +67,9 @@
     
     
     
-    <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
-    
     <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
+    
+    <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
     
   </entry>
   
@@ -196,23 +214,6 @@
     
     
     <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Viteに移行してみたら開発環境が快適になった</title>
-    <link href="https://tyfkda.github.io/blog/2025/03/13/vite-build-tool.html"/>
-    <id>https://tyfkda.github.io/blog/2025/03/13/vite-build-tool.html</id>
-    <published>2025-03-13T09:00:00.000Z</published>
-    <updated>2025-12-01T01:13:20.165Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;ずっと以前から&lt;a href=&quot;/blog/2015/12/10/gulp-es6.html&quot; title=&quot;gulp+ES6でフロントエンド開発&quot;&gt;Gulpなど&lt;/a&gt;やWebpackを使ってブラウザ上で動くウェブアプリを作っていたが、&lt;a href=&quot;https://ja.vitejs.dev/&quot;&gt;Vite&lt;/a&gt;に載せ替えてみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="javascript" scheme="https://tyfkda.github.io/tags/javascript/"/>
     
   </entry>
   

@@ -275,7 +275,7 @@ $$</p>
 </ul>
 <p>微分を手計算しなくていいのすごい！
 でt&#x3D;0を代入してみると<code>NaN</code>になってしまった。
-分母に\(-(x^2-1)^2+1\)があって0を代入するから0除算で♾️に発散してしまうからダメか…（と勘違いして別の方法を探した）。</p>
+分母に\(-(x^2-1)^2+1\)があって0を代入するから0除算で\(\infty\)に発散してしまうからダメか…（と勘違いして別の方法を探した）。</p>
 <h4 id="テイラー展開を試す"><a href="#テイラー展開を試す" class="headerlink" title="テイラー展開を試す"></a>テイラー展開を試す</h4><p>x&#x3D;0だけで展開してるし、x&#x3D;1では傾きが無限大で展開できないので、もう少し違う点をいくつか持っておいて展開すればいいんじゃないか？
 と試してみたが、結局1付近では精度が悪かった。</p>
 <h4 id="二分探索を試す"><a href="#二分探索を試す" class="headerlink" title="二分探索を試す"></a>二分探索を試す</h4><p>級数展開が使えないならどうしたものか…と見ていたらxが正の場合には\(x \le \arcsin x \le \frac{\pi}{2} x\)のようなので、二分探索はどうかと考えた。
@@ -356,7 +356,7 @@ $$</p>
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射のみ）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li><li class="recent_post"><a href="/blog/2025/09/01/impl-builtin-clz.html">Count Leading Zerosその他ビルトイン関数の実装</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射のみ）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li><li class="recent_post"><a href="/blog/2025/11/10/pt-nee-mis.html">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></li></ul>
                 </div>
             </div>
 
@@ -403,7 +403,7 @@ $$</p>
 
                     
                 </ul>
-                <p class="copyright text-muted">&copy; 2025 tyfkda<br></p>
+                <p class="copyright text-muted">&copy; 2026 tyfkda<br></p>
                 <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
                 <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
             </div>
