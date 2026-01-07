@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2026-01-04T13:47:35.569Z</updated>
+  <updated>2026-01-07T09:39:41.613Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,29 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>PBRマテリアルの異方性反射</title>
+    <link href="https://tyfkda.github.io/blog/2026/01/07/anisotropic-reflection.html"/>
+    <id>https://tyfkda.github.io/blog/2026/01/07/anisotropic-reflection.html</id>
+    <published>2026-01-07T10:00:00.000Z</published>
+    <updated>2026-01-07T09:39:41.613Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;今まで異方性反射というのがなんなのか・必要性をあまり理解してなかったが、磨かれた金属といった質感表現に必要らしい。
+以前&lt;a href=&quot;/blog/2025/06/06/pbr-material-pathtracer.html&quot; title=&quot;PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)&quot;&gt;PBRマテリアル&lt;/a&gt;を試したときはラフネスとメタリックだけしか扱わなかったが、追加してみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
+    
+  </entry>
+  
+  <entry>
     <title>フォトンマッピングでファイナルギャザリングを適用</title>
     <link href="https://tyfkda.github.io/blog/2026/01/04/photon-mapping-final-gathering.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/04/photon-mapping-final-gathering.html</id>
     <published>2026-01-04T14:00:00.000Z</published>
-    <updated>2026-01-04T13:47:35.569Z</updated>
+    <updated>2026-01-05T09:31:56.819Z</updated>
     
     
     <summary type="html">&lt;p&gt;相当昔に&lt;a href=&quot;/blog/2009/10/15/smallpm.html&quot; title=&quot;smallpm - Global Illumination in 132 lines of C++&quot;&gt;フォトンマッピング&lt;/a&gt;を動かしたことがあるが、放射するフォトン数が少ないと斑点ノイズが発生してしまっていた。
@@ -67,9 +85,9 @@
     
     
     
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
-    
     <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
+    
+    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   
@@ -192,28 +210,6 @@
     
     
     <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</title>
-    <link href="https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html"/>
-    <id>https://tyfkda.github.io/blog/2025/06/06/pbr-material-pathtracer.html</id>
-    <published>2025-06-06T12:00:00.000Z</published>
-    <updated>2025-12-01T01:34:36.502Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;いかにもCGで作りましたっていうクッキリハッキリした反射ではなく、少し不完全な金属の光沢や表面のざらざら具合を表現するためのマテリアル表現をパストレーサーに組み込んでみた。&lt;/p&gt;
-&lt;div style=&quot;text-align:center&quot;&gt;
-&lt;img src=&quot;/assets/pbr-material-pt/image-ggx.jpg&quot; alt=&quot;PBRマテリアルでパストレーシング&quot; style=&quot;width:90%&quot; /&gt;
-&lt;/div&gt;
-
-&lt;p&gt;640x480, 25,000サンプル&amp;#x2F;ピクセル, 39.03分, M1MacbookAir (8コア)&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
     
   </entry>
   

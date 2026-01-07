@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="今まで異方性反射というのがなんなのか・必要性をあまり理解してなかったが、磨かれた金属といった質感表現に必要らしい。
+以前PBRマテリアルを試したときはラフネスとメタリックだけしか扱わなかったが、追加してみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="PBRマテリアルの異方性反射"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>PBRマテリアルの異方性反射 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2026/01/07/anisotropic-reflection.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>PBRマテリアルの異方性反射</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2026-01-07
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/graphics/">#graphics</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>今まで異方性反射というのがなんなのか・必要性をあまり理解してなかったが、磨かれた金属といった質感表現に必要らしい。
+以前<a href="/blog/2025/06/06/pbr-material-pathtracer.html" title="PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)">PBRマテリアル</a>を試したときはラフネスとメタリックだけしか扱わなかったが、追加してみた。</p>
+<span id="more"></span>
+
+<h2 id="異方性反射"><a href="#異方性反射" class="headerlink" title="異方性反射"></a>異方性反射</h2><p>異方性反射がどういうものかは<a href="https://hainarashi.hatenablog.com/entry/20210710/1625899118">プリンシプルBSDFで異方性反射の使い方（1）／旋盤加工の作り方 - Blenderであそんでみた</a>がわかりやすい。</p>
+<p>実現方法はどうするのか調べてもなかなか要領をつかめなくて悩んだがなんのことはない、単に法線に直交する2方向を別々にスケールしてやればいいだけだった。
+でその方向を指定する必要があるため、法線とは別に溝方向を指定する接ベクトルが必要になる。</p>
+<p>マイクロファセットの凸凹が一様ではなく、溝と直交方向に偏っていることになる。</p>
+<h3 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h3><p>ナイーブなパストレに組み込むには<code>importanceSampleGGX</code>でマイクロファセット法線をブラす際に考慮すればよい：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">Vec <span class="title">importanceSampleGGXAniso</span><span class="params">(<span class="type">unsigned</span> <span class="type">short</span> *Xi, <span class="type">double</span> Roughness, <span class="type">const</span> Vec&amp; N, <span class="type">double</span> anisotropy, <span class="type">const</span> Vec&amp; T)</span> </span>&#123;</span><br><span class="line">    <span class="type">double</span> a = Roughness * Roughness, Phi = <span class="number">2.0</span> * M_PI * <span class="built_in">erand48</span>(Xi), xiy = <span class="built_in">erand48</span>(Xi);</span><br><span class="line">    <span class="type">double</span> CosTheta = <span class="built_in">sqrt</span>((<span class="number">1.0</span> - xiy) / (<span class="number">1.0</span> + (a * a - <span class="number">1.0</span>) * xiy));</span><br><span class="line">    <span class="type">double</span> SinTheta = <span class="built_in">sqrt</span>(<span class="number">1.0</span> - CosTheta * CosTheta);</span><br><span class="line"></span><br><span class="line">    <span class="type">double</span> aspect = <span class="built_in">sqrt</span>(<span class="number">1.0</span> - anisotropy * <span class="number">0.9</span>);  <span class="comment">// &lt;== 0.9で比率の上限を指定</span></span><br><span class="line">    Vec H = <span class="built_in">Vec</span>(SinTheta * <span class="built_in">cos</span>(Phi) / aspect,      <span class="comment">// &lt;== アスペクト比によってスケール</span></span><br><span class="line">                SinTheta * <span class="built_in">sin</span>(Phi) * aspect,      <span class="comment">// &lt;== 逆数</span></span><br><span class="line">                CosTheta).<span class="built_in">norm</span>();</span><br><span class="line"></span><br><span class="line">    Vec TangentX = (T % N).<span class="built_in">norm</span>();</span><br><span class="line">    Vec TangentY = N % TangentX;</span><br><span class="line">    <span class="keyword">return</span> TangentX * H.x + TangentY * H.y + N * H.z;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>anisotropy</code>パラメータで異方性の度合いを制御（0.0〜1.0）<ul>
+<li><code>aspect = sqrt(1.0 - anisotropy * 0.9)</code>で計算し、xy方向をそれぞれ除算と乗算する</li>
+<li><code>0.9</code>という係数によってxyの比率は<strong>10倍</strong>までとなる</li>
+<li>等方性の場合<strong>半球状</strong>の法線分布だったのに対して、異方性では<strong>半楕円体</strong>になる</li>
+<li>完全な<strong>円柱形</strong>も指定したい気もするがこの計算方法ではできない</li>
+</ul>
+</li>
+<li>接ベクトル<code>T</code>で溝の方向を指定</li>
+</ul>
+<h2 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h2><div style="text-align:center">
+<img src="/assets/pbr-material-pt/anisotropic-reflection.jpg" alt="異方性反射" style="width:90%" />
+</div>
+
+<p>上段：異方性1.0でラフネス0.0→0.5、下段：ラフネス0.3で異方性0.0→1.0</p>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li><a href="https://disneyanimation.com/publications/physically-based-shading-at-disney/">Physically Based Shading At Disney</a> パラメータはあるがあまり内容は触れられてない<ul>
+<li>AgendaのAnisotropic specular detailsにaspectに関する式が示されているが、
+<code>ax</code>に<code>roughness^2</code>が掛かっていてそれをブラす法線に掛けてしまって悩むことになった…</li>
+</ul>
+</li>
+<li>過去記事：<a href="/blog/2025/06/06/pbr-material-pathtracer.html" title="PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)">PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)</a></li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">前：フォトンマッピングでファイナルギャザリングを適用<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2015/02/04/bidirectional-path-tracing.html" title="双方向パストレーシング" rel="bookmark">双方向パストレーシング</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射のみ）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li><li class="recent_post"><a href="/blog/2025/11/26/pacman-rl-sb3.html">【強化学習】さすがにパックマンは余裕でしょと軽く考えてたがクリアには程遠かった</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2026 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
