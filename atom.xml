@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2026-01-09T00:31:25.315Z</updated>
+  <updated>2026-01-24T13:53:33.453Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,30 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>光源サンプリングが苦手なケースでMISの効果を確認</title>
+    <link href="https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html"/>
+    <id>https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html</id>
+    <published>2026-01-24T13:00:00.000Z</published>
+    <updated>2026-01-24T13:53:33.453Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;多重重点的サンプリングが紹介されたVeachの論文でBRDFサンプリングが得意なケースと光源サンプリングが得意なケースを示すシーンがあるので確かめてみた。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
+    
+    <category term="probability" scheme="https://tyfkda.github.io/tags/probability/"/>
+    
+  </entry>
+  
+  <entry>
     <title>PBRマテリアルの異方性反射</title>
     <link href="https://tyfkda.github.io/blog/2026/01/07/anisotropic-reflection.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/07/anisotropic-reflection.html</id>
     <published>2026-01-07T10:00:00.000Z</published>
-    <updated>2026-01-09T00:31:25.315Z</updated>
+    <updated>2026-01-23T00:10:08.560Z</updated>
     
     
     <summary type="html">&lt;p&gt;今まで異方性反射というのがなんなのか・必要性をあまり理解してなかったが、磨かれた金属といった質感表現に必要らしい。
@@ -39,7 +58,7 @@
     <link href="https://tyfkda.github.io/blog/2026/01/04/photon-mapping-final-gathering.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/04/photon-mapping-final-gathering.html</id>
     <published>2026-01-04T14:00:00.000Z</published>
-    <updated>2026-01-09T00:31:25.317Z</updated>
+    <updated>2026-01-23T00:10:08.560Z</updated>
     
     
     <summary type="html">&lt;p&gt;相当昔に&lt;a href=&quot;/blog/2009/10/15/smallpm.html&quot; title=&quot;smallpm - Global Illumination in 132 lines of C++&quot;&gt;フォトンマッピング&lt;/a&gt;を動かしたことがあるが、放射するフォトン数が少ないと斑点ノイズが発生してしまっていた。
@@ -57,7 +76,7 @@
     <link href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
     <id>https://tyfkda.github.io/blog/2025/12/16/light-tracing.html</id>
     <published>2025-12-16T10:00:00.000Z</published>
-    <updated>2025-12-29T01:50:23.031Z</updated>
+    <updated>2026-01-23T00:10:08.558Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光の計算&lt;/a&gt;をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
@@ -85,9 +104,9 @@
     
     
     
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
-    
     <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
+    
+    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   
@@ -117,7 +136,7 @@
     <link href="https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html"/>
     <id>https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html</id>
     <published>2025-11-09T23:06:07.000Z</published>
-    <updated>2025-12-19T08:11:36.984Z</updated>
+    <updated>2026-01-23T00:10:08.559Z</updated>
     
     
     <summary type="html">&lt;p&gt;&amp;nbsp;&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光を考慮&lt;/a&gt;に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。&lt;/p&gt;
@@ -158,7 +177,7 @@
     <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
     <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
     <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2025-12-19T08:11:36.984Z</updated>
+    <updated>2026-01-23T00:10:08.559Z</updated>
     
     
     <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
@@ -193,23 +212,6 @@
     
     
     <category term="blog" scheme="https://tyfkda.github.io/tags/blog/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【C++】shared_ptrとOpenMPの相性が最悪な件</title>
-    <link href="https://tyfkda.github.io/blog/2025/06/20/openmp-shared_ptr.html"/>
-    <id>https://tyfkda.github.io/blog/2025/06/20/openmp-shared_ptr.html</id>
-    <published>2025-06-20T13:00:00.000Z</published>
-    <updated>2025-12-01T01:13:20.153Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;久しぶりにC++でプログラムを書いて、その時に生ポインタの代わりに&lt;code&gt;shared_ptr&lt;/code&gt;を使うように変更したところとんでもなく遅くなってしまうことがあり、導入できなかった。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   

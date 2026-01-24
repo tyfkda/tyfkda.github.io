@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="多重重点的サンプリングが紹介されたVeachの論文でBRDFサンプリングが得意なケースと光源サンプリングが得意なケースを示すシーンがあるので確かめてみた。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="光源サンプリングが苦手なケースでMISの効果を確認"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>光源サンプリングが苦手なケースでMISの効果を確認 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>光源サンプリングが苦手なケースでMISの効果を確認</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2026-01-24
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/graphics/">#graphics</a> <a href="/tags/probability/">#probability</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>多重重点的サンプリングが紹介されたVeachの論文でBRDFサンプリングが得意なケースと光源サンプリングが得意なケースを示すシーンがあるので確かめてみた。</p>
+<span id="more"></span>
+
+<div style="text-align:center">
+<img src="/assets/glossy-mis.100.webp" alt="MIS結果" title="MIS結果" style="width:90%" />
+</div>
+
+
+<h2 id="多重重点的サンプリングについて"><a href="#多重重点的サンプリングについて" class="headerlink" title="多重重点的サンプリングについて"></a>多重重点的サンプリングについて</h2><p>以前<a href="/blog/2025/11/10/pt-nee-mis.html" title="パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)">パストレーサーで光源サンプリングとBRDFサンプリングを組み合わせる</a>ことでノイズが減らすことができる
+<strong>多重重点的サンプリング</strong>(Multiple Importance Sampling, MIS)を確認した。
+しかしながら、光源方向に関しては光源サンプリングの方が確率密度が高くて確実なんだからMISでウェイトを掛けなくても光源サンプリング100%にすればいいんじゃない？と疑問に思ってしまった
+（<a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）">smallptのexplicitと同じように</a>）。</p>
+<p>しかし扱ったのが拡散反射面だけで、他の材質の鏡面反射や透過は完全に滑らかな材質なので光源サンプリングを使わなかった。
+場合によっては光源サンプリングが苦手なケースというのもあるというので試してMISの効果を確かめたかった。</p>
+<h3 id="Veach風のテストシーン"><a href="#Veach風のテストシーン" class="headerlink" title="Veach風のテストシーン"></a>Veach風のテストシーン</h3><p>Veachのシーンは鏡面反射の粗さが異なる板が４枚あり、また大きさの異なる球光源が４つ配置されたもの。
+シーンの詳細はわからなかったのでパラメータや配置は適当に設定：</p>
+<ul>
+<li>マテリアルには<a href="/blog/2025/06/06/pbr-material-pathtracer.html" title="PBRマテリアルでパストレーシングしてみた！(Disney Principled BRDF)">Disney Principled(PBR)マテリアル</a>を使用</li>
+<li>板はすべてメタリックで、ラフネスが上から<code>0.01</code>, <code>0.1</code>, <code>0.2</code>, <code>0.4</code><ul>
+<li>板は視点と光源の位置から、正反射して真ん中に映るような角度を計算</li>
+</ul>
+</li>
+<li>光源の球の半径は左から順に3倍ずつ、明るさは1&#x2F;9倍ずつ<ul>
+<li>少しずつ色を入れている</li>
+</ul>
+</li>
+</ul>
+<p>以下、画像は100サンプル／ピクセル</p>
+<h4 id="BRDFサンプリングのみ"><a href="#BRDFサンプリングのみ" class="headerlink" title="BRDFサンプリングのみ"></a>BRDFサンプリングのみ</h4><div style="text-align:center">
+<img src="/assets/glossy-mis-brdf.100.webp" alt="BRDFサンプリング" title="BRDFサンプリング" style="width:90%" />
+</div>
+
+<ul>
+<li>鏡面反射で表面が滑らかであれば反射方向が限られるので光源が映り込む範囲も限られるため、光源が小さくても高確率で辿り着く</li>
+<li>表面が粗くなると反射方向がばらつくため光源が小さいほど辿り着く割合が下がり、ノイズが大きくなる</li>
+</ul>
+<h4 id="光源サンプリングのみ"><a href="#光源サンプリングのみ" class="headerlink" title="光源サンプリングのみ"></a>光源サンプリングのみ</h4><div style="text-align:center">
+<img src="/assets/glossy-mis-light.100.webp" alt="光源サンプリング" title="光源サンプリング" style="width:90%" />
+</div>
+
+<ul>
+<li>表面に多少粗さがある領域は光源の影響を直接加味できて、ノイズが少ない</li>
+<li>表面が滑らかだと視線の反射方向が絞られるが、光源が大きい場合はランダムに選ばれた光源方向がその領域から外れてpdfが非常に小さくなるためノイズが大きくなる</li>
+</ul>
+<h4 id="MIS"><a href="#MIS" class="headerlink" title="MIS"></a>MIS</h4><div style="text-align:center">
+<img src="/assets/glossy-mis.100.webp" alt="MIS結果" title="MIS結果" style="width:90%" />
+</div>
+
+<ul>
+<li>結果は冒頭の画像で、お互いの長所が活かされる<ul>
+<li>ウェイトはパワーヒューリスティック</li>
+</ul>
+</li>
+</ul>
+<h4 id="ウェイトの可視化"><a href="#ウェイトの可視化" class="headerlink" title="ウェイトの可視化"></a>ウェイトの可視化</h4><div style="text-align:center">
+<img src="/assets/glossy-mis-weight.100.webp" alt="ウェイトの可視化" title="ウェイトの可視化" style="width:90%" />
+</div>
+
+<ul>
+<li>BRDFサンプリングを赤、光源サンプリングを緑に色付け<ul>
+<li>ウェイトそのままの色ではなく、サンプルした明るさを掛けたものなのでそこは注意</li>
+</ul>
+</li>
+</ul>
+<h2 id="雑感"><a href="#雑感" class="headerlink" title="雑感"></a>雑感</h2><ul>
+<li>MISの効果が確認でき、必要性が理解できて満足</li>
+<li>BRDFとそれを効率的にサンプリングするためのpdfとそれに対応するランダム方向の生成が難しい<ul>
+<li>正しいのか確認するのが難しく、まだちょっと計算がおかしいっぽい（ナイーブなパストレの結果と異なる）</li>
+</ul>
+</li>
+<li>Veach論文に書かれているマテリアルの要素ごとの計算を１サンプルモデルでMISさせたかったが計算法わからず…<ul>
+<li>鏡面反射と拡散反射に対して、トレース結果に乗ずる値が異なるのでできなくない？</li>
+</ul>
+</li>
+</ul>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li><a href="https://graphics.stanford.edu/papers/veach_thesis/">Robust Monte Carlo Methods for Light Transport Simulation</a> Veach97</li>
+<li><a href="https://zenn.dev/artemisia/articles/0f3251cb17d942#%E3%82%B9%E3%83%9A%E3%82%AD%E3%83%A5%E3%83%A9brdf-%E3%81%AE%E3%81%BE%E3%81%A8%E3%82%81">BRDF(GGX)実装してみた</a> GGXのBRDFはこちらを参考にした</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2026/01/07/anisotropic-reflection.html">前：PBRマテリアルの異方性反射<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）" rel="bookmark">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2025/11/10/pt-nee-mis.html" title="パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)" rel="bookmark">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射のみ）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2026 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
