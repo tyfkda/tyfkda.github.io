@@ -201,7 +201,7 @@
 <span id="more"></span>
 
 <div style="text-align:center">
-<img src="/assets/glossy-mis.100.webp" alt="MIS結果" title="MIS結果" style="width:90%" />
+<img src="/assets/glossy-mis.100.webp" alt="MIS結果" style="width:90%" />
 </div>
 
 
@@ -225,24 +225,24 @@
 </li>
 </ul>
 <p>以下、画像は100サンプル／ピクセル</p>
-<h4 id="BRDFサンプリングのみ"><a href="#BRDFサンプリングのみ" class="headerlink" title="BRDFサンプリングのみ"></a>BRDFサンプリングのみ</h4><div style="text-align:center">
-<img src="/assets/glossy-mis-brdf.100.webp" alt="BRDFサンプリング" title="BRDFサンプリング" style="width:90%" />
-</div>
-
-<ul>
-<li>鏡面反射で表面が滑らかであれば反射方向が限られるので光源が映り込む範囲も限られるため、光源が小さくても高確率で辿り着く</li>
-<li>表面が粗くなると反射方向がばらつくため光源が小さいほど辿り着く割合が下がり、ノイズが大きくなる</li>
-</ul>
 <h4 id="光源サンプリングのみ"><a href="#光源サンプリングのみ" class="headerlink" title="光源サンプリングのみ"></a>光源サンプリングのみ</h4><div style="text-align:center">
-<img src="/assets/glossy-mis-light.100.webp" alt="光源サンプリング" title="光源サンプリング" style="width:90%" />
+<img src="/assets/glossy-mis-light.100.webp" alt="光源サンプリング" style="width:90%" />
 </div>
 
 <ul>
-<li>表面に多少粗さがある領域は光源の影響を直接加味できて、ノイズが少ない</li>
+<li>表面に多少粗さがある領域は光源の影響を直接加味できてノイズが少なく、このシーンの場合ほとんどの領域では結果がよい</li>
 <li>表面が滑らかだと視線の反射方向が絞られるが、光源が大きい場合はランダムに選ばれた光源方向がその領域から外れてpdfが非常に小さくなるためノイズが大きくなる</li>
 </ul>
+<h4 id="BRDFサンプリングのみ"><a href="#BRDFサンプリングのみ" class="headerlink" title="BRDFサンプリングのみ"></a>BRDFサンプリングのみ</h4><div style="text-align:center">
+<img src="/assets/glossy-mis-brdf.100.webp" alt="BRDFサンプリング" style="width:90%" />
+</div>
+
+<ul>
+<li>表面が荒い領域ではサンプリング数が少ないとノイズが激しい：反射方向がばらつくため光源が小さいほど辿り着く割合が下がり、ノイズが大きくなる</li>
+<li>鏡面反射で表面が滑らかであれば反射方向が限られるので光源が映り込む範囲も限られるため、光源が小さくても高確率で辿り着く</li>
+</ul>
 <h4 id="MIS"><a href="#MIS" class="headerlink" title="MIS"></a>MIS</h4><div style="text-align:center">
-<img src="/assets/glossy-mis.100.webp" alt="MIS結果" title="MIS結果" style="width:90%" />
+<img src="/assets/glossy-mis.100.webp" alt="MIS結果" style="width:90%" />
 </div>
 
 <ul>
@@ -252,7 +252,7 @@
 </li>
 </ul>
 <h4 id="ウェイトの可視化"><a href="#ウェイトの可視化" class="headerlink" title="ウェイトの可視化"></a>ウェイトの可視化</h4><div style="text-align:center">
-<img src="/assets/glossy-mis-weight.100.webp" alt="ウェイトの可視化" title="ウェイトの可視化" style="width:90%" />
+<img src="/assets/glossy-mis-weight.100.webp" alt="ウェイトの可視化" style="width:90%" />
 </div>
 
 <ul>
@@ -297,7 +297,7 @@
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）" rel="bookmark">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2025/11/10/pt-nee-mis.html" title="パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)" rel="bookmark">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2025/11/10/pt-nee-mis.html" title="パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)" rel="bookmark">パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2025/07/24/pt-direct-lighting.html" title="パストレーサーで直接光計算（重点的サンプリング、合成pdf）" rel="bookmark">パストレーサーで直接光計算（重点的サンプリング、合成pdf）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
