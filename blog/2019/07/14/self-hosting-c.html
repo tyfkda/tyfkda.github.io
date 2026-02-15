@@ -328,14 +328,17 @@ gccみたいにアセンブリで書けるのでなく、単にバイナリを�
 <ul>
 <li>レジスタ活用<ul>
 <li>「低レイヤ」では計算途中の値をスタックに保持する方式でコンパイルするが、x86-64はレジスタ数もそれなりにあるので活用したい。
-<a href="https://github.com/rui314/9cc">9cc</a>では変数や中間の値をレジスタに割り当てるようになっているので、参考にしたい。</li>
+<a href="https://github.com/rui314/9cc">9cc</a>では変数や中間の値をレジスタに割り当てるようになっているので、参考にしたい。
+　（→追記：<a href="/blog/2019/10/21/regalloc-linearscan.html" title="自作Cコンパイラでレジスタ割付">自作Cコンパイラでレジスタ割付</a>）</li>
 </ul>
 </li>
 <li>最適化<ul>
-<li>出力されるコードはお世辞にも効率的とはいえないので、多少の最適化はかけたい。</li>
+<li>出力されるコードはお世辞にも効率的とはいえないので、多少の最適化はかけたい。
+　（→追記：<a href="/blog/2025/03/01/ssa-intro.html" title="SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道">SSA形式を実装してみた！力技で挑むコンパイラ最適化の獣道</a>）</li>
 </ul>
 </li>
-<li>分割コンパイル対応</li>
+<li>分割コンパイル対応
+　（→追記：<a href="/blog/2020/04/20/elf-obj.html" title="ELFのオブジェクトファイル形式を生成する">ELFのオブジェクトファイル形式を生成する</a>）</li>
 </ul>
 <h3 id="「低レイヤ」の方々"><a href="#「低レイヤ」の方々" class="headerlink" title="「低レイヤ」の方々"></a>「低レイヤ」の方々</h3><ul>
 <li><a href="https://anqou.net/poc/2018/08/21/post-1853/">セルフホストCコンパイラaqcc 開発記 | カオスの坩堝</a></li>
@@ -381,7 +384,7 @@ gccみたいにアセンブリで書けるのでなく、単にバイナリを�
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射のみ）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射に限り）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li></ul>
                 </div>
             </div>
 

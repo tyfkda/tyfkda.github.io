@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2026-01-31T01:36:15.219Z</updated>
+  <updated>2026-02-06T02:23:24.123Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html</id>
     <published>2026-01-24T13:00:00.000Z</published>
-    <updated>2026-01-31T01:36:15.219Z</updated>
+    <updated>2026-02-06T02:23:24.123Z</updated>
     
     
     <summary type="html">&lt;p&gt;多重重点的サンプリングが紹介されたVeachの論文でBRDFサンプリングが得意なケースと光源サンプリングが得意なケースを示すシーンがあるので確かめてみた。&lt;/p&gt;</summary>
@@ -72,11 +72,11 @@
   </entry>
   
   <entry>
-    <title>ライトトレーシングが完全に一致した（拡散反射のみ）</title>
+    <title>ライトトレーシングが完全に一致した（拡散反射に限り）</title>
     <link href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
     <id>https://tyfkda.github.io/blog/2025/12/16/light-tracing.html</id>
     <published>2025-12-16T10:00:00.000Z</published>
-    <updated>2026-01-23T00:10:08.558Z</updated>
+    <updated>2026-02-05T09:47:08.509Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光の計算&lt;/a&gt;をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
@@ -104,9 +104,9 @@
     
     
     
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
-    
     <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
+    
+    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   
