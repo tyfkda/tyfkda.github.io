@@ -211,7 +211,7 @@
 <p>飛び先はスタック上におけるのかもしれないけど、そうした場合には余分にスタック上に格納しておく必要がある。</p>
 <p>フレームポインタはスタックポインタの値と合成して１つの整数にできるかもしれないけど、実行中のクロージャはやはりスタック上にとっておく必要があるな。</p>
 <p>末尾呼び出しでスタックがずれることはは考える必要がない（それまでの引数がシフトされてしまうようであれば<code>call/cc</code>で渡された継続もなくなっているはずなので、<code>longjmp</code>は呼び出されない）けど、スコープの拡張が起こるとスタック上の配置がずれてしまうので、やはり調整が必要。それには<code>longjmp</code>呼び出し地点と<code>setjmp</code>地点のズレを計算するか、あらかじめスコープで使われるローカル変数をすべて計算してスタック配置を計算しておく必要がある。</p>
-<h3 id="追記２"><a href="#追記２" class="headerlink" title="追記２"></a>追記２</h3><p>継続が内部のスコープに補足される場合には、末尾呼び出しで<code>SETJMP</code>を保持しているフレームがなくなってしまう可能性があってやはりまずかった。</p>
+<h3 id="追記２"><a href="#追記２" class="headerlink" title="追記２"></a>追記２</h3><p>継続が内部のスコープに捕捉される場合には、末尾呼び出しで<code>SETJMP</code>を保持しているフレームがなくなってしまう可能性があってやはりまずかった。</p>
 <p>じゃあっつって自由変数としてキャプチャされる場合は<code>SETJMP</code> ~ <code>LONGJMP</code>じゃなくて普通の継続にする、としてしまうと、ループ構文は字面的にはキャプチャが発生してしまうので、ループ内部から脱出しようとするだけで通常の継続になってしまって、嬉しくない。</p>
 <p>なので現在のところ、問題あるケースはあるが稀だろうということで、とりあえず実装してみた。</p>
 
@@ -244,7 +244,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射に限り）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射に限り）</a></li></ul>
                 </div>
             </div>
 

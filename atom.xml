@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2026-02-06T02:23:24.123Z</updated>
+  <updated>2026-04-21T06:41:57.622Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,30 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>レイフォースのロックオンレーザーの挙動</title>
+    <link href="https://tyfkda.github.io/blog/2026/04/21/lockon-laser.html"/>
+    <id>https://tyfkda.github.io/blog/2026/04/21/lockon-laser.html</id>
+    <published>2026-04-21T10:00:00.000Z</published>
+    <updated>2026-04-21T06:41:57.622Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;レイフォースという昔のシューティングゲームでは、通常ショットの他にロックオンレーザーという武器を使って攻撃する。
+ロックオンした数に応じてスコアが倍々になるという爽快感と、ロックを貯めてる間は敵が生きているため攻撃されるリスクとのジレンマという戦略性の楽しみがあった。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/rayforce.webp&quot; alt=&quot;rayforce&quot;&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="game" scheme="https://tyfkda.github.io/tags/game/"/>
+    
+  </entry>
+  
+  <entry>
     <title>光源サンプリングが苦手なケースでMISの効果を確認</title>
     <link href="https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html</id>
     <published>2026-01-24T13:00:00.000Z</published>
-    <updated>2026-02-06T02:23:24.123Z</updated>
+    <updated>2026-04-19T03:28:38.284Z</updated>
     
     
     <summary type="html">&lt;p&gt;多重重点的サンプリングが紹介されたVeachの論文でBRDFサンプリングが得意なケースと光源サンプリングが得意なケースを示すシーンがあるので確かめてみた。&lt;/p&gt;</summary>
@@ -40,7 +59,7 @@
     <link href="https://tyfkda.github.io/blog/2026/01/07/anisotropic-reflection.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/07/anisotropic-reflection.html</id>
     <published>2026-01-07T10:00:00.000Z</published>
-    <updated>2026-01-25T01:28:32.130Z</updated>
+    <updated>2026-02-28T00:15:26.523Z</updated>
     
     
     <summary type="html">&lt;p&gt;今まで異方性反射というのがなんなのか・必要性をあまり理解してなかったが、磨かれた金属といった質感表現に必要らしい。
@@ -76,7 +95,7 @@
     <link href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
     <id>https://tyfkda.github.io/blog/2025/12/16/light-tracing.html</id>
     <published>2025-12-16T10:00:00.000Z</published>
-    <updated>2026-02-05T09:47:08.509Z</updated>
+    <updated>2026-04-19T03:28:38.284Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光の計算&lt;/a&gt;をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
@@ -192,26 +211,6 @@
     <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
     
     <category term="probability" scheme="https://tyfkda.github.io/tags/probability/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Hexo】ギャラリープラグインを作ってみた</title>
-    <link href="https://tyfkda.github.io/blog/2025/07/08/hexo-gallery-plugin.html"/>
-    <id>https://tyfkda.github.io/blog/2025/07/08/hexo-gallery-plugin.html</id>
-    <published>2025-07-08T12:00:00.000Z</published>
-    <updated>2025-12-01T01:34:36.500Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;今さらブログを書いたところで生成AIにパクられて検索に食われるだけなのでオワコン気味ではあるが、
-ギャラリーページみたいに画像を列挙して一覧表示させたかったのでHexoのプラグインを作ってみた。&lt;/p&gt;
-&lt;p&gt;サンプル：&lt;a href=&quot;/blog/gallery/&quot;&gt;ギャラリー&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;環境：Hexo 7.3.0&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="blog" scheme="https://tyfkda.github.io/tags/blog/"/>
     
   </entry>
   

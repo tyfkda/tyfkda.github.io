@@ -232,13 +232,13 @@
 <span id="more"></span>
 
 <p>$$
-\omega_N &#x3D; e^{i 2\pi&#x2F;N}
+\omega_N &#x3D; e^{i 2\pi&#x2F;N} \tag{4.42}
 $$</p>
 <p>とすると</p>
 <p>$$
 \begin{align*}
 F_k &amp;&#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l e^{-i 2\pi kl&#x2F;N} \\
-    &amp;&#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l(\omega_N)^{-kl} \\
+    &amp;&#x3D; \frac{1}{N} \sum_{l&#x3D;0}^{N-1} f_l \omega_N^{-kl} \tag{4.44} \\
 \end{align*}
 $$</p>
 <p>&nbsp;\(\overline{\omega_N} &#x3D; \omega_N^{-1}\) より（上バーは<a href="https://ja.wikipedia.org/wiki/%E8%A4%87%E7%B4%A0%E5%85%B1%E5%BD%B9">複素数の共役</a>をあらわす）</p>
@@ -249,7 +249,7 @@ $$</p>
 <p>$$
 \begin{align*}
  &amp;&#x3D; \frac{1}{N} \overline{\overline{ \sum_{l&#x3D;0}^{N-1} f_l \overline{\omega_N^{kl} } }} \\
- &amp;&#x3D; \frac{1}{N} \overline{ \sum_{l&#x3D;0}^{N-1} \overline{f_l} \omega_N^{kl} } \\
+ &amp;&#x3D; \frac{1}{N} \overline{ \sum_{l&#x3D;0}^{N-1} \overline{f_l} \omega_N^{kl} } \tag{4.50} \\
 \end{align*}
 $$</p>
 <p>となる。</p>
@@ -296,7 +296,7 @@ $$</p>
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射に限り）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射に限り）</a></li></ul>
                 </div>
             </div>
 

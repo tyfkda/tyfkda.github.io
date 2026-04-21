@@ -314,7 +314,7 @@ Blinn-PhongのBRDFといわれるものを使ってもうまくいかず。
 <li>鏡面反射や透過材質はレイのトレース時は完全に滑らかな反射・屈折で、カメラに接続する際だけブレを入れている</li>
 <li>smallptの変更が必要な項目：<ul>
 <li>カメラが実際には壁の奥にいてプライマリレイを飛ばす際に補正しているという問題があるので、<code>Frnt</code>の壁の<code>+170</code>を<code>+296</code>にする</li>
-<li>光源が天井を貫く巨大な球になっていて都合が悪いので、smallptのexplit版と同様に室内に収まる小さな球に変更する</li>
+<li>光源が天井を貫く巨大な球になっていて都合が悪いので、smallptのexplicit版と同様に室内に収まる小さな球に変更する</li>
 <li><code>Vec</code>クラスに<code>length</code>メソッドを追加、<code>norm</code>メソッドを副作用なしに、<code>cross</code>メソッドを<code>const</code>に</li>
 </ul>
 </li>
@@ -412,7 +412,7 @@ $$</p>
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射に限り）</a></li><li class="recent_post"><a href="/blog/2025/11/29/virtual-inheritance-impl.html">【C++】仮想継承はどう実現されるか？</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射に限り）</a></li></ul>
                 </div>
             </div>
 

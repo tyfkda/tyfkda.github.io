@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="レイフォースという昔のシューティングゲームでは、通常ショットの他にロックオンレーザーという武器を使って攻撃する。
+ロックオンした数に応じてスコアが倍々になるという爽快感と、ロックを貯めてる間は敵が生きているため攻撃されるリスクとのジレンマという戦略性の楽しみがあった。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="レイフォースのロックオンレーザーの挙動"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>レイフォースのロックオンレーザーの挙動 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2026/04/21/lockon-laser.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>レイフォースのロックオンレーザーの挙動</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2026-04-21
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/game/">#game</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>レイフォースという昔のシューティングゲームでは、通常ショットの他にロックオンレーザーという武器を使って攻撃する。
+ロックオンした数に応じてスコアが倍々になるという爽快感と、ロックを貯めてる間は敵が生きているため攻撃されるリスクとのジレンマという戦略性の楽しみがあった。</p>
+<p><img src="/assets/rayforce.webp" alt="rayforce"></p>
+<span id="more"></span>
+
+<p>ということはさておき、ロックオンレーザーのホーミング挙動を再現したい。</p>
+<h2 id="前口上"><a href="#前口上" class="headerlink" title="前口上"></a>前口上</h2><p>レイフォースはプレイ・グラフィック・ストーリー・サウンド・演出どれもよくできていて不朽の名作だ。
+その中でも一番の特徴として<strong>ロックオンレーザー</strong>がある。
+ロックオンレーザー（以降レーザー）はゲームプレイの戦略そのものに関わっていて、ゲームの中核といえる。</p>
+<p>そんな重要度もさることながら、軌跡が綺麗でとてもそそられる。
+レーザーは自機の後方からいったん後ろに向かって発射され、ターゲットに一直線に向かうのではなく曲線を描いて回り込むように動く。
+この挙動がとても綺麗でどう動いているのかが興味深く不思議だった。</p>
+<p>どうにか挙動を再現できないかと目コピであれこれ適当に自分で計算式をいじってみたけど全然ダメだった。
+なんとか挙動を再現すべく、最終手段としてアーケード基板のバイナリを解析することにした。</p>
+<h2 id="解析結果"><a href="#解析結果" class="headerlink" title="解析結果"></a>解析結果</h2><p>あれこれ解析した結果、ある程度挙動を把握できた。基本的な情報：</p>
+<ul>
+<li>画面解像度：<code>240x320</code></li>
+<li>フレームレート：<code>60</code>固定</li>
+<li>ゲーム内座標系：XYZ&#x3D;右上奥、画面中心が<code>XY(0, 0)</code></li>
+<li>角度：一周<code>256</code>で管理</li>
+<li>透視投影：視点が<code>(0,0,-256)</code>から<code>Z+</code>方向に見て、<code>Z=0</code>が画面上で等倍となる画角</li>
+</ul>
+<h3 id="発射時：初期速度"><a href="#発射時：初期速度" class="headerlink" title="発射時：初期速度"></a>発射時：初期速度</h3><ul>
+<li>初期角度：開始角度＋増分*インデックス（例：8本同時発射の場合 <code>0x16 + 0x0c * i</code>）</li>
+<li>初期仰角：<code>0xa0</code>（Z方向に上昇方向に初期の向きが設定される）</li>
+<li>初速：<code>18</code></li>
+<li>複数ロックは1フレームずつずらして発射される</li>
+</ul>
+<h3 id="ホーミングの挙動"><a href="#ホーミングの挙動" class="headerlink" title="ホーミングの挙動"></a>ホーミングの挙動</h3><p>大まかにいうと「ターゲット方向に向かう目的速度と現在の速度との線形補間」になる。
+具体的には現在の位置\(\vec{p}\)からターゲット位置\(\vec{q}\)へのベクトルを\(\vec{d} (&#x3D; \vec{q} - \vec{p})\)とすると、新しい速度は</p>
+<p>$$
+\vec{v}_{new} &#x3D; \vec{v} + \left( c \cdot \frac{\vec{d}}{|\vec{d}|} - \vec{v} \right) \cdot \alpha
+$$</p>
+<p>となる。
+\(c\) が目的速度（レイフォースでは<code>48</code>）、\(\alpha\)がブレンド率
+（一定ではなく発射から12フレームは<code>1/16</code>、それ以降はXYが<code>1/32</code>、Zが<code>1/64</code>）。</p>
+<ul>
+<li>実際のコードではベクトルの正規化ではなく角度を求めた上でサイン・コサインをテーブル参照で求めて算出</li>
+</ul>
+<h3 id="着弾"><a href="#着弾" class="headerlink" title="着弾"></a>着弾</h3><ul>
+<li>ターゲットとの距離が12ピクセル未満になった場合、着弾と判定される</li>
+<li>着弾後はよりターゲット位置に収束する挙動に変更：
+\(\vec{v}_{new} &#x3D; \vec{v} + \frac{1}{2} (\frac{1}{2}\vec{d} - \vec{v}) \)</li>
+<li>14フレーム後に終了</li>
+</ul>
+<h3 id="離脱"><a href="#離脱" class="headerlink" title="離脱"></a>離脱</h3><ul>
+<li>着弾までの間に自機が死んだり敵がショットで破壊された場合、ターゲットからそれる挙動になる</li>
+<li>目的の角度にランダムの値がセットされる</li>
+<li>画面外になって11フレームで終了</li>
+</ul>
+<h3 id="空撃ち時"><a href="#空撃ち時" class="headerlink" title="空撃ち時"></a>空撃ち時</h3><ul>
+<li>ロックしてない状態でボタンを押すと空撃ちで発射される</li>
+<li>発射時にターゲット座標が<code>(発射時の自機X, 0xa00, 0x40)</code>、初期角度にランダムに<code>-3~+4</code>、仰角が<code>0x7c</code>固定</li>
+<li>発射後の挙動はホーミングと同じ</li>
+</ul>
+<h2 id="デモ"><a href="#デモ" class="headerlink" title="デモ"></a>デモ</h2><div style="width:100%; aspect-ratio:0.71"><!--aspect-ratio:0.75 + 49px--><iframe src="https://openprocessing.org/sketch/2921807/embed/" style="display:block; width:100%; height:100%; border:1px solid black; border-radius:8px"></iframe></iframe></div>
+
+<ul>
+<li>長押し→リリースでロックオン発射、クリックで空撃ち</li>
+<li>シフトキー押しながらで自機移動、QZでターゲット高低移動</li>
+<li>ホーミング中にXで離脱</li>
+<li>Pでポーズ（トグル）、Sでステップ実行</li>
+</ul>
+<h2 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h2><ul>
+<li>案外シンプルなアルゴリズムであった…これを推測できない己が悲しい</li>
+<li>実際のコードでは固定小数点8ビットで扱っているが、現代ではなんも考えずに浮動小数点数を使える…気楽なもんだ</li>
+<li>２点間の角度と距離の算出：64x64で角度と距離が各1バイトのテーブル参照</li>
+<li>R-GRAY2の挙動も調べたいね</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2026/01/24/glossy-mis.html">前：光源サンプリングが苦手なケースでMISの効果を確認<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2020/09/17/galangua.html" title="【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた" rel="bookmark">【Rust】捕獲された自機を取り返してパワーアップするシューティングゲームを作ってみた</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2008/09/21/hs-tetris.html" title="Haskell で○トリス作った" rel="bookmark">Haskell で○トリス作った</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2025/01/13/jelly-solver.html" title="激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）" rel="bookmark">激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li><li class="recent_post"><a href="/blog/2025/12/16/light-tracing.html">ライトトレーシングが完全に一致した（拡散反射に限り）</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2026 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
