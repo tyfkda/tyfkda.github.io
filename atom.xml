@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2026-04-21T06:41:57.622Z</updated>
+  <updated>2026-05-05T23:36:02.651Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://tyfkda.github.io/blog/2026/04/21/lockon-laser.html"/>
     <id>https://tyfkda.github.io/blog/2026/04/21/lockon-laser.html</id>
     <published>2026-04-21T10:00:00.000Z</published>
-    <updated>2026-04-21T06:41:57.622Z</updated>
+    <updated>2026-05-05T23:36:02.651Z</updated>
     
     
     <summary type="html">&lt;p&gt;レイフォースという昔のシューティングゲームでは、通常ショットの他にロックオンレーザーという武器を使って攻撃する。
@@ -40,7 +40,7 @@
     <link href="https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html</id>
     <published>2026-01-24T13:00:00.000Z</published>
-    <updated>2026-04-19T03:28:38.284Z</updated>
+    <updated>2026-05-05T23:36:02.636Z</updated>
     
     
     <summary type="html">&lt;p&gt;多重重点的サンプリングが紹介されたVeachの論文でBRDFサンプリングが得意なケースと光源サンプリングが得意なケースを示すシーンがあるので確かめてみた。&lt;/p&gt;</summary>
@@ -95,7 +95,7 @@
     <link href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
     <id>https://tyfkda.github.io/blog/2025/12/16/light-tracing.html</id>
     <published>2025-12-16T10:00:00.000Z</published>
-    <updated>2026-04-19T03:28:38.284Z</updated>
+    <updated>2026-05-05T23:35:02.757Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光の計算&lt;/a&gt;をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
