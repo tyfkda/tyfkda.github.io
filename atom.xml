@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2026-05-05T23:36:02.651Z</updated>
+  <updated>2026-05-18T14:42:47.892Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,27 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>NANDだけを使ってCPUを実装！</title>
+    <link href="https://tyfkda.github.io/blog/2026/05/18/nand-cpu.html"/>
+    <id>https://tyfkda.github.io/blog/2026/05/18/nand-cpu.html</id>
+    <published>2026-05-18T14:00:00.000Z</published>
+    <updated>2026-05-18T14:42:47.892Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://amzn.to/2Cby72S&quot;&gt;コンピュータシステムの理論と実装&lt;/a&gt;という、NANDゲートだけを組み合わせて最終的にテトリスを実装するという本があって、それに習ってCPUを実装してみた。
+以前&lt;a href=&quot;/blog/2018/10/13/nand-alu.html&quot; title=&quot;NANDでALUを実装&quot;&gt;ALUまで作った&lt;/a&gt;ので、その続き（8年越し！）&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>レイフォースのロックオンレーザーの挙動</title>
     <link href="https://tyfkda.github.io/blog/2026/04/21/lockon-laser.html"/>
     <id>https://tyfkda.github.io/blog/2026/04/21/lockon-laser.html</id>
     <published>2026-04-21T10:00:00.000Z</published>
-    <updated>2026-05-05T23:36:02.651Z</updated>
+    <updated>2026-05-12T04:22:43.594Z</updated>
     
     
     <summary type="html">&lt;p&gt;レイフォースという昔のシューティングゲームでは、通常ショットの他にロックオンレーザーという武器を使って攻撃する。
@@ -40,7 +56,7 @@
     <link href="https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/24/glossy-mis.html</id>
     <published>2026-01-24T13:00:00.000Z</published>
-    <updated>2026-05-05T23:36:02.636Z</updated>
+    <updated>2026-05-12T04:22:43.592Z</updated>
     
     
     <summary type="html">&lt;p&gt;多重重点的サンプリングが紹介されたVeachの論文でBRDFサンプリングが得意なケースと光源サンプリングが得意なケースを示すシーンがあるので確かめてみた。&lt;/p&gt;</summary>
@@ -59,7 +75,7 @@
     <link href="https://tyfkda.github.io/blog/2026/01/07/anisotropic-reflection.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/07/anisotropic-reflection.html</id>
     <published>2026-01-07T10:00:00.000Z</published>
-    <updated>2026-02-28T00:15:26.523Z</updated>
+    <updated>2026-05-12T04:22:43.587Z</updated>
     
     
     <summary type="html">&lt;p&gt;今まで異方性反射というのがなんなのか・必要性をあまり理解してなかったが、磨かれた金属といった質感表現に必要らしい。
@@ -77,7 +93,7 @@
     <link href="https://tyfkda.github.io/blog/2026/01/04/photon-mapping-final-gathering.html"/>
     <id>https://tyfkda.github.io/blog/2026/01/04/photon-mapping-final-gathering.html</id>
     <published>2026-01-04T14:00:00.000Z</published>
-    <updated>2026-01-25T01:28:32.133Z</updated>
+    <updated>2026-05-12T04:22:43.599Z</updated>
     
     
     <summary type="html">&lt;p&gt;相当昔に&lt;a href=&quot;/blog/2009/10/15/smallpm.html&quot; title=&quot;smallpm - Global Illumination in 132 lines of C++&quot;&gt;フォトンマッピング&lt;/a&gt;を動かしたことがあるが、放射するフォトン数が少ないと斑点ノイズが発生してしまっていた。
@@ -95,7 +111,7 @@
     <link href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
     <id>https://tyfkda.github.io/blog/2025/12/16/light-tracing.html</id>
     <published>2025-12-16T10:00:00.000Z</published>
-    <updated>2026-05-05T23:35:02.757Z</updated>
+    <updated>2026-05-12T04:22:43.594Z</updated>
     
     
     <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光の計算&lt;/a&gt;をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
@@ -188,29 +204,6 @@
     
     
     <category term="compiler" scheme="https://tyfkda.github.io/tags/compiler/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>パストレーサーで直接光計算（重点的サンプリング、合成pdf）</title>
-    <link href="https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html"/>
-    <id>https://tyfkda.github.io/blog/2025/07/24/pt-direct-lighting.html</id>
-    <published>2025-07-24T03:00:00.000Z</published>
-    <updated>2026-01-23T00:10:08.559Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;ナイーブなパストレーサーは反射時にランダムな方向にトレースするため、たまたま光源に辿り着かない限り明かりに照らされず、ノイズを減らすにはかなりサンプル数を上げる必要がある。
-これを明示的に光源計算することで改善できる。&lt;/p&gt;
-&lt;div style=&quot;text-align:center&quot;&gt;
-&lt;img src=&quot;/assets/pt-direct-lighting-dl1000.webp&quot; alt=&quot;直接光計算したパストレーサー&quot; style=&quot;width:90%&quot; /&gt;
-&lt;/div&gt;</summary>
-    
-    
-    
-    
-    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
-    
-    <category term="probability" scheme="https://tyfkda.github.io/tags/probability/"/>
     
   </entry>
   

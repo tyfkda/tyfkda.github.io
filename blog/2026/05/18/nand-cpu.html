@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="コンピュータシステムの理論と実装という、NANDゲートだけを組み合わせて最終的にテトリスを実装するという本があって、それに習ってCPUを実装してみた。
+以前ALUまで作ったので、その続き（8年越し！）">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="NANDだけを使ってCPUを実装！"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>NANDだけを使ってCPUを実装！ - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2026/05/18/nand-cpu.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>NANDだけを使ってCPUを実装！</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2026-05-18
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p><a href="https://amzn.to/2Cby72S">コンピュータシステムの理論と実装</a>という、NANDゲートだけを組み合わせて最終的にテトリスを実装するという本があって、それに習ってCPUを実装してみた。
+以前<a href="/blog/2018/10/13/nand-alu.html" title="NANDでALUを実装">ALUまで作った</a>ので、その続き（8年越し！）</p>
+<span id="more"></span>
+
+<ul>
+<li>書籍は第２版が出版されたが、参照してるのは古い版</li>
+</ul>
+<h2 id="成果物"><a href="#成果物" class="headerlink" title="成果物"></a>成果物</h2><p><a href="http://localhost:4000/assets/logiccircuit/cpu/">ページを開く</a></p>
+<div style="width:100%; height:480px; overflow-x:scroll"><iframe src="/assets/logiccircuit/cpu/index.html" width="1202" height="902" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" style="display:block; margin:0 auto"></iframe></div>
+
+<ul>
+<li>プログラムは書籍の図4-2、1から100までの合計を求めるもの</li>
+<li>CLK（クロック）のボタン押下でステップ実行<ul>
+<li>OSC（オシレータ）につなぎ直すことで自動実行も可能</li>
+</ul>
+</li>
+<li>CPUをダブルクリックで内容を見れる</li>
+<li>アセンブルした.hackファイルをロードできる</li>
+</ul>
+<h2 id="レジスタとメモリ"><a href="#レジスタとメモリ" class="headerlink" title="レジスタとメモリ"></a>レジスタとメモリ</h2><p>ALU（算術論理演算装置）は組み合わせ回路なのである意味シンプルだった。
+でもそれだけだとデータを記憶させることができないため、計算を積み重ねられない。
+それを可能にするのが順序回路で、フリップフロップを用いることができる。</p>
+<p>実際にはNOR論理ゲートを組み合わせてRSフリップフロップを再現できる。
+それを使ってDフリップフロップ（レベルトリガ、エッジトリガ）、それを複数にまとめてレジスタやメモリ(RAM)を作る。</p>
+<ul>
+<li>書籍の「３章　順序回路」で説明<ul>
+<li>D型フリップフロップを「この複雑さは抽象化して取り扱うことにした」として、実装まで踏み込まないのが不満だ</li>
+</ul>
+</li>
+</ul>
+<h2 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h2><p>レジスタやメモリを扱えるようになったらさらに高度なデバイス、CPU（中央演算装置）を作ることができる。
+書籍の「５章　コンピュータアーキテクチャ」で紹介されるCPUは以下の通り：</p>
+<ul>
+<li>レジスタ：<code>A</code>と<code>D</code>の2つで、各16ビット</li>
+<li>プログラムカウンタ：15ビット</li>
+<li>命令：A命令とC命令の2つのみ<ul>
+<li>A命令：Aレジスタに直値をセット</li>
+<li>C命令：ALU演算した結果を出力先(<code>A</code>|<code>D</code>|<code>M</code>)にセットし、条件によりジャンプ<ul>
+<li><code>A</code>レジスタに代えて、<code>A</code>レジスタが指すメモリ内容(<code>M</code>)をオペランドに変更するフラグあり</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>命令用のROM領域はコードで読み書きできるRAMとは分かれている</li>
+</ul>
+<h3 id="CPUの実装"><a href="#CPUの実装" class="headerlink" title="CPUの実装"></a>CPUの実装</h3><p>書籍ではざっくりとした図とちょっとした解説だけなので、「これで実装させるのはスパルタだな〜」とちょっと怯んだ。
+でも命令タイプが2通りしかないためデコードが簡単（デコードと呼べるほどもない）：
+A命令はAレジスタにセットするだけ。
+C命令はALUがそのまま扱えるような構成になっている。</p>
+<p>命令長も１ワード固定なので命令のフェッチやプログラムカウンタの増加も固定処理となり、複雑な機構はまったくいらない。
+無条件・条件付きジャンプは条件が成り立ったらプログラムカウンタに値をセット、そうでなければインクリメントすればよい。</p>
+<p>簡単に実装できるようにうまく機能を絞った構成になっている。</p>
+<h4 id="ジャンプ処理"><a href="#ジャンプ処理" class="headerlink" title="ジャンプ処理"></a>ジャンプ処理</h4><p>ALUの計算結果がゼロか、または負かの判定結果が出力されるのでそれを使う。</p>
+<p>0より大きいかどうはか、「ゼロじゃなく、負でもない」で判定できる。
+で<code>&lt;</code>, <code>=</code>, <code>&gt;</code>の3条件が命令の<code>jump</code>3ビットで有効かどうかをそれぞれ判定して、どれか1つでも成り立つ場合にはPCの値にAをロードさせるようにする。</p>
+<h4 id="動作タイミングは？"><a href="#動作タイミングは？" class="headerlink" title="動作タイミングは？"></a>動作タイミングは？</h4><p>クロックが立ち上がる際に処理が進む際に、値の更新タイミングとかを気にする必要があるのかどうか心配だったが、実際には必要なかった。</p>
+<p>１つ前のクロックを進めた際にPCが次のアドレスに更新される。
+するとクロックを下ろす前にすでに命令メモリに入るアドレスも変わり、次の命令が読み出されることになり、デコードも処理されてALUも更新された状態になる。
+で次のクロックの立ち上がりでようやくレジスタやメモリに書き込まれるというわけ。</p>
+<p>順序回路なのはレジスタやメモリ（への書き込み）だけで、その他の回路は組み合わせ回路なので即座に反映されていて、クロックを進める前にもすでに次の状態になっているのがミソだった。</p>
+<h4 id="プログラムカウンタの仕様修正"><a href="#プログラムカウンタの仕様修正" class="headerlink" title="プログラムカウンタの仕様修正"></a>プログラムカウンタの仕様修正</h4><p>コンピュータにはリセット機能がある。
+しかしリセットを有効にするだけではダメで、クロックを進めない限りプログラムカウンタ(PC)がリセットされないという問題がある。</p>
+<p>押した瞬間にリセットしたかったのだけど１ビット記憶にエッジトリガーフリップフロップを使っていること自体が問題なので、対応するにはそこから直す必要がある。</p>
+<h2 id="ブラウザ上で動かす実装に関して"><a href="#ブラウザ上で動かす実装に関して" class="headerlink" title="ブラウザ上で動かす実装に関して"></a>ブラウザ上で動かす実装に関して</h2><p>回路のシミュレータは以前と同じsimcirjs（の改造版）を使用。</p>
+<p>すべてをNANDから組み立てる、ということでフリップフロップも回路として組むことは一応できたのだけどRAMの容量を増やすととてつもなく処理が遅くなってしまった。
+NANDから実現できることはわかったので、カスタムデバイスで実装して速度を稼ぐようにした。</p>
+<p>あとは状態を調べられるようにするために生成されたデバイスを取得できるようにして、値が変化した時のイベントリスナーを登録してレジスタの値を見れるようにした。
+プログラムカウンタから現在実行する命令が得られるので、逆アセンブルしておいた内容と合わせるようにする。
+レジスタやRAM内容も確認できるよう表示。</p>
+<h2 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h2><p>書籍ではその後、アセンブラ、バーチャルマシン、高水準言語コンパイラ、OSと、重めの内容が延々と続くんだけど、ソフトウェア部分は他でも経験あるので書籍通りにたどるのはいったん終了ってことでいいかな。</p>
+<p>いちおう「CPU」を作ったとはいえ、機能的にはまだまだなのでもう少しなんとかしたい：</p>
+<ul>
+<li>「バス」を使って多数のレジスタを扱えるように</li>
+<li>高度なアドレッシング</li>
+<li>より複雑な命令セット・可変長命令で、複数サイクル必要な命令</li>
+<li>6502？果てはRISC-V！？</li>
+</ul>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li><a href="https://www.nand2tetris.org/">https://www.nand2tetris.org/</a><ul>
+<li><a href="https://nand2tetris.github.io/web-ide/asm">Hackアセンブラ</a> 本家がオンラインで動くアセンブラを用意してくれている</li>
+</ul>
+</li>
+<li><a href="https://kazuhikoarase.github.io/simcirjs/">SimcirJS</a> ブラウザ上で動かせる回路シミュレータ<ul>
+<li><a href="https://github.com/tyfkda/simcirjs">改造したもの</a>を使ってる</li>
+</ul>
+</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2026/04/21/lockon-laser.html">前：レイフォースのロックオンレーザーの挙動<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/05/18/nand-cpu.html">NANDだけを使ってCPUを実装！</a></li><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2026 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
