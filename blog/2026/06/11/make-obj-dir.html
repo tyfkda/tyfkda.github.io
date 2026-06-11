@@ -10,8 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="レイとトーラスの交差判定はGraphics Gems IIの Intersecting a Ray with An Elliptical Torus (Cychosz, Joseph M) に、
-その中で使ってる、４次方程式を解くSolveQuarticは、Graphics Gems Iの Cubi">
+        <meta name="description" content="Makefileでオブジェクトファイルなどの中間ファイルをソースと別のディレクトリに押し込めたい派なんだけど、その際に出力先のディレクトリを生成するためのターゲットの書き方をメモ。">
     
 
     <!--Author-->
@@ -21,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="レイとトーラスの交差判定"/>
+        <meta property="og:title" content="【Makefile】中間ディレクトリを作成するターゲットの指定方法"/>
     
 
     <!--Open Graph Description-->
@@ -43,7 +42,7 @@
 
     <!-- Title -->
     
-    <title>レイとトーラスの交差判定 - Kludge Factory</title>
+    <title>【Makefile】中間ディレクトリを作成するターゲットの指定方法 - Kludge Factory</title>
 
     <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
 
@@ -68,7 +67,7 @@
     <![endif]-->
 
     <!-- Canonical link -->
-    <link rel="canonical" href="https://tyfkda.github.io/blog/2009/11/30/ray-torus-collision.html"/>
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2026/06/11/make-obj-dir.html"/>
 
     <!-- Gallery -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
@@ -92,34 +91,6 @@
     <link rel="icon" href="/favicon.ico">
     
 
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
-    <style>
-        .katex {
-            text-wrap: nowrap;
-        }
-    </style>
-
-    <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
-
-    <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
-        onload="renderMathInElement(document.body, {demiliters: [
-    // {left: '$', right: '$', display: false},
-    {left: '$$', right: '$$', display: true},
-    // {left: '\\[', right: '\\]', display: true},
-    {left: '\\(', right: '\\)', display: false},
-
-    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
-    // {left: '\\begin{align}', right: '\\end{align}', display: true},
-    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
-    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
-    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
-    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
-
-]}
-);"></script>
     
 <meta name="generator" content="Hexo 8.1.1"></head>
 
@@ -184,13 +155,13 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>レイとトーラスの交差判定</h1>
+                    <h1>【Makefile】中間ディレクトリを作成するターゲットの指定方法</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
                         
                         
-                            2009-11-30
+                            2026-06-11
                         
                     </span>
                 </div>
@@ -206,47 +177,40 @@
 
             <!-- Tags and categories -->
            
-                <div class="col-lg-4 col-md-5 post-tags">
-                    
-                        
-
-
-<a href="/tags/math/">#math</a>
-
-
-                    
-                </div>
-                <div class="col-lg-4 col-md-5 post-categories">
-                    
-                </div>
-            
 
             <!-- Gallery -->
             
 
             <!-- Post Main Content -->
             <div class="col-lg-9 col-md-9">
-                <p>レイとトーラスの交差判定は<a href="http://tog.acm.org/resources/GraphicsGems/gems.html#gemsii">Graphics Gems II</a>の <a href="http://www.cs.ualberta.ca/~graphics/books/GraphicsGems/gemsii/intersect/inttor.c">Intersecting a Ray with An Elliptical Torus</a> (Cychosz, Joseph M) に、
-その中で使ってる、４次方程式を解くSolveQuarticは、<a href="http://tog.acm.org/resources/GraphicsGems/gems.html#gems">Graphics Gems I</a>の <a href="http://tog.acm.org/resources/GraphicsGems/gems/Roots3And4.c">Cubic and Quartic Roots</a> (Schwarze, Jochen) にソースがある。</p>
-<p>法線ベクトルは偏微分を使って求めると、
-$$
-\begin{pmatrix} 4x(x^2 + y^2 + z^2 - (a^2 + b^2)) \\
-4y(x^2 + y^2 + z^2 - (a^2 + b^2) + 2a^2) \\
-4z(x^2 + y^2 + z^2 - (a^2 + b^2))
-\end{pmatrix}
-$$
-だそうだ。
-試してはない。</p>
+                <p>Makefileでオブジェクトファイルなどの中間ファイルをソースと別のディレクトリに押し込めたい派なんだけど、その際に出力先のディレクトリを生成するためのターゲットの書き方をメモ。</p>
+<span id="more"></span>
+
+<h3 id="旧手法"><a href="#旧手法" class="headerlink" title="旧手法"></a>旧手法</h3><p>今まではオブジェクトファイルを生成するルールに<code>mkdir -p obj</code>と書いて目的ディレクトリを作成するようにしていたんだけど、これだとオブジェクトのコンパイルの度に<code>mkdir</code>が試みられることになり、無駄といえば無駄：</p>
+<figure class="highlight make"><table><tr><td class="code"><pre><span class="line">SRC_DIR:=src  <span class="comment"># ソースファイル格納ディレクトリ</span></span><br><span class="line">OBJ_DIR:=obj  <span class="comment"># オブジェクトファイル出力先ディレクトリ</span></span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm -rf <span class="variable">$(OBJ_DIR)</span>  <span class="comment"># クリーン時にはオブジェクトディレクトリごと削除してしまう</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$(OBJ_DIR)</span>/%.o: <span class="variable">$(SRC_DIR)</span>/%.c</span><br><span class="line">	mkdir -p <span class="variable">$(OBJ_DIR)</span>      <span class="comment"># ここで毎回mkdirを呼び出している</span></span><br><span class="line">	<span class="variable">$(CC)</span> <span class="variable">$(CFLAGS)</span> -o <span class="variable">$@</span> <span class="variable">$&lt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="うまくいかない方法"><a href="#うまくいかない方法" class="headerlink" title="うまくいかない方法"></a>うまくいかない方法</h4><p>オブジェクトファイルの依存関係に足せばできるかと書いてみる：</p>
+<figure class="highlight make"><table><tr><td class="code"><pre><span class="line">OBJS:=...</span><br><span class="line"></span><br><span class="line"><span class="comment"># ここで依存関係を指定</span></span><br><span class="line"><span class="variable">$(OBJS)</span>:	<span class="variable">$(OBJ_DIR)</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$(OBJ_DIR)</span>:</span><br><span class="line">	mkdir <span class="variable">$(OBJ_DIR)</span></span><br></pre></td></tr></table></figure>
+
+<p>一見普通に動くんだけど再度<code>make</code>をすると<code>obj</code>ディレクトリが更新されたと判定されてしまい、すべて再ビルドになってしまう。</p>
+<h3 id="新手法"><a href="#新手法" class="headerlink" title="新手法"></a>新手法</h3><p><code>mkdir -p</code>方式で特に困ってはなかったんだけど、下記のように書けることを知った：</p>
+<figure class="highlight make"><table><tr><td class="code"><pre><span class="line"><span class="comment"># これを書き換え</span></span><br><span class="line"><span class="variable">$(OBJS)</span>: | <span class="variable">$(OBJ_DIR)</span></span><br></pre></td></tr></table></figure>
+
+<p><code>|</code>と書くと「順序依存」指定となって、ディレクトリ内部やそのもののタイムスタンプが新しくなってもオブジェクトファイルは更新対象にはならず、再ビルドを防ぐことができる。</p>
+<h3 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h3><ul>
+<li><a href="https://www.gnu.org/software/make/manual/html_node/Prerequisite-Types.html">Prerequisite Types (GNU make)</a> マニュアルに本内容ずばりそのものが書かれていた…<ul>
+<li>“Order-only prerequisites”</li>
+</ul>
+</li>
+</ul>
 
 
                 
                     <hr style="margin:48px 0 8px">
                     <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
                         
-                            <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2010/01/29/uniformgrid.html"><span class="glyphicon glyphicon-chevron-left"></span>次：ユニフォームグリッドのトラバース</a></li>
                         
-                        
-                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2009/11/22/sunset-ocean.html">前：夕日が海に反射<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2026/05/18/nand-cpu.html">前：NANDだけを使ってCPUを実装！<span class="glyphicon glyphicon-chevron-right"></span></a></li>
                         
                     </ul>
                 
@@ -260,14 +224,14 @@ $$
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/07/17/calc-asin.html" title="arcsinを数値計算する方法を探し求めて彷徨う" rel="bookmark">arcsinを数値計算する方法を探し求めて彷徨う</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/15/dft.html" title="普通の（fastじゃない）離散フーリエ変換" rel="bookmark">普通の（fastじゃない）離散フーリエ変換</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/30/division-by-invariant-integers.html" title="定数による整数除算の高速化【論文読み】" rel="bookmark">定数による整数除算の高速化【論文読み】</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/05/16/fft.html" title="高速フーリエ変換の実装" rel="bookmark">高速フーリエ変換の実装</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2023/01/15/floor-impl.html" title="floor関数を実装する" rel="bookmark">floor関数を実装する</a></h3></div></li></ul>
+                    
                 </div>
 
                 <!-- Recent posts -->
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/05/18/nand-cpu.html">NANDだけを使ってCPUを実装！</a></li><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li><li class="recent_post"><a href="/blog/2026/01/04/photon-mapping-final-gathering.html">フォトンマッピングでファイナルギャザリングを適用</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/06/11/make-obj-dir.html">【Makefile】中間ディレクトリを作成するターゲットの指定方法</a></li><li class="recent_post"><a href="/blog/2026/05/18/nand-cpu.html">NANDだけを使ってCPUを実装！</a></li><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li></ul>
                 </div>
             </div>
 
