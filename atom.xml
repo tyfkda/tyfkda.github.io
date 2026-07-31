@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2026-06-11T13:24:46.132Z</updated>
+  <updated>2026-07-31T00:03:24.673Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,29 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>3点形式でパストレーサーを動かしてみる</title>
+    <link href="https://tyfkda.github.io/blog/2026/07/30/three-point-form-pt.html"/>
+    <id>https://tyfkda.github.io/blog/2026/07/30/three-point-form-pt.html</id>
+    <published>2026-07-30T10:00:00.000Z</published>
+    <updated>2026-07-31T00:03:24.673Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;双方向パストレーシングを理解したいんだけど全体を一度に理解するのは難しい。
+ひとまず3点形式というものが必要っぽいのでナイーブなパストレのまま計算だけ3点形式でやってみる。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【Makefile】中間ディレクトリを作成するターゲットの指定方法</title>
     <link href="https://tyfkda.github.io/blog/2026/06/11/make-obj-dir.html"/>
     <id>https://tyfkda.github.io/blog/2026/06/11/make-obj-dir.html</id>
     <published>2026-06-11T12:00:00.000Z</published>
-    <updated>2026-06-11T13:24:46.132Z</updated>
+    <updated>2026-06-11T13:34:53.244Z</updated>
     
     
     <summary type="html">&lt;p&gt;Makefileでオブジェクトファイルなどの中間ファイルをソースと別のディレクトリに押し込めたい派なんだけど、その際に出力先のディレクトリを生成するためのターゲットの書き方をメモ。&lt;/p&gt;</summary>
@@ -178,30 +196,6 @@
     <category term="nes" scheme="https://tyfkda.github.io/tags/nes/"/>
     
     <category term="reinforcement learning" scheme="https://tyfkda.github.io/tags/reinforcement-learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)</title>
-    <link href="https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html"/>
-    <id>https://tyfkda.github.io/blog/2025/11/10/pt-nee-mis.html</id>
-    <published>2025-11-09T23:06:07.000Z</published>
-    <updated>2026-01-23T00:10:08.559Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;&amp;nbsp;&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光を考慮&lt;/a&gt;に入れるようにしてみたが、世に言うNext Event Estimationというのはちょっと違うっぽい。&lt;/p&gt;
-&lt;div style=&quot;text-align:center&quot;&gt;
-&lt;img src=&quot;/assets/pt-nee-mis1000.webp&quot; alt=&quot;直接光とMISしたパストレーサー&quot; style=&quot;width:90%&quot; /&gt;
-&lt;/div&gt;
-
-&lt;p&gt;640x480, 1,000サンプル&amp;#x2F;ピクセル, 1分09秒, M1MacbookAir (8コア)&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
-    
-    <category term="probability" scheme="https://tyfkda.github.io/tags/probability/"/>
     
   </entry>
   

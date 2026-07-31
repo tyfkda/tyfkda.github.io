@@ -190,7 +190,7 @@
 <figure class="highlight make"><table><tr><td class="code"><pre><span class="line">SRC_DIR:=src  <span class="comment"># ソースファイル格納ディレクトリ</span></span><br><span class="line">OBJ_DIR:=obj  <span class="comment"># オブジェクトファイル出力先ディレクトリ</span></span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm -rf <span class="variable">$(OBJ_DIR)</span>  <span class="comment"># クリーン時にはオブジェクトディレクトリごと削除してしまう</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$(OBJ_DIR)</span>/%.o: <span class="variable">$(SRC_DIR)</span>/%.c</span><br><span class="line">	mkdir -p <span class="variable">$(OBJ_DIR)</span>      <span class="comment"># ここで毎回mkdirを呼び出している</span></span><br><span class="line">	<span class="variable">$(CC)</span> <span class="variable">$(CFLAGS)</span> -o <span class="variable">$@</span> <span class="variable">$&lt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="うまくいかない方法"><a href="#うまくいかない方法" class="headerlink" title="うまくいかない方法"></a>うまくいかない方法</h4><p>オブジェクトファイルの依存関係に足せばできるかと書いてみる：</p>
-<figure class="highlight make"><table><tr><td class="code"><pre><span class="line">OBJS:=...</span><br><span class="line"></span><br><span class="line"><span class="comment"># ここで依存関係を指定</span></span><br><span class="line"><span class="variable">$(OBJS)</span>:	<span class="variable">$(OBJ_DIR)</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$(OBJ_DIR)</span>:</span><br><span class="line">	mkdir <span class="variable">$(OBJ_DIR)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight make"><table><tr><td class="code"><pre><span class="line">OBJS:=...</span><br><span class="line"></span><br><span class="line"><span class="comment"># ここで依存関係を指定</span></span><br><span class="line"><span class="variable">$(OBJS)</span>:	<span class="variable">$(OBJ_DIR)</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$(OBJ_DIR)</span>:</span><br><span class="line">	mkdir <span class="variable">$(OBJ_DIR)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># .o生成ルールから`mkdir -p`を削除</span></span><br></pre></td></tr></table></figure>
 
 <p>一見普通に動くんだけど再度<code>make</code>をすると<code>obj</code>ディレクトリが更新されたと判定されてしまい、すべて再ビルドになってしまう。</p>
 <h3 id="新手法"><a href="#新手法" class="headerlink" title="新手法"></a>新手法</h3><p><code>mkdir -p</code>方式で特に困ってはなかったんだけど、下記のように書けることを知った：</p>
@@ -208,6 +208,8 @@
                 
                     <hr style="margin:48px 0 8px">
                     <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                            <li class="previous" style="flex: 1 50%; text-align:left"><a href="/blog/2026/07/30/three-point-form-pt.html"><span class="glyphicon glyphicon-chevron-left"></span>次：3点形式でパストレーサーを動かしてみる</a></li>
                         
                         
                             <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2026/05/18/nand-cpu.html">前：NANDだけを使ってCPUを実装！<span class="glyphicon glyphicon-chevron-right"></span></a></li>
@@ -231,7 +233,7 @@
                 <div class="recent-posts">
                     <hr>
                     <h3>新着記事</h3>
-                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/06/11/make-obj-dir.html">【Makefile】中間ディレクトリを作成するターゲットの指定方法</a></li><li class="recent_post"><a href="/blog/2026/05/18/nand-cpu.html">NANDだけを使ってCPUを実装！</a></li><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li><li class="recent_post"><a href="/blog/2026/01/07/anisotropic-reflection.html">PBRマテリアルの異方性反射</a></li></ul>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/07/30/three-point-form-pt.html">3点形式でパストレーサーを動かしてみる</a></li><li class="recent_post"><a href="/blog/2026/06/11/make-obj-dir.html">【Makefile】中間ディレクトリを作成するターゲットの指定方法</a></li><li class="recent_post"><a href="/blog/2026/05/18/nand-cpu.html">NANDだけを使ってCPUを実装！</a></li><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li><li class="recent_post"><a href="/blog/2026/01/24/glossy-mis.html">光源サンプリングが苦手なケースでMISの効果を確認</a></li></ul>
                 </div>
             </div>
 
