@@ -252,7 +252,7 @@ $$</p>
 <p>$$
 G(\bm{x} \leftrightarrow \bm{x^\prime}) &#x3D; V(\bm{x} \leftrightarrow \bm{x^\prime}) \frac{|\cos(\theta_o) \cos(\theta_i^\prime)|}{||\bm{x} - \bm{x^\prime}||^2}. \tag{8.3}
 $$</p>
-<p>に含まれる\(V\)が\(\bm{x}\)と\(\bm{x^\prime}\)が遮られない場合のみ1・それ以外は0という可視判定で、それにより頂点\(\bm{x^\prime}\)から直接見える＝一番近い頂点のみが有効で、結果的に元の式と同じ内容になる。</p>
+<p>に含まれる\(V\)が\(\bm{x}\)と\(\bm{x^\prime}\)との間が遮られない場合のみ1・それ以外は0という可視判定で、それにより頂点\(\bm{x^\prime}\)から直接見える＝一番近い頂点のみが有効で、結果的に元の式と同じ内容になる。</p>
 <p>また\(G\)には注目点\(\bm{x^\prime}\)のコサイン項\(\cos(\theta_i^\prime)\)だけじゃなく、次のサンプル点\(\bm{x}\)のコサイン項\(\cos(\theta_o)\)も必要で、計算は多少煩雑になる。</p>
 <h3 id="頂点が選択される確率密度の算出方"><a href="#頂点が選択される確率密度の算出方" class="headerlink" title="頂点が選択される確率密度の算出方"></a>頂点が選択される確率密度の算出方</h3><p>対象となる頂点の選択にシーン内のすべての物体表面からランダムサンプリングするというのはまあ無駄だし意味ないので、ナイーブなパストレで行う方法と同様に半球状の方向ベクトルを選んでその方向にレイを飛ばして交差した点を対象に選ぶ。
 ただモンテカルロ積分を適用する際にサンプル点が選ばれる確率密度が必要になる。
@@ -284,7 +284,7 @@ $$</p>
 $$</p>
 <p>と距離の2乗や選択先のコサイン項がちょうど消えて、元々のナイーブなパストレで行っている計算と同じになる。</p>
 <ul>
-<li>積分変数は違うが同じ内容の計算を行っているので、当然計算結果が同じなる</li>
+<li>積分変数は違うが同じ内容の計算を行っているので、当然計算結果が同じになる</li>
 </ul>
 <h2 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h2><p>以上の3点形式を組み込んだパストレを作ってみる。
 実装は例によって<a href="https://www.kevinbeason.com/smallpt/">smallpt</a>を元にする。</p>
@@ -321,7 +321,7 @@ $$</p>
 </li>
 <li><code>mis_weight</code>でウェイト計算（パワーヒューリスティック）</li>
 <li>トレースした影響を「スループット」として掛け合わせていく（反射で徐々に減衰していく）</li>
-<li>Gと確率密度は実際のところ打ち消し合うのだけど、そもそも取り除いてしまうとなんの計算をしているのかわからなくなってしまうので残しておく<ul>
+<li>Gと確率密度は実際のところ打ち消し合うのだけど、取り除いてしまうとなんの計算をしているのかわからなくなってしまうので残しておく<ul>
 <li>ただ同じ値を掛けて割ってるだけなので単に精度が落ちるだけだが、いちおう理解の補助として…</li>
 <li>Gや確率密度の計算には次の頂点が必要</li>
 </ul>
@@ -330,7 +330,7 @@ $$</p>
 </ul>
 <h2 id="あとがき"><a href="#あとがき" class="headerlink" title="あとがき"></a>あとがき</h2><ul>
 <li>計算内容的には普通のパストレと同じだけど、計算方法を変えることで多少は意味がわかるようになった</li>
-<li>角度方式だと占める立体角を計算するのもサンプルを生成するのも難しいが、経路方式だと対象の面積を計算したりサンプル可能なので、その点が重要なんだと思う</li>
+<li>角度方式だと占める立体角を計算するのもサンプルを生成するのも難しいが、3点形式だと対象の面積を計算したりサンプル可能なので、その点が重要なんだと思う</li>
 <li>また角度と頂点の両方式で確率密度を変換できる</li>
 </ul>
 
@@ -354,7 +354,7 @@ $$</p>
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2026/01/07/anisotropic-reflection.html" title="PBRマテリアルの異方性反射" rel="bookmark">PBRマテリアルの異方性反射</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2026/01/07/anisotropic-reflection.html" title="PBRマテリアルの異方性反射" rel="bookmark">PBRマテリアルの異方性反射</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
