@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="双方向パストレーシングの理解のためレンダリング方程式を3点形式で扱ってみたが、
+次のステップとして経路積分の動作確認したい。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="光源・視点双方からの経路を接続するパストレーサー（経路積分）"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>光源・視点双方からの経路を接続するパストレーサー（経路積分） - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2026/08/26/path-integral-pt.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>光源・視点双方からの経路を接続するパストレーサー（経路積分）</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2026-08-26
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/graphics/">#graphics</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>双方向パストレーシングの理解のためレンダリング方程式を<a href="/blog/2026/07/30/three-point-form-pt.html" title="3点形式でパストレーサーを動かしてみる">3点形式</a>で扱ってみたが、
+次のステップとして経路積分の動作確認したい。</p>
+<span id="more"></span>
+
+<ul>
+<li>参考：Eric Veachの<strong>Robust Monte Carlo Methods for Light Transport Simulation</strong>、<a href="https://graphics.stanford.edu/courses/cs348b-03/papers/veach-chapter8.pdf">8章 光輸送の経路積分公式化</a></li>
+</ul>
+<h2 id="レンダリング方程式の展開"><a href="#レンダリング方程式の展開" class="headerlink" title="レンダリング方程式の展開"></a>レンダリング方程式の展開</h2><p>レンダリング方程式を3点形式で書き下したもの（<a href="/blog/2026/07/30/three-point-form-pt.html" title="3点形式でパストレーサーを動かしてみる">式(8.1)</a>の\(\prime\)を下付き数字に変更）：</p>
+<p>$$
+\begin{align*}
+L(\bm{x_1} \to \bm{x_0}) &#x3D;&amp; L_e(\bm{x_1} \to \bm{x_0}) + \\ &amp; \int_{\mathcal{M}} L(\bm{x_2} \to \bm{x_1}) f_r(\bm{x_2} \to \bm{x_1} \to \bm{x_0}) G(\bm{x_2} \leftrightarrow \bm{x_1}) dA(\bm{x_2})
+\end{align*}
+$$</p>
+<p>この式の意味としては、\(\bm{x_1}\)から\(\bm{x_0}\)に入射する放射輝度\(L(\bm{x_1} \to \bm{x_0})\)は、\(\bm{x_1}\)からの放射\(L_e(\bm{x_1} \to \bm{x_0})\)と、\(\bm{x_1}\)で\(\bm{x_0}\)に向かう反射で表せる。
+注意点として、\(L_e\)はその注目点が光源だった場合にのみ値を持ち、そうでない場合は0なので項としては無視できる。</p>
+<p>いったん省略として\(K_i &#x3D; f_r(\bm{x_i} \to \bm{x_{i-1}} \to \bm{x_{i-2}}) G(\bm{x_i} \leftrightarrow \bm{x_{i-1}})\)（引数表記を省略してるけど\(\bm{x_i}, \bm{x_{i-1}}, \bm{x_{i-2}}\)を引数とする関数）、
+\(dA_i &#x3D; dA(\bm{x_i})\)と記述することにして、\(L\)が再帰的になっているのを展開してみる：</p>
+<p>$$
+\begin{align*}
+&amp;&amp;&amp;L(\bm{x_1} \to \bm{x_0}) \\
+&amp;&#x3D;&amp;&amp; L_e(\bm{x_1} \to \bm{x_0}) + \\
+&amp; &amp;&amp; \int_{\mathcal{M}} L(\bm{x_2} \to \bm{x_1}) K_2 dA_2 \\
+&amp;&#x3D;&amp;&amp; L_e(\bm{x_1} \to \bm{x_0}) + \\
+&amp; &amp;&amp; \int_{\mathcal{M}} \left( L_e(\bm{x_2} \to \bm{x_1}) + \int_{\mathcal{M}} L(\bm{x_3} \to \bm{x_2}) K_3 dA_3 \right) K_2 dA_2 \\
+&amp;&#x3D;&amp;&amp; L_e(\bm{x_1} \to \bm{x_0}) + \\
+&amp; &amp;&amp; \int_{\mathcal{M}} L_e(\bm{x_2} \to \bm{x_1}) K_2 dA_2 + \\
+&amp; &amp;&amp; \int_{\mathcal{M}} \int_{\mathcal{M}} L(\bm{x_3} \to \bm{x_2}) K_3 dA_3 K_2 dA_2 \\
+&amp;&#x3D;&amp;&amp; L_e(\bm{x_1} \to \bm{x_0}) + \\
+&amp; &amp;&amp; \int_{\mathcal{M}} L_e(\bm{x_2} \to \bm{x_1}) K_2 dA_2 + \\
+&amp; &amp;&amp; \int_{\mathcal{M}} \int_{\mathcal{M}} L_e(\bm{x_3} \to \bm{x_2}) K_3 dA_3 K_2 dA_2 + \\
+&amp; &amp;&amp; \int_{\mathcal{M}} \int_{\mathcal{M}} \int_{\mathcal{M}} L(\bm{x_4} \to \bm{x_3}) K_4 dA_4 K_3 dA_3 K_2 dA_2 \\
+&amp;&#x3D;&amp;&amp; \cdots \\
+\end{align*}
+$$</p>
+<p>といった具合にどこまでも展開できる。
+一般化すれば、</p>
+<p>$$
+\sum_{k&#x3D;1}^\infty \underbrace{\int_{\mathcal{M}} \cdots \int_{\mathcal{M}}}_{k-1} L_e(\bm{x_k} \to \bm{x_{k-1}}) \underbrace{K_k dA_k \cdots K_2 dA_2}_{k-1}
+$$</p>
+<p>となる。
+ここでのシグマの項＝積分の深さごとに分かれた各項は「光源から放射された光が\(k-1\)回反射されて視点に届く経路」に対応する。
+すべての項を足し合わせることで、シーン内のあらゆる経路・すべての反射回数の経路の影響を取り込んでいる。</p>
+<ul>
+<li>このことによって光の影響を反射回数ごとに分けて計算できる、ということを以降で利用する</li>
+</ul>
+<h2 id="経路積分形式化"><a href="#経路積分形式化" class="headerlink" title="経路積分形式化"></a>経路積分形式化</h2><p>ここで\(\bar{x}_k\)が頂点列\(\bm{x_0} \bm{x_1} \cdots \bm{x_k}\)で構成される長さ\(k\)の経路とする。
+この経路自体を積分変数として、積分範囲\(\Omega_k\)が長さ\(k\)のすべての経路とすれば、先ほどの式は</p>
+<p>$$
+\sum_{k&#x3D;1}^\infty \int_{\Omega_k} L_e(\bm{x_k} \to \bm{x_{k-1}}) \left( \prod_{i&#x3D;2}^k K_i \right) d\mu(\bar{x}_k)
+$$</p>
+<p>と表せる。
+これを<strong>経路積分</strong>と呼ぶ。</p>
+<ul>
+<li><em>面積−積測度</em>とか出てきて数学的に厳密にやるには必要なんだろうけど、自分みたいな場合には「頂点列を積分単位として扱える」程度の理解で大丈夫</li>
+</ul>
+<h3 id="経路の確率密度"><a href="#経路の確率密度" class="headerlink" title="経路の確率密度"></a>経路の確率密度</h3><p>経路積分で表した式の解をモンテカルロ法で求める際に、サンプルした経路の確率密度が必要になる。
+確率密度はその頂点の求め方によって計算できる：</p>
+<ul>
+<li>反射特性に基づく、反射方向の選択：角度の確率密度から面積のものに変換（<a href="/blog/2026/07/30/three-point-form-pt.html" title="3点形式でパストレーサーを動かしてみる">3点形式</a>での式(8.10)）</li>
+<li>光源上の任意の点：面積の逆数</li>
+<li>経路同士の接続：お互いの確率密度を乗算</li>
+</ul>
+<p>経路が頂点列から構成されるが、それぞれの頂点の確率密度を乗算して求める。</p>
+<h2 id="経路積分でのパストレーシング実装方針"><a href="#経路積分でのパストレーシング実装方針" class="headerlink" title="経路積分でのパストレーシング実装方針"></a>経路積分でのパストレーシング実装方針</h2><p>論文を読み進めてきてここらで動作確認させたいと思ったが、当初所定の確率密度となるような経路をどのように生成したらいいのかわからず双方向パストレまで持っていかないとできないんじゃないかと思って途方に暮れたけど、ふと多重重点的サンプリングを使わずにできるんじゃないかと思ったのでやってみることにした。</p>
+<p>手順としては、</p>
+<ol>
+<li>経路長をランダムに決定</li>
+<li>光源からと視点からの2つの部分経路の、双方の頂点数を決める</li>
+<li>双方を始点から順にシーンを所定の反射回数追跡して部分経路を生成</li>
+<li>双方をつないで望みの経路長の経路を得る</li>
+</ol>
+<p>双方向パストレでは部分経路の終端同士以外にもあらゆる組み合わせを考慮することで効率的にサンプルするが、ここでは終端同士のみをつないだ経路1つだけを生成して、それに対する確率密度を計算してやる。
+そうすることで生成した経路の確率密度が得られ、モンテカルロ法で計算できる。</p>
+<h3 id="経路長の選択"><a href="#経路長の選択" class="headerlink" title="経路長の選択"></a>経路長の選択</h3><p>経路長は乱数で決定する。
+適当に上限をつけて例えば100までとしても、一様乱数だと寄与が少ないであろう長い経路が選ばれる確率もそこそこ高く無駄が気になってしまう。
+そこで確率\(p\)で0、そうでなかったら残りの\(1-p\)のうちの\(p\)で1、さらに残りのうちの\(p\)で2、…という具合に長さに従って確率が下げるようにしたい。</p>
+<p>それには幾何分布というのを使うといいらしい。
+0.0以上1.0未満の乱数\(\xi\)を使って、</p>
+<p>$$
+k &#x3D; \lfloor \frac{\log \xi}{\log (1 - p)} \rfloor
+$$</p>
+<p>で求められる。
+その場合に、その経路長が発生する確率は</p>
+<p>$$
+(1 - p)^k \cdot p
+$$</p>
+<p>となる。</p>
+<ul>
+<li>実際には光源と視点それぞれ最低1頂点ずつ計2頂点以上とする</li>
+<li>この記事では経路長（＝エッジ数）と頂点数を混ぜこぜで書いてしまっているが、ほとんど頂点数のことを指す</li>
+</ul>
+<h3 id="部分経路同士の接続"><a href="#部分経路同士の接続" class="headerlink" title="部分経路同士の接続"></a>部分経路同士の接続</h3><p>光源からと視点から追跡した部分経路の終端同士を結ぶことにより1つの経路を生成する。</p>
+<p>注意点としては、それぞれの終端が拡散面（スペキュラ反射面ではない）の必要があるということだ。
+スペキュラ反射面は入射した光の反射方向が１方向しかないデルタ関数となってしまうため、頂点を結んだ方向への反射率が0になってしまい寄与が与えられないので（ただし例外あり：後述）、その場合は結べないものとして除外する。</p>
+<p>接続して得られた経路の確率密度は、部分経路それぞれの確率密度の単純な積で求められる。</p>
+<p>接続時の係数としては、光源側から辿ってきた光が接続方向に反射する割合(BRDF)、2点間の係数（<a href="/blog/2026/07/30/three-point-form-pt.html" title="3点形式でパストレーサーを動かしてみる">3点形式</a>の式(8.3) 幾何項\(G\)）、そして接続方向から視点側部分経路への方向に反射する割合(BRDF)を掛け合わせることで求める。</p>
+<h4 id="視点自体には接続しない"><a href="#視点自体には接続しない" class="headerlink" title="視点自体には接続しない"></a>視点自体には接続しない</h4><p>今回は視点の開始位置は部分経路には含めず、光源部分経路と直接結びつけないことにする。
+ナイーブなパストレでのプライマリレイと同様にピクセルに対する一次レイでヒットした交点を視点側の最初の頂点とする。</p>
+<p>そうすることでピクセルに関する積分を求めるだけになり、複雑にならずに済ます。</p>
+<h4 id="経路接続により生成される経路の制約"><a href="#経路接続により生成される経路の制約" class="headerlink" title="経路接続により生成される経路の制約"></a>経路接続により生成される経路の制約</h4><p>接続する頂点は非スペキュラ面に限ったので、部分経路を接続して生成できる経路には拡散面が続く頂点列を含む経路しか生成できないことになる。</p>
+<p>また視点自体は頂点には含めないので、視点から直接光源を見るという経路も扱えない。</p>
+<p>そういった問題を解消するために一定の割合でナイーブな（経路接続しない）パストレを行う。
+拡散面が連続した場合には寄与なしとして扱い、スペキュラ面や単発の拡散面のみを辿って光源までたどり着いた経路だけを評価する。</p>
+<p>こうすることで両手法で同じ経路をサンプルすることがなく排他であるため、組み合わせることで正しく描画できる。</p>
+<h3 id="部分経路探索時に光源にたどり着いた場合"><a href="#部分経路探索時に光源にたどり着いた場合" class="headerlink" title="部分経路探索時に光源にたどり着いた場合"></a>部分経路探索時に光源にたどり着いた場合</h3><p>ここでは光源から視点までの、反射回数ごとにわけられたあらゆる経路をサンプリングしようとしている。
+その際に部分経路の探索でたまたま光源にたどり着いてしまった場合にはどうするか？</p>
+<p>結論としては、所定の経路長が得られなかったものとして寄与を0（なし）とする（サンプルの引き直しは行わない）。</p>
+<h2 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h2><p>例によってベースは<a href="https://www.kevinbeason.com/smallpt/">smallpt</a>。</p>
+<h3 id="traceScene-経路をいったんバッファに記録する"><a href="#traceScene-経路をいったんバッファに記録する" class="headerlink" title="traceScene: 経路をいったんバッファに記録する"></a>traceScene: 経路をいったんバッファに記録する</h3><p>ある程度は<a href="/blog/2026/07/30/three-point-form-pt.html" title="3点形式でパストレーサーを動かしてみる">3点形式</a>のときと同じだけど、いくつか重要な変更を加えた：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Vertex</span> &#123;</span><br><span class="line">  Vec p, n, e, c;  <span class="comment">// 交点、法線、放射輝度、アルベド</span></span><br><span class="line">  Refl_t refl;     <span class="comment">// 反射タイプ (DIFF, SPEC, REFR)</span></span><br><span class="line">  <span class="type">double</span> pdf;      <span class="comment">// この頂点が選ばれた確率密度（面積ー測度）</span></span><br><span class="line">  <span class="built_in">Vertex</span>(Vec p_, Vec n_, Vec e_, Vec c_, Refl_t refl_, <span class="type">double</span> pdf_=<span class="number">1</span>)</span><br><span class="line">    : <span class="built_in">p</span>(p_), <span class="built_in">n</span>(n_), <span class="built_in">e</span>(e_), <span class="built_in">c</span>(c_), <span class="built_in">refl</span>(refl_), <span class="built_in">pdf</span>(pdf_) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">traceScene</span><span class="params">(Ray r, <span class="type">unsigned</span> <span class="type">short</span> *Xi, vector&lt;Vertex&gt;* path, <span class="type">double</span> initialPdfOmega, <span class="type">int</span> maxDepth)</span></span>&#123;</span><br><span class="line">  <span class="type">double</span> pdfOmega = initialPdfOmega;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> depth = <span class="number">0</span>; depth &lt; maxDepth; ) &#123;</span><br><span class="line">    <span class="type">double</span> t; <span class="type">int</span> id=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">intersect</span>(r, t, id)) <span class="keyword">break</span>;</span><br><span class="line">    <span class="type">const</span> Sphere &amp;obj = spheres[id];        <span class="comment">// the hit object</span></span><br><span class="line">    Vec x=r.o+r.d*t, n=(x-obj.p).<span class="built_in">norm</span>(), nl=n.<span class="built_in">dot</span>(r.d)&lt;<span class="number">0</span>?n:n*<span class="number">-1</span>;</span><br><span class="line">    <span class="type">double</span> pdfArea = <span class="built_in">isinf</span>(pdfOmega) ? <span class="number">1.0</span> : pdfOmega * -nl.<span class="built_in">dot</span>(r.d) / (t * t);</span><br><span class="line">    path-&gt;<span class="built_in">emplace_back</span>(x, nl, obj.e, obj.c, obj.refl, pdfArea);</span><br><span class="line">    <span class="keyword">if</span> (obj.e.x + obj.e.y + obj.e.z &gt; <span class="number">0</span>) &#123;  <span class="comment">// 光源に到達した場合は終了</span></span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ++depth;  <span class="comment">// ロシアンルーレットなし</span></span><br><span class="line">    <span class="keyword">if</span> (obj.refl == DIFF) &#123;                     <span class="comment">// Ideal DIFFUSE reflection</span></span><br><span class="line">      Vec d = <span class="built_in">cosine_weighted_random_hemisphere</span>(nl, Xi);</span><br><span class="line">      r = <span class="built_in">Ray</span>(x, d);</span><br><span class="line">      pdfOmega = nl.<span class="built_in">dot</span>(d) / M_PI;  <span class="comment">// 反射方向の角度に関する確率密度を更新</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      Vec wi = <span class="built_in">reflect</span>(r.d, n);</span><br><span class="line">      <span class="keyword">if</span> (obj.refl == REFR) &#123;</span><br><span class="line">        <span class="type">bool</span> into = n.<span class="built_in">dot</span>(nl)&gt;<span class="number">0</span>;            <span class="comment">// Ray from outside going in?</span></span><br><span class="line">        <span class="type">double</span> nc=<span class="number">1</span>, nt=<span class="number">1.5</span>, nnt=into?nc/nt:nt/nc, ddn=r.d.<span class="built_in">dot</span>(nl), cos2t;</span><br><span class="line">        <span class="keyword">if</span> ((cos2t=<span class="number">1</span>-nnt*nnt*(<span class="number">1</span>-ddn*ddn))&gt;=<span class="number">0</span>) &#123; <span class="comment">// Total internal reflection</span></span><br><span class="line">          Vec tdir = <span class="built_in">refract</span>(r.d, nl, nnt);</span><br><span class="line">          <span class="type">double</span> a=nt-nc, b=nt+nc, R0=a*a/(b*b), c = <span class="number">1</span>-(into?-ddn:tdir.<span class="built_in">dot</span>(n));</span><br><span class="line">          <span class="type">double</span> Re=R0+(<span class="number">1</span>-R0)*c*c*c*c*c;</span><br><span class="line">          <span class="keyword">if</span> (<span class="built_in">erand48</span>(Xi)&gt;=Re)</span><br><span class="line">            wi = tdir;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      r = <span class="built_in">Ray</span>(x, wi);</span><br><span class="line">      pdfOmega = INFINITY;  <span class="comment">// デルタ関数の反射面を示す</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>頂点情報<code>Vertex</code>の<code>pdf</code>を次の頂点を選択する確率密度ではなく、この頂点が選ばれた確率密度を表すよう変更<ul>
+<li>また角度に対する確率密度だったのを、面積の確率密度に変更</li>
+</ul>
+</li>
+<li>所定の長さ<code>maxDepth</code>の部分経路を生成するために、ロシアンルーレットによる打ち切りは行わない<ul>
+<li>光源に達してしまった場合・またはなにも交差しなかった場合には打ち切られるため、望みの経路長にならない可能性はある</li>
+</ul>
+</li>
+<li>スペキュラ面の場合には確率密度を<code>INFINITY</code>にして特別扱い</li>
+</ul>
+<h3 id="視点・光源部分経路生成"><a href="#視点・光源部分経路生成" class="headerlink" title="視点・光源部分経路生成"></a>視点・光源部分経路生成</h3><p><code>traceScene</code>を使って：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">generateEyeSubpath</span><span class="params">(<span class="type">const</span> Ray&amp; r, <span class="type">unsigned</span> <span class="type">short</span> *Xi, vector&lt;Vertex&gt;* path, <span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">  <span class="built_in">traceScene</span>(r, Xi, path, INFINITY, n);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">generateLightSubpath</span><span class="params">(<span class="type">unsigned</span> <span class="type">short</span> *Xi, vector&lt;Vertex&gt;* path, <span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">int</span> LIGHT_ID = numSpheres - <span class="number">1</span>;</span><br><span class="line">  <span class="type">const</span> Sphere &amp;light = spheres[LIGHT_ID];</span><br><span class="line">  <span class="comment">// 光源の表面をランダムにサンプリング</span></span><br><span class="line">  Vec y_n = <span class="built_in">random_unit_direction</span>(Xi);</span><br><span class="line">  Vec y = light.p + y_n * light.rad;</span><br><span class="line">  <span class="type">double</span> light_area = <span class="number">4</span> * M_PI * light.rad * light.rad;</span><br><span class="line">  <span class="type">double</span> pA_light = <span class="number">1</span> / light_area; <span class="comment">// 光源上の一様点サンプリング面積PDF</span></span><br><span class="line"></span><br><span class="line">  Vec d = <span class="built_in">cosine_weighted_random_hemisphere</span>(y_n, Xi);</span><br><span class="line">  <span class="type">double</span> pdfOmega = y_n.<span class="built_in">dot</span>(d) / M_PI;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 光源の始点を追加</span></span><br><span class="line">  path-&gt;<span class="built_in">emplace_back</span>(y, y_n, light.e, <span class="built_in">Vec</span>(<span class="number">1</span>), light.refl, pA_light);  <span class="comment">// light.c の代わりにVec(1)</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (n &gt; <span class="number">1</span>)</span><br><span class="line">    <span class="built_in">traceScene</span>(<span class="built_in">Ray</span>(y, d), Xi, path, pdfOmega, n - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>視点の開始座標は頂点列には追加しない</li>
+<li>光源側は、光源である球表面で一様になるよう乱数を発生させて開始位置とし、頂点の<code>pdf</code>には面積の逆数を与える。出射方向はコサイン比例</li>
+</ul>
+<h3 id="updateThroughput-スループットの更新"><a href="#updateThroughput-スループットの更新" class="headerlink" title="updateThroughput: スループットの更新"></a>updateThroughput: スループットの更新</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">Vec <span class="title">updateThroughput</span><span class="params">(<span class="type">const</span> Vec&amp; throughput, <span class="type">const</span> vector&lt;Vertex&gt;&amp; path, <span class="type">int</span> i, <span class="type">bool</span> is_light)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (i + <span class="number">1</span> &gt;= path.<span class="built_in">size</span>())  <span class="comment">// 次の頂点がない：終了</span></span><br><span class="line">    <span class="keyword">return</span> throughput;</span><br><span class="line"></span><br><span class="line">  <span class="type">const</span> Vertex&amp; vi = path[i];</span><br><span class="line">  <span class="keyword">if</span> (vi.refl == DIFF) &#123;</span><br><span class="line">    <span class="type">const</span> Vertex&amp; vj = path[i + <span class="number">1</span>];</span><br><span class="line">    Vec wi = vj.p - vi.p;</span><br><span class="line">    <span class="type">double</span> dist = wi.<span class="built_in">length</span>();</span><br><span class="line">    wi = wi * (<span class="number">1</span> / dist);</span><br><span class="line"></span><br><span class="line">    <span class="type">double</span> cos_out = vi.n.<span class="built_in">dot</span>(wi);</span><br><span class="line">    <span class="type">double</span> cos_in = -vj.n.<span class="built_in">dot</span>(wi);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// エッジ (vi, vj) の幾何因子 G(vi, vj)</span></span><br><span class="line">    <span class="type">double</span> G = (cos_out * cos_in) / (dist * dist);</span><br><span class="line">    <span class="comment">// 頂点 v における BSDF f_r = 1 / pi</span></span><br><span class="line">    <span class="type">double</span> bsdf = (is_light &amp;&amp; i == <span class="number">0</span>) ? <span class="number">1</span> : <span class="number">1</span> / M_PI;  <span class="comment">// 光源部分経路の[0]は光源上の頂点からの放射で反射ではないため、特別扱いする必要がある</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 経路積分形式におけるスループットの更新比: bsdf * G</span></span><br><span class="line">    <span class="keyword">return</span> throughput.<span class="built_in">mult</span>(vi.c * (bsdf * G));</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Specular / Refractive (Delta BSDF)</span></span><br><span class="line">    <span class="keyword">return</span> throughput.<span class="built_in">mult</span>(vi.c);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>光源から発された光が、経路の各頂点での反射特性によってどのくらいの割合が届くのかを計算する</li>
+<li><a href="/blog/2026/07/30/three-point-form-pt.html" title="3点形式でパストレーサーを動かしてみる">3点形式</a>では確率密度の除算も混ぜて計算していたが、分けるようにしてここでは扱わない</li>
+<li>光源側の最初の頂点は反射ではなく方向を選択しただけなので、BRDFを掛けないよう特別扱いする必要がある</li>
+</ul>
+<h3 id="connectVertices-頂点同士の接続"><a href="#connectVertices-頂点同士の接続" class="headerlink" title="connectVertices: 頂点同士の接続"></a>connectVertices: 頂点同士の接続</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">connectVertices</span><span class="params">(<span class="type">const</span> Vertex&amp; ys, <span class="type">int</span> s, <span class="type">const</span> Vertex&amp; zt, Vec* out)</span> </span>&#123;</span><br><span class="line">  Vec wi = ys.p - zt.p;</span><br><span class="line">  <span class="type">double</span> dist = wi.<span class="built_in">length</span>();</span><br><span class="line">  wi = wi * (<span class="number">1</span> / dist);</span><br><span class="line"></span><br><span class="line">  <span class="type">double</span> cos_out = zt.n.<span class="built_in">dot</span>(wi);</span><br><span class="line">  <span class="type">double</span> cos_in = -ys.n.<span class="built_in">dot</span>(wi);</span><br><span class="line">  <span class="keyword">if</span> (cos_out &lt;= <span class="number">0</span> || cos_in &lt;= <span class="number">0</span> ||</span><br><span class="line">      !<span class="built_in">is_visible</span>(<span class="built_in">Ray</span>(zt.p, wi), dist))</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="type">double</span> G = (cos_out * cos_in) / (dist * dist);</span><br><span class="line"></span><br><span class="line">  Vec y_brdf = (s == <span class="number">0</span> ? <span class="built_in">Vec</span>(<span class="number">1</span>) : ys.c * (<span class="number">1</span> / M_PI));</span><br><span class="line">  Vec z_brdf = zt.c * (<span class="number">1</span> / M_PI);</span><br><span class="line">  *out = y_brdf.<span class="built_in">mult</span>(z_brdf) * G;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2点間が正対していて、かつ遮られていない場合にのみ有効</li>
+<li>幾何項<code>G</code>、それに加えて接続点でのBRDFを掛ける<ul>
+<li>どちらもランバートという仮定なので\(\rho&#x2F;\pi\)という値を直接用いているが、Glossyなども扱う場合には入出射方向から計算できるようにする必要があるでしょう</li>
+<li><code>updateThroughput</code> と同様に、光源開始点を特別扱い</li>
+</ul>
+</li>
+</ul>
+<h3 id="radiance-ピクセルの色計算"><a href="#radiance-ピクセルの色計算" class="headerlink" title="radiance: ピクセルの色計算"></a>radiance: ピクセルの色計算</h3><p><code>radiance</code>関数で上記を組み合わせて経路を生成し、モンテカルロ積分を求める：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">Vec <span class="title">radiance</span><span class="params">(<span class="type">const</span> Ray &amp;r, <span class="type">unsigned</span> <span class="type">short</span> *Xi)</span></span>&#123;</span><br><span class="line">  <span class="comment">// 部分経路同士の接続だけでは L.*(DD).*E 以外が扱えないので、一定確率でナイーブなパストレを行う</span></span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">double</span> pnaive=<span class="number">0.005</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">erand48</span>(Xi) &lt; pnaive) &#123;  <span class="comment">// ナイーブなパストレ：直接光を描画するため</span></span><br><span class="line">    vector&lt;Vertex&gt; path;</span><br><span class="line">    <span class="built_in">generateEyeSubpath</span>(r, Xi, &amp;path, <span class="number">100</span>);</span><br><span class="line">    <span class="type">const</span> Vertex&amp; zt = path.<span class="built_in">back</span>();</span><br><span class="line">    Vec color = zt.e * (<span class="number">1</span> / pnaive);</span><br><span class="line">    <span class="keyword">if</span> (color.x + color.y + color.z &gt; <span class="number">0</span>) &#123;  <span class="comment">// 光源にたどり着いた場合にのみ寄与が得られる</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="type">size_t</span> t = <span class="number">0</span>; t &lt; path.<span class="built_in">size</span>(); ++t) &#123;</span><br><span class="line">        <span class="keyword">if</span> (t + <span class="number">1</span> &lt; path.<span class="built_in">size</span>() &amp;&amp; path[t].refl == DIFF &amp;&amp; path[t + <span class="number">1</span>].refl == DIFF)</span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">Vec</span>(<span class="number">0</span>);  <span class="comment">// DIFFが2回続いているため部分経路接続で生成可能、なのでこちらでは除外</span></span><br><span class="line">        color = <span class="built_in">updateThroughput</span>(color, path, t, <span class="literal">false</span>) * (<span class="number">1</span> / path[t].pdf);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> color;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 乱数により経路長を選択</span></span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">double</span> p = <span class="number">0.4</span>;</span><br><span class="line">  <span class="type">size_t</span> k = <span class="number">2</span> + (<span class="type">size_t</span>)<span class="built_in">fmin</span>(<span class="built_in">floor</span>(<span class="built_in">log</span>(<span class="built_in">erand48</span>(Xi)) / <span class="built_in">log</span>(<span class="number">1</span> - p)), <span class="number">100</span>);  <span class="comment">// 合計頂点数：幾何分布、短い経路長ほど発生しやすくする</span></span><br><span class="line">  <span class="type">size_t</span> ne = <span class="built_in">irand</span>(<span class="number">1</span>, k, Xi);  <span class="comment">// 視点部分経路頂点数：1 &lt;= ne &lt;= k - 1</span></span><br><span class="line">  <span class="type">size_t</span> nl = k - ne;           <span class="comment">// 光源部分経路頂点数：1 &lt;= nl &lt;= k - 1</span></span><br><span class="line"></span><br><span class="line">  vector&lt;Vertex&gt; eyeSubpath;</span><br><span class="line">  <span class="built_in">generateEyeSubpath</span>(r, Xi, &amp;eyeSubpath, ne);</span><br><span class="line">  vector&lt;Vertex&gt; lightSubpath;</span><br><span class="line">  <span class="built_in">generateLightSubpath</span>(Xi, &amp;lightSubpath, nl);</span><br><span class="line">  <span class="keyword">if</span> (nl != lightSubpath.<span class="built_in">size</span>() ||</span><br><span class="line">      ne != eyeSubpath.<span class="built_in">size</span>())  <span class="comment">// 望みの長さの経路が得られなかった</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Vec</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 部分経路の終端頂点同士をつなげる(拡散反射面 DIFF 同士の場合のみ)</span></span><br><span class="line">  <span class="type">const</span> Vertex&amp; ys = lightSubpath.<span class="built_in">back</span>();  <span class="comment">// 光源側終端頂点</span></span><br><span class="line">  <span class="type">const</span> Vertex&amp; zt = eyeSubpath.<span class="built_in">back</span>();    <span class="comment">// 視点側終端頂点</span></span><br><span class="line">  <span class="function">Vec <span class="title">color</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br><span class="line">  <span class="keyword">if</span> (Vec connect; ys.refl == DIFF &amp;&amp; zt.refl == DIFF &amp;&amp;</span><br><span class="line">      <span class="built_in">connectVertices</span>(ys, nl - <span class="number">1</span>, zt, &amp;connect)) &#123;</span><br><span class="line">    <span class="type">int</span> valid = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 光源部分経路のスループットと確率密度を計算</span></span><br><span class="line">    <span class="type">const</span> Vec&amp; Le = lightSubpath[<span class="number">0</span>].e;</span><br><span class="line">    <span class="function">Vec <span class="title">lightThroughput</span><span class="params">(Le)</span></span>;</span><br><span class="line">    <span class="type">double</span> pdfLight = <span class="number">1.0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> s = <span class="number">0</span>; s &lt; nl; ++s) &#123;</span><br><span class="line">      lightThroughput = <span class="built_in">updateThroughput</span>(lightThroughput, lightSubpath, s, <span class="literal">true</span>);</span><br><span class="line">      pdfLight *= lightSubpath[s].pdf;</span><br><span class="line">      <span class="keyword">if</span> (s + <span class="number">1</span> &lt; nl &amp;&amp; lightSubpath[s].refl == DIFF &amp;&amp; lightSubpath[s + <span class="number">1</span>].refl == DIFF)</span><br><span class="line">        ++valid;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 視点部分経路のスループットと確率密度を計算</span></span><br><span class="line">    <span class="function">Vec <span class="title">eyeThroughput</span><span class="params">(<span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="type">double</span> pdfEye = <span class="number">1.0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> t = <span class="number">0</span>; t &lt; ne; ++t) &#123;</span><br><span class="line">      eyeThroughput = <span class="built_in">updateThroughput</span>(eyeThroughput, eyeSubpath, t, <span class="literal">false</span>);</span><br><span class="line">      pdfEye *= eyeSubpath[t].pdf;</span><br><span class="line">      <span class="keyword">if</span> (t + <span class="number">1</span> &lt; ne &amp;&amp; eyeSubpath[t].refl == DIFF &amp;&amp; eyeSubpath[t + <span class="number">1</span>].refl == DIFF)</span><br><span class="line">        ++valid;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">double</span> pdfPathLen = <span class="built_in">pow</span>(<span class="number">1</span> - p, k - <span class="number">2</span>) * p * (<span class="number">1</span> - pnaive);</span><br><span class="line">    <span class="type">double</span> validRate = (<span class="type">double</span>)valid / (k - <span class="number">1</span>);</span><br><span class="line">    color = connect.<span class="built_in">mult</span>(lightThroughput).<span class="built_in">mult</span>(eyeThroughput) * (<span class="number">1</span> / (pdfPathLen * pdfLight * pdfEye * validRate));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>pnaive</code>の確率でナイーブなパストレを選択、それ以外は経路接続で行う</li>
+<li>部分経路の確率密度：<code>Vertex</code>の<code>pdf</code>を掛けていくことで計算できる</li>
+<li>接続での確率密度：双方の部分経路の確率密度を掛け合わせる</li>
+<li><code>validRate</code>での除算が必要な理由：<ul>
+<li>まったく同じ頂点列でも、光源・視点の経路長の選び方にバリエーションがある</li>
+<li>どちらか（あるいは両方）がスペキュラ面である分割が選ばれたとしても本来ならばつなげるハズ、なぜならスペキュラ面の反射方向を正しく求めているから</li>
+<li>しかし実際には寄与を0（無効）として扱ってしまうのでその分を補う必要がある（ロシアンルーレットと同様に成功率で割る）</li>
+<li>頂点数が<code>k</code>の場合、光源と視点の頂点数の組み合わせは<code>k - 1</code>通り（視点部分経路頂点数<code>ne</code>および光源側<code>nl</code>は\([1, k)\)のk-1通り）</li>
+<li><code>valid</code>は今回選ばれたパターンの他に、拡散面が続く箇所を調べて有効数をカウント</li>
+</ul>
+</li>
+</ul>
+<h2 id="動作結果・感想"><a href="#動作結果・感想" class="headerlink" title="動作結果・感想"></a>動作結果・感想</h2><ul>
+<li>シーン全体のあらゆる経路を積分範囲、経路を積分変数として扱うという考え方に「そんなことできるの？」という衝撃を受けた</li>
+<li>経路の長さ＝反射回数ごとにグループ分けして、別々に扱うという発想にも驚いた</li>
+<li>こんなやり方で確率密度に沿って経路を生成し、ナイーブなパストレと同じ結果が計算できることにある意味感動</li>
+<li>壁の辺のあたりにファイアフライノイズが出る：<ul>
+<li>頂点接続時の係数\(G\)は分母に距離の2乗が入るが、頂点同士が近距離だと極端に大きな値になってしまう</li>
+<li>通常のレイ追跡でこのような近距離の頂点が発生しても確率密度で相殺されるので問題にはならない、とのこと</li>
+</ul>
+</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2026/07/30/three-point-form-pt.html">前：3点形式でパストレーサーを動かしてみる<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2026/01/07/anisotropic-reflection.html" title="PBRマテリアルの異方性反射" rel="bookmark">PBRマテリアルの異方性反射</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/08/26/path-integral-pt.html">光源・視点双方からの経路を接続するパストレーサー（経路積分）</a></li><li class="recent_post"><a href="/blog/2026/07/30/three-point-form-pt.html">3点形式でパストレーサーを動かしてみる</a></li><li class="recent_post"><a href="/blog/2026/06/11/make-obj-dir.html">【Makefile】中間ディレクトリを作成するターゲットの指定方法</a></li><li class="recent_post"><a href="/blog/2026/05/18/nand-cpu.html">NANDだけを使ってCPUを実装！</a></li><li class="recent_post"><a href="/blog/2026/04/21/lockon-laser.html">レイフォースのロックオンレーザーの挙動</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2026 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
