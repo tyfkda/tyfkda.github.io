@@ -271,7 +271,7 @@ $$</p>
 <ul>
 <li>このことによって光の影響を反射回数ごとに分けて計算できる、ということを以降で利用する</li>
 </ul>
-<h2 id="経路積分形式化"><a href="#経路積分形式化" class="headerlink" title="経路積分形式化"></a>経路積分形式化</h2><p>ここで\(\bar{x}_k\)が頂点列\(\bm{x_0} \bm{x_1} \cdots \bm{x_k}\)で構成される長さ\(k\)の経路とする。
+<h2 id="経路積分形式化"><a href="#経路積分形式化" class="headerlink" title="経路積分形式化"></a>経路積分形式化</h2><p>ここで\(\bar{x}_k\)が頂点列\(\bm{x_0} \bm{x_1} \cdots \bm{x_k}\)で構成される<strong>長さ\(k\)の経路</strong>とする。
 この経路自体を積分変数として、積分範囲\(\Omega_k\)が長さ\(k\)のすべての経路とすれば、先ほどの式は</p>
 <p>$$
 \sum_{k&#x3D;1}^\infty \int_{\Omega_k} L_e(\bm{x_k} \to \bm{x_{k-1}}) \left( \prod_{i&#x3D;2}^k K_i \right) d\mu(\bar{x}_k)
@@ -398,6 +398,7 @@ $$</p>
 <li>通常のレイ追跡でこのような近距離の頂点が発生しても確率密度で相殺されるので問題にはならない、が経路接続では発生してしまうとのこと</li>
 </ul>
 </li>
+<li><code>validRate</code>で割る理由を考えてはみたものの完全に納得し切ったわけではない：だってほんの僅かでもずれたら寄与0なわけでそう正確に同じ頂点列が発生するのかというのと、さらにはスペキュラ頂点で接続するとした場合は確率密度が異なりそうな気が？</li>
 </ul>
 
 
@@ -420,7 +421,7 @@ $$</p>
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2026/01/07/anisotropic-reflection.html" title="PBRマテリアルの異方性反射" rel="bookmark">PBRマテリアルの異方性反射</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2026/01/07/anisotropic-reflection.html" title="PBRマテリアルの異方性反射" rel="bookmark">PBRマテリアルの異方性反射</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
