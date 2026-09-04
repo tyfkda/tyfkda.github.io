@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="以前ペントミノパズルをコンピュータで解こうとしたがSATソルバで解かせることには失敗したため、深さ優先探索とDancing Links法で解いてみた。
+それを再度SATソルバで試してみる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="ペントミノパズルをSATソルバで解く"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>ペントミノパズルをSATソルバで解く - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2026/09/04/pentomino-sat.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>ペントミノパズルをSATソルバで解く</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2026-09-04
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/puzzle/">#puzzle</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>以前ペントミノパズルをコンピュータで解こうとしたがSATソルバで解かせることには失敗したため、<a href="/blog/2023/05/12/pentomino-solver.html" title="ペントミノパズルを解く（深さ優先探索法、Dancing Links法）">深さ優先探索とDancing Links法</a>で解いてみた。
+それを再度SATソルバで試してみる。</p>
+<span id="more"></span>
+
+<h2 id="SATソルバでの解き方"><a href="#SATソルバでの解き方" class="headerlink" title="SATソルバでの解き方"></a>SATソルバでの解き方</h2><p>SATソルバは自分でパズルの解法を書くのではなく、論理式を組み立てるだけで解くことができるという汎用的な手法。
+もうちょっと詳しいことは<a href="/blog/2013/05/17/sudoku-sat.html" title="【Haskell】SATソルバを使って数独を解く">昔の記事</a>を読んでもらうとして、ペントミノパズルをどうやって解くか考える。</p>
+<h3 id="論理式の変数"><a href="#論理式の変数" class="headerlink" title="論理式の変数"></a>論理式の変数</h3><p>ペントミノパズルを解くために論理式の変数がなにを表すかを決める必要がある。
+&nbsp;<a href="/blog/2023/05/12/pentomino-solver.html" title="ペントミノパズルを解く（深さ優先探索法、Dancing Links法）">以前</a>と同じく「各ピースの反転・回転ごと・盤面の各位置に配置される」とする。
+変数は例えば6x10の盤面の場合、全部で2,056個になる（X最適化前）。</p>
+<h3 id="組み立てる論理式（制約）"><a href="#組み立てる論理式（制約）" class="headerlink" title="組み立てる論理式（制約）"></a>組み立てる論理式（制約）</h3><p>パズルは矩形の盤面に12種類のピースを詰め込む、ということなので以前考えたのと同様に、</p>
+<ul>
+<li>A: ピースの配置に回転反転・位置の自由があるが、盤面上に各ピースが１つだけ存在する</li>
+<li>B: ピース同士が重ならない</li>
+</ul>
+<p>という制約になる。
+ただこれだけだと以前に失敗したのと同じで現実的な時間では解けない。
+SATソルバが条件を絞り込めなくて非常に時間がかかってしまう。</p>
+<p>どうしたもんかと思ったが、</p>
+<ul>
+<li>C: <strong>各マスを占めるピースが１つだけ存在する</strong></li>
+</ul>
+<p>という追加の制約を加えることでだいぶ高速化できる。</p>
+<ul>
+<li>ルール的にはAとBだけで成り立つと思うんだけど、「盤面がピースで埋め尽くせる」というのがSATソルバにとっては自明じゃない、ということで明示的に与える必要があるのかもしれない</li>
+<li>逆にルールBを除外してAとCだけでも有効だけど、Bがあった上でCを「1つだけ存在」ではなく「少なくとも1つは」にする（ピース同士の交差の除外はBで行う）のが一番効果的だった<ul>
+<li>Cのピース交差の除外では同じピース・回転反転・位置のペアでも複数回列挙されてしまうから、性能が劣化するのだと予想</li>
+</ul>
+</li>
+</ul>
+<h4 id="SATで用いる論理式"><a href="#SATで用いる論理式" class="headerlink" title="SATで用いる論理式"></a>SATで用いる論理式</h4><p>SATでは論理式を乗法標準形(Conjunctive Normal Form (CNF)、orでつないだ命題を、andでつないだもの)で表すという制限があるけど、</p>
+<ul>
+<li>「少なくとも１つ」At Least One(ALO)：単なるor <code>v1 || v2 || ...</code></li>
+<li>「たかだか１つ」At Most One(AMO)：否定のorのand <code>(!v1 || !v2) &amp;&amp; (!v1 || !v3) &amp;&amp; (!v2 || !v3) ...</code> どのペアも両者が成り立つことはない</li>
+<li>「必ず１つだけ存在する」Exactly One：<code>ALO &amp;&amp; AMO</code></li>
+</ul>
+<p>パズルを解くにはこの3つでなんとかなる気がしてきた。</p>
+<h3 id="すべての解を求める"><a href="#すべての解を求める" class="headerlink" title="すべての解を求める"></a>すべての解を求める</h3><p>ペントミノパズルには複数の解が存在するが、SATソルバは制約を満たす組み合わせを1つ見つけるだけなので、別の解を探すには対策が必要になる。
+解が見つかったら、「その解を除く」という制約、つまり「解で真となった変数のうちどれか1つは偽となる組み合わせ」という制約を追加して、再度ソルバにかける。</p>
+<p>また盤面に対して上下または左右対称、正方形8x8の盤面の場合には回転対称の解も除外するため、それらの制約も追加する。</p>
+<h3 id="盤面絞り込み"><a href="#盤面絞り込み" class="headerlink" title="盤面絞り込み"></a>盤面絞り込み</h3><p>深さ優先探索で解いた時にも使った盤面対称解の絞り込み、<a href="https://www.asahi-net.or.jp/~rn8t-nkmr/pentomino/optimize/sect-4.html">Ｘピースによる解の重複排除</a>、Xを盤面の1&#x2F;4の範囲のみに制限するという手法を適用してみる。
+盤面が正方形の場合には「x&gt;y」も除外することで回転対称解も絞り込める。</p>
+<p>深さ優先探索のときのように「先に配置しておく」というようなことはできないが、それでもかなり効果がある。</p>
+<p>これによって対称解をあらかじめ省けるが、盤面の幅や高さが奇数の場合や、正方形の場合の対角線対称の重複解が列挙されてしまうので、対称解の制約追加は残している。</p>
+<ul>
+<li>制限するピースをXじゃなくて例えばFにすると全然性能が違って遅い、なぜかは不明</li>
+</ul>
+<h2 id="実行結果"><a href="#実行結果" class="headerlink" title="実行結果"></a>実行結果</h2><p>盤面のサイズ6x10と8x8、ソルバをSAT・深さ優先探索(DFS)・Dancing Links(DLX)で計測（単位：ミリ秒、低い方がよい）</p>
+<table>
+<thead>
+<tr>
+<th align="center">盤面</th>
+<th align="right">SAT</th>
+<th align="right">DFS</th>
+<th align="right">DLX</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">6x10</td>
+<td align="right">1,152,311.6</td>
+<td align="right">156.0</td>
+<td align="right">4,414.3</td>
+</tr>
+<tr>
+<td align="center">8x8</td>
+<td align="right">37,679.5</td>
+<td align="right">64.6</td>
+<td align="right">373.4</td>
+</tr>
+</tbody></table>
+<p>SAT版は20分くらいかかるという桁違いの遅さだけど、まあ汎用的なソルバで一応待てる時間で解けるようになって結果としては満足。</p>
+<h4 id="ソース"><a href="#ソース" class="headerlink" title="ソース"></a>ソース</h4><ul>
+<li>PentominoSolver: <a href="https://github.com/tyfkda/PentominoSolver/blob/5868cde487a083848c163111212860a289041c00/rust/src/pentomino/solver/sat_solver.rs">sat_solver.rs</a></li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2026/08/26/path-integral-pt.html">前：光源・視点双方からの経路を接続するパストレーサー（経路積分）<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/generate-puzzle.html" title="僕の好きなジェネレート系パズルゲーム" rel="bookmark">僕の好きなジェネレート系パズルゲーム</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2024/01/09/hakoiri-solver.html" title="箱入り娘パズルを解く（幅優先探索）" rel="bookmark">箱入り娘パズルを解く（幅優先探索）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2025/01/13/jelly-solver.html" title="激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）" rel="bookmark">激ムズの「ゼリーのパズル」を全面クリアする！（A＊法）</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2022/01/03/kakuro-solver.html" title="カックロをSATソルバーで解く" rel="bookmark">カックロをSATソルバーで解く</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2014/11/22/logic-puzzle.html" title="僕の好きな思考型パズルゲーム" rel="bookmark">僕の好きな思考型パズルゲーム</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/09/04/pentomino-sat.html">ペントミノパズルをSATソルバで解く</a></li><li class="recent_post"><a href="/blog/2026/08/26/path-integral-pt.html">光源・視点双方からの経路を接続するパストレーサー（経路積分）</a></li><li class="recent_post"><a href="/blog/2026/07/30/three-point-form-pt.html">3点形式でパストレーサーを動かしてみる</a></li><li class="recent_post"><a href="/blog/2026/06/11/make-obj-dir.html">【Makefile】中間ディレクトリを作成するターゲットの指定方法</a></li><li class="recent_post"><a href="/blog/2026/05/18/nand-cpu.html">NANDだけを使ってCPUを実装！</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2026 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

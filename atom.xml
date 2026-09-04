@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2026-08-29T03:00:44.264Z</updated>
+  <updated>2026-09-04T04:39:40.834Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -17,11 +17,29 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>ペントミノパズルをSATソルバで解く</title>
+    <link href="https://tyfkda.github.io/blog/2026/09/04/pentomino-sat.html"/>
+    <id>https://tyfkda.github.io/blog/2026/09/04/pentomino-sat.html</id>
+    <published>2026-09-04T10:00:00.000Z</published>
+    <updated>2026-09-04T04:39:40.834Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以前ペントミノパズルをコンピュータで解こうとしたがSATソルバで解かせることには失敗したため、&lt;a href=&quot;/blog/2023/05/12/pentomino-solver.html&quot; title=&quot;ペントミノパズルを解く（深さ優先探索法、Dancing Links法）&quot;&gt;深さ優先探索とDancing Links法&lt;/a&gt;で解いてみた。
+それを再度SATソルバで試してみる。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="puzzle" scheme="https://tyfkda.github.io/tags/puzzle/"/>
+    
+  </entry>
+  
+  <entry>
     <title>光源・視点双方からの経路を接続するパストレーサー（経路積分）</title>
     <link href="https://tyfkda.github.io/blog/2026/08/26/path-integral-pt.html"/>
     <id>https://tyfkda.github.io/blog/2026/08/26/path-integral-pt.html</id>
     <published>2026-08-26T07:00:00.000Z</published>
-    <updated>2026-08-29T03:00:44.264Z</updated>
+    <updated>2026-09-02T00:05:10.937Z</updated>
     
     
     <summary type="html">&lt;p&gt;双方向パストレーシングの理解のためレンダリング方程式を&lt;a href=&quot;/blog/2026/07/30/three-point-form-pt.html&quot; title=&quot;3点形式でパストレーサーを動かしてみる&quot;&gt;3点形式&lt;/a&gt;で扱ってみたが、
@@ -172,27 +190,6 @@
     
     
     <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【C++】仮想継承はどう実現されるか？</title>
-    <link href="https://tyfkda.github.io/blog/2025/11/29/virtual-inheritance-impl.html"/>
-    <id>https://tyfkda.github.io/blog/2025/11/29/virtual-inheritance-impl.html</id>
-    <published>2025-11-29T01:04:56.000Z</published>
-    <updated>2025-12-19T08:11:36.992Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;C++には仮想継承という仕組みがある。
-使ったこともこれから使う予定も、それ以前にC++自体を使う機会も乏しい実情。
-しかしながらどうやって実現されているのかには興味があるので調べてみた。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="oop" scheme="https://tyfkda.github.io/tags/oop/"/>
-    
-    <category term="cplusplus" scheme="https://tyfkda.github.io/tags/cplusplus/"/>
     
   </entry>
   
