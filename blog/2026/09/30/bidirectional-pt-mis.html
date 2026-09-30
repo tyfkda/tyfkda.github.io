@@ -340,7 +340,8 @@ $$</p>
 </tr>
 </tbody></table>
 <p>1↔︎2間から2↔︎3間を求める際に分母に現れる\(\delta_{2 \gets 3}\)が、3↔︎4間から4↔︎5間を求める際に分子に現れる\(\delta_{3 \to 4}\)と相殺されることにより、ちゃんと計算できるのでしょう。</p>
-<p>2↔︎3間や3↔︎4間の確率密度は有限の値だけど、それらは接続エッジにスペキュラ頂点3を含むため、接続時の係数が0となり影響を与えない。</p>
+<p>2↔︎3間や3↔︎4間の確率密度は有限の値だけど、それらは接続エッジにスペキュラ頂点3を含むため、接続時の係数が0となり影響を与えない。
+またそのため経路接続でこれらのエッジから開始することがないので、隣接する戦略の確率密度計算でデルタが分母・分子のどちらかだけにかかることが起こり得ず、常にペアで現れる。</p>
 <p>そして確率密度それ自体を単独で扱うのではなく、BRDFや他の確率密度との比でのみ用いるので、デルタが打ち消されることになるのでコード上では1.0を入れておいて問題ない、ということなんでしょう。</p>
 <h3 id="部分経路生成：シーン内の追跡"><a href="#部分経路生成：シーン内の追跡" class="headerlink" title="部分経路生成：シーン内の追跡"></a>部分経路生成：シーン内の追跡</h3><p>光源・視点を始点としてシーン内でレイを追跡して部分経路を生成するのは経路積分のときと同じだけど、頂点情報に上記の順・逆確率密度やあとで利用するための要素も記録する。</p>
 <h4 id="順方向の確率密度"><a href="#順方向の確率密度" class="headerlink" title="順方向の確率密度"></a>順方向の確率密度</h4><p>順方向は経路積分のときと同じで、直前の頂点から新たな頂点をBRDFに即して反射方向を抽出する際の（角度に対する）確率密度を用いて、それと距離・向きによる補正を掛けて面積に対する確率密度を算出する。</p>
@@ -372,7 +373,7 @@ $$</p>
 <p>$$
 w_s &#x3D; \frac{p_s^2}{p_0^2 + p_1^2 + \cdots + p_s^2 + \cdots + p_k^2}
 $$</p>
-<p>で表される（\(w_s\)の合計が1.0となるような重み配分であることが重要）。</p>
+<p>で表される（\(w_i\)の合計が1.0となるような重み配分であることが重要）。</p>
 <p>先に述べたように、まず接続した経路の確率密度\(p_s\)を計算して、それに対して接続位置を１つずらした戦略での確率密度を順に求めて、同じ経路長の全戦略の合計を分母にすることで計算することができる。</p>
 <h4 id="そもそもの確率密度の値が不要な件（！）"><a href="#そもそもの確率密度の値が不要な件（！）" class="headerlink" title="そもそもの確率密度の値が不要な件（！）"></a>そもそもの確率密度の値が不要な件（！）</h4><p>分母分子を\(p_s^2\)で除算すれば、</p>
 <p>$$
@@ -420,7 +421,7 @@ $$</p>
 </li>
 <li>経路積分の<code>updateThroughput</code>では確率密度の除算を分離したが、やっぱり計算に入れるようにした</li>
 <li>拡散反射面の場合：BRDFと幾何項Gと確率密度で計算</li>
-<li>スペキュラの場合：本当ならBRDFも確率密度もデルタ関数で分母分子で打ち消し合う、コードでは\(\infty\)ではなく<code>1.0</code>を入れていてそのまま計算できる</li>
+<li>スペキュラの場合：本当ならBRDFも確率密度もデルタ関数で分母分子で打ち消し合う、コードでは<code>INFINITY</code>ではなく<code>1.0</code>を入れていてそのまま計算できる</li>
 </ul>
 <h3 id="traceScene-経路をいったんバッファに記録する"><a href="#traceScene-経路をいったんバッファに記録する" class="headerlink" title="traceScene: 経路をいったんバッファに記録する"></a>traceScene: 経路をいったんバッファに記録する</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">traceScene</span><span class="params">(Ray r, <span class="type">unsigned</span> <span class="type">short</span> *Xi, vector&lt;Vertex&gt;* path, <span class="type">int</span> maxDepth=INT_MAX)</span></span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> depth = <span class="number">0</span>; depth &lt; maxDepth; ) &#123;</span><br><span class="line">    <span class="type">double</span> t; <span class="type">int</span> id=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">intersect</span>(r, t, id)) <span class="keyword">break</span>;</span><br><span class="line">    <span class="type">const</span> Sphere &amp;obj = spheres[id];        <span class="comment">// the hit object</span></span><br><span class="line">    Vec x=r.o+r.d*t, n=(x-obj.p).<span class="built_in">norm</span>(), nl=n.<span class="built_in">dot</span>(r.d)&lt;<span class="number">0</span>?n:n*<span class="number">-1</span>;</span><br><span class="line">    Vec brdf = obj.c * (obj.refl == DIFF ? <span class="number">1.0</span> / M_PI : <span class="number">1.0</span>);</span><br><span class="line">    <span class="keyword">auto</span>&amp; v = path-&gt;<span class="built_in">emplace_back</span>(x, nl, obj.refl, brdf);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 直前頂点 prev とのエッジ幾何因子 G および面積 PDF の計算</span></span><br><span class="line">    Vertex&amp; prev = (*path)[path-&gt;<span class="built_in">size</span>() - <span class="number">2</span>];  <span class="comment">// すでに今回の頂点が追加済みなのでさらに-1</span></span><br><span class="line">    <span class="type">double</span> dist2 = t * t;</span><br><span class="line">    <span class="type">double</span> cos_prev = prev.n.<span class="built_in">dot</span>(r.d);</span><br><span class="line">    <span class="type">double</span> cos_curr = -nl.<span class="built_in">dot</span>(r.d);</span><br><span class="line">    <span class="type">double</span> G = dist2 &gt; <span class="number">1e-8</span> ? <span class="built_in">fabs</span>(cos_prev * cos_curr) / dist2 : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 前方面積PDF (直前頂点 prev から現在の頂点 v へのサンプリング面積PDF)</span></span><br><span class="line">    v.pdf_fwd = (prev.refl == DIFF ? G / M_PI : <span class="number">1.0</span>) * prev.rr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 後方面積PDF (現在の頂点 v から直前頂点 prev への逆サンプリング面積PDF)</span></span><br><span class="line">    prev.pdf_rev = v.refl == DIFF ? G / M_PI : <span class="number">1.0</span>;  <span class="comment">// 逆方向のロシアンルーレットはまだあとで掛ける</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// スループットの更新</span></span><br><span class="line">    v.throughput = <span class="built_in">calculateThroughput</span>(prev, v);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (obj.e.x + obj.e.y + obj.e.z &gt; <span class="number">0</span>) &#123;  <span class="comment">// 光源に到達した場合は終了</span></span><br><span class="line">      v.light = &amp;obj;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">double</span> maxrefl = obj.c.<span class="built_in">max</span>();</span><br><span class="line">    v.rr = ++depth &gt; <span class="number">1</span> || !maxrefl ? maxrefl : <span class="number">1.0</span>;</span><br><span class="line">    prev.pdf_rev *= v.rr;</span><br><span class="line">    <span class="keyword">if</span> (v.rr &lt; <span class="number">1</span> &amp;&amp; <span class="built_in">erand48</span>(Xi)&gt;=v.rr) <span class="keyword">break</span>; <span class="comment">//R.R</span></span><br><span class="line">    <span class="keyword">if</span> (obj.refl == DIFF) &#123;                     <span class="comment">// Ideal DIFFUSE reflection</span></span><br><span class="line">      Vec d = <span class="built_in">cosine_weighted_random_hemisphere</span>(nl, Xi);</span><br><span class="line">      r = <span class="built_in">Ray</span>(x, d);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      Vec wi = <span class="built_in">reflect</span>(r.d, n);</span><br><span class="line">      <span class="keyword">if</span> (obj.refl == REFR) &#123;</span><br><span class="line">        <span class="type">bool</span> into = n.<span class="built_in">dot</span>(nl)&gt;<span class="number">0</span>;            <span class="comment">// Ray from outside going in?</span></span><br><span class="line">        <span class="type">double</span> nc=<span class="number">1</span>, nt=<span class="number">1.5</span>, nnt=into?nc/nt:nt/nc, ddn=r.d.<span class="built_in">dot</span>(nl), cos2t;</span><br><span class="line">        <span class="keyword">if</span> ((cos2t=<span class="number">1</span>-nnt*nnt*(<span class="number">1</span>-ddn*ddn))&gt;=<span class="number">0</span>) &#123; <span class="comment">// Total internal reflection</span></span><br><span class="line">          Vec tdir = <span class="built_in">refract</span>(r.d, nl, nnt);</span><br><span class="line">          <span class="type">double</span> a=nt-nc, b=nt+nc, R0=a*a/(b*b), c = <span class="number">1</span>-(into?-ddn:tdir.<span class="built_in">dot</span>(n));</span><br><span class="line">          <span class="type">double</span> Re=R0+(<span class="number">1</span>-R0)*c*c*c*c*c;</span><br><span class="line">          <span class="keyword">if</span> (<span class="built_in">erand48</span>(Xi)&gt;=Re)</span><br><span class="line">            wi = tdir;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      r = <span class="built_in">Ray</span>(x, wi);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -429,7 +430,7 @@ $$</p>
 <li>拡散反射の場合に<code>G / M_PI</code>で計算しているのは、拡散反射でのcos比例の重点的サンプリングによるpdf:\(\cos\theta&#x2F;\pi\)と、角度pdfから面積pdfへの変換の係数:\(\cos\theta^\prime &#x2F; ||\bm{x} - \bm{x^\prime}||^2\)を組み合わせると、そう計算できるというわけ</li>
 </ul>
 </li>
-<li>スペキュラ面ではBRDFも確率密度も<code>1.0</code>を入れておく（\(\infty\)ではなく）</li>
+<li>スペキュラ面ではBRDFも確率密度も<code>1.0</code>を入れておく（<code>INFINITY</code>ではなく）</li>
 <li>1つ前からのロシアンルーレットの確率を掛けることで、この頂点が発生する確率密度となる</li>
 <li><code>calculateThroughput</code> を呼び出してスループットを計算し格納</li>
 <li>光源にたどり着いたら抜ける（光源は放射のみで反射はしないという前提）<ul>
@@ -474,21 +475,22 @@ $$</p>
 <ul>
 <li>光源部分経路の<code>s</code>番目と、視点部分経路の<code>t</code>番目を接続する際の重みを、MISで計算<ul>
 <li><code>s</code>や<code>t</code>は接続頂点のインデックスを表す</li>
-<li>Veach論文ではsやtは頂点数を表し、頂点が0オリジンで\(\bm{y_0}<del>\bm{y_{s-1}}\)と\(\bm{z_0}</del>\bm{z_{t-1}}\)であり、違いがあるため注意！</li>
+<li>Veach論文ではsやtは頂点数を表し、頂点が0オリジンで\(\bm{y_0} \cdots \bm{y_{s-1}}\)と\(\bm{z_0} \cdots \bm{z_{t-1}}\)であり、違いがあるため注意！</li>
 </ul>
 </li>
 <li>視点部分経路で光源にたどり着いた場合には <code>s==-1</code> として呼び出され、経路の接続は行わない（<code>lightSubpath</code>は使われずに<code>eyeSubpath</code>のみ）</li>
 <li>2つの部分経路を組み合わせた1つの経路をインデックスでアクセスできるよう<code>nodes</code>に必要な内容をコピー<ul>
 <li>光源から視点に進む方向を順方向として、視点部分経路で探索した方向は逆にする</li>
-<li>ヒープ確保を避けるために可変長配列を用いてみた（※C++標準ではない）<ul>
+<li>ヒープ確保を避けるために可変長配列を用いてみた<ul>
 <li>手元の環境ではトータルで2~3割高速化したので相当効果あり</li>
+<li>C++標準ではないのでワーニングが出るのを、clang++の<code>-Wno-vla-cxx-extension</code>のコマンドラインオプションで抑制</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>接続エッジの位置(<code>s</code>)をまたぐ際の確率密度を幾何項<code>G</code>から算出<ul>
 <li><code>connectVertices</code>で<code>G</code>を計算するので、それを引数で与えてもらい再計算を省略</li>
-<li>反映させるのは遷移先なので<code>fwd</code>が<code>s+1</code>、<code>rev</code>が<code>s</code>となる</li>
+<li>反映させるのは遷移先の頂点に対してなので<code>fwd</code>が<code>s+1</code>、<code>rev</code>が<code>s</code>となる</li>
 </ul>
 </li>
 <li>現在の戦略<code>(s,t)</code>に対して、他の戦略の確率密度の比を計算して、合計の逆数が重みとなる</li>
@@ -574,7 +576,7 @@ $$</p>
 そのような状態でMISを計算するにはどうするんだろうか？
 同じ長さの全戦略を用いていいのか、それとも列挙できた戦略だけに絞る必要があるんだろうか？というのが疑問だった。</p>
 <p>結果としては気にせず全戦略を対象にしてしまっていい（むしろしないとダメ）っぽい。
-数学的な理論はわからないが、ロシアンルーレットで打ち切る確率で補正されるので、それでなんかうまく辻褄が合うんだろうと勝手に推測。
+数学的な理論はわからないが、ロシアンルーレットで打ち切る確率で補正されるので、それでなんかうまく辻褄が合うんでしょう。
 直感では光源・視点の矩形で組み合わせるので中央付近の戦略が多く出てしまうんじゃないかと懸念するが、光源・視点のどちらかが極端に短い、長方形のような分布が選ばれれば端の戦略が登場して中央の戦略は登場しないというようなケースもあり得て結果的にUnbiasedになるんちゃう、知らんけど。</p>
 <ul>
 <li>Veach論文 10.1「概要」 <strong>効率的なサンプルの生成</strong> の
@@ -617,7 +619,7 @@ $$</p>
                 <div class="related-posts">
                     <hr>
                     <h3>関連記事</h3>
-                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2026/01/07/anisotropic-reflection.html" title="PBRマテリアルの異方性反射" rel="bookmark">PBRマテリアルの異方性反射</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li></ul>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2026/01/07/anisotropic-reflection.html" title="PBRマテリアルの異方性反射" rel="bookmark">PBRマテリアルの異方性反射</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li></ul>
                 </div>
 
                 <!-- Recent posts -->
