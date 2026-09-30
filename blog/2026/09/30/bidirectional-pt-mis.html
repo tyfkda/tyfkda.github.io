@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="光輸送問題・レンダリング方程式を体得するため、3点形式で表して解いてみたり、経路積分で描画してみて多少は理解が深まった。
+これで一応準備が整った、いよいよ双方向パストレーシングをやってみる。
+特に、複数経路の結果を効率的に組み合わせる多重重点的サンプリングを用いる。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="tyfkda">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="双方向パストレ Part 1：複数経路でMIS適用"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Kludge Factory"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>双方向パストレ Part 1：複数経路でMIS適用 - Kludge Factory</title>
+
+    <link rel="alternative" href="/atom.xml" title="Kludge Factory" type="application/atom+xml">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://tyfkda.github.io/blog/2026/09/30/bidirectional-pt-mis.html"/>
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XZBJ9Y9SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XZBJ9Y9SG');
+</script>
+
+
+
+    <!-- favicon -->
+    
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <style>
+        .katex {
+            text-wrap: nowrap;
+        }
+    </style>
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js" integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {demiliters: [
+    // {left: '$', right: '$', display: false},
+    {left: '$$', right: '$$', display: true},
+    // {left: '\\[', right: '\\]', display: true},
+    {left: '\\(', right: '\\)', display: false},
+
+    // {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+    // {left: '\\begin{align}', right: '\\end{align}', display: true},
+    // {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+    // {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+    // {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+    // {left: '\\begin{eqnarray*}', right: '\\end{eqnarray*}', display: true},
+
+]}
+);"></script>
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kludge Factory</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/blog/gallery">
+                            
+                                Gallery
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/blog/archive/">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('/assets/img/home-bg.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>双方向パストレ Part 1：複数経路でMIS適用</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2026-09-30
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-md-5 post-tags">
+                    
+                        
+
+
+<a href="/tags/graphics/">#graphics</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-9 col-md-9">
+                <p>光輸送問題・レンダリング方程式を体得するため、<a href="/blog/2026/07/30/three-point-form-pt.html" title="3点形式でパストレーサーを動かしてみる">3点形式</a>で表して解いてみたり、<a href="/blog/2026/08/26/path-integral-pt.html" title="光源・視点双方からの経路を接続するパストレーサー（経路積分）">経路積分</a>で描画してみて多少は理解が深まった。
+これで一応準備が整った、いよいよ双方向パストレーシングをやってみる。</p>
+<p>特に、複数経路の結果を効率的に組み合わせる多重重点的サンプリングを用いる。</p>
+<span id="more"></span>
+
+<div style="text-align:center"><img src="/assets/blog/bidirectional-pt/bidir_pt.indirect.jpg" style="image-rendering:pixelated; height:100%; width: 95%" /></div>
+
+<ul>
+<li>640x480, 10,000 spp, 30分20秒（8コア）</li>
+</ul>
+<h2 id="双方向パストレーシングの概要"><a href="#双方向パストレーシングの概要" class="headerlink" title="双方向パストレーシングの概要"></a>双方向パストレーシングの概要</h2><p>&nbsp;<a href="/blog/2026/08/26/path-integral-pt.html" title="光源・視点双方からの経路を接続するパストレーサー（経路積分）">経路積分の確認時</a>にも光源・視点の双方からシーンを追跡したので一応双方向といえないこともない、が単に終端頂点同士を接続して経路を1つ生成しただけなのであまり効率はよくなかった。</p>
+<p>いわゆる実際の双方向パストレでは途中の頂点同士も結んで複数の経路を一度に生成する。
+そうすることで1回のサンプリングでより多くの光の経路の情報を取り込めて、結果的により速くノイズを減らすことができる。</p>
+<p>とはいえ多数の経路から得られる光の寄与情報をどのようにまとめるかというのが問題になる。
+多重重点的サンプリングという、重みをつけて合成する。</p>
+<h3 id="部分経路同士を接続して多数の経路を生成"><a href="#部分経路同士を接続して多数の経路を生成" class="headerlink" title="部分経路同士を接続して多数の経路を生成"></a>部分経路同士を接続して多数の経路を生成</h3><p>光源と視点から追跡した部分経路の終端頂点同士だけではなく、それぞれの各頂点を結んで複数の経路を生成する。
+光源部分経路側の頂点数が \(n_L\)、視点部分経路側の頂点数が \(n_E\)の場合、最大で \(n_L \times n_E\) 本の経路ができる。</p>
+<ul>
+<li>両頂点のどちらかでもスペキュラ反射面、または頂点間がさえぎられている場合には接続できず無効となる</li>
+<li>今回は視点に直接はつなげてない</li>
+<li>部分経路追跡で光源にたどり着いてしまうこともありえて、その場合は探索経路によって対処する：<ul>
+<li>光源部分経路：取り除く</li>
+<li>視点部分経路：その頂点とは接続は行わないでその部分経路自体を1つの経路として使用する
+（光源までの頂点は接続としても利用する）</li>
+</ul>
+</li>
+</ul>
+<h3 id="重みの計算：多重重点的サンプリング"><a href="#重みの計算：多重重点的サンプリング" class="headerlink" title="重みの計算：多重重点的サンプリング"></a>重みの計算：多重重点的サンプリング</h3><p>複数経路の光の寄与をどうやって組み合わせるかというと、<strong><a href="/blog/2025/11/10/pt-nee-mis.html#Multiple-Importance-Sampling%EF%BC%88MIS%EF%BC%89" title="パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)">多重重点的サンプリング</a></strong>(Multiple Importance Sampling, 以降MIS)を使う。</p>
+<p>ただMISを使うということは概要的に把握してたけど、なにをグループにするのかというのはすぐには理解できてなかった。
+答えとしては、経路長ごとにグループ化する。
+同じ経路長の中でも光源・視点側の頂点数に自由度があり、それらの間でMISを適用する。</p>
+<ul>
+<li><a href="/blog/2026/08/26/path-integral-pt.html#%E3%83%AC%E3%83%B3%E3%83%80%E3%83%AA%E3%83%B3%E3%82%B0%E6%96%B9%E7%A8%8B%E5%BC%8F%E3%81%AE%E5%B1%95%E9%96%8B" title="光源・視点双方からの経路を接続するパストレーサー（経路積分）">レンダリング方程式を展開</a>して経路長ごとに分かれた積分の項ごとにMISする、というイメージ</li>
+<li>一度のサンプルで同じ経路長のものが複数生成されるわけだけどMISというのはそれらの間で計算するわけではなく、個々で別々の計算となるのでお互いを直接考慮する必要はない</li>
+</ul>
+<p>おのおのの接続経路に対して、同じ頂点列で光源・視点の頂点数が異なる選ばれ方との間で重みの計算をする。
+異なる選ばれ方の確率密度が必要になるが、それらをどうやって計算するか？</p>
+<p>今回求まった接続経路の確率密度は計算できて、そこから接続箇所を1つずらす確率密度が順々に計算できるという方法で算出する。
+さらには<strong>比</strong>だけが必要なことを利用して、実際の確率密度自体を算出しない（！）という巧妙なトリックを用いる。</p>
+<h2 id="内容詳細"><a href="#内容詳細" class="headerlink" title="内容詳細"></a>内容詳細</h2><h3 id="MISの適用方法：経路長毎"><a href="#MISの適用方法：経路長毎" class="headerlink" title="MISの適用方法：経路長毎"></a>MISの適用方法：経路長毎</h3><p>以前に<a href="/blog/2025/11/10/pt-nee-mis.html" title="パストレーサーで直接光part2：サンプリングを組み合わせてノイズを減らす (Next Event Estimation, Multiple Importance Sampling)">直接光計算でMISを適用</a>したときには、扱う戦略が(1)光源サンプリングと(2)BRDFサンプリングという2つの固定で、サンプルも戦略ごとに1つのみに限定していたのである意味理解しやすかった。
+双方向パストレでの、様々な長さの経路が多数サンプリングされる状況ではどうやって適用したらいいのか？
+場合によっては遮蔽で接続できなかったり、スペキュラ面で戦略が無効だったり、状況が複雑そうでひるんでいた。</p>
+<p>双方向パストレでのサンプリング戦略というのはなにかというと、光源・視点部分経路の頂点数(s, t)になる。
+経路接続で一度に複数の経路がサンプルされるわけだけど幸いなことにそれぞれ戦略が異なり各戦略のサンプル経路はたかだか1つであり、同時にサンプルされた他の経路を考慮することなく計算できる。</p>
+<p>また同じ経路長で戦略の異なる経路が複数サンプルされるわけだけどそれら同士の間で計算する必要があるわけではなく、個々のサンプルに対して仮に同じ経路（頂点列）だけど違う戦略（違う位置での頂点接続）でサンプルした場合の確率密度を計算して高いものに高い重みを割り振るようにする、というのがMISなのであった。</p>
+<h3 id="別戦略での確率密度の計算方法"><a href="#別戦略での確率密度の計算方法" class="headerlink" title="別戦略での確率密度の計算方法"></a>別戦略での確率密度の計算方法</h3><p>MISの重み計算にはサンプル候補を発生した戦略での確率密度と、他の戦略でそのサンプルが発生する確率密度を用いる。</p>
+<p>双方向パストレでいえば光源から視点までの経路がサンプルとなる（経路積分）。
+経路が発生する確率密度は、光源部分経路の確率密度と視点部分経路の確率密度の乗算で求められる。
+部分経路の確率密度は始点の確率密度から、続く各頂点を生成する確率密度の積で求められる。</p>
+<p>例えば具体例として光源部分経路の頂点が\(\bm{x_0}, \bm{x_1}\)（頂点数2）、視点部分経路の頂点が\(\bm{x_2}, \bm{x_3}, \bm{x_4}\)（頂点数3）の接続経路\(\bar{x}\)の確率密度は、</p>
+<p>$$
+p_{2,3}(\bar{x}) &#x3D; \underbrace{p(\bm{x_0}) p(\bm{x_0} \to \bm{x_1})}_{\text{光源側}} \times \underbrace{p(\bm{x_2} \gets \bm{x_3}) p(\bm{x_3} \gets \bm{x_4}) p(\bm{x_4})}_{\text{視点側}}
+$$</p>
+<p>で計算できる。
+ここで仮にまったく同じ頂点列が隣の戦略：光源側が1頂点、視点側が4頂点でサンプルされた場合の確率密度を考えると、</p>
+<p>$$
+p_{1,4}(\bar{x}) &#x3D; \underbrace{p(\bm{x_0})}_{\text{光源側}} \times \underbrace{p(\bm{x_1} \gets \bm{x_2}) p(\bm{x_2} \gets \bm{x_3}) p(\bm{x_3} \gets \bm{x_4}) p(\bm{x_4})}_{\text{視点側}}
+$$</p>
+<p>と計算できる。
+これは頂点\(\bm{x_1}\)が光源側の経路の延長で生成されていたものが、視点側からの延長に切り替わったところだけが異なり、他は共通となる。
+このことを用いて：</p>
+<p>$$
+\begin{align*}
+p_{1,4}(\bar{x}) &amp;&#x3D; p_{1,4}(\bar{x}) \cdot \frac{p_{2,3}(\bar{x})}{p_{2,3}(\bar{x})} \\
+ &amp;&#x3D; \frac{p_{1,4}(\bar{x})}{p_{2,3}(\bar{x})} \cdot p_{2,3}(\bar{x}) \\
+ &amp;&#x3D; \frac{p(\bm{x_0}) \times p(\bm{x_1} \gets \bm{x_2}) p(\bm{x_2} \gets \bm{x_3}) p(\bm{x_3} \gets \bm{x_4}) p(\bm{x_4})}{p(\bm{x_0}) p(\bm{x_0} \to \bm{x_1}) \times p(\bm{x_2} \gets \bm{x_3}) p(\bm{x_3} \gets \bm{x_4}) p(\bm{x_4})} \cdot p_{2,3}(\bar{x}) \\
+ &amp;&#x3D; \frac{p(\bm{x_1} \gets \bm{x_2})}{p(\bm{x_0} \to \bm{x_1})} \cdot p_{2,3}(\bar{x}) \\
+\end{align*}
+$$</p>
+<p>大半の項が約分されて残るのは光源側に含まれていた頂点0から頂点1に進む確率密度を取り消す分母と、視点側に追加する頂点2から頂点1に進める確率密度の分子だけで隣の戦略での確率密度を求めることができる。
+これを順方向・逆方向に繰り返すことで、同じ経路長の異なる戦略での確率密度を次々に計算することができる。
+そしてそれらを使ってMISの重みが計算できる。</p>
+<h4 id="順・逆、接続確率密度"><a href="#順・逆、接続確率密度" class="headerlink" title="順・逆、接続確率密度"></a>順・逆、接続確率密度</h4><p>頂点を進める際の確率密度は以前と同様にシーン追跡時に計算できる。
+上の例でいえば光源側は\(p(\bm{x_0} \to \bm{x_1})\)、視点側は\(p(\bm{x_2} \gets \bm{x_3})\), \(p(\bm{x_3} \gets \bm{x_4})\)になる。</p>
+<p>掛け合わせていく係数にはこの順方向だけじゃなく、 <strong>逆向きの確率密度</strong> も必要になる。
+光源側でいえば\(p(\bm{x_0} \gets \bm{x_1})\)、視点側でいえば\(p(\bm{x_2} \to \bm{x_3})\), \(p(\bm{x_3} \to \bm{x_4})\)が必要になる。
+これらはシーン追跡時の向きとは逆なんだけど、仮に逆順に追跡を行う場合にはどういう確率密度になるかを計算して記録しておく。</p>
+<p>シーンの追跡方向と接続経路の方向には注意が必要。
+部分経路を接続する際に光源から視点に向かう方向を順方向だとみなすことにすると、視点から開始してシーンを追跡した部分経路の「順方向」と「逆方向」は反転することになる。</p>
+<p>また接続エッジでの確率密度（\(p(\bm{x_1} \to \bm{x_2})\)と\(p(\bm{x_1} \gets \bm{x_2})\)）はシーン追跡時には現れるものではないので、経路接続時に計算することになる。</p>
+<h4 id="スペキュラ面の扱い"><a href="#スペキュラ面の扱い" class="headerlink" title="スペキュラ面の扱い"></a>スペキュラ面の扱い</h4><p>スペキュラ面の場合、確率密度はデルタ関数なので数式上で考えると\(\infty\)になってしまう。
+例えば頂点3だけがスペキュラ面だとすると、頂点3から次や前の頂点をたどる確率密度が\(\infty\)になる。
+頂点1と2を接続する確率密度から後方のサンプル戦略の確率密度を順に求める場合を考えると、</p>
+<table>
+<thead>
+<tr>
+<th align="center">接続エッジ</th>
+<th align="center">確率密度</th>
+<th align="center">経路接続</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1↔︎2</td>
+<td align="center">\(\left(p_{0 \to 1}\right) \times \left(\bm{\delta_{2 \gets 3}} \cdot p_{3 \gets 4} \cdot p_{4 \gets 5} \cdot p_{5 \gets 6}\right)\)</td>
+<td align="center">可</td>
+</tr>
+<tr>
+<td align="center">2↔︎3</td>
+<td align="center">\(\left(p_{0 \to 1} \cdot p_{1 \to 2}\right) \times \left(p_{3 \gets 4} \cdot p_{4 \gets 5} \cdot p_{5 \gets 6}\right)\)</td>
+<td align="center">不可</td>
+</tr>
+<tr>
+<td align="center">3↔︎4</td>
+<td align="center">\(\left(p_{0 \to 1} \cdot p_{1 \to 2} \cdot p_{2 \to 3}\right) \times \left(p_{4 \gets 5} \cdot p_{5 \gets 6}\right)\)</td>
+<td align="center">不可</td>
+</tr>
+<tr>
+<td align="center">4↔︎5</td>
+<td align="center">\(\left(p_{0 \to 1} \cdot p_{1 \to 2} \cdot p_{2 \to 3} \cdot \bm{\delta_{3 \to 4}}\right) \times \left(p_{5 \gets 6}\right)\)</td>
+<td align="center">可</td>
+</tr>
+</tbody></table>
+<p>1↔︎2間から2↔︎3間を求める際に分母に現れる\(\delta_{2 \gets 3}\)が、3↔︎4間から4↔︎5間を求める際に分子に現れる\(\delta_{3 \to 4}\)と相殺されることにより、ちゃんと計算できるのでしょう。</p>
+<p>2↔︎3間や3↔︎4間の確率密度は有限の値だけど、それらは接続エッジにスペキュラ頂点3を含むため、接続時の係数が0となり影響を与えない。</p>
+<p>そして確率密度それ自体を単独で扱うのではなく、BRDFや他の確率密度との比でのみ用いるので、デルタが打ち消されることになるのでコード上では1.0を入れておいて問題ない、ということなんでしょう。</p>
+<h3 id="部分経路生成：シーン内の追跡"><a href="#部分経路生成：シーン内の追跡" class="headerlink" title="部分経路生成：シーン内の追跡"></a>部分経路生成：シーン内の追跡</h3><p>光源・視点を始点としてシーン内でレイを追跡して部分経路を生成するのは経路積分のときと同じだけど、頂点情報に上記の順・逆確率密度やあとで利用するための要素も記録する。</p>
+<h4 id="順方向の確率密度"><a href="#順方向の確率密度" class="headerlink" title="順方向の確率密度"></a>順方向の確率密度</h4><p>順方向は経路積分のときと同じで、直前の頂点から新たな頂点をBRDFに即して反射方向を抽出する際の（角度に対する）確率密度を用いて、それと距離・向きによる補正を掛けて面積に対する確率密度を算出する。</p>
+<ul>
+<li>直前が拡散反射面の場合：拡散反射時の角度サンプリングにcos重点的サンプリングを用いていて、それと角度のpdfから面積のpdfへの変換（<a href="/blog/2026/07/30/three-point-form-pt.html#%E9%A0%82%E7%82%B9%E3%81%8C%E9%81%B8%E6%8A%9E%E3%81%95%E3%82%8C%E3%82%8B%E7%A2%BA%E7%8E%87%E5%AF%86%E5%BA%A6%E3%81%AE%E7%AE%97%E5%87%BA%E6%96%B9" title="3点形式でパストレーサーを動かしてみる">3点形式の式(8.10)</a>）を組み合わせると、幾何項\(G&#x2F;\pi\)で計算できる</li>
+<li>直前がスペキュラ面の場合：確率密度としては\(\infty\)となるが、便宜上1.0として記録する（扱う際は事前にスペキュラ面であることを判定した上で利用）</li>
+</ul>
+<h4 id="逆方向の確率密度"><a href="#逆方向の確率密度" class="headerlink" title="逆方向の確率密度"></a>逆方向の確率密度</h4><p>逆方向も同じ形で計算できる。
+順方向は直前の頂点の反射特性から今回の頂点を計算したのとは逆に、今回の頂点の反射特性から直前の値を計算する。</p>
+<h4 id="ロシアンルーレット"><a href="#ロシアンルーレット" class="headerlink" title="ロシアンルーレット"></a>ロシアンルーレット</h4><p>経路積分のときは望みの経路長を得るためにあらかじめ指定の反射回数だけ追跡して途中で抜けるようなことはしてなかったが、
+今回は先に長さを決めずに・でも無限ループに陥らずに・それでいて真の値に収束させるためにロシアンルーレットを適用する。
+ロシアンルーレットの確率も記録する。</p>
+<p>さらにロシアンルーレットの確率は、順・逆方向の確率密度にもあらかじめ掛け合わせてやる
+（注意点として、１つ前（逆方向なら次）の頂点からの確率を掛ける）。</p>
+<ul>
+<li>Veach論文 10.3.3「部分経路長の決定法」に記述あり</li>
+</ul>
+<h4 id="スループット"><a href="#スループット" class="headerlink" title="スループット"></a>スループット</h4><p>経路が運ぶ光の計算には、反射面の特性(BRDF)や3点形式の幾何項\(G\)が関わってくる。
+部分経路の各頂点で、その頂点までの係数を<strong>スループット</strong>として算出する。</p>
+<p>経路積分のときは終端同士を結ぶだけなので接続時に計算すればよかったが、双方向パストレでは複数箇所で接続してその各頂点での値は共通なので、何度も同じ計算を避けるために先に計算して頂点情報に記録しておく。</p>
+<h4 id="光源にたどり着いた場合"><a href="#光源にたどり着いた場合" class="headerlink" title="光源にたどり着いた場合"></a>光源にたどり着いた場合</h4><p>部分経路生成で再度光源にたどり着いた場合には、扱いを注意する必要がある。
+今回、光源は放射だけで反射はしないということを前提に、追跡を打ち切る。
+その上で、光源に達した頂点を、</p>
+<ul>
+<li>光源部分経路で光源に達した場合：単純に取り除く</li>
+<li>視点部分経路で光源に達した場合：接続せずに得られる経路として利用する</li>
+</ul>
+<h3 id="MISの重み計算"><a href="#MISの重み計算" class="headerlink" title="MISの重み計算"></a>MISの重み計算</h3><p>MISの重み計算で、例えばパワーヒューリスティック（\(\beta&#x3D;2\)）で\(s\)番目の戦略のMIS重みを求める場合、</p>
+<p>$$
+w_s &#x3D; \frac{p_s^2}{p_0^2 + p_1^2 + \cdots + p_s^2 + \cdots + p_k^2}
+$$</p>
+<p>で表される（\(w_s\)の合計が1.0となるような重み配分であることが重要）。</p>
+<p>先に述べたように、まず接続した経路の確率密度\(p_s\)を計算して、それに対して接続位置を１つずらした戦略での確率密度を順に求めて、同じ経路長の全戦略の合計を分母にすることで計算することができる。</p>
+<h4 id="そもそもの確率密度の値が不要な件（！）"><a href="#そもそもの確率密度の値が不要な件（！）" class="headerlink" title="そもそもの確率密度の値が不要な件（！）"></a>そもそもの確率密度の値が不要な件（！）</h4><p>分母分子を\(p_s^2\)で除算すれば、</p>
+<p>$$
+w_s &#x3D; \frac{1}{(p_0&#x2F;p_s)^2 + (p_1&#x2F;p_s)^2 + \cdots + 1 + \cdots + (p_k&#x2F;p_s)^2}
+$$</p>
+<p>となり、各項は\(p_s\)との比だけで求められる。
+各確率密度は\(p_s\)から順に係数を掛けて求めるので、\(p_s\)の実際の確率密度を用いる代わりに1.0としてしまっても正しく計算できる、というのが巧妙なトリック。
+このことによって順・逆方向の確率密度の比だけから計算できる。</p>
+<h4 id="スペキュラ面の扱い-1"><a href="#スペキュラ面の扱い-1" class="headerlink" title="スペキュラ面の扱い"></a>スペキュラ面の扱い</h4><p>接続する経路双方どちらかの頂点がスペキュラ面の場合には接続できない（接続する頂点方向の確率密度は0となるため）。
+なので分母の累計には蓄積させない。</p>
+<p>1つずらした経路の確率密度を計算する際には、頂点に記録する順・逆方向の確率密度を\(\infty\)ではなく\(1.0\)としておくことで特別扱いすることなく計算できる。</p>
+<ul>
+<li>経路積分のときには<a href="/blog/2026/08/26/path-integral-pt.html#validRate%E3%81%A7%E3%81%AE%E9%99%A4%E7%AE%97%E3%81%8C%E5%BF%85%E8%A6%81%E3%81%AA%E7%90%86%E7%94%B1%E3%82%92%E8%80%83%E5%AF%9F" title="光源・視点双方からの経路を接続するパストレーサー（経路積分）">頂点がスペキュラ面でつなげない場合の割合を考慮する必要があった</a>ことをふまえると、MISでも必要で分母に含めるべきなのではないかと思っちゃうんだけど結局のところその確率密度は0なので追加しないのが正しい（\(\infty\)の代わりに1.0を入れていることもあり）</li>
+<li>Veach論文 10.3.5「スペキュラ表面の扱い」で解説されている</li>
+</ul>
+<h3 id="光源・視点自体の頂点の特別処理"><a href="#光源・視点自体の頂点の特別処理" class="headerlink" title="光源・視点自体の頂点の特別処理"></a>光源・視点自体の頂点の特別処理</h3><p>追跡の開始点である、光源や視点の頂点は特別な扱いが必要になる。</p>
+<ul>
+<li>光源：<ul>
+<li>確率密度は面積の逆数</li>
+<li>スループットは光源が発する放射輝度を確率密度で除算したもので初期化</li>
+</ul>
+</li>
+<li>視点：<ul>
+<li>確率密度を1.0、スループットも1.0とする</li>
+</ul>
+</li>
+</ul>
+<p>またどちらの開始点も反射した光ではないので、他の頂点と異なり接続時に反射係数BRDFを掛けないようにする必要があるが、1.0を入れておくことで場合分けしなくて済むようにする。</p>
+<h2 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h2><p>経路積分のソースを元に、修正部分を。</p>
+<h3 id="Vertex-頂点情報"><a href="#Vertex-頂点情報" class="headerlink" title="Vertex: 頂点情報"></a>Vertex: 頂点情報</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Vertex</span> &#123;</span><br><span class="line">  Vec p, n;        <span class="comment">// 交点、法線</span></span><br><span class="line">  Refl_t refl;     <span class="comment">// 反射タイプ (DIFF, SPEC, REFR)</span></span><br><span class="line">  Vec brdf;        <span class="comment">// BRDF / BSDF 値 (DIFF: アルベド/π, SPEC・REFR: アルベド, 光源・カメラ始点: 1.0)</span></span><br><span class="line">  <span class="type">double</span> pdf_fwd;  <span class="comment">// 前方確率密度（面積PDF、直前頂点のRR確率を含む）</span></span><br><span class="line">  <span class="type">double</span> pdf_rev;  <span class="comment">// 後方確率密度（面積PDF、直後頂点のRR確率を含む）</span></span><br><span class="line">  Vec throughput = <span class="built_in">Vec</span>(<span class="number">1</span>);  <span class="comment">// 累積スループット</span></span><br><span class="line">  <span class="type">double</span> rr = <span class="number">1</span>;   <span class="comment">// ロシアンルーレット継続確率</span></span><br><span class="line">  <span class="type">const</span> Sphere* light = <span class="literal">nullptr</span>;  <span class="comment">// 衝突した光源オブジェクト</span></span><br><span class="line">  <span class="built_in">Vertex</span>(<span class="type">const</span> Vec&amp; p_, <span class="type">const</span> Vec&amp; n_, Refl_t refl_, <span class="type">const</span> Vec&amp; brdf_=<span class="built_in">Vec</span>(<span class="number">1</span>), <span class="type">double</span> pdf_fwd_=<span class="number">1</span>)</span><br><span class="line">    : <span class="built_in">p</span>(p_), <span class="built_in">n</span>(n_), <span class="built_in">refl</span>(refl_), <span class="built_in">brdf</span>(brdf_), <span class="built_in">pdf_fwd</span>(pdf_fwd_), <span class="built_in">pdf_rev</span>(<span class="number">1</span>) &#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>brdf</code>: アルベド(<code>Sphere</code>の<code>c</code>)の代わりにBRDFを保持するよう変更</li>
+<li><code>pdf_fwd</code>, <code>pdf_rev</code>: 順方向と逆方向の確率密度</li>
+<li><code>throughput</code>: スループット</li>
+<li><code>rr</code>: ロシアンルーレットの確率</li>
+<li><code>light</code>: 光源の開始点、またはレイの追跡で光源に当たった場合に保持</li>
+</ul>
+<h3 id="calculateThroughput-スループットの計算"><a href="#calculateThroughput-スループットの計算" class="headerlink" title="calculateThroughput: スループットの計算"></a>calculateThroughput: スループットの計算</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">Vec <span class="title">calculateThroughput</span><span class="params">(<span class="type">const</span> Vertex&amp; vi, <span class="type">const</span> Vertex&amp; vj)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (vi.refl == DIFF) &#123;</span><br><span class="line">    Vec wi = vj.p - vi.p;</span><br><span class="line">    <span class="type">double</span> dist = wi.<span class="built_in">length</span>();</span><br><span class="line">    wi = wi * (<span class="number">1</span> / dist);</span><br><span class="line"></span><br><span class="line">    <span class="type">double</span> cos_out = vi.n.<span class="built_in">dot</span>(wi);</span><br><span class="line">    <span class="type">double</span> cos_in = -vj.n.<span class="built_in">dot</span>(wi);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// エッジ (vi, vj) の幾何因子 G(vi, vj)</span></span><br><span class="line">    <span class="type">double</span> G = (cos_out * cos_in) / (dist * dist);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 経路積分形式におけるスループットの更新比: bsdf * (G / pdf)</span></span><br><span class="line">    <span class="keyword">return</span> vi.throughput.<span class="built_in">mult</span>(vi.brdf * (G / vj.pdf_fwd));</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Specular / Refractive (Delta BSDF)</span></span><br><span class="line">    <span class="comment">// デルタ関数の評価により bsdf * (G / pA) = vi.brdf * (1 / pdf)</span></span><br><span class="line">    <span class="keyword">return</span> vi.throughput.<span class="built_in">mult</span>(vi.brdf * (<span class="number">1.0</span> / vj.pdf_fwd));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>直前の頂点<code>vi</code>から現在の頂点<code>vj</code>へのスループットを計算<ul>
+<li><code>vj</code>の反射特性<code>refl</code>・交点座標<code>p</code>・法線<code>n</code>・順方向確率密度<code>pdf_fwd</code>を参照しているので、あらかじめ設定しておく必要がある</li>
+</ul>
+</li>
+<li>経路積分の<code>updateThroughput</code>では確率密度の除算を分離したが、やっぱり計算に入れるようにした</li>
+<li>拡散反射面の場合：BRDFと幾何項Gと確率密度で計算</li>
+<li>スペキュラの場合：本当ならBRDFも確率密度もデルタ関数で分母分子で打ち消し合う、コードでは\(\infty\)ではなく<code>1.0</code>を入れていてそのまま計算できる</li>
+</ul>
+<h3 id="traceScene-経路をいったんバッファに記録する"><a href="#traceScene-経路をいったんバッファに記録する" class="headerlink" title="traceScene: 経路をいったんバッファに記録する"></a>traceScene: 経路をいったんバッファに記録する</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">traceScene</span><span class="params">(Ray r, <span class="type">unsigned</span> <span class="type">short</span> *Xi, vector&lt;Vertex&gt;* path, <span class="type">int</span> maxDepth=INT_MAX)</span></span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> depth = <span class="number">0</span>; depth &lt; maxDepth; ) &#123;</span><br><span class="line">    <span class="type">double</span> t; <span class="type">int</span> id=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">intersect</span>(r, t, id)) <span class="keyword">break</span>;</span><br><span class="line">    <span class="type">const</span> Sphere &amp;obj = spheres[id];        <span class="comment">// the hit object</span></span><br><span class="line">    Vec x=r.o+r.d*t, n=(x-obj.p).<span class="built_in">norm</span>(), nl=n.<span class="built_in">dot</span>(r.d)&lt;<span class="number">0</span>?n:n*<span class="number">-1</span>;</span><br><span class="line">    Vec brdf = obj.c * (obj.refl == DIFF ? <span class="number">1.0</span> / M_PI : <span class="number">1.0</span>);</span><br><span class="line">    <span class="keyword">auto</span>&amp; v = path-&gt;<span class="built_in">emplace_back</span>(x, nl, obj.refl, brdf);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 直前頂点 prev とのエッジ幾何因子 G および面積 PDF の計算</span></span><br><span class="line">    Vertex&amp; prev = (*path)[path-&gt;<span class="built_in">size</span>() - <span class="number">2</span>];  <span class="comment">// すでに今回の頂点が追加済みなのでさらに-1</span></span><br><span class="line">    <span class="type">double</span> dist2 = t * t;</span><br><span class="line">    <span class="type">double</span> cos_prev = prev.n.<span class="built_in">dot</span>(r.d);</span><br><span class="line">    <span class="type">double</span> cos_curr = -nl.<span class="built_in">dot</span>(r.d);</span><br><span class="line">    <span class="type">double</span> G = dist2 &gt; <span class="number">1e-8</span> ? <span class="built_in">fabs</span>(cos_prev * cos_curr) / dist2 : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 前方面積PDF (直前頂点 prev から現在の頂点 v へのサンプリング面積PDF)</span></span><br><span class="line">    v.pdf_fwd = (prev.refl == DIFF ? G / M_PI : <span class="number">1.0</span>) * prev.rr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 後方面積PDF (現在の頂点 v から直前頂点 prev への逆サンプリング面積PDF)</span></span><br><span class="line">    prev.pdf_rev = v.refl == DIFF ? G / M_PI : <span class="number">1.0</span>;  <span class="comment">// 逆方向のロシアンルーレットはまだあとで掛ける</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// スループットの更新</span></span><br><span class="line">    v.throughput = <span class="built_in">calculateThroughput</span>(prev, v);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (obj.e.x + obj.e.y + obj.e.z &gt; <span class="number">0</span>) &#123;  <span class="comment">// 光源に到達した場合は終了</span></span><br><span class="line">      v.light = &amp;obj;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">double</span> maxrefl = obj.c.<span class="built_in">max</span>();</span><br><span class="line">    v.rr = ++depth &gt; <span class="number">1</span> || !maxrefl ? maxrefl : <span class="number">1.0</span>;</span><br><span class="line">    prev.pdf_rev *= v.rr;</span><br><span class="line">    <span class="keyword">if</span> (v.rr &lt; <span class="number">1</span> &amp;&amp; <span class="built_in">erand48</span>(Xi)&gt;=v.rr) <span class="keyword">break</span>; <span class="comment">//R.R</span></span><br><span class="line">    <span class="keyword">if</span> (obj.refl == DIFF) &#123;                     <span class="comment">// Ideal DIFFUSE reflection</span></span><br><span class="line">      Vec d = <span class="built_in">cosine_weighted_random_hemisphere</span>(nl, Xi);</span><br><span class="line">      r = <span class="built_in">Ray</span>(x, d);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      Vec wi = <span class="built_in">reflect</span>(r.d, n);</span><br><span class="line">      <span class="keyword">if</span> (obj.refl == REFR) &#123;</span><br><span class="line">        <span class="type">bool</span> into = n.<span class="built_in">dot</span>(nl)&gt;<span class="number">0</span>;            <span class="comment">// Ray from outside going in?</span></span><br><span class="line">        <span class="type">double</span> nc=<span class="number">1</span>, nt=<span class="number">1.5</span>, nnt=into?nc/nt:nt/nc, ddn=r.d.<span class="built_in">dot</span>(nl), cos2t;</span><br><span class="line">        <span class="keyword">if</span> ((cos2t=<span class="number">1</span>-nnt*nnt*(<span class="number">1</span>-ddn*ddn))&gt;=<span class="number">0</span>) &#123; <span class="comment">// Total internal reflection</span></span><br><span class="line">          Vec tdir = <span class="built_in">refract</span>(r.d, nl, nnt);</span><br><span class="line">          <span class="type">double</span> a=nt-nc, b=nt+nc, R0=a*a/(b*b), c = <span class="number">1</span>-(into?-ddn:tdir.<span class="built_in">dot</span>(n));</span><br><span class="line">          <span class="type">double</span> Re=R0+(<span class="number">1</span>-R0)*c*c*c*c*c;</span><br><span class="line">          <span class="keyword">if</span> (<span class="built_in">erand48</span>(Xi)&gt;=Re)</span><br><span class="line">            wi = tdir;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      r = <span class="built_in">Ray</span>(x, wi);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>順方向の確率密度だけではなく、逆方向の確率密度も計算してやる<ul>
+<li>拡散反射の場合に<code>G / M_PI</code>で計算しているのは、拡散反射でのcos比例の重点的サンプリングによるpdf:\(\cos\theta&#x2F;\pi\)と、角度pdfから面積pdfへの変換の係数:\(\cos\theta^\prime &#x2F; ||\bm{x} - \bm{x^\prime}||^2\)を組み合わせると、そう計算できるというわけ</li>
+</ul>
+</li>
+<li>スペキュラ面ではBRDFも確率密度も<code>1.0</code>を入れておく（\(\infty\)ではなく）</li>
+<li>1つ前からのロシアンルーレットの確率を掛けることで、この頂点が発生する確率密度となる</li>
+<li><code>calculateThroughput</code> を呼び出してスループットを計算し格納</li>
+<li>光源にたどり着いたら抜ける（光源は放射のみで反射はしないという前提）<ul>
+<li>光源に対する逆確率密度は呼び出し側でセットするものとして、ここでは処理しない</li>
+</ul>
+</li>
+</ul>
+<h3 id="部分経路の生成（視点・光源）"><a href="#部分経路の生成（視点・光源）" class="headerlink" title="部分経路の生成（視点・光源）"></a>部分経路の生成（視点・光源）</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">generateEyeSubpath</span><span class="params">(<span class="type">const</span> Ray&amp; r, <span class="type">unsigned</span> <span class="type">short</span> *Xi, vector&lt;Vertex&gt;* path)</span></span>&#123;</span><br><span class="line">  <span class="comment">// ピンホールカメラへの直接接続技法 (S&#x27;=k) を除外するため、カメラ頂点は SPEC 扱いとする</span></span><br><span class="line">  <span class="comment">// (S&#x27;=k は無効化されるため、カメラ頂点の pdf_fwd/pdf_rev は形式的な初期値 1.0 のままでよい)</span></span><br><span class="line">  path-&gt;<span class="built_in">emplace_back</span>(r.o, r.d, SPEC);</span><br><span class="line">  <span class="built_in">traceScene</span>(r, Xi, path);</span><br><span class="line">  <span class="keyword">auto</span>&amp; last = path-&gt;<span class="built_in">back</span>();</span><br><span class="line">  <span class="keyword">if</span> (last.light != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">    <span class="comment">// 光源にたどり着いた場合には、逆向きの確率密度を計算</span></span><br><span class="line">    last.pdf_rev = <span class="number">1</span> / last.light-&gt;<span class="built_in">area</span>();  <span class="comment">// 光源上の一様サンプリング面積PDF</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">generateLightSubpath</span><span class="params">(<span class="type">unsigned</span> <span class="type">short</span> *Xi, vector&lt;Vertex&gt;* path)</span></span>&#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">int</span> LIGHT_ID = numSpheres - <span class="number">1</span>;</span><br><span class="line">  <span class="type">const</span> Sphere &amp;light = spheres[LIGHT_ID];</span><br><span class="line">  <span class="comment">// 光源の表面をランダムにサンプリング</span></span><br><span class="line">  Vec y_n = <span class="built_in">random_unit_direction</span>(Xi);</span><br><span class="line">  Vec y = light.p + y_n * light.rad;</span><br><span class="line">  <span class="type">double</span> pA_light = <span class="number">1</span> / light.<span class="built_in">area</span>(); <span class="comment">// 光源上の一様点サンプリング面積PDF</span></span><br><span class="line"></span><br><span class="line">  Vec d = <span class="built_in">cosine_weighted_random_hemisphere</span>(y_n, Xi);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 光源の始点を追加</span></span><br><span class="line">  <span class="keyword">auto</span>&amp; v = path-&gt;<span class="built_in">emplace_back</span>(y, y_n, light.refl, <span class="built_in">Vec</span>(<span class="number">1</span>), pA_light);</span><br><span class="line">  v.throughput = light.e * (<span class="number">1.0</span> / pA_light);</span><br><span class="line">  v.light = &amp;light;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">traceScene</span>(<span class="built_in">Ray</span>(y, d), Xi, path);</span><br><span class="line">  <span class="keyword">auto</span>&amp; last = path-&gt;<span class="built_in">back</span>();</span><br><span class="line">  <span class="keyword">if</span> (last.light != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">    path-&gt;<span class="built_in">pop_back</span>();  <span class="comment">// 光源にたどり着いたらそれは取り除く</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>視点部分経路生成：<code>generateEyeSubpath</code><ul>
+<li>一応開始点も頂点に追加（が接続では利用しない）<ul>
+<li><code>SPEC</code>とすることで経路接続から除外</li>
+</ul>
+</li>
+<li>光源にたどり着いた場合には逆向きの確率密度を計算してやる</li>
+</ul>
+</li>
+<li>光源部分経路生成：<code>generateLightSubpath</code><ul>
+<li>光源である球の表面を一様にサンプリングして開始点とする<ul>
+<li>それゆえ確率密度は面積の逆数</li>
+</ul>
+</li>
+<li>初期の追跡方向は法線半球状にcos比例（このことと材質が<code>DIFF</code>であることにより、開始点でも確率密度計算が特別扱いが不要になっている！）</li>
+<li>初期スループットを光源が発する光<code>light.e</code>と確率密度から計算</li>
+<li>再度光源にたどり着いた場合には、その最後の頂点は無効</li>
+</ul>
+</li>
+</ul>
+<h3 id="connectVertices-頂点同士の接続"><a href="#connectVertices-頂点同士の接続" class="headerlink" title="connectVertices: 頂点同士の接続"></a>connectVertices: 頂点同士の接続</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">double</span> <span class="title">connectVertices</span><span class="params">(<span class="type">const</span> Vertex&amp; ys, <span class="type">const</span> Vertex&amp; zt, Vec* out)</span> </span>&#123;</span><br><span class="line">  Vec d = ys.p - zt.p;</span><br><span class="line">  <span class="type">double</span> dot_ys = -ys.n.<span class="built_in">dot</span>(d);</span><br><span class="line">  <span class="keyword">if</span> (dot_ys &lt;= <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="type">double</span> dot_zt = zt.n.<span class="built_in">dot</span>(d);</span><br><span class="line">  <span class="keyword">if</span> (dot_zt &lt;= <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="type">double</span> dist2 = d.<span class="built_in">squareLength</span>();</span><br><span class="line">  <span class="type">double</span> dist = <span class="built_in">sqrt</span>(dist2);</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">is_visible</span>(<span class="built_in">Ray</span>(zt.p, d * (<span class="number">1.0</span> / dist)), dist))</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// dを正規化してない状態で内積値を計算してるので余分に掛かっているdist^2を除算することで、</span></span><br><span class="line">  <span class="comment">// 幾何因子 G = (cosθo * cosθi&#x27;) / dist^2 を計算</span></span><br><span class="line">  <span class="type">double</span> G = (dot_ys * dot_zt) / (dist2 * dist2);</span><br><span class="line"></span><br><span class="line">  *out = ys.brdf.<span class="built_in">mult</span>(zt.brdf) * G;</span><br><span class="line">  <span class="keyword">return</span> G;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>経路積分のものと計算内容は同じだが、頂点情報に記録したBRDFを利用するよう変更<ul>
+<li>接続するのはランバート面だから方向によらず固定の値だが、Glossyを扱う場合には接続方向と続く頂点方向から求める必要があるだろう</li>
+</ul>
+</li>
+<li><code>out</code> に接続係数を、戻り値として幾何項<code>G</code>を返すが<code>0</code>なら接続失敗を表す</li>
+</ul>
+<h3 id="calculatePathWeight-経路の重み計算"><a href="#calculatePathWeight-経路の重み計算" class="headerlink" title="calculatePathWeight: 経路の重み計算"></a>calculatePathWeight: 経路の重み計算</h3><p>ここが今回の目玉！</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 経路の重み計算（MIS: パワーヒューリスティック、β = 2）</span></span><br><span class="line"><span class="comment">// s: lightSubpath 配列のインデックス（頂点数は s + 1。視点直接ヒット時は s = -1 で頂点数 0）</span></span><br><span class="line"><span class="comment">// t: eyeSubpath 配列のインデックス（頂点数は t + 1。カメラ始点は t = 0）</span></span><br><span class="line"><span class="function"><span class="type">double</span> <span class="title">calculatePathWeight</span><span class="params">(<span class="type">const</span> vector&lt;Vertex&gt;&amp; lightSubpath, <span class="type">int</span> s,</span></span></span><br><span class="line"><span class="params"><span class="function">                           <span class="type">const</span> vector&lt;Vertex&gt;&amp; eyeSubpath, <span class="type">int</span> t, <span class="type">double</span> G = <span class="number">0</span>)</span> </span>&#123;</span><br><span class="line">  <span class="type">int</span> k = s + <span class="number">1</span> + t; <span class="comment">// 経路長（エッジ数）</span></span><br><span class="line">  <span class="keyword">if</span> (k &lt;= <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1.0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 各頂点の前方・後方面積PDFの計算</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">Node</span> &#123;</span><br><span class="line">    <span class="type">double</span> pdf_fwd;  <span class="comment">// 頂点 i-1 から頂点 i へのサンプリング面積PDF（ロシアンルーレット含む）</span></span><br><span class="line">    <span class="type">double</span> pdf_rev;  <span class="comment">// 頂点 i+1 から頂点 i へのサンプリング面積PDF（ロシアンルーレット含む）</span></span><br><span class="line">    Refl_t refl;     <span class="comment">// 反射タイプ</span></span><br><span class="line">  &#125;;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> __GNUC__</span></span><br><span class="line">  <span class="comment">// ヒープ確保を避けるためスタック上に可変長配列で確保</span></span><br><span class="line">  <span class="comment">// 経路長があまりに長い場合にはスタック溢れの危険性がある。</span></span><br><span class="line">  Node nodes[k + <span class="number">1</span>];</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">  <span class="function">vector&lt;Node&gt; <span class="title">nodes</span><span class="params">(k + <span class="number">1</span>)</span></span>;  <span class="comment">// vectorでヒープに確保（安全）</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 光源部分経路側 (s &gt;= 0 の場合のみ実行)</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= s; ++i) &#123;</span><br><span class="line">    Node* node = &amp;nodes[i];</span><br><span class="line">    <span class="type">const</span> Vertex* lp = &amp;lightSubpath[i];</span><br><span class="line">    node-&gt;pdf_fwd = lp-&gt;pdf_fwd;</span><br><span class="line">    node-&gt;pdf_rev = lp-&gt;pdf_rev;</span><br><span class="line">    node-&gt;refl = lp-&gt;refl;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 視点部分経路側 (s = -1 の場合は 0..t、s &gt;= 0 の場合は s+1..k)</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> j = t; j &gt;= <span class="number">0</span>; --j) &#123;</span><br><span class="line">    Node* node = &amp;nodes[k - j];</span><br><span class="line">    <span class="type">const</span> Vertex* ep = &amp;eyeSubpath[j];</span><br><span class="line">    node-&gt;pdf_fwd = ep-&gt;pdf_rev;</span><br><span class="line">    node-&gt;pdf_rev = ep-&gt;pdf_fwd;</span><br><span class="line">    node-&gt;refl = ep-&gt;refl;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (s &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 接続エッジ (y_s &lt;-&gt; z_t) の幾何項から確率密度を算出</span></span><br><span class="line">    nodes[s + <span class="number">1</span>].pdf_fwd = (G / M_PI) * lightSubpath[s].rr;</span><br><span class="line">    nodes[s    ].pdf_rev = (G / M_PI) * eyeSubpath[t].rr;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// パワーヒューリスティック。R は各技法の PDF 比なので、分母には R^2 を足す。</span></span><br><span class="line">  <span class="type">double</span> denom = <span class="number">1.0</span>;  <span class="comment">// 本来なら(s, t)経路の確率密度を初期値とするんだけど、比で扱うため実の値を計算する必要がない。</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 左（逆）方向 (S&#x27; &lt;= s)</span></span><br><span class="line">  <span class="type">double</span> R = <span class="number">1.0</span>;  <span class="comment">// denomの初期値と同じく、比のため1.0で。</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = s; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">    Node&amp; node = nodes[i];</span><br><span class="line">    R *= node.pdf_rev / node.pdf_fwd;</span><br><span class="line">    <span class="comment">// nodes[i] と nodes[i-1] がともに DIFF の場合のみ有効（S&#x27; = 0 は光源自身なので常に有効）。</span></span><br><span class="line">    <span class="keyword">if</span> (node.refl == DIFF &amp;&amp; (i == <span class="number">0</span> || nodes[i - <span class="number">1</span>].refl == DIFF))</span><br><span class="line">      denom += R * R;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 右（順）方向 (S&#x27; &gt; s)</span></span><br><span class="line">  R = <span class="number">1.0</span>;  <span class="comment">// 同じく。</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = s; ++i &lt; k; ) &#123;</span><br><span class="line">    Node&amp; node = nodes[i];</span><br><span class="line">    R *= node.pdf_fwd / node.pdf_rev;</span><br><span class="line">    <span class="comment">// nodes[i] と nodes[i+1] がともに DIFF の場合のみ有効（カメラ頂点 nodes[k] は SPEC なので S&#x27; = k は自動的に無効）。</span></span><br><span class="line">    <span class="keyword">if</span> (node.refl == DIFF &amp;&amp; nodes[i + <span class="number">1</span>].refl == DIFF)</span><br><span class="line">      denom += R * R;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">1.0</span> / denom;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>光源部分経路の<code>s</code>番目と、視点部分経路の<code>t</code>番目を接続する際の重みを、MISで計算<ul>
+<li><code>s</code>や<code>t</code>は接続頂点のインデックスを表す</li>
+<li>Veach論文ではsやtは頂点数を表し、頂点が0オリジンで\(\bm{y_0}<del>\bm{y_{s-1}}\)と\(\bm{z_0}</del>\bm{z_{t-1}}\)であり、違いがあるため注意！</li>
+</ul>
+</li>
+<li>視点部分経路で光源にたどり着いた場合には <code>s==-1</code> として呼び出され、経路の接続は行わない（<code>lightSubpath</code>は使われずに<code>eyeSubpath</code>のみ）</li>
+<li>2つの部分経路を組み合わせた1つの経路をインデックスでアクセスできるよう<code>nodes</code>に必要な内容をコピー<ul>
+<li>光源から視点に進む方向を順方向として、視点部分経路で探索した方向は逆にする</li>
+<li>ヒープ確保を避けるために可変長配列を用いてみた（※C++標準ではない）<ul>
+<li>手元の環境ではトータルで2~3割高速化したので相当効果あり</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>接続エッジの位置(<code>s</code>)をまたぐ際の確率密度を幾何項<code>G</code>から算出<ul>
+<li><code>connectVertices</code>で<code>G</code>を計算するので、それを引数で与えてもらい再計算を省略</li>
+<li>反映させるのは遷移先なので<code>fwd</code>が<code>s+1</code>、<code>rev</code>が<code>s</code>となる</li>
+</ul>
+</li>
+<li>現在の戦略<code>(s,t)</code>に対して、他の戦略の確率密度の比を計算して、合計の逆数が重みとなる</li>
+</ul>
+<h3 id="radiance-ピクセルの色計算"><a href="#radiance-ピクセルの色計算" class="headerlink" title="radiance: ピクセルの色計算"></a>radiance: ピクセルの色計算</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">Vec <span class="title">radiance</span><span class="params">(<span class="type">const</span> Ray &amp;primaryRay, <span class="type">unsigned</span> <span class="type">short</span> *Xi, <span class="type">int</span> pixelindex)</span></span>&#123;</span><br><span class="line">  vector&lt;Vertex&gt; eyeSubpath;</span><br><span class="line">  <span class="built_in">generateEyeSubpath</span>(primaryRay, Xi, &amp;eyeSubpath);</span><br><span class="line">  vector&lt;Vertex&gt; lightSubpath;</span><br><span class="line">  <span class="built_in">generateLightSubpath</span>(Xi, &amp;lightSubpath);</span><br><span class="line"></span><br><span class="line">  <span class="type">int</span> nl = lightSubpath.<span class="built_in">size</span>();</span><br><span class="line">  <span class="type">int</span> ne = eyeSubpath.<span class="built_in">size</span>();</span><br><span class="line">  <span class="function">Vec <span class="title">color</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// --- 1. 視点部分経路で光源に到達した場合 (s = -1 相当) ---</span></span><br><span class="line">  <span class="keyword">if</span> (ne &gt; <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="type">const</span> Vertex&amp; zt = eyeSubpath.<span class="built_in">back</span>();</span><br><span class="line">    <span class="keyword">if</span> (zt.light != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">      <span class="type">int</span> t = ne - <span class="number">1</span>;</span><br><span class="line">      Vec c = zt.throughput.<span class="built_in">mult</span>(zt.light-&gt;e);</span><br><span class="line">      <span class="type">double</span> weight = <span class="built_in">calculatePathWeight</span>(lightSubpath, <span class="number">-1</span>, eyeSubpath, t);</span><br><span class="line">      color = color + c * weight;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> REGISTER_CONTRIBUTION</span></span><br><span class="line">      <span class="built_in">registerContribution</span>(c, <span class="number">0</span>, t - <span class="number">1</span>, pixelindex, weight);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">      <span class="comment">// 後続の接続ループ (s &gt;= 0) で光源頂点が接続対象にならないように取り除く</span></span><br><span class="line">      eyeSubpath.<span class="built_in">pop_back</span>();</span><br><span class="line">      --ne;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// --- 2. 部分経路同士の頂点をつなげる(拡散反射面 DIFF 同士の場合のみ) ---</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> s = <span class="number">0</span>; s &lt; nl; ++s) &#123;</span><br><span class="line">    <span class="type">const</span> Vertex&amp; ys = lightSubpath[s];</span><br><span class="line">    <span class="keyword">if</span> (ys.refl != DIFF)</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> t = <span class="number">1</span>; t &lt; ne; ++t) &#123;  <span class="comment">// 視点の開始点[0]とは接続させない</span></span><br><span class="line">      <span class="type">const</span> Vertex&amp; zt = eyeSubpath[t];</span><br><span class="line">      <span class="keyword">if</span> (zt.refl != DIFF)</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">      Vec connect;</span><br><span class="line">      <span class="keyword">if</span> (<span class="type">double</span> G = <span class="built_in">connectVertices</span>(ys, zt, &amp;connect); G &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="type">double</span> weight = <span class="built_in">calculatePathWeight</span>(lightSubpath, s, eyeSubpath, t, G);</span><br><span class="line">        Vec c = connect.<span class="built_in">mult</span>(ys.throughput).<span class="built_in">mult</span>(zt.throughput);</span><br><span class="line">        color = color + c * weight;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> REGISTER_CONTRIBUTION</span></span><br><span class="line">        <span class="built_in">registerContribution</span>(c, s + <span class="number">1</span>, t - <span class="number">1</span>, pixelindex, weight);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>光源・視点部分経路を生成し、それぞれを接続・MIS重み計算して組み合わせる</li>
+<li><code>s</code>が光源側頂点のインデックス、<code>t</code>が視点側頂点のインデックス<ul>
+<li>視点部分経路のループは<code>t</code>の開始が<code>1</code>からで、視点自体(<code>t = 0</code>)にはつなげてない</li>
+</ul>
+</li>
+<li>視点部分経路で光源に達した場合にはループ前に判定・処理する<ul>
+<li>この経路だけが、経路接続しない＝拡散反射が連続する箇所がない経路を扱える唯一の手法<ul>
+<li>そのような経路は接続では発生しないので、MIS重みは1.0となり100%の影響が加えられる</li>
+</ul>
+</li>
+<li>光源に達した頂点自体は、接続対象からは取り除く（光源は放射のみで、反射しない（アルベド&#x3D;0）という前提）</li>
+</ul>
+</li>
+</ul>
+<h2 id="結果"><a href="#結果" class="headerlink" title="結果"></a>結果</h2><script src="https://unpkg.com/image-compare-viewer@1.5.0/dist/image-compare-viewer.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/image-compare-viewer@1.5.0/dist/image-compare-viewer.min.css" />
+
+<div id="image-compare1" style="border-radius:8px">
+  <img src="/assets/blog/bidirectional-pt/smallpt_explicit.1300.webp" style="image-rendering:pixelated" />
+  <img src="/assets/blog/bidirectional-pt/bidir_pt.500.webp" style="image-rendering:pixelated; height:100%; max-width:none !important" />
+</div>
+
+<p>左：パストレ＋直接光（smallpt_explicit）、右：双方向パストレ</p>
+<ul>
+<li>解像度320x240で、ある程度同じ実行時間となるようにピクセルあたりのサンプル数を指定<ul>
+<li>パストレ＋直接光：1,300spp、26.4秒</li>
+<li>双方向パストレ：500spp、24.3秒</li>
+</ul>
+</li>
+</ul>
+<p>この比較を見ると直接光だけでも十分…ということになってしまう。
+もっと光源がたどり辛い間接照明のようなシーンだと差が出るだろうということで、同条件で光源を左下隅に移動させたシーン：</p>
+<div id="image-compare2" style="border-radius:8px">
+  <img src="/assets/blog/bidirectional-pt/smallpt_explicit.indirect.1300.webp" style="image-rendering:pixelated" />
+  <img src="/assets/blog/bidirectional-pt/bidir_pt.indirect.500.webp" style="image-rendering:pixelated; height:100%; max-width:none !important" />
+</div>
+
+<script>
+  const options = {
+    smoothing: false,
+    preventScroll: true,
+    handleSize: 40,
+  }
+  for (let i = 1; i <= 2; ++i) {
+    const element = document.getElementById(`image-compare${i}`)
+    const viewer = new ImageCompare(element, options).mount()
+  }
+</script>
+
+<p>ファイアフライノイズが目立つとはいえ双方向からの追跡が効果を発揮している、と言えるでしょう💦</p>
+<h3 id="サンプリング戦略ごとの寄与（重みあり）"><a href="#サンプリング戦略ごとの寄与（重みあり）" class="headerlink" title="サンプリング戦略ごとの寄与（重みあり）"></a>サンプリング戦略ごとの寄与（重みあり）</h3><p><a href="/assets/blog/bidirectional-pt/bidir_pt-contrib.jpg"><img src="/assets/blog/bidirectional-pt/bidir_pt-contrib.small.jpg" alt="サンプリング戦略ごとの寄与"></a></p>
+<ul>
+<li>光源・視点部分経路の頂点数に応じて寄与を記録することで、どのサンプリング戦略がどういう画像となるかを確認できる<ul>
+<li>Veach論文の図10.4相当</li>
+</ul>
+</li>
+<li>左上が<code>(s=-1,t=1)</code>（光源部分経路の頂点数0, 視点部分経路の頂点数2）で、右方向が光源側<code>s</code>の増加、下方向が視点側<code>t</code>の増加<ul>
+<li><code>s=-1</code>（１列目）は経路接続がない、ナイーブなパストレを表す（ただしMIS重みを掛けているのでスペキュラ経路以外は暗い）</li>
+<li><code>t=-1</code>というのはピンホールカメラなので発生しない（視点に対して交差判定を行っていないので光源部分経路追跡で視点に達することがない）</li>
+<li>視点自体と経路接続すれば<code>t=0</code>というのはありえる、ので本来ならさらに上に1行列存在する（が、本コードでは行なってないため存在しない）</li>
+</ul>
+</li>
+<li>斜め（／）の組が同じ経路長で、同じグループ内でも寄与は全然違う（MIS重みが掛かっていることもあり）</li>
+</ul>
+<h2 id="後書き、考察"><a href="#後書き、考察" class="headerlink" title="後書き、考察"></a>後書き、考察</h2><ul>
+<li>シーンの構成・光源のレイアウトによらずに、間接光やスペキュラ反射を含むシーンでも効果的に寄与が得られて素晴らしい</li>
+<li>理論も数式もコード化もムズイのなんの…<ul>
+<li>コード上の計算式だけじゃなく、分岐や計算順とかも関わってくるので１行たりとも気が抜けない</li>
+<li>数式的にもデルタが関わってたり打ち消し合うトリックでコード上からは読み解けなかったりしてムズイ</li>
+</ul>
+</li>
+<li>Veach論文の結果画像は500x500x25sppとか、30年弱経た今から思うと慎ましくて涙が出そう（計算能力の飛躍的向上に感謝！）</li>
+</ul>
+<h4 id="経路接続で同経路長の全戦略が列挙されるわけではない件"><a href="#経路接続で同経路長の全戦略が列挙されるわけではない件" class="headerlink" title="経路接続で同経路長の全戦略が列挙されるわけではない件"></a>経路接続で同経路長の全戦略が列挙されるわけではない件</h4><p>光源・視点部分経路同士を接続することで経路長が1から \(k (&#x3D; n_L + n_E - 1)\) までの経路が複数生成される。
+しかし経路長が\(n_L\)または\(n_E\)より長いものには列挙されないサンプリング戦略が出てしまう。
+そのような状態でMISを計算するにはどうするんだろうか？
+同じ長さの全戦略を用いていいのか、それとも列挙できた戦略だけに絞る必要があるんだろうか？というのが疑問だった。</p>
+<p>結果としては気にせず全戦略を対象にしてしまっていい（むしろしないとダメ）っぽい。
+数学的な理論はわからないが、ロシアンルーレットで打ち切る確率で補正されるので、それでなんかうまく辻褄が合うんだろうと勝手に推測。
+直感では光源・視点の矩形で組み合わせるので中央付近の戦略が多く出てしまうんじゃないかと懸念するが、光源・視点のどちらかが極端に短い、長方形のような分布が選ばれれば端の戦略が登場して中央の戦略は登場しないというようなケースもあり得て結果的にUnbiasedになるんちゃう、知らんけど。</p>
+<ul>
+<li>Veach論文 10.1「概要」 <strong>効率的なサンプルの生成</strong> の
+「<em>There is an important detail that we have not mentioned yet.</em>」
+以降に書かれている寄与0の <em>空経路 \(\epsilon\)</em> と再解釈して無限にサンプルしたことにする、という記述が対応するっぽい（数式は9章）。</li>
+</ul>
+<h4 id="経路接続がランバート面を前提としている件"><a href="#経路接続がランバート面を前提としている件" class="headerlink" title="経路接続がランバート面を前提としている件"></a>経路接続がランバート面を前提としている件</h4><p>現状は材質として完全な拡散反射、鏡面反射、屈折のみ扱っている。
+そして経路接続できるのは拡散反射のみで、それを前提に確率密度を計算している。
+また拡散反射面での反射方向のサンプリングがcos重み付きで、そのことも前提になっている。</p>
+<p>Glossyな材質も組み込む場合にはどういう修正が必要になるのか、汎用的にできるのか、まだ想像がつかない。</p>
+<h4 id="視点接続していないデメリットは小さくない"><a href="#視点接続していないデメリットは小さくない" class="headerlink" title="視点接続していないデメリットは小さくない"></a>視点接続していないデメリットは小さくない</h4><p>双方向パストレはコースティクスが得意というのがメリットでもあるんだけど、このコードでは視点に接続してないためその利点は得られてない。
+光源から発してガラス球で集光されて拡散面である地面に高い確率密度・スループットで得られた頂点が、視点と直接接続できれば効率的に影響が得られるところを、視点側に拡散面を挟まなければいけないため無駄になってしまっている。</p>
+<p>またガラス球だけじゃなく鏡の球体によって反射された光がシーン全体に散らばる経路も拾えておらず、それがファイアフライノイズの原因となってしまっている。</p>
+<p>サポートするには今までナイーブなパストレと同じでピクセルごとに計算できたところを、<a href="/blog/2025/12/16/light-tracing.html" title="ライトトレーシングが完全に一致した（拡散反射に限り）">ライトトレーシング</a>と同じようにイメージセンサー全体への影響を考慮する必要が出てしまってまたさらに難しい計算になりそう。
+今後の課題。</p>
+<h2 id="リンク"><a href="#リンク" class="headerlink" title="リンク"></a>リンク</h2><ul>
+<li>Eric Veach、”<strong>Robust Monte Carlo Methods for Light Transport Simulation</strong>“、<a href="https://graphics.stanford.edu/courses/cs348b-03/papers/veach-chapter10.pdf">10章 双方向パストレーシング</a> 至高の聖典</li>
+<li><a href="https://rayspace.xyz/CG/contents/BPT/">双方向パストレーシング - Computer Graphics - memoRANDOM</a>、<a href="https://rayspace.xyz/CG/contents/BPT_implementation/">実装</a>　日本語で貴重な解説（理解してから読むと理解できる、してない段階ではできないというジレンマ）</li>
+<li><a href="https://kagamin.net/hole/edubpt/index.htm">edubpt</a>　貴重な解説スライドとソースあり</li>
+<li>PBRT: <a href="https://pbr-book.org/3ed-2018/Light_Transport_III_Bidirectional_Methods/Bidirectional_Path_Tracing">Bidirectional Path Tracing</a> 丁寧に解説されているんだとは思うが、この章までの項目を追えてない自分にとってはソースを見てもチンプンカンプンなところが辛い</li>
+</ul>
+
+
+                
+                    <hr style="margin:48px 0 8px">
+                    <ul class="pager" style="display:flex; flex-direction:row; column-gap:8px">
+                        
+                        
+                            <li class="next" style="flex: 1 50%; text-align:right"><a href="/blog/2026/09/04/pentomino-sat.html">前：ペントミノパズルをSATソルバで解く<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        
+                    </ul>
+                
+
+                
+
+            </div>
+
+            <!-- Related posts -->
+            <div class="col-lg-3 col-md-3">
+                <div class="related-posts">
+                    <hr>
+                    <h3>関連記事</h3>
+                    <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-ply-format.html" title="Processing(Java)で.plyファイル読み込み" rel="bookmark">Processing(Java)で.plyファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/05/12/3d-obj-format.html" title="Processing(Java)で.objファイル読み込み" rel="bookmark">Processing(Java)で.objファイル読み込み</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2010/02/07/aabb-tree.html" title="AABBTreeを組み込んで、レイトレでポリゴン描画" rel="bookmark">AABBTreeを組み込んで、レイトレでポリゴン描画</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2026/01/07/anisotropic-reflection.html" title="PBRマテリアルの異方性反射" rel="bookmark">PBRマテリアルの異方性反射</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="/blog/2009/09/11/aobench-in-cuda.html" title="CUDAでAO bench" rel="bookmark">CUDAでAO bench</a></h3></div></li></ul>
+                </div>
+
+                <!-- Recent posts -->
+                <div class="recent-posts">
+                    <hr>
+                    <h3>新着記事</h3>
+                    <ul class="recent_posts"><li class="recent_post"><a href="/blog/2026/09/30/bidirectional-pt-mis.html">双方向パストレ Part 1：複数経路でMIS適用</a></li><li class="recent_post"><a href="/blog/2026/09/04/pentomino-sat.html">ペントミノパズルをSATソルバで解く</a></li><li class="recent_post"><a href="/blog/2026/08/26/path-integral-pt.html">光源・視点双方からの経路を接続するパストレーサー（経路積分）</a></li><li class="recent_post"><a href="/blog/2026/07/30/three-point-form-pt.html">3点形式でパストレーサーを動かしてみる</a></li><li class="recent_post"><a href="/blog/2026/06/11/make-obj-dir.html">【Makefile】中間ディレクトリを作成するターゲットの指定方法</a></li></ul>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/tyfkda" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2026 tyfkda<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

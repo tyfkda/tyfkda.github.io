@@ -6,7 +6,7 @@
   <link href="https://tyfkda.github.io/atom.xml" rel="self"/>
   
   <link href="https://tyfkda.github.io/"/>
-  <updated>2026-09-04T04:39:40.834Z</updated>
+  <updated>2026-09-30T09:22:49.963Z</updated>
   <id>https://tyfkda.github.io/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>双方向パストレ Part 1：複数経路でMIS適用</title>
+    <link href="https://tyfkda.github.io/blog/2026/09/30/bidirectional-pt-mis.html"/>
+    <id>https://tyfkda.github.io/blog/2026/09/30/bidirectional-pt-mis.html</id>
+    <published>2026-09-30T10:00:00.000Z</published>
+    <updated>2026-09-30T09:22:49.963Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;光輸送問題・レンダリング方程式を体得するため、&lt;a href=&quot;/blog/2026/07/30/three-point-form-pt.html&quot; title=&quot;3点形式でパストレーサーを動かしてみる&quot;&gt;3点形式&lt;/a&gt;で表して解いてみたり、&lt;a href=&quot;/blog/2026/08/26/path-integral-pt.html&quot; title=&quot;光源・視点双方からの経路を接続するパストレーサー（経路積分）&quot;&gt;経路積分&lt;/a&gt;で描画してみて多少は理解が深まった。
+これで一応準備が整った、いよいよ双方向パストレーシングをやってみる。&lt;/p&gt;
+&lt;p&gt;特に、複数経路の結果を効率的に組み合わせる多重重点的サンプリングを用いる。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
+    
+  </entry>
   
   <entry>
     <title>ペントミノパズルをSATソルバで解く</title>
@@ -39,7 +58,7 @@
     <link href="https://tyfkda.github.io/blog/2026/08/26/path-integral-pt.html"/>
     <id>https://tyfkda.github.io/blog/2026/08/26/path-integral-pt.html</id>
     <published>2026-08-26T07:00:00.000Z</published>
-    <updated>2026-09-02T00:05:10.937Z</updated>
+    <updated>2026-09-30T09:22:49.964Z</updated>
     
     
     <summary type="html">&lt;p&gt;双方向パストレーシングの理解のためレンダリング方程式を&lt;a href=&quot;/blog/2026/07/30/three-point-form-pt.html&quot; title=&quot;3点形式でパストレーサーを動かしてみる&quot;&gt;3点形式&lt;/a&gt;で扱ってみたが、
@@ -57,7 +76,7 @@
     <link href="https://tyfkda.github.io/blog/2026/07/30/three-point-form-pt.html"/>
     <id>https://tyfkda.github.io/blog/2026/07/30/three-point-form-pt.html</id>
     <published>2026-07-30T10:00:00.000Z</published>
-    <updated>2026-08-27T06:45:11.066Z</updated>
+    <updated>2026-09-30T09:22:49.965Z</updated>
     
     
     <summary type="html">&lt;p&gt;双方向パストレーシングを理解したいんだけど全体を一度に理解するのは難しい。
@@ -167,24 +186,6 @@
     
     <summary type="html">&lt;p&gt;相当昔に&lt;a href=&quot;/blog/2009/10/15/smallpm.html&quot; title=&quot;smallpm - Global Illumination in 132 lines of C++&quot;&gt;フォトンマッピング&lt;/a&gt;を動かしたことがあるが、放射するフォトン数が少ないと斑点ノイズが発生してしまっていた。
 これを低減させるファイナルギャザリングを実装してみる。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="graphics" scheme="https://tyfkda.github.io/tags/graphics/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ライトトレーシングが完全に一致した（拡散反射に限り）</title>
-    <link href="https://tyfkda.github.io/blog/2025/12/16/light-tracing.html"/>
-    <id>https://tyfkda.github.io/blog/2025/12/16/light-tracing.html</id>
-    <published>2025-12-16T10:00:00.000Z</published>
-    <updated>2026-05-26T02:17:40.738Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;以前&lt;a href=&quot;/blog/2025/07/24/pt-direct-lighting.html&quot; title=&quot;パストレーサーで直接光計算（重点的サンプリング、合成pdf）&quot;&gt;パストレーサーで直接光の計算&lt;/a&gt;をできるようにすることで光源が小さくてもそれなりに計算が早く行えるようになった。
-ただ光源が覆われた間接照明のようなシーンではほぼ失敗して無効化されてしまうという課題がある。&lt;/p&gt;</summary>
     
     
     
